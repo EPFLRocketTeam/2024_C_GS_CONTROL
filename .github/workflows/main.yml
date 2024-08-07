@@ -3,7 +3,7 @@ name: Automatic Tests
 on:
   push:
     branches:
-      - firehorn/dev/maxime
+      - main
 
 jobs:
   build-and-test:
