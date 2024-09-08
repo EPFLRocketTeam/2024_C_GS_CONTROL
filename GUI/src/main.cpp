@@ -17,11 +17,14 @@
 #include <QtNetwork/QTcpSocket>
 #include "RequestBuilder.h"
 
+// This variable must specify the relative path of the resources folder from the build one
+#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../GUI/res"
+
 void fakeDataHandling();
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    QResource::registerResource("../res/resources.rcc");
+    QResource::registerResource(RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "/resources.rcc");
 
 
     MainWindow::clientManager = std::make_unique<ClientManager>();    

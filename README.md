@@ -28,6 +28,33 @@ when adding stuff to res make sure to compile the qrc with the following command
 
 # Installation 
 
+In order to compile the 2 parts of the software you need to install qt6 base dev, on ubuntu it gives the following: 
+```shell
+sudo apt install qt6-base-dev
+```
+
+Then some other dependencies required need to be installed:
+```shell
+sudo apt install libqt6svg6-dev libqt6serialport6-dev qtbase5-dev-tools libboost-all-dev libgtest-dev
+
+```
+Then you must compile the resources by going:
+```shell
+rcc -binary GUI/res/resources.qrc -o GUI/res/resources.rcc
+```
+After this you can install create a build directory at the root of the project: 
+```shell
+mkdir build && cd build
+```
+And build all the targets:
+```shell 
+cmake .. && make
+```
+The executable of the server and the GUI would appear in build/Server/FirehornServer and build/GUI/FirehornGUI. Alternatively you can do the following command to run autoamtically the server along the gui:
+```shell 
+make run_gui
+```
+
 QTSvg : sudo apt-get -y install libqt6svg6-dev
 
 Rcc command : fedora : sudo dnf install qt-devel
@@ -37,6 +64,7 @@ SerialPort : ubuntu : sudo apt-get install libqt5serialport5-dev
 Boost : ubuntu : sudo apt install libboost-all-dev
 
 install gtest : sudo apt-get install libgtest-dev
+
 
 # Communication structure 
 

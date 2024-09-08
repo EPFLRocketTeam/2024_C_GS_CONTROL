@@ -1,8 +1,9 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
+#include <qt6/QtNetwork/QTcpSocket>
+#include <qt6/QtNetwork/QTcpServer>
+
 #include <QtSerialPort/QSerialPort>
 #include <QMap>
 
