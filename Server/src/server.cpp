@@ -28,8 +28,6 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
     openSerialPort();
 }
 
-
-
 void Server::openSerialPort() {
     int ctr = 0;
     serialPort->setBaudRate(QSerialPort::Baud115200);
@@ -369,6 +367,5 @@ void Server::simulateJsonData() {
 
     // Send the JSON string to all connected clients
     std::cout << "Fake data sent" << std::endl;
-
     updateSubscriptions(jsonObj);
 }
