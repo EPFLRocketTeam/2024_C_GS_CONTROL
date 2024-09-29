@@ -1,3 +1,11 @@
+
+#include <QApplication>
+#include <QThread>
+#include <QTimer>
+#include <iostream>
+#include <QResource>
+#include "MainWindow.h"
+#include "Server.h"
 #include <iostream>
 
 #include <QCoreApplication>
@@ -7,9 +15,23 @@
 
 #include "Server.h"
 #include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include <QApplication>
+#include <QResource>
 
-int start_server(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+#include "MainWindow.h"
+#include "ClientManager.h"
+#include "Setup.h"
+#include <QTimer>
+#include <QJsonDocument>
+#include <QtNetwork/QTcpSocket>
+
+
+
+// Path to the resources file
+#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../GUI/res"
+
+int main(int argc, char *argv[]) {
+    QApplication a(argc, argv);
 
     
     Server server = Server();
@@ -33,9 +55,15 @@ int start_server(int argc, char *argv[]) {
         std::cout << "Manufacturer: " << portInfo.manufacturer().toStdString() << std::endl;
     }
     std::cout << "setup finished" << std::endl;
+
+    QResource::registerResource(RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "/resources.rcc");
+
+
+    MainWindow::clientManager = std::make_unique<ClientManager>();    
+    MainWindow mainWindow;
+    
+    mainWindow.show();
+
     return a.exec();
 }
 
-int main(int argc, char *argv[]) {
-    return start_server(argc, argv);
-}

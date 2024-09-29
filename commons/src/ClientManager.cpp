@@ -12,18 +12,18 @@
 #include <QDebug>
 #include <QtNetwork/QTcpSocket>
 #include <QObject>
+#include <ostream>
 #include<unistd.h> 
-
+#include "../../Setup.h"
 #include "ClientManager.h"
 #include "RequestBuilder.h"
-#include "../Setup.h"
 #include "RequestBuilder.h"
 
 
 ClientManager::ClientManager(QObject *parent) : ClientInterface(parent) {
     
     socket = new QTcpSocket(this);
-    
+     
     
     connect(socket, &QTcpSocket::connected, this, &ClientManager::connected);
     connect(socket, &QTcpSocket::readyRead, this, &ClientManager::readyRead);
@@ -58,7 +58,14 @@ void ClientManager::subscribe(const GUI_FIELD field, CallbackFunction<QString> c
 }
 
 void ClientManager::sendSubscribeRequest(const QString& field) {
-    
+   
+
+    if (!socket->isOpen()) {
+        socket->connectToHost(network::serverIP, network::serverPort);
+        if (!socket->waitForConnected(3000)) {
+            std::cout << "Error: " << socket->errorString().toStdString() << std::endl;
+        }   
+    }
     RequestBuilder builder;
     builder.setHeader(RequestType::SUBSCRIBE);
     builder.addField("field", field);
@@ -111,7 +118,7 @@ QString removeExtraCurlyBrackets(const QString& jsonString) {
 }
 
 void ClientManager::handleReceivedData(const QString& data) {
-    
+    std::cout << "DEBUG: " <<data.toStdString() << std::endl; 
     QString jsonString(data);
 
     // Split the string by '}{'

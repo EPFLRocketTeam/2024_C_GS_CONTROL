@@ -7,36 +7,56 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
 # Find the required Qt6 components
-find_package(Qt6 COMPONENTS Widgets Core Network SerialPort  REQUIRED)
+find_package(Qt6 COMPONENTS Widgets Core Network SerialPort REQUIRED)
 
+# Add CapsuleLib
 add_library(CapsuleLib Capsule/src/capsule.h)
+
+# Add FirehornCommons
+add_subdirectory(../commons FirehornCommons)
 
 set(SOURCES_SERVER
     src/server.cpp
-    src/main.cpp
     src/RequestAdapter.cpp
     src/network/RequestHandler.cpp
-    ../GUI/src/network-utils/ClientManager.cpp
-    ../GUI/src/network-utils/RequestBuilder.cpp
 )
 
 set(HEADERS_SERVER
     include/Server.h 
     include/RequestHandler.h
     include/RequestAdapter.h
-    ../GUI/include/ClientInterface.h
-    ../GUI/include/ClientManager.h
-    ../GUI/include/RequestBuilder.h 
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES_SERVER} ${HEADERS_SERVER})
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include )
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../GUI/include)
+# Create the library
+add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_SERVER} ${HEADERS_SERVER} src/start_func.cpp)
 
+# Set include directories for the library
+target_include_directories(${PROJECT_NAME}_lib 
+    PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../commons/include
+)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-                        Qt6::Widgets 
-                        Qt6::Core
-                        Qt6::Network
-                        Qt6::SerialPort
-                        )
+# Link against the Qt6 modules and CapsuleLib for the library
+target_link_libraries(${PROJECT_NAME}_lib 
+    PUBLIC 
+        Qt6::Widgets 
+        Qt6::Core
+        Qt6::Network
+        Qt6::SerialPort
+        CapsuleLib
+        FirehornCommons
+)
+
+# Create the executable
+add_executable(${PROJECT_NAME} src/main.cpp)
+
+# Link the executable with the library
+target_link_libraries(${PROJECT_NAME} 
+    PRIVATE 
+        ${PROJECT_NAME}_lib
+)
+
+# Export the main function for use in other projects
+add_library(${PROJECT_NAME}_main STATIC src/main.cpp)
+target_link_libraries(${PROJECT_NAME}_main PUBLIC ${PROJECT_NAME}_lib)
