@@ -1,4 +1,4 @@
-[submodule "Server/ERT_RF_Protocol_Interface"]
+[submodule "commons/ERT_RF_Protocol_Interface"]
 	path = commons/ERT_RF_Protocol_Interface
 	url = https://github.com/EPFLRocketTeam/ERT_RF_Protocol_Interface.git
 	branch = main
