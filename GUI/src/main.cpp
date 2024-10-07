@@ -26,7 +26,7 @@ QApplication app(argc, argv);
     QResource::registerResource(RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "/resources.rcc");
 
 
-    MainWindow::clientManager = std::make_unique<ClientManager>();    
+    MainWindow::clientManager = std::make_unique<ClientManager>(nullptr, network::serverIP, network::serverPort);    
     MainWindow mainWindow;
     
     mainWindow.show();

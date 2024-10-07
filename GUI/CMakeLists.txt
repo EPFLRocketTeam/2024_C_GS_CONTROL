@@ -28,8 +28,6 @@ set(SOURCES_GUI
     src/views/TimerView.cpp
     src/views/ValveControlView.cpp
     src/MainWindow.cpp
-    ../commons/src/RequestBuilder.cpp
-    ../commons/src/ClientManager.cpp
 )
 
 set(HEADERS_GUI
@@ -49,19 +47,17 @@ set(HEADERS_GUI
     include/TelemetryView.h
     include/TimerView.h    
     include/ValveControlView.h
-    ../commons/include/ClientManager.h
-    ../commons/include/RequestBuilder.h
-    ../commons/include/ClientInterface.h
 )
 
 # Create the library
-add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_GUI} ${HEADERS_GUI} src/start_func.cpp)
+add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_GUI} ${HEADERS_GUI})
+
+add_subdirectory(../commons FirehornCommons)
 
 # Set include directories for the library
 target_include_directories(${PROJECT_NAME}_lib 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../commons/include
 )
 
 # Link against the Qt6 modules for the library
@@ -72,6 +68,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         Qt6::Network
         Qt6::Svg
         Qt6::Concurrent
+        FirehornCommons
 )
 
 # Create the executable
@@ -83,6 +80,3 @@ target_link_libraries(${PROJECT_NAME}
         ${PROJECT_NAME}_lib
 )
 
-# Export the main function for use in other projects
-add_library(${PROJECT_NAME}_main STATIC src/start_func.cpp)
-target_link_libraries(${PROJECT_NAME}_main PUBLIC ${PROJECT_NAME}_lib)

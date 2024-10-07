@@ -28,13 +28,13 @@ set(HEADERS_SERVER
 )
 
 # Create the library
-add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_SERVER} ${HEADERS_SERVER} src/start_func.cpp)
+add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_SERVER} ${HEADERS_SERVER})
 
 # Set include directories for the library
 target_include_directories(${PROJECT_NAME}_lib 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../commons/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/../commons/include
 )
 
 # Link against the Qt6 modules and CapsuleLib for the library
@@ -57,6 +57,3 @@ target_link_libraries(${PROJECT_NAME}
         ${PROJECT_NAME}_lib
 )
 
-# Export the main function for use in other projects
-add_library(${PROJECT_NAME}_main STATIC src/main.cpp)
-target_link_libraries(${PROJECT_NAME}_main PUBLIC ${PROJECT_NAME}_lib)

@@ -8,52 +8,53 @@
 #define CLIENTIMPLEMENTATION_H
 
 #include <iostream>
+#include <qt6/QtCore/qtimer.h>
 #include <string>
 
+#include <QJsonObject>
 #include <QMap>
 #include <QVector>
-#include <QJsonObject>
 #include <QtNetwork/QTcpSocket>
 
 #include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
 #include "ClientInterface.h"
 
-class ClientManager: public ClientInterface {
-    Q_OBJECT
+class ClientManager : public ClientInterface {
+  Q_OBJECT
 public:
+  ClientManager(QObject *parent = nullptr, QString host = QString("127.0.0.1"),
+                int port = 8080);
 
-    ClientManager(QObject *parent = nullptr);
-
-    void subscribe(const GUI_FIELD field, CallbackFunction<QString> callback) override;
-    void subscribe(const GUI_FIELD field, CallbackFunction<QJsonValue> callback) override;
-    void handleReceivedData(const QString& data) override;
-    void send(const QString& data) override;
-    void sendSubscribeRequest(const QString& field);
-    
+  void subscribe(const GUI_FIELD field,
+                 CallbackFunction<QString> callback) override;
+  void subscribe(const GUI_FIELD field,
+                 CallbackFunction<QJsonValue> callback) override;
+  void handleReceivedData(const QString &data) override;
+  void send(const QString &data) override;
+  void sendSubscribeRequest(const QString &field);
+  QString serverHost;
+  int serverPort;
 
 private slots:
-    void connected() {
-        std::cout << "Connected to server" << std::endl;
-    }
+  void connected(); 
 
-    void readyRead();
+  void readyRead();
 
-    void disconnected() {
-         std::cout << "Disconnected from the server" << std::endl;
-    }
+  void disconnected();
 
-    void sendSubscribeRequest(const GUI_FIELD field);
+  void sendSubscribeRequest(const GUI_FIELD field);
 
 private:
-    QMap<GUI_FIELD, QVector<CallbackFunction<QString>>> subscriptionsStrings;
-    QMap<GUI_FIELD, QVector<CallbackFunction<QJsonValue>>> subscriptionsJson;
+  QMap<GUI_FIELD, QVector<CallbackFunction<QString>>> subscriptionsStrings;
+  QMap<GUI_FIELD, QVector<CallbackFunction<QJsonValue>>> subscriptionsJson;
 
-    bool p = false;
-    QTcpSocket *socket;
-    
-    QJsonObject jsonFromString(const QString& data);
-    // void notifyChildrenFields(Json::Value local_root); const QJsonObject& localObject
-    void notifyChildrenFields(const QJsonObject& localObject);
+  bool p = false;
+  QTcpSocket *socket;
+  QTimer *m_reconnectTimer;
+  QJsonObject jsonFromString(const QString &data);
+  // void notifyChildrenFields(Json::Value local_root); const QJsonObject&
+  // localObject
+  void notifyChildrenFields(const QJsonObject &localObject);
 };
 
 #endif // CLIENTIMPLEMENTATION_H
