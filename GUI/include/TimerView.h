@@ -8,7 +8,7 @@
 #include <QLabel>
 #include <memory>
 
-#include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 
 class TimerView : public QWidget {
     Q_OBJECT

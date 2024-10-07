@@ -16,6 +16,9 @@ set(HEADERS_COMMONS
     include/ClientInterface.h
     include/ClientManager.h
     include/RequestBuilder.h 
+    ERT_RF_Protocol_Interface/MacAdresses.h
+    ERT_RF_Protocol_Interface/PacketDefinition.h
+    ERT_RF_Protocol_Interface/ParameterDefinition.h
 )
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})
@@ -23,6 +26,7 @@ add_library(${PROJECT_NAME} STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})
 target_include_directories(${PROJECT_NAME} 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} 

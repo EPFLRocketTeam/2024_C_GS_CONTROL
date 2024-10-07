@@ -16,7 +16,7 @@
 #include <QVector>
 #include <QtNetwork/QTcpSocket>
 
-#include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 #include "ClientInterface.h"
 
 class ClientManager : public ClientInterface {
