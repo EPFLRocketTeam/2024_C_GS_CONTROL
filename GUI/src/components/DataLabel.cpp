@@ -3,7 +3,7 @@
 #include "../Setup.h"
 #include <QFont>
 
-#include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 
 DataLabel::DataLabel(const GUI_FIELD field, QWidget *parent) : QLabel(parent), field(field)
 {

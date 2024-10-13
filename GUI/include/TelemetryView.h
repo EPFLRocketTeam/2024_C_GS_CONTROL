@@ -12,7 +12,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 
 class TelemetryView : public QFrame {
     Q_OBJECT

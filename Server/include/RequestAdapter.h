@@ -1,4 +1,4 @@
-#include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition.h"
 #ifndef REQUESTADAPTER_H
 #define REQUESTADAPTER_H
 

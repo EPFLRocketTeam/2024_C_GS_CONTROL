@@ -7,7 +7,6 @@
 #include <QString>
 #include <QJsonObject>
 
-
 #include "../Capsule/src/capsule.h"
 #include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
 #include "RequestAdapter.h"
@@ -349,6 +348,7 @@ void Server::simulateJsonData() {
 
     // Add primitive data members to JSON object
     jsonObj[QString::number(GUI_FIELD::AV_STATE)] = "1000";
+    jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = "1";
     jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";
     jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";
     jsonObj["1234"] = 50;

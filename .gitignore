@@ -36,7 +36,9 @@
 =======
 # compiled resources file
 *.rcc
+.cache
 
+compile_commands.json
 build
 /GUI/build
 /Servers/build

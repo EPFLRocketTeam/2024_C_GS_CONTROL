@@ -11,7 +11,7 @@
 #include <QString>
 #include <QObject>
 
-#include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 
 class ClientInterface : public QObject {
     Q_OBJECT

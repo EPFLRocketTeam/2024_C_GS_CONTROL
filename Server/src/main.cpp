@@ -8,9 +8,7 @@
 #include "Server.h"
 #include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
 
-
-
-int main(int argc, char *argv[]) {
+int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
     
@@ -36,4 +34,8 @@ int main(int argc, char *argv[]) {
     }
     std::cout << "setup finished" << std::endl;
     return a.exec();
+}
+
+int main(int argc, char *argv[]) {
+    return start_server(argc, argv);
 }

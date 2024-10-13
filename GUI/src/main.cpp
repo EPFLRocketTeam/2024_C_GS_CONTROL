@@ -15,21 +15,25 @@
 #include <QTimer>
 #include <QJsonDocument>
 #include <QtNetwork/QTcpSocket>
-#include "RequestBuilder.h"
 
-// This variable must specify the relative path of the resources folder from the build one
-#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../GUI/res"
+// This variable must specify the path to 
+#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../res"
 
 void fakeDataHandling();
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+int start_client(int argc, char *argv[]) {
+QApplication app(argc, argv);
     QResource::registerResource(RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "/resources.rcc");
 
 
-    MainWindow::clientManager = std::make_unique<ClientManager>();    
+    MainWindow::clientManager = std::make_unique<ClientManager>(nullptr, network::serverIP, network::serverPort);    
     MainWindow mainWindow;
     
     mainWindow.show();
     return app.exec();
+}
+
+
+int main(int argc, char *argv[]) {
+    return start_client(argc, argv);
 }

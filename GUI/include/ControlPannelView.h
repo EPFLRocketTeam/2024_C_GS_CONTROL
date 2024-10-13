@@ -13,7 +13,7 @@
 #include <QPushButton>
 #include <QGridLayout>
 
-#include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 
 class ControlPannelView : public QFrame {
     Q_OBJECT

@@ -9,7 +9,7 @@
 #include <MainWindow.h>
 
 #include <RequestBuilder.h>
-#include "../../Server/ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 
 ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent) : QWidget(parent), m_checked(false), m_offset(0), m_fieldSensitivity(fieldSensitivity)
 {
