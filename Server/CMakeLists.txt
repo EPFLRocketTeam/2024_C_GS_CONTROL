@@ -13,7 +13,7 @@ find_package(Qt6 COMPONENTS Widgets Core Network SerialPort REQUIRED)
 add_library(CapsuleLib Capsule/src/capsule.h)
 
 # Add FirehornCommons
-add_subdirectory(../commons FirehornCommons)
+# add_subdirectory(../commons FirehornCommons)
 
 set(SOURCES_SERVER
     src/server.cpp
@@ -56,3 +56,6 @@ target_link_libraries(${PROJECT_NAME}
         ${PROJECT_NAME}_lib
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)

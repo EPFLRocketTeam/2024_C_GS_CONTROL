@@ -52,7 +52,7 @@ set(HEADERS_GUI
 # Create the library
 add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_GUI} ${HEADERS_GUI})
 
-add_subdirectory(../commons FirehornCommons)
+# add_subdirectory(../commons FirehornCommons)
 
 # Set include directories for the library
 target_include_directories(${PROJECT_NAME}_lib 
@@ -80,3 +80,6 @@ target_link_libraries(${PROJECT_NAME}
         ${PROJECT_NAME}_lib
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
