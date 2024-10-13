@@ -17,7 +17,7 @@
 #include <QtNetwork/QTcpSocket>
 
 // This variable must specify the path to 
-#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../res"
+#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../GUI/res"
 
 void fakeDataHandling();
 
