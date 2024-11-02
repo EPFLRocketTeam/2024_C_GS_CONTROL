@@ -99,9 +99,9 @@ void ClientManager::sendSubscribeRequest(const QString &field) {
   builder.addField("field", field);
   // socket->waitForReadyRead();
   socket->write(builder.toString().toUtf8());
+  socket->waitForBytesWritten();
 
   socket->flush();
-  socket->waitForBytesWritten();
 }
 
 void ClientManager::subscribe(const GUI_FIELD field,

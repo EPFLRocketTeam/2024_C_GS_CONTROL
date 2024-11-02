@@ -1,6 +1,7 @@
 #include "Server.h"
 #include <iostream>
 #include "ClientManager.h"
+#include <qglobal.h>
 #include <string>
 #include <QJsonDocument>
 #include <QMap>
@@ -127,14 +128,32 @@ void Server::readyRead() {
     QTcpSocket *senderSocket = qobject_cast<QTcpSocket *>(sender());
 
     while (senderSocket->bytesAvailable() > 0) {
-        QByteArray data = senderSocket->readAll();
-        QString dataString = QString::fromUtf8(data);
-        QString jsonString(dataString);
 
+        QByteArray data = senderSocket->readAll();
+
+        QString dataString = QString::fromUtf8(data);
+        std::cout << "\033[32m" << dataString.toStdString() << "\033[0m" << std::endl;
+        QString jsonString(dataString);
+        // jsonString.remove("\n");
         // Split the string by '}{'
-        QStringList jsonStrings = jsonString.split("}{");
-        for (const QString &jsonStr : jsonStrings) {
-        
+        QString sanitizedStr = jsonString.remove("\n");
+
+        QStringList jsonStrings = sanitizedStr.split("}{");
+        int counter = 0;
+        for (QString &jsonStr : jsonStrings) {
+            if (counter == 0 && jsonStrings.length() > 1) {
+                jsonStr.append("}");
+            } else if (jsonStrings.length() - 1 == counter && jsonStrings.length() > 1){
+                jsonStr.prepend("{");
+            } else if (jsonStrings.length() > 1) {
+                jsonStr.prepend("{");
+                jsonStr.append("}");
+            }
+            counter++;
+            
+            std::cout << jsonStr.toStdString() << std::endl;
+            std::cout << " " << std::endl;
+
             requestHandler.handleRequest(jsonStr, senderSocket);
             
         }
@@ -226,14 +245,15 @@ void Server::handleCommand(const QJsonObject &command) {
         } else {
             openSerialPort();
         }
-    case GUI_FIELD::SERIAL_STATUS:
+    case GUI_FIELD::SERIAL_STATUS: {
         std::cout << "Serial status" << std::endl;
         b.setHeader(RequestType::POST);
-        b.addField(QString::number(GUI_FIELD::SERIAL_STATUS), serialPort->isOpen() ? "open" : "close");
+        const QString & serialStatus = QString(serialPort->isOpen() ? "open" : "close");
+        b.addField(QString::number(GUI_FIELD::SERIAL_STATUS), serialStatus);
         std::cout << b.toString().toStdString() << std::endl;   
         updateSubscriptions(b.build());
         break;
-    
+        }
 
     case GUI_FIELD::SERIAL_NAME_USE:
         b.setHeader(RequestType::POST);
@@ -351,6 +371,7 @@ void Server::simulateJsonData() {
     jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = "1";
     jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";
     jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";
+    jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";
     jsonObj["1234"] = 50;
 
     // Create a sub-object for location

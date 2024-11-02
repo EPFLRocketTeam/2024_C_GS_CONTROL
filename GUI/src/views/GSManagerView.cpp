@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QGraphicsDropShadowEffect>
+#include <qthread.h>
 
 #include "GSManagerView.h"
 #include "MainWindow.h"

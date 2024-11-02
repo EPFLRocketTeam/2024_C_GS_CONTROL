@@ -12,6 +12,8 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
     QJsonDocument doc = QJsonDocument::fromJson(request.toUtf8(), &error);
     if (error.error != QJsonParseError::NoError) {
         std::cout << "Error parsing JSON: " << error.errorString().toStdString() << std::endl;
+        // std::cout << "Error parsing JSON: " << request.toStdString() << std::endl;
+
         
     }
     QJsonObject json = doc.object();
