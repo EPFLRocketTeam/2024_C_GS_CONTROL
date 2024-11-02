@@ -372,6 +372,7 @@ void Server::simulateJsonData() {
     jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";
     jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";
     jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";
+    jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = "open";
     jsonObj["1234"] = 50;
 
     // Create a sub-object for location

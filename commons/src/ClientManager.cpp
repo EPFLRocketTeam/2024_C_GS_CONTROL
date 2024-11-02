@@ -87,18 +87,21 @@ void ClientManager::subscribe(const GUI_FIELD field,
 
 void ClientManager::sendSubscribeRequest(const QString &field) {
 
-  if (!socket->isOpen()) {
-    socket->connectToHost(serverHost, serverPort);
-    if (!socket->waitForConnected(3000)) {
+  if (socket->state() == QAbstractSocket::UnconnectedState) {
+    if (!m_reconnectTimer->isActive()) {
+      m_reconnectTimer->start();
       std::cout << "Error: " << socket->errorString().toStdString()
                 << std::endl;
     }
+    return;
   }
   RequestBuilder builder;
   builder.setHeader(RequestType::SUBSCRIBE);
   builder.addField("field", field);
   // socket->waitForReadyRead();
   socket->write(builder.toString().toUtf8());
+
+  std::cout << "Try to subscribe " << std::endl;
   socket->waitForBytesWritten();
 
   socket->flush();
@@ -113,10 +116,21 @@ void ClientManager::subscribe(const GUI_FIELD field,
 }
 
 void ClientManager::sendSubscribeRequest(const GUI_FIELD field) {
+  if (socket->state() == QAbstractSocket::UnconnectedState) {
+    if (!m_reconnectTimer->isActive()) {
+      m_reconnectTimer->start();
+      std::cout << "Error: " << socket->errorString().toStdString()
+                << std::endl;
+    }
+    return;
+  }
   RequestBuilder builder;
   builder.setHeader(RequestType::SUBSCRIBE);
   builder.addField("field", field);
   socket->write(builder.toString().toUtf8());
+  
+    std::cout << "Try to subscribe " << socket->isValid() << socket->state() << std::endl;
+
   socket->waitForBytesWritten();
   socket->flush();
 }
@@ -230,6 +244,14 @@ void ClientManager::notifyChildrenFields(const QJsonObject &localObject) {
 
 void ClientManager::send(const QString &data) {
   // send command "serialNameUsed", "serialStatus"
+  if (socket->state() == QAbstractSocket::UnconnectedState) {
+    if (!m_reconnectTimer->isActive()) {
+      m_reconnectTimer->start();
+      std::cout << "Error: " << socket->errorString().toStdString()
+                << std::endl;
+    }
+    return;
+  }
   QJsonObject json = jsonFromString(data);
   if (json.value("header").toString() == "internal") {
     std::cout << "internal" << std::endl;
