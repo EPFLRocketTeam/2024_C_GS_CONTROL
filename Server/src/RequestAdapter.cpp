@@ -1,4 +1,4 @@
-#include "../include/RequestAdapter.h"
+#include "RequestAdapter.h"
 #include <stdexcept>
 
 av_uplink_t createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value) {

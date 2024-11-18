@@ -14,11 +14,14 @@
 #include <QtNetwork/QTcpSocket>
 #include <ostream>
 #include <qt6/QtCore/qtimer.h>
+#include <string>
 #include <unistd.h>
 // #include "../../Setup.h"
 #include "ClientManager.h"
 #include "QTimer"
 #include "RequestBuilder.h"
+#include "Log.h"
+
 
 ClientManager::ClientManager(QObject *parent, QString host, int port)
     : ClientInterface(parent) {
@@ -31,7 +34,7 @@ ClientManager::ClientManager(QObject *parent, QString host, int port)
   m_reconnectTimer->setSingleShot(false); // Repeat indefinitely
   connect(m_reconnectTimer, &QTimer::timeout, [this]() {
     if (socket->state() == QAbstractSocket::UnconnectedState) {
-      std::cout << "Attempting to reconnect..." << std::endl;
+      _logger.info("Connection", "Attempting to reconnect");
       socket->abort(); // Reset the socket
       socket->connectToHost(serverHost, serverPort);
     }
@@ -43,12 +46,12 @@ ClientManager::ClientManager(QObject *parent, QString host, int port)
 
   socket->connectToHost(serverHost, serverPort);
   if (!socket->waitForConnected(3000)) {
-    std::cout << "Error: " << socket->errorString().toStdString() << std::endl;
+    _logger.error("Connection", "Could not connect with the following error:\n" + socket->errorString().toStdString());
   }
 }
 
 void ClientManager::connected() {
-  std::cout << "Connected to server" << std::endl;
+  _logger.info("Connection", "The client is connected to the server");
   if (m_reconnectTimer->isActive()) {
     m_reconnectTimer->stop();
 
@@ -62,8 +65,7 @@ void ClientManager::connected() {
 }
 
 void ClientManager::disconnected() {
-  std::cout << "Disconnected from the server, try reconnecting every second"
-            << std::endl;
+  _logger.error("Connection", "You were disconnected from the server, the progrma will try to reconnect as soon as possible");
   if (!m_reconnectTimer->isActive())
     m_reconnectTimer
         ->start(); // Timer fires every 2000 milliseconds (2 seconds)
@@ -73,7 +75,6 @@ void ClientManager::readyRead() {
   // Handle incoming data from the server
 
   QByteArray data = socket->readAll();
-  // std::cout << "Received data: " << data.toStdString() << std::endl;
   handleReceivedData(QString::fromUtf8(data));
 }
 
@@ -100,8 +101,8 @@ void ClientManager::sendSubscribeRequest(const QString &field) {
   builder.addField("field", field);
   // socket->waitForReadyRead();
   socket->write(builder.toString().toUtf8());
-
-  std::cout << "Try to subscribe " << std::endl;
+  
+  _logger.info("Subscription", "Send subscription to " + field.toStdString());
   socket->waitForBytesWritten();
 
   socket->flush();
@@ -111,7 +112,6 @@ void ClientManager::subscribe(const GUI_FIELD field,
                               CallbackFunction<QJsonValue> callback) {
   if (subscriptionsJson[field].size() == 0)
     sendSubscribeRequest(field);
-  // sendSubscribeRequest(field);
   subscriptionsJson[field].append(callback);
 }
 
@@ -129,7 +129,8 @@ void ClientManager::sendSubscribeRequest(const GUI_FIELD field) {
   builder.addField("field", field);
   socket->write(builder.toString().toUtf8());
   
-    std::cout << "Try to subscribe " << socket->isValid() << socket->state() << std::endl;
+  _logger.debug("Subscription", "subscribed to " + std::to_string(field));
+    /*std::cout << "Try to subscribe " << socket->isValid() << socket->state() << std::endl;*/
 
   socket->waitForBytesWritten();
   socket->flush();
@@ -154,18 +155,14 @@ QString removeExtraCurlyBrackets(const QString &jsonString) {
 }
 
 void ClientManager::handleReceivedData(const QString &data) {
-  std::cout << "DEBUG: " << data.toStdString() << std::endl;
   QString jsonString(data);
-
+  _logger.debug("Received Data", data.toStdString());
   // Split the string by '}{'
   QStringList jsonStrings = jsonString.split("}{");
   if (jsonStrings.size() == 1) {
     // If there's only one JSON string, it's the only one to process
     jsonStrings = jsonString.split("}\n{");
-  } else {
-    std::cout << "Multiple JSON strings received" << std::endl;
-    std::cout << data.toStdString() << std::endl;
-  }
+  } 
 
   // Process each individual JSON string
   for (const QString &jsonStr : jsonStrings) {
@@ -186,9 +183,7 @@ void ClientManager::handleReceivedData(const QString &data) {
     QJsonParseError error;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(json.toUtf8(), &error);
     if (error.error != QJsonParseError::NoError) {
-      std::cout << json.toStdString() << std::endl;
-      std::cout << jsonStrings.size() << std::endl;
-      qWarning() << "Error parsing JSON:" << error.errorString();
+      _logger.error("Handle Data", "An error occured while parsing the json");
       continue;
     }
 
@@ -204,8 +199,7 @@ QJsonObject ClientManager::jsonFromString(const QString &data) {
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8(), &error);
   if (error.error != QJsonParseError::NoError) {
-    std::cout << "Error parsing JSON: " << error.errorString().toStdString()
-              << std::endl;
+      _logger.error("Handle Data", "The following error occured while parsing the json:\n" + error.errorString().toStdString());
     return QJsonObject();
   }
   return doc.object();
@@ -213,7 +207,6 @@ QJsonObject ClientManager::jsonFromString(const QString &data) {
 
 void ClientManager::notifyChildrenFields(const QJsonObject &localObject) {
   for (auto it = localObject.constBegin(); it != localObject.constEnd(); ++it) {
-    std::cout << (GUI_FIELD)it.key().toInt() << std::endl;
     const QVector<CallbackFunction<QString>> &callbacksStrings =
         subscriptionsStrings.value((GUI_FIELD)it.key().toInt());
     const QVector<CallbackFunction<QJsonValue>> &callbacksJson =
@@ -247,6 +240,7 @@ void ClientManager::send(const QString &data) {
   if (socket->state() == QAbstractSocket::UnconnectedState) {
     if (!m_reconnectTimer->isActive()) {
       m_reconnectTimer->start();
+
       std::cout << "Error: " << socket->errorString().toStdString()
                 << std::endl;
     }
@@ -254,7 +248,6 @@ void ClientManager::send(const QString &data) {
   }
   QJsonObject json = jsonFromString(data);
   if (json.value("header").toString() == "internal") {
-    std::cout << "internal" << std::endl;
     handleReceivedData(data);
   } else {
     socket->write(data.toUtf8());

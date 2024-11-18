@@ -10,7 +10,7 @@
 
 #include "RequestHandler.h"
 #include "../Capsule/src/capsule.h"
-#include "../../GUI/include/RequestBuilder.h"
+#include "RequestBuilder.h"
 
 class Server : public QTcpServer {
     Q_OBJECT

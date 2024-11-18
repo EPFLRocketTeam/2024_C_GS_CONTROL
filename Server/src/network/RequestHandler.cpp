@@ -3,6 +3,7 @@
 #include "RequestHandler.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include "../Setup.h"
 
 RequestHandler::RequestHandler(QObject *parent) : QObject(parent) {}
 
@@ -13,10 +14,20 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
     if (error.error != QJsonParseError::NoError) {
         std::cout << "Error parsing JSON: " << error.errorString().toStdString() << std::endl;
         // std::cout << "Error parsing JSON: " << request.toStdString() << std::endl;
-
-        
     }
     QJsonObject json = doc.object();
+
+    int found = 0;
+    for (QString key : auth::validKeys) {
+        if (key == json["Authorization"].toString()) {
+            found = 1;
+            break;
+        }
+    }
+
+    if (found != 1) {
+        return;
+    }
 
     QString header = json["header"].toString();
 

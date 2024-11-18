@@ -10,12 +10,14 @@ find_package(Qt6 COMPONENTS Core Network REQUIRED)
 set(SOURCES_COMMONS
     src/ClientManager.cpp
     src/RequestBuilder.cpp
+    src/Log.cpp
 )
 
 set(HEADERS_COMMONS
     include/ClientInterface.h
     include/ClientManager.h
     include/RequestBuilder.h 
+    include/Log.h
     ERT_RF_Protocol_Interface/MacAdresses.h
     ERT_RF_Protocol_Interface/PacketDefinition.h
     ERT_RF_Protocol_Interface/ParameterDefinition.h

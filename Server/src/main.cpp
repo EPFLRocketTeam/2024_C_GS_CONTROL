@@ -6,7 +6,7 @@
 #include <QTimer>
 
 #include "Server.h"
-#include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 
 int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);

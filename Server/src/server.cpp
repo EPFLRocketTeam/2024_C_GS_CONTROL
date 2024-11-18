@@ -8,8 +8,9 @@
 #include <QString>
 #include <QJsonObject>
 
+
 #include "../Capsule/src/capsule.h"
-#include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 #include "RequestAdapter.h"
 
 

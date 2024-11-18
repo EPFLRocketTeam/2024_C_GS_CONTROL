@@ -19,6 +19,7 @@
 #include "TelemetryView.h"
 #include "GSManagerView.h"
 #include "ValveControlView.h"
+#include <qobject.h>
 
 // ----------------------------- Setup Views -----------------------------------
 using LeftView = TelemetryView;
@@ -36,6 +37,10 @@ namespace mws
     const int middleSectionWidth = 50; // % left and right  will be (100-x)/2
     const int sideWidth = (100 - middleSectionWidth) / 2;
 } // namespace mws
+
+namespace auth {
+    const QString key = "ClientSecretKey1";
+}
 
 namespace network
 {

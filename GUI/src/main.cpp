@@ -4,13 +4,12 @@
     @date 06-02-2024
     @brief Main function for the GUI
 */
-#include <iostream>
-
 #include <QApplication>
 #include <QResource>
 
 #include "MainWindow.h"
 #include "ClientManager.h"
+#include "RequestBuilder.h"
 #include "Setup.h"
 #include <QTimer>
 #include <QJsonDocument>
@@ -25,6 +24,7 @@ int start_client(int argc, char *argv[]) {
 QApplication app(argc, argv);
     QResource::registerResource(RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "/resources.rcc");
 
+    RequestBuilder::authorizationKey = auth::key;
 
     MainWindow::clientManager = std::make_unique<ClientManager>(nullptr, network::serverIP, network::serverPort);    
     MainWindow mainWindow;

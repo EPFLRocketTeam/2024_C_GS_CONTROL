@@ -30,17 +30,16 @@ ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent) : QWidge
     });
 
     connect(this, &ToggleButton::toggled, this, [this](bool checked) {
-          // MainWindow::clientManager->send("command");
-          // QtConcurrent::run([this](const QString& commande){MainWindow::clientManager->send("command");}, "command");
-          std::thread([this]() { 
-            RequestBuilder b = RequestBuilder();
-            b.setHeader(RequestType::POST);
-            b.addField("cmd", m_fieldSensitivity);
-            b.addField("cmd_order", m_checked ? 1 : 0);
-            MainWindow::clientManager->send(b.toString());   
-
-          }).detach();
-    }); 
+        RequestBuilder b = RequestBuilder();
+                    b.setHeader(RequestType::POST);
+        b.addField("cmd", m_fieldSensitivity);
+        b.addField("cmd_order", m_checked ? "open" : "close");
+        MainWindow::clientManager->send(b.toString()); 
+        b.clear();
+        b.setHeader(RequestType::INTERNAL);
+        b.addField(QString::number(m_fieldSensitivity), "unkown");;
+        MainWindow::clientManager->send(b.toString());
+    });
 }
 
 void ToggleButton::updateState(const QString& res) {
