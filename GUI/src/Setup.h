@@ -39,7 +39,7 @@ namespace mws
 } // namespace mws
 
 namespace auth {
-    const QString key = "ClientSecretKey1";
+    const QString key = "ClientSecretKey2";
 }
 
 namespace network

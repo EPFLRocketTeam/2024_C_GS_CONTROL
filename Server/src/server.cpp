@@ -24,8 +24,6 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
     connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
     connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
 
-
-
     openSerialPort();
 }
 
@@ -112,14 +110,7 @@ void Server::receivePost(const QJsonObject &request,  QTcpSocket *senderSocket) 
     QJsonDocument doc(request);
     QString strJson(doc.toJson(QJsonDocument::Compact));
     if (request["payload"].toObject().contains("cmd")) {
-        handleCommand(request);
-        /*
-        int f = request["payload"].toObject()["cmd"].toInt();
-        int order = request["payload"].toObject()["cmd_order"].toInt();
-        std::cout << "cmd: " << f << " order: " << order << std::endl;
-        av_uplink_t p = createUplinkPacketFromRequest((GUI_FIELD)f, order);
-        sendSerialPacket(CAPSULE_ID::GS_CMD, (uint8_t*) &p, av_uplink_size);
-        */
+        handleCommand(request); 
     }
     std::cout << strJson.toStdString() << std::endl;
 }
@@ -373,7 +364,7 @@ void Server::simulateJsonData() {
     jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";
     jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";
     jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";
-    jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = "open";
+    jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = QString(serialPort->isOpen() ? "open" : "close");
     jsonObj["1234"] = 50;
 
     // Create a sub-object for location

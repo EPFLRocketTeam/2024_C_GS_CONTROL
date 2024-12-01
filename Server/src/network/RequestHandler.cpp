@@ -18,9 +18,13 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
     QJsonObject json = doc.object();
 
     int found = 0;
-    for (QString key : auth::validKeys) {
-        if (key == json["Authorization"].toString()) {
+    int readBit = 0;
+    int writeBit = 0;
+    for (auth::AuthKey key : auth::validKeys) {
+        if (key.key == json["Authorization"].toString()) {
             found = 1;
+            readBit = (key.accessRight >> 1) & 0x1;
+            writeBit = key.accessRight & 0x1;
             break;
         }
     }
@@ -28,19 +32,21 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
     if (found != 1) {
         return;
     }
+    
 
     QString header = json["header"].toString();
 
     // Emit the corresponding signal based on the header type
-    if (header == "subscribe")
+    if (header == "subscribe" && readBit)
         emit subscribe(json, senderSocket);
-    else if (header == "unsubscribe") 
+    else if (header == "unsubscribe" && readBit) 
         emit unsubscribe(json, senderSocket);
-    else if (header == "get")
+    else if (header == "get" && readBit)
         emit get(json, senderSocket);
-    else if (header == "post")
+    else if (header == "post" && readBit && writeBit)
         emit post(json, senderSocket);
     else 
-        std::cout << "Unknown header type: " << header.toStdString() << std::endl;
+        std::cout << "Unknown header type: " << header.toStdString() << " Or illeage acces right, with R="
+            << readBit << " And W=" << writeBit << std::endl;
     // Add more conditions for other types if needed
 }
