@@ -2,6 +2,7 @@
 #include "MainWindow.h"
 #include "RequestBuilder.h"
 #include "../Setup.h"
+#include <qthread.h>
 
 SerialView::SerialView(std::unique_ptr<QWidget> parent) : QFrame(parent.get()) {
     setObjectName("SerialView");
@@ -19,7 +20,7 @@ SerialView::SerialView(std::unique_ptr<QWidget> parent) : QFrame(parent.get()) {
 
     openButton = new QPushButton; 
     openButton->setObjectName("child");
-    openButton->setText("click");
+    openButton->setText("Toggle");
 
     layout->addWidget(serialNameLabel, 1, Qt::AlignHCenter);
     layout->addWidget(openButton, 1);

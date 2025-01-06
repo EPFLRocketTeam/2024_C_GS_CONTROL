@@ -6,20 +6,13 @@
 #include <QTimer>
 
 #include "Server.h"
-#include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "Setup.h"
 
 int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
-    
-    Server server = Server();
-    int port(12345);
-    std::cout << "Server started" << std::endl;
-    if (server.listen(QHostAddress::Any, port)) {
-        std::cout << "Server started. Listening on port" << port << std::endl;
-    } else {
-        std::cout << "Error: Failed to start server. Check if the port is already in use or permissions issue." <<std::endl;      
-    }
+    auth::loadKeysFromFile("../Server/src/auth_key.json"); 
 
     QTimer *timer = new QTimer();
     QObject::connect(timer, &QTimer::timeout, &server, &Server::simulateJsonData);

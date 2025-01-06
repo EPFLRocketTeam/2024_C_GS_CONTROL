@@ -37,6 +37,7 @@
 # compiled resources file
 *.rcc
 .cache
+.key
 
 compile_commands.json
 build
@@ -44,3 +45,6 @@ build
 /Servers/build
 /.vscode
 /GUI/Log/
+
+Log
+auth_keys

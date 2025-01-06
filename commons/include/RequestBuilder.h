@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <qglobal.h>
 
 enum class RequestType {
     POST,
@@ -28,7 +29,8 @@ public:
 
     QJsonObject build() const;
     QString toString() const;
-    
+  
+    static QString authorizationKey;
 private:
     RequestType m_headerType;
     QJsonObject m_payload;

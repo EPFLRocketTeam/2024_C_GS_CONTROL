@@ -1,6 +1,8 @@
 #include "RequestBuilder.h"
 #include <QJsonDocument>
 
+QString RequestBuilder::authorizationKey = "";
+
 RequestBuilder::RequestBuilder(QObject *parent)
     : QObject(parent), m_headerType(RequestType::POST) {}
 
@@ -43,6 +45,9 @@ QJsonObject RequestBuilder::build() const {
         case RequestType::UNSUBSCRIBE:
             request["header"] = "unsubscribe";
             break;
+    }
+    if (RequestBuilder::authorizationKey.length() > 0) {
+        request["Authorization"] = RequestBuilder::authorizationKey;
     }
     request["payload"] = m_payload;
     return request;

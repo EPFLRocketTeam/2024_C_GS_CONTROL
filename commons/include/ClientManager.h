@@ -18,6 +18,8 @@
 
 #include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 #include "ClientInterface.h"
+#include "Log.h"
+
 
 class ClientManager : public ClientInterface {
   Q_OBJECT
@@ -47,6 +49,8 @@ private slots:
 private:
   QMap<GUI_FIELD, QVector<CallbackFunction<QString>>> subscriptionsStrings;
   QMap<GUI_FIELD, QVector<CallbackFunction<QJsonValue>>> subscriptionsJson;
+
+  ModuleLog _logger = ModuleLog("ClientManager");
 
   bool p = false;
   QTcpSocket *socket;

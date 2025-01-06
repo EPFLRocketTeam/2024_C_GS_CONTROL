@@ -3,10 +3,23 @@
 #include <ctime>
 #include <iomanip>
 #include <filesystem>
+#include <string>
+
+
 
 #include "Log.h"
 
 namespace {
+    // ANSI color codes
+    const std::string RESET   = "\033[0m";
+    const std::string RED     = "\033[31m";
+    const std::string GREEN   = "\033[32m";
+    const std::string YELLOW  = "\033[33m";
+    const std::string BLUE    = "\033[34m";
+    const std::string MAGENTA = "\033[35m";
+    const std::string CYAN    = "\033[36m";
+    const std::string WHITE   = "\033[37m";
+
     std::string get_time()
     {
         std::time_t current_time = std::time(nullptr);
@@ -14,6 +27,23 @@ namespace {
         std::stringstream ss;
         ss << "[" << std::put_time(time_info, "%Hh-%Mm-%Ss") << "]";
         return ss.str();
+    }
+
+    // Function to map log levels to color codes
+    std::string get_color_code(const std::string& level)
+    {
+        if (level == "INFO")
+            return GREEN;
+        else if (level == "DEBUG")
+            return CYAN;
+        else if (level == "WARN")
+            return YELLOW;
+        else if (level == "ERROR")
+            return RED;
+        else if (level == "FATAL")
+            return MAGENTA;
+        else
+            return WHITE;
     }
 }
 
@@ -37,15 +67,28 @@ MainLog::~MainLog()
 
 void MainLog::write_log(std::string level, std::string module, std::string event, std::string message)
 {
-    std::cout << filename_ << std::endl;
-    append_to_file(filename_, 
-                    get_time() 
+        // Build the log message without colors for the file
+    std::string log_message = get_time() 
                     + " ["
                     + level + "] [" 
                     + module + "] [" 
                     + event + "] [" 
-                    + message + "],"
-                  );
+                    + message + "],";
+
+    // Build the log message with colors for the console
+    std::string color_code = get_color_code(level);
+    std::string colored_log_message = get_time()
+                    + " ["
+                    + color_code + level + RESET + "] ["
+                    + module + "] ["
+                    + event + "] ["
+                    + message + "],";
+
+    // Output to console
+    std::cout << colored_log_message << std::endl;
+
+    // Write to file
+    append_to_file(filename_, log_message);
 }
 
 // PRIVATE METHODS -------------------------------------------------------------
@@ -102,7 +145,6 @@ void MainLog::append_to_file(std::string filename, std::string content)
         file << content << "\n";
         file.close();
 
-        std::cout << "Content appended to file\n";
     } else {
         std::cerr << "Error opening file for appending\n";
     }

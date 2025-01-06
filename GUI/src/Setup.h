@@ -19,7 +19,11 @@
 #include "TelemetryView.h"
 #include "GSManagerView.h"
 #include "ValveControlView.h"
-
+#include <qobject.h>
+#include <QFile>
+#include <QTextStream>
+#include <QException>
+#include <stdexcept>
 // ----------------------------- Setup Views -----------------------------------
 using LeftView = TelemetryView;
 using MiddleView = ValveControlView;
@@ -36,6 +40,25 @@ namespace mws
     const int middleSectionWidth = 50; // % left and right  will be (100-x)/2
     const int sideWidth = (100 - middleSectionWidth) / 2;
 } // namespace mws
+
+namespace auth {
+    inline QString key; // Define the key as an inline variable
+
+    // Function to load the key from a file
+    inline void loadKeyFromFile(const QString& filePath) {
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            throw std::runtime_error("Failed to open the key file.");
+        }
+
+        QTextStream in(&file);
+        key = in.readLine().trimmed(); // Read the first line and trim whitespace
+        file.close();
+
+        if (key.isEmpty()) {
+            throw std::runtime_error("The key file is empty or invalid.");
+        }
+    }}
 
 namespace network
 {
