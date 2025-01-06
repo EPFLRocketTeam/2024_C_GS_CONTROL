@@ -48,7 +48,7 @@ namespace {
 }
 
 // STATIC MEMBERS INITIALIZATION -----------------------------------------------
-std::string MainLog::filename_ = "default";
+std::string MainLog::filename_ = "../Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
 
 // PUBLIC METHODS --------------------------------------------------------------
 
@@ -89,6 +89,7 @@ void MainLog::write_log(std::string level, std::string module, std::string event
 
     // Write to file
     append_to_file(filename_, log_message);
+
 }
 
 // PRIVATE METHODS -------------------------------------------------------------
