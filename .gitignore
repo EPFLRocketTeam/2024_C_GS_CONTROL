@@ -37,6 +37,7 @@
 # compiled resources file
 *.rcc
 .cache
+.key
 
 compile_commands.json
 build
@@ -46,3 +47,4 @@ build
 /GUI/Log/
 
 Log
+auth_keys

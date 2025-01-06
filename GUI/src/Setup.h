@@ -20,7 +20,10 @@
 #include "GSManagerView.h"
 #include "ValveControlView.h"
 #include <qobject.h>
-
+#include <QFile>
+#include <QTextStream>
+#include <QException>
+#include <stdexcept>
 // ----------------------------- Setup Views -----------------------------------
 using LeftView = TelemetryView;
 using MiddleView = ValveControlView;
@@ -39,8 +42,23 @@ namespace mws
 } // namespace mws
 
 namespace auth {
-    const QString key = "ClientSecretKey2";
-}
+    inline QString key; // Define the key as an inline variable
+
+    // Function to load the key from a file
+    inline void loadKeyFromFile(const QString& filePath) {
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            throw std::runtime_error("Failed to open the key file.");
+        }
+
+        QTextStream in(&file);
+        key = in.readLine().trimmed(); // Read the first line and trim whitespace
+        file.close();
+
+        if (key.isEmpty()) {
+            throw std::runtime_error("The key file is empty or invalid.");
+        }
+    }}
 
 namespace network
 {

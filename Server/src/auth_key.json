@@ -1,0 +1,10 @@
+[
+    {
+        "key": "ClientSecretKey1",
+        "accessRight": 3
+    },
+    {
+        "key": "ClientSecretKey2",
+        "accessRight": 2
+    }
+]
