@@ -47,4 +47,4 @@ build
 /GUI/Log/
 
 Log
-auth_keys
+auth_keys.json

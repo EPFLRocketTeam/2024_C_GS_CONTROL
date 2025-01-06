@@ -13,8 +13,15 @@ int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
     auth::loadKeysFromFile("../Server/src/auth_key.json"); 
+    Server server = Server();
+    int port(12345);
+    std::cout << "Server started" << std::endl;
+    if (server.listen(QHostAddress::Any, port)) {
+        std::cout << "Server started. Listening on port" << port << std::endl;
+    } else {
+        std::cout << "Error: Failed to start server. Check if the port is already in use or permissions issue." <<std::endl;      
+    }    QTimer *timer = new QTimer();
 
-    QTimer *timer = new QTimer();
     QObject::connect(timer, &QTimer::timeout, &server, &Server::simulateJsonData);
     timer->start(2000); // Timer fires every 2000 milliseconds (2 seconds)
 
