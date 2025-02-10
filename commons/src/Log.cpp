@@ -4,9 +4,10 @@
 #include <iomanip>
 #include <filesystem>
 #include <qcoreapplication.h>
+#include <qdir.h>
 #include <string>
-
-
+#include <filesystem>
+#include <QDir>
 
 #include "Log.h"
 
@@ -48,9 +49,8 @@ namespace {
     }
 }
 
-QString appDir = QCoreApplication::applicationDirPath();
 // STATIC MEMBERS INITIALIZATION -----------------------------------------------
-std::string MainLog::filename_ = appDir.toStdString() + "/../Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
+std::string MainLog::filename_ = "/../Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
 
 // PUBLIC METHODS --------------------------------------------------------------
 
@@ -145,15 +145,21 @@ void MainLog::create_file()
 
 void MainLog::append_to_file(std::string filename, std::string content)
 {
+    QString appDir = QCoreApplication::applicationDirPath();
+    QString filePath = QString::fromStdString(filename);
+    if (filePath.startsWith("/")) {
+        filePath.remove(0, 1);
+    }
+    QString full_path = appDir + "/" + filePath;
     // Open the file in append mode
-    std::ofstream file(filename, std::ios::app);
+    std::ofstream file(full_path.toStdString(), std::ios::app);
 
     if (file.is_open()) {
         file << content << "\n";
         file.close();
 
     } else {
-        std::cerr << "Error opening file for appending\n";
+        std::cerr << "Error opening file for appending " << full_path.toStdString() << appDir.toStdString() << std::endl;
     }
 }
 
