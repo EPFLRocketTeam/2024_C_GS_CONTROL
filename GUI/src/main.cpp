@@ -16,17 +16,18 @@
 #include <QtNetwork/QTcpSocket>
 #include <iostream>
 #include <filesystem>
-// This variable must specify the path to 
-#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../GUI/res"
+#include <QDir>
+
 
 void fakeDataHandling();
 
 int start_client(int argc, char *argv[]) {
-QApplication app(argc, argv);
-    QResource::registerResource(RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "/resources.rcc");
-std::cout << "Current working directory: " 
-                  << std::filesystem::current_path() << std::endl;
-    auth::loadKeyFromFile("../GUI/src/.key");
+    QApplication app(argc, argv);
+    QString appDir = QCoreApplication::applicationDirPath();
+    QString resPath = QDir(appDir).absoluteFilePath("../GUI/res/resources.rcc");
+    QResource::registerResource(resPath);
+    std::cout << "Current working directory: " << appDir.toStdString() << std::endl;
+    auth::loadKeyFromFile(appDir + "/../GUI/src/.key");
     std::cout << "KEY: " <<
         auth::key.toStdString() << std::endl;
     RequestBuilder::authorizationKey = auth::key;

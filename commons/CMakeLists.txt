@@ -18,6 +18,7 @@ set(HEADERS_COMMONS
     include/ClientManager.h
     include/RequestBuilder.h 
     include/Log.h
+    include/PacketInterface.h
     ERT_RF_Protocol_Interface/MacAdresses.h
     ERT_RF_Protocol_Interface/PacketDefinition.h
     ERT_RF_Protocol_Interface/ParameterDefinition.h

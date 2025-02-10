@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <qcoreapplication.h>
 #include <qt6/QtNetwork/QTcpSocket>
 #include <qt6/QtNetwork/QTcpServer>
 
@@ -10,6 +11,8 @@
 
 #include "RequestHandler.h"
 #include "../Capsule/src/capsule.h"
+
+#include "Log.h"
 #include "RequestBuilder.h"
 
 class Server : public QTcpServer {
@@ -30,6 +33,7 @@ private slots:
 
 private:
 
+    ModuleLog _packetLogger = ModuleLog("Server", QCoreApplication::applicationDirPath().toStdString() + "/../Log/packets.logs");
     void receiveSubscribe(const QJsonObject &request,  QTcpSocket *senderSocket);
     void receiveUnsubscribe(const QJsonObject &request,  QTcpSocket *senderSocket);
     void receivePost(const QJsonObject &request,  QTcpSocket *senderSocket);

@@ -7,6 +7,7 @@ class MainLog
 {
 public:
     MainLog();
+    MainLog(std::string filename_);
     ~MainLog();
     virtual void info(std::string event, std::string message) = 0;
     virtual void debug(std::string event, std::string message) = 0;
@@ -16,7 +17,9 @@ public:
 
 protected:
     void write_log(std::string level, std::string module, std::string event, std::string message);
+    void write_log(std::string level, std::string module, std::string event, std::string message, std::string filename);
     static std::string filename_;
+    std::string filename = "";
 
 private:
     void check_directory(std::string dir);
@@ -31,6 +34,7 @@ private:
 
 public:
     ModuleLog(std::string module);
+    ModuleLog(std::string module, std::string filename);
     ~ModuleLog();
     void info(std::string event, std::string message) final override;
     void debug(std::string event, std::string message) final override;

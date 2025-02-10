@@ -1,12 +1,13 @@
-
-
 #!/bin/bash
+
 
 # Path to log files
 # INFO_LOG="./Log/2025-01-06-13-28-43.txt"
 # ERROR_LOG="./Log/2025-01-06-13-28-43.txt"
 
 LOG_FILE="./Log/firehorn.logs"
+SERIAL_INPUT_LOG="./Log/packets.logs"
+
 
 # Session and window names
 SESSION_NAME="log_monitor"
@@ -38,7 +39,9 @@ tmux send-keys -t 2 'cd build' C-m
 tmux split-window -h -t $SESSION_NAME
 tmux send-keys -t 3 'cd build' C-m
 # Focus back on the top-left pane
-tmux select-pane -t 2
+tmux select-pane -t 0
+tmux split-window -h -t $SESSION_NAME
+tmux send-keys -t $SESSION_NAME "tail -f -n 20 $SERIAL_INPUT_LOG | sed -n '/\[INFO\]/,/,$/p'" C-m
 # Attach to the tmux session
 tmux attach-session -t $SESSION_NAME
 

@@ -12,7 +12,8 @@
 int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
-    auth::loadKeysFromFile("../Server/src/auth_keys.json"); 
+    QString appDir = QCoreApplication::applicationDirPath();
+    auth::loadKeysFromFile(appDir + "//../Server/src/auth_keys.json"); 
     Server server = Server();
     int port(12345);
     std::cout << "Server started" << std::endl;

@@ -280,6 +280,7 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len)
     static int altitude_max_r = 0;
     av_downlink_t dataAv;
     PacketGSE_downlink dataGse;
+    _packetLogger.info("Received a packet", "# TODO");
     switch (packetId) {
         case 0x00: 
             std::cout << "Packet with ID 00 received : " << +packetId << std::endl;
@@ -358,6 +359,7 @@ void Server::simulateJsonData() {
     // Create a JSON object
     QJsonObject jsonObj;
 
+    _packetLogger.info("Received a packet", "A Packet was received");
     // Add primitive data members to JSON object
     jsonObj[QString::number(GUI_FIELD::AV_STATE)] = "1000";
     jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = "1";

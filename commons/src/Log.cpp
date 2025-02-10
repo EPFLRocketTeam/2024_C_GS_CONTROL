@@ -3,6 +3,7 @@
 #include <ctime>
 #include <iomanip>
 #include <filesystem>
+#include <qcoreapplication.h>
 #include <string>
 
 
@@ -47,16 +48,25 @@ namespace {
     }
 }
 
+QString appDir = QCoreApplication::applicationDirPath();
 // STATIC MEMBERS INITIALIZATION -----------------------------------------------
-std::string MainLog::filename_ = "../Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
+std::string MainLog::filename_ = appDir.toStdString() + "/../Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
 
 // PUBLIC METHODS --------------------------------------------------------------
 
 MainLog::MainLog()
 {
+    filename = filename_;
     create_file();
     std::cout << "MainLog object created\n";
 }
+
+MainLog::MainLog(std::string _filename) : filename(_filename)
+{
+    create_file();
+    std::cout << "MainLog object created\n";
+}
+
 
 MainLog::~MainLog()
 {
@@ -88,7 +98,7 @@ void MainLog::write_log(std::string level, std::string module, std::string event
     std::cout << colored_log_message << std::endl;
 
     // Write to file
-    append_to_file(filename_, log_message);
+    append_to_file(filename, log_message);
 
 }
 
@@ -126,11 +136,7 @@ void MainLog::create_file()
     // manage path
     check_directory("Log");
     filename_ = "../Log/" + timestamp + ".txt";
-
-    // create file
-    std::ofstream outputFile("example.txt");
-    outputFile << "Log file created\n";
-    outputFile.close();
+    
 
     std::cout << filename_ << " has been created\n";
 
@@ -157,6 +163,13 @@ void MainLog::append_to_file(std::string filename, std::string content)
 ModuleLog::ModuleLog(std::string module)
 {
     module_ = module;
+    filename = filename_;
+}
+
+ModuleLog::ModuleLog(std::string module, std::string _filename)
+{
+    module_ = module;
+    filename = _filename;   
 }
 
 ModuleLog::~ModuleLog(){}
