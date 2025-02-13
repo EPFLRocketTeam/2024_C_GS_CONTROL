@@ -47,6 +47,22 @@ namespace {
         else
             return WHITE;
     }
+
+    DebugLevel getLevelFromString(const std::string& level) {
+        if (level == "INFO")
+            return INFO;
+        else if (level == "DEBUG")
+            return DEBUG;
+        else if (level == "WARN")
+            return WARNING;
+        else if (level == "ERROR")
+            return ERROR;
+        else if (level == "FATAL")
+            return FATAL;
+        else
+            return INFO;
+
+    }
 }
 
 // STATIC MEMBERS INITIALIZATION -----------------------------------------------
@@ -67,6 +83,9 @@ MainLog::MainLog(std::string _filename) : filename(_filename)
     std::cout << "MainLog object created\n";
 }
 
+MainLog::MainLog(std::string _filename, DebugLevel level) : MainLog(_filename) {
+    setDebugLevel(level);
+}
 
 MainLog::~MainLog()
 {
@@ -94,12 +113,18 @@ void MainLog::write_log(std::string level, std::string module, std::string event
                     + event + "] ["
                     + message + "],";
 
-    // Output to console
-    std::cout << colored_log_message << std::endl;
+    if (_level <= getLevelFromString(level)) {
+        // Output to console
+        std::cout << colored_log_message << std::endl;
+    }
 
     // Write to file
     append_to_file(filename, log_message);
 
+}
+
+void MainLog::setDebugLevel(DebugLevel level) {
+    _level = level;
 }
 
 // PRIVATE METHODS -------------------------------------------------------------
@@ -159,7 +184,7 @@ void MainLog::append_to_file(std::string filename, std::string content)
         file.close();
 
     } else {
-        std::cerr << "Error opening file for appending " << full_path.toStdString() << appDir.toStdString() << std::endl;
+        std::cerr << "Error opening file for appending " << full_path.toStdString() << std::endl;
     }
 }
 

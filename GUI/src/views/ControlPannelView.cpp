@@ -21,9 +21,9 @@
 #include "ControlPannelView.h"
 #include "components/ToggleButton.h"
 #include "components/ValveControlButton.h"
-#include "../Setup.h"
 #include "MainWindow.h"
 #include "RequestBuilder.h"
+#include <Setup.h>
 
 ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> *controls) : QFrame(parent) {
     
@@ -36,18 +36,12 @@ ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std:
     
     setupExpandButton();
     setupContainerWidget();
-   
-
-
-
- 
-
+    
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(expandButton, 1, Qt::AlignCenter); 
     layout->addWidget(controlContainerWidget, 1, Qt::AlignCenter);
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
-   
     
     QHBoxLayout *containerLayout = new QHBoxLayout(controlContainerWidget);
     QMap<std::string, std::vector<GUI_FIELD>> valveControls = controls->value("ValveControlButton");
@@ -61,6 +55,8 @@ ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std:
     connect(expandButton, &QPushButton::clicked, this, &ControlPannelView::expandClicked);
     
     resizeWidget();
+
+    _logger.debug("ControlPannelView", "Setup finished");
     
 }
 
@@ -112,9 +108,6 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
         gridLayout->setSpacing(25);
         int maxColumns = std::ceil(buttonField.size() / 2.0);
 
-        
-
-
         for (int i = 0; i < buttonField.size(); ++i) {
             std::string trimmedName = fieldUtil::enumToFieldName(buttonField[i]).toStdString();
             QPushButton *button = new QPushButton(fieldUtil::enumToFieldName(buttonField[i]));
@@ -145,15 +138,15 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
                 .arg(QString::fromStdString(trimmedName));
 
             QObject::connect(button, &QPushButton::clicked, [button]() {
-                // printf("fdsf");
                 RequestBuilder b;
                 b.setHeader(RequestType::POST);
-                b.addField("cmd", button->text());
-                b.addField("cmd_order", "1");
+                b.addField("cmd", button->text()); 
+                b.addField("cmd_order", "1"); // TODO: The command order should not always be 1 ??
                 MainWindow::clientManager->send(b.toString());
             });
 
             
+            _logger.debug("ControlPannelView", QString(R"(Created Button %1)").arg(button->text()).toStdString());
             button->setFixedHeight(40);
             button->setStyleSheet(style);
             gridLayout->addWidget(button, i / maxColumns, i % maxColumns);
@@ -166,12 +159,6 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
         mainLayout->addLayout(controlLayout, Qt::AlignBottom);
         // mainLayout->addWidget(w, Qt::AlignTop);
     }
-}
-
-
-void ControlPannelView::buttonClickedCallback(const std::string& command) {
-    printf("command");
-    
 }
 
 void ControlPannelView::createValveControlButtons(QGridLayout *gridLayout, const std::vector<GUI_FIELD> &fields, int maxColumns)
@@ -245,7 +232,6 @@ void ControlPannelView::setupExpandButton() {
     expandButton->setIcon(buttonIcon);
     expandButton->setIconSize(QSize(64, 64));
     
-    
 
 }
 
@@ -263,25 +249,24 @@ void ControlPannelView::resizeWidget() {
     QPoint p = QWidget::mapTo(this, QPoint(width()/2-expandButton->width()/2, 0));
     
     controlContainerWidget->setFixedWidth(newWidth);
+    _logger.debug("ControlPannelView", "Resize event detected");
     //controlContainerWidget->move(0, expandButton->height());
 }
 
 void ControlPannelView::expandClicked() {
     toggled = !toggled;
     QPropertyAnimation* anim = new QPropertyAnimation(this, "pos");
-	anim->setDuration(1000);
-	anim->setEasingCurve(QEasingCurve::Type::OutQuart);
-	anim->setStartValue(pos());
-	anim->setEndValue(QPoint(pos().x(), getHeightPos()));
-	anim->start(QAbstractAnimation::DeleteWhenStopped);
+    anim->setDuration(1000);
+    anim->setEasingCurve(QEasingCurve::Type::OutQuart);
+    anim->setStartValue(pos());
+    anim->setEndValue(QPoint(pos().x(), getHeightPos()));
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
     QTransform transform;
     buttonPixMap = buttonPixMap.transformed(transform.rotate(180));
     QIcon buttonIcon(buttonPixMap);    
     expandButton->setFixedHeight(35);
     expandButton->setIcon(buttonIcon);
     expandButton->setIconSize(QSize(64, 64));
-    
-    // resizeWidget();
 }
 
 int ControlPannelView::getHeightPos() {
@@ -290,11 +275,8 @@ int ControlPannelView::getHeightPos() {
     int newY;
     if (toggled) {
         newY = parentWidget()->height()-newHeight;
-
     } else {
         newY = parentWidget()->height()-expandButton->height();
-        
     }
-    
     return newY;
 }

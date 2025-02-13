@@ -105,7 +105,6 @@ void SerialView::changeButtonStyle(bool targetStatus) {
 }
 
 void SerialView::updateStatus(QString newStatus) {
-    std::cout << "new status : " << newStatus.toStdString() << std::endl;
     if (newStatus == "open") {
         isOpen = true;
         statusLed->setStyleSheet(ledGreenStyle);

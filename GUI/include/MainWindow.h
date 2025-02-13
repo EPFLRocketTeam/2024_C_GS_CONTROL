@@ -19,6 +19,8 @@
 #include "components/DraggableButton.h"
 #include "ClientManager.h"
 #include "ControlPannelView.h"
+#include <Log.h>
+
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -35,6 +37,7 @@ private:
     void replacePannelButton();
     void buttonGrabbed(QEvent *event);
 
+    ModuleLog _logger = ModuleLog("MainWindow", LOG_FILE_PATH);
     DraggableButton *pannelButton; 
     ControlPannelView *pannelSection;
     QHBoxLayout* createSectionsLayout();

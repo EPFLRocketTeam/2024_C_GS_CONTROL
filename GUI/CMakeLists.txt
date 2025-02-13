@@ -32,6 +32,7 @@ set(SOURCES_GUI
 
 set(HEADERS_GUI
     src/Setup.h
+    src/FileLocation.h
     include/components/DataLabel.h
     include/components/DraggableButton.h
     include/components/ToggleButton.h
@@ -58,6 +59,7 @@ add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_GUI} ${HEADERS_GUI})
 target_include_directories(${PROJECT_NAME}_lib 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 # Link against the Qt6 modules for the library

@@ -44,6 +44,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         Qt6::Core
         Qt6::Network
         Qt6::SerialPort
+        sqlite3
         CapsuleLib
         FirehornCommons
 )

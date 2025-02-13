@@ -1,4 +1,3 @@
-
 #include <QHBoxLayout>
 #include <QPixmap>
 #include <QMouseEvent>

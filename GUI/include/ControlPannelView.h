@@ -14,6 +14,8 @@
 #include <QGridLayout>
 
 #include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "Log.h"
+#include "FileLocation.h"
 
 class ControlPannelView : public QFrame {
     Q_OBJECT
@@ -22,7 +24,6 @@ public:
     ControlPannelView(QWidget *parent = nullptr, QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> *controls = nullptr);
     void resizeWidget();
     virtual ~ControlPannelView() {};
-    void buttonClickedCallback(const std::string& command);
 
 
 protected:
@@ -38,6 +39,7 @@ private:
     void createValveLayouts(QHBoxLayout *mainLayout, QMap<std::string, std::vector<GUI_FIELD>> *valves);
     void createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<std::string, std::vector<GUI_FIELD>> *buttons);
     
+    ModuleLog _logger = ModuleLog("ControlPannelView", LOG_FILE_PATH);
     QPixmap buttonPixMap;
     bool toggled;
     QWidget *controlContainerWidget;

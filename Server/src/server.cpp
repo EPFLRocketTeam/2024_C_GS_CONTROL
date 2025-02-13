@@ -1,4 +1,7 @@
 #include "Server.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include "ClientManager.h"
 #include <qglobal.h>
@@ -7,13 +10,15 @@
 #include <QMap>
 #include <QString>
 #include <QJsonObject>
+#include <sqlite3.h>
 
 
 #include "../Capsule/src/capsule.h"
 #include "ERT_RF_Protocol_Interface/PacketDefinition.h"
 #include "RequestAdapter.h"
+#include <RequestBuilder.h>
 
-
+#define DB_ERROR_MESSAGE_PREFIX "The Databse couldn't be open, and produce the following error message"
 
 Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), serialPort(new QSerialPort(this)), capsule(&Server::handleSerialPacket, this) {
     
@@ -24,7 +29,40 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
     connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
     connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
 
-    openSerialPort();
+    setup_db();
+
+    /*openSerialPort();*/
+}
+
+
+int Server::setup_db() {
+    QString db_path = (QCoreApplication::applicationDirPath() + "/../data.db");
+    int exit = sqlite3_open(db_path.toStdString().c_str(), &database);
+    /*sqlite3* DB; */
+    /*int exit = 0; */
+    /*int res = sqlite3_open("example.db", &DB); */
+
+    if (exit) {
+        const char* db_errmsg = sqlite3_errmsg(database);
+        size_t m_length = 100 + strnlen(db_errmsg, 2000);
+        char* error_message = (char *)calloc(m_length, sizeof(char));
+        snprintf(error_message, m_length, "%s: %s", DB_ERROR_MESSAGE_PREFIX, db_errmsg);
+        _serverLogger.warn("Databse Opening", error_message);
+        free(error_message);
+        database = NULL;
+        return 0;
+    }
+    
+    QString success_message = QString::fromStdString("The Databse was opened succesfuly in the file ") + db_path;
+    _serverLogger.info("Databse Opening", success_message.toStdString());
+    return 1;
+}
+
+
+Server::~Server() {
+    if (database != NULL) {
+        sqlite3_close(database);
+    }
 }
 
 void Server::openSerialPort() {
