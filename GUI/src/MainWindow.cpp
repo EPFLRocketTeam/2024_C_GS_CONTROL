@@ -13,7 +13,6 @@
 
 #include "Setup.h"
 #include "MainWindow.h"
-#include "components/DraggableButton.h"
 #include "ControlPannelView.h"
 
 
@@ -30,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     QHBoxLayout *sectionsLayout = createSectionsLayout();
     centralLayout->addLayout(sectionsLayout);
-
+    _logger.debug("MainWindow", "Setup finished");
     
 }
 
@@ -49,7 +48,8 @@ QHBoxLayout* MainWindow::createSectionsLayout() {
     QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap;
 
     // Populate the QMap with key-value pairs
-    valvesMap.insert("Engine Valves", {GUI_FIELD::MAIN_FUEL, GUI_FIELD::MAIN_LOX, GUI_FIELD::VENT_FUEL, GUI_FIELD::VENT_LOX, GUI_FIELD::IGNITER_LOX, GUI_FIELD::IGNITER_FUEL});
+    valvesMap.insert("Engine Valves", {GUI_FIELD::MAIN_FUEL, GUI_FIELD::MAIN_LOX, GUI_FIELD::VENT_FUEL,
+        GUI_FIELD::VENT_LOX, GUI_FIELD::IGNITER_LOX, GUI_FIELD::IGNITER_FUEL});
     valvesMap.insert("GSE Valves", {GUI_FIELD::GSE_VENT});
     
     pushButtonMap.insert("Command", {GUI_FIELD::CMD_1,GUI_FIELD::CMD_2, GUI_FIELD::CMD_3});

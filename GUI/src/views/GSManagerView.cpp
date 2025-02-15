@@ -23,6 +23,7 @@ GSManagerView::GSManagerView(std::unique_ptr<QWidget> parent) : QFrame(parent.ge
     setMinimumWidth(mws::sideWidth/100.0 * mws::width);
     setupUI();
 
+    _logger.debug("SetupUI", "Setup finished");
 }
 
 void GSManagerView::setupUI() {

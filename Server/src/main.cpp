@@ -12,7 +12,8 @@
 int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
-    auth::loadKeysFromFile("../Server/src/auth_key.json"); 
+    QString appDir = QCoreApplication::applicationDirPath();
+    auth::loadKeysFromFile(appDir + "//../Server/src/auth_keys.json"); 
     Server server = Server();
     int port(12345);
     std::cout << "Server started" << std::endl;
@@ -25,13 +26,13 @@ int start_server(int argc, char *argv[]) {
     QObject::connect(timer, &QTimer::timeout, &server, &Server::simulateJsonData);
     timer->start(2000); // Timer fires every 2000 milliseconds (2 seconds)
 
-    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
-    std::cout << "found " << availablePorts.size() << " devices" << std::endl;
-    foreach(const QSerialPortInfo &portInfo, availablePorts) {
-        std::cout << "Port name: " << portInfo.portName().toStdString() << std::endl;
-        std::cout << "Description: " << portInfo.description().toStdString() << std::endl;
-        std::cout << "Manufacturer: " << portInfo.manufacturer().toStdString() << std::endl;
-    }
+    /*QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();*/
+    /*std::cout << "found " << availablePorts.size() << " devices" << std::endl;*/
+    /*foreach(const QSerialPortInfo &portInfo, availablePorts) {*/
+    /*    std::cout << "Port name: " << portInfo.portName().toStdString() << std::endl;*/
+    /*    std::cout << "Description: " << portInfo.description().toStdString() << std::endl;*/
+    /*    std::cout << "Manufacturer: " << portInfo.manufacturer().toStdString() << std::endl;*/
+    /*}*/
     std::cout << "setup finished" << std::endl;
     return a.exec();
 }

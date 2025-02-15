@@ -15,10 +15,7 @@ void DraggableButton::mouseMoveEvent(QMouseEvent *event) {
     int xOffset = 25;
     float imWidth = 1209;
     float imHeight = 749;
-    std::cout << "pos: ";
-    std::cout << (mapToParent(event->pos() - offset).x()-xOffset) / imWidth << ", ";
-    std::cout << (mapToParent(event->pos() - offset).y()-yOffset) / imHeight << std::endl;
-    
+        
     if(event->buttons() & Qt::LeftButton)
     {
         this->move(mapToParent(event->pos() - offset));

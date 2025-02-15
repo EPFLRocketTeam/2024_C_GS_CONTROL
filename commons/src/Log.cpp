@@ -3,9 +3,11 @@
 #include <ctime>
 #include <iomanip>
 #include <filesystem>
+#include <qcoreapplication.h>
+#include <qdir.h>
 #include <string>
-
-
+#include <filesystem>
+#include <QDir>
 
 #include "Log.h"
 
@@ -45,17 +47,44 @@ namespace {
         else
             return WHITE;
     }
+
+    DebugLevel getLevelFromString(const std::string& level) {
+        if (level == "INFO")
+            return INFO;
+        else if (level == "DEBUG")
+            return DEBUG;
+        else if (level == "WARN")
+            return WARNING;
+        else if (level == "ERROR")
+            return ERROR;
+        else if (level == "FATAL")
+            return FATAL;
+        else
+            return INFO;
+
+    }
 }
 
 // STATIC MEMBERS INITIALIZATION -----------------------------------------------
-std::string MainLog::filename_ = "default";
+std::string MainLog::filename_ = "/../Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
 
 // PUBLIC METHODS --------------------------------------------------------------
 
 MainLog::MainLog()
 {
+    filename = filename_;
     create_file();
     std::cout << "MainLog object created\n";
+}
+
+MainLog::MainLog(std::string _filename) : filename(_filename)
+{
+    create_file();
+    std::cout << "MainLog object created\n";
+}
+
+MainLog::MainLog(std::string _filename, DebugLevel level) : MainLog(_filename) {
+    setDebugLevel(level);
 }
 
 MainLog::~MainLog()
@@ -84,11 +113,18 @@ void MainLog::write_log(std::string level, std::string module, std::string event
                     + event + "] ["
                     + message + "],";
 
-    // Output to console
-    std::cout << colored_log_message << std::endl;
+    if (_level <= getLevelFromString(level)) {
+        // Output to console
+        std::cout << colored_log_message << std::endl;
+    }
 
     // Write to file
-    append_to_file(filename_, log_message);
+    append_to_file(filename, log_message);
+
+}
+
+void MainLog::setDebugLevel(DebugLevel level) {
+    _level = level;
 }
 
 // PRIVATE METHODS -------------------------------------------------------------
@@ -125,11 +161,7 @@ void MainLog::create_file()
     // manage path
     check_directory("Log");
     filename_ = "../Log/" + timestamp + ".txt";
-
-    // create file
-    std::ofstream outputFile("example.txt");
-    outputFile << "Log file created\n";
-    outputFile.close();
+    
 
     std::cout << filename_ << " has been created\n";
 
@@ -138,15 +170,21 @@ void MainLog::create_file()
 
 void MainLog::append_to_file(std::string filename, std::string content)
 {
+    QString appDir = QCoreApplication::applicationDirPath();
+    QString filePath = QString::fromStdString(filename);
+    if (filePath.startsWith("/")) {
+        filePath.remove(0, 1);
+    }
+    QString full_path = appDir + "/" + filePath;
     // Open the file in append mode
-    std::ofstream file(filename, std::ios::app);
+    std::ofstream file(full_path.toStdString(), std::ios::app);
 
     if (file.is_open()) {
         file << content << "\n";
         file.close();
 
     } else {
-        std::cerr << "Error opening file for appending\n";
+        std::cerr << "Error opening file for appending " << full_path.toStdString() << std::endl;
     }
 }
 
@@ -156,6 +194,13 @@ void MainLog::append_to_file(std::string filename, std::string content)
 ModuleLog::ModuleLog(std::string module)
 {
     module_ = module;
+    filename = filename_;
+}
+
+ModuleLog::ModuleLog(std::string module, std::string _filename)
+{
+    module_ = module;
+    filename = _filename;   
 }
 
 ModuleLog::~ModuleLog(){}

@@ -21,7 +21,7 @@
 #include "QTimer"
 #include "RequestBuilder.h"
 #include "Log.h"
-
+#include "FieldUtil.h"
 
 ClientManager::ClientManager(QObject *parent, QString host, int port)
     : ClientInterface(parent) {
@@ -54,7 +54,6 @@ void ClientManager::connected() {
   _logger.info("Connection", "The client is connected to the server");
   if (m_reconnectTimer->isActive()) {
     m_reconnectTimer->stop();
-
     for (auto key : subscriptionsJson.keys()) {
       sendSubscribeRequest(key);
     }
@@ -78,8 +77,9 @@ void ClientManager::readyRead() {
   handleReceivedData(QString::fromUtf8(data));
 }
 
-void ClientManager::subscribe(const GUI_FIELD field,
-                              CallbackFunction<QString> callback) {
+void ClientManager::subscribe(const GUI_FIELD field, CallbackFunction<QString> callback) {
+  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1)").
+                arg(fieldUtil::enumToFieldName(field)).toStdString());
   if (subscriptionsStrings[field].size() == 0)
     sendSubscribeRequest(field);
   // sendSubscribeRequest(field);
@@ -91,9 +91,8 @@ void ClientManager::sendSubscribeRequest(const QString &field) {
   if (socket->state() == QAbstractSocket::UnconnectedState) {
     if (!m_reconnectTimer->isActive()) {
       m_reconnectTimer->start();
-      std::cout << "Error: " << socket->errorString().toStdString()
-                << std::endl;
-    }
+      _logger.error("Connection", "Could not connect with the following error:\n" + socket->errorString().toStdString());
+         }
     return;
   }
   RequestBuilder builder;
@@ -110,6 +109,8 @@ void ClientManager::sendSubscribeRequest(const QString &field) {
 
 void ClientManager::subscribe(const GUI_FIELD field,
                               CallbackFunction<QJsonValue> callback) {
+  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1)").
+                arg(fieldUtil::enumToFieldName(field)).toStdString());
   if (subscriptionsJson[field].size() == 0)
     sendSubscribeRequest(field);
   subscriptionsJson[field].append(callback);
@@ -119,8 +120,8 @@ void ClientManager::sendSubscribeRequest(const GUI_FIELD field) {
   if (socket->state() == QAbstractSocket::UnconnectedState) {
     if (!m_reconnectTimer->isActive()) {
       m_reconnectTimer->start();
-      std::cout << "Error: " << socket->errorString().toStdString()
-                << std::endl;
+      QString error_msg = QString::fromStdString("The connection with the server failed with the following error: ") + socket->errorString();
+      _logger.error("ConnectionFailed", error_msg.toStdString());
     }
     return;
   }
@@ -240,7 +241,7 @@ void ClientManager::send(const QString &data) {
   if (socket->state() == QAbstractSocket::UnconnectedState) {
     if (!m_reconnectTimer->isActive()) {
       m_reconnectTimer->start();
-
+      _logger.error("Connection", "Could not connect with the following error:\n" + socket->errorString().toStdString());
       std::cout << "Error: " << socket->errorString().toStdString()
                 << std::endl;
     }

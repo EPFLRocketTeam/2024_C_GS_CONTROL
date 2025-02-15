@@ -4,6 +4,8 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
+#include "ControlPannelView.h"
+#include "Log.h"
 #include "TimerView.h"
 
 class GSManagerView : public QFrame {
@@ -27,6 +29,8 @@ private:
     void setupConnections();
     void setupInfoLayout(QLabel *downRangeLabel, QLabel *packetNumberLabel, QWidget *line);
     void setupSerialSection();
+
+    ModuleLog _logger = ModuleLog("GSManagerView", LOG_FILE_PATH);
 
     QLabel *downRange; 
     QLabel *packetNumber;

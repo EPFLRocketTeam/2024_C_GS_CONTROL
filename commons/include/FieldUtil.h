@@ -1,110 +1,11 @@
-/**
-                          __  _               __  _  _
-                         / _|(_)             / _|(_)| |
-       ___  ___   _ __  | |_  _   __ _      | |_  _ | |  ___
-      / __|/ _ \ | '_ \ |  _|| | / _` |     |  _|| || | / _ \
-     | (__| (_) || | | || |  | || (_| |     | |  | || ||  __/
-      \___|\___/ |_| |_||_|  |_| \__, |     |_|  |_||_| \___|
-                                  __/ |
-                                 |___/
-    @authors M.Rochat & E.Dutruy (Co-TL GS 23-24)
-    @date 06-02-2024
-    @brief config file to setup GUI
-*/
-
-#ifndef SETUP_H
-#define SETUP_H
-
-#include "DataView.h"
-#include "TelemetryView.h"
-#include "GSManagerView.h"
-#include "ValveControlView.h"
-#include <qobject.h>
-#include <QFile>
-#include <QTextStream>
-#include <QException>
-#include <stdexcept>
-// ----------------------------- Setup Views -----------------------------------
-using LeftView = TelemetryView;
-using MiddleView = ValveControlView;
-using RightView = GSManagerView;
-
-
-// ----------------------------- MainWindow setup ------------------------------
-namespace mws
-{
-    const QString title = "Firehorn Project Ground Control Station";
-    const int x = 100;
-    const int y = 100;
-    const int width = 800;
-    const int height = 600;
-    const int middleSectionWidth = 50; // % left and right  will be (100-x)/2
-    const int sideWidth = (100 - middleSectionWidth) / 2;
-} // namespace mws
-
-
-namespace auth {
-    inline QString key; // Define the key as an inline variable
-
-    // Function to load the key from a file
-    inline void loadKeyFromFile(const QString& filePath) {
-        QFile file(filePath);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            throw std::runtime_error("Failed to open the key file.");
-        }
-
-        QTextStream in(&file);
-        key = in.readLine().trimmed(); // Read the first line and trim whitespace
-        file.close();
-
-        if (key.isEmpty()) {
-            throw std::runtime_error("The key file is empty or invalid.");
-        }
-    }}
-
-namespace network
-{
-    const QString serverIP = "127.0.0.1";
-    const int serverPort = 12345;
-}
-// ----------------------------- Colour ----------------------------------------
-namespace col
-{
-    inline QString backgroundColorCode = "#161A36";
-    inline QString primary = "#B8C196";
-    inline QString secondary = "#BDB979";
-    inline QString accent = "#F5251A";
-    inline QString complementary = "#457069";
-    inline QString complementaryLighter = "#538078";
-
-    inline QString background() { return "background-color: " + backgroundColorCode + ";"; }
-    inline QString defaultCardStyle(QString id) { return QString(R"(
-        #%3 {
-        background: qradialgradient(cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 %1, stop:0.95 %2);
-        border-radius: 10%;
-        border-width: 2px;
-        border-color: #B8C196;
-        }
-        #child {
-            color: #B8C196;
-            background: transparent;
-        }
-        )")
-                                                      .arg(col::backgroundColorCode)
-                                                      .arg("rgba(30, 35, 69, 225)")
-                                                      .arg(id); }
-} // namespace col
-
-#endif /* SETUP_H */
-
-#ifndef ENUM_GUI_FIELD_UTIL
-#define ENUM_GUI_FIELD_UTIL
-
-// Field naming
+#ifndef FIELD_UTIL_H
+#define FIELD_UTIL_H
+#include <QString>
+#include <../ERT_RF_Protocol_Interface/PacketDefinition.h>
 
 namespace fieldUtil
 {
-    inline QString enumToFieldName(GUI_FIELD field)
+    QString enumToFieldName(GUI_FIELD field)
     {
         QString name;
         switch (field)
@@ -318,7 +219,5 @@ namespace fieldUtil
     }
 
 }
-
-
 
 #endif /* ENUM_GUI_FIELD_UTIL */

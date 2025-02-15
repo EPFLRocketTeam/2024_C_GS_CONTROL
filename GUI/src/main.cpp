@@ -14,26 +14,31 @@
 #include <QTimer>
 #include <QJsonDocument>
 #include <QtNetwork/QTcpSocket>
-#include <iostream>
-#include <filesystem>
-// This variable must specify the path to 
-#define RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "../GUI/res"
+#include <QDir>
+#include "FileLocation.h"
+
+#include <Log.h>
 
 void fakeDataHandling();
 
 int start_client(int argc, char *argv[]) {
-QApplication app(argc, argv);
-    QResource::registerResource(RELATIVE_PATH_TO_RES_FROM_BUILD_FOLD "/resources.rcc");
-std::cout << "Current working directory: " 
-                  << std::filesystem::current_path() << std::endl;
-    auth::loadKeyFromFile("../GUI/src/.key");
-    std::cout << "KEY: " <<
-        auth::key.toStdString() << std::endl;
+    QApplication app(argc, argv);
+    QString appDir = QCoreApplication::applicationDirPath();
+    ModuleLog logger = ModuleLog("App Launcher", LOG_FILE_PATH);
+
+    QString resPath = QDir(appDir).absoluteFilePath("../GUI/res/resources.rcc");
+    if (QResource::registerResource(resPath))
+        logger.info("Load Resources", "The resources were loaded");
+    else 
+        logger.error("Load Resources", "Couldn't register the resources");
+
+    auth::loadKeyFromFile(appDir + "/../GUI/src/.key");
     RequestBuilder::authorizationKey = auth::key;
+    logger.info("Load Authentication Keys", "A Key was found");
 
     MainWindow::clientManager = std::make_unique<ClientManager>(nullptr, network::serverIP, network::serverPort);    
     MainWindow mainWindow;
-    
+
     mainWindow.show();
     return app.exec();
 }
