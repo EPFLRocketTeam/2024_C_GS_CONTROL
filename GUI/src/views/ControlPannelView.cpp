@@ -24,6 +24,7 @@
 #include "MainWindow.h"
 #include "RequestBuilder.h"
 #include <Setup.h>
+#include "FieldUtil.h"
 
 ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> *controls) : QFrame(parent) {
     

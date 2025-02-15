@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QtSvg/QSvgRenderer>
 #include <QPainter>
+#include <FieldUtil.h>
 
 #include "components/ValveControlButton.h"
 #include "../Setup.h"

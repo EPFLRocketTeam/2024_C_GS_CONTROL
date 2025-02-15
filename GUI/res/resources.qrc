@@ -15,5 +15,8 @@
         <file>images/prop-diagram-firehorn-dark.svg</file>
         <file>images/prop-diagram-firehorn-light.svg</file>
         <file>images/prop-diagram-firehorn-disconnect.png</file>
+        <file>images/prop-diagram-icarus.png</file>
+        <file>images/prop-diagram-icarus-smaller.png</file>
+        <file>images/prop-diagram-icarus.svg</file>
     </qresource>
 </RCC>

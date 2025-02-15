@@ -27,7 +27,7 @@ ValveControlView::ValveControlView(QWidget *parent) : QFrame(parent), background
     setContentsMargins(25, 25, 25, 25);
     setMinimumWidth(mws::middleSectionWidth / 100.0 * mws::width);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    setSvgBackground(":/images/prop-diagram-firehorn-highres.png");
+    setSvgBackground(":/images/prop-diagram-icarus-smaller.png");
     placeValves();
     placeCommandButtons();
     placeDataLabels();
