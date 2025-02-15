@@ -385,6 +385,53 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len)
             updateSubscriptions(jsonObj);
             break;
         }
+        case CAPSULE_ID::HOPPER_DOWNLINK: {
+            // Make sure the incoming data is at least the size of the Hopper packet.
+            if (len < sizeof(PacketHopper_downlink)) {
+                QString err_msg = QString("Hopper packet to short %1 bytes").arg(len);
+                _serverLogger.error("Packet Parsing", err_msg.toStdString());
+                break;
+            }
+            PacketHopper_downlink dataHopper;
+            // Copy the incoming raw data into our Hopper packet structure.
+            memcpy(&dataHopper, dataIn, sizeof(PacketHopper_downlink));
+            
+            // Create a JSON object and fill it with the Hopper packet's fields.
+            QJsonObject jsonObj;
+            jsonObj[QString::number(GUI_FIELD::HOPPER_PACKET_NBR)]   = static_cast<int>(dataHopper.packet_nbr);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)]   = static_cast<int>(dataHopper.N2O_pressure);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_PRESSURE)]   = static_cast<int>(dataHopper.ETH_pressure);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_TEMP)]       = static_cast<int>(dataHopper.N2O_temp);
+            // Vents are defined as nside a nested struct.
+            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_VENT)]       = static_cast<int>(dataHopper.vents.N2O_vent);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_VENT)]       = static_cast<int>(dataHopper.vents.ETH_vent);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_MAIN)]       = static_cast<int>(dataHopper.N2O_main);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)]       = static_cast<int>(dataHopper.ETH_main);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LON)]       = static_cast<double>(dataHopper.gnss_lon);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LAT)]       = static_cast<double>(dataHopper.gnss_lat);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_SAT_NBR)]        = static_cast<int>(dataHopper.sat_nbr);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_X)]         = static_cast<int>(dataHopper.gyro_x);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Y)]         = static_cast<int>(dataHopper.gyro_y);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Z)]         = static_cast<int>(dataHopper.gyro_z);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_X)]          = static_cast<int>(dataHopper.acc_x);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Y)]          = static_cast<int>(dataHopper.acc_y);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Z)]          = static_cast<int>(dataHopper.acc_z);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_BARO)]           = static_cast<int>(dataHopper.baro);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_X)]   = static_cast<int>(dataHopper.kalman_pos_x);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Y)]   = static_cast<int>(dataHopper.kalman_pos_y);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Z)]   = static_cast<int>(dataHopper.kalman_pos_z);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_YAW)]     = static_cast<int>(dataHopper.kalman_yaw);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_PITCH)]   = static_cast<int>(dataHopper.kalman_pitch);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_ROLL)]    = static_cast<int>(dataHopper.kalman_roll);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)]       = static_cast<int>(dataHopper.gimbal_x);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)]       = static_cast<int>(dataHopper.gimbal_y);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_HV_VOLTAGE)]     = static_cast<int>(dataHopper.HV_voltage);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_LV_VOLTAGE)]     = static_cast<int>(dataHopper.LV_voltage);
+            jsonObj[QString::number(GUI_FIELD::HOPPER_AV_TEMP)]        = static_cast<int>(dataHopper.AV_temp);
+            
+            updateSubscriptions(jsonObj);
+            break;
+        }
         default:
             break;
     }        
