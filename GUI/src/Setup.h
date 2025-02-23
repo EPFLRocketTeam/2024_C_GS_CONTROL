@@ -36,9 +36,9 @@ namespace mws
     const QString title = "Firehorn Project Ground Control Station";
     const int x = 100;
     const int y = 100;
-    const int width = 800;
-    const int height = 600;
-    const int middleSectionWidth = 50; // % left and right  will be (100-x)/2
+    const int width = 1080;
+    const int height = 1920;
+    const int middleSectionWidth = 60; // % left and right  will be (100-x)/2
     const int sideWidth = (100 - middleSectionWidth) / 2;
 } // namespace mws
 

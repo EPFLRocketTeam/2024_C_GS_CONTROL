@@ -139,6 +139,7 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
                 .arg(QString::fromStdString(trimmedName));
 
             QObject::connect(button, &QPushButton::clicked, [button]() {
+                
                 RequestBuilder b;
                 b.setHeader(RequestType::POST);
                 b.addField("cmd", button->text()); 

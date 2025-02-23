@@ -16,7 +16,7 @@
 #include <QVector>
 #include <QtNetwork/QTcpSocket>
 
-#include "../ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 #include "ClientInterface.h"
 #include "Log.h"
 

@@ -1,7 +1,120 @@
 #ifndef FIELD_UTIL_H
 #define FIELD_UTIL_H
 #include <QString>
-#include <../ERT_RF_Protocol_Interface/PacketDefinition.h>
+#include <../ERT_RF_Protocol_Interface/Protocol.h>
+
+enum GUI_CMD {
+	GET_SERIAL_STATUS = 0,
+};
+
+
+enum GUI_FIELD {
+	IGNITER_LOX,
+	IGNITER_FUEL,
+	MAIN_LOX,
+	MAIN_FUEL,
+	VENT_LOX,
+	VENT_FUEL,
+	ORDER_ID,
+	ORDER_VALUE,
+	PACKET_NBR,
+	TIMESTAMP,
+	GNSS_LON,
+	GNSS_LAT,
+	GNSS_ALT,
+	GNSS_LON_R,
+	GNSS_LAT_R,
+	GNSS_ALT_R,
+	GNSS_VERTICAL_SPEED,
+	N2_PRESSURE,
+	FUEL_PRESSURE,
+	LOX_PRESSURE,
+	FUEL_LEVEL,
+	LOX_LEVEL,
+	ENGINE_TEMP,
+	IGNITER_PRESSURE,
+	LOX_INJ_PRESSURE,
+	FUEL_INJ_PRESSURE,
+	CHAMBER_PRESSURE,
+	AV_STATE,
+	GNSS_CHOICE,
+	FILLINGN2O,
+	VENT_GSE,
+	GSE_TANK_PRESSURE,
+	GSE_TANK_TEMPERATURE,
+	GSE_FILLING_PRESSURE,
+	GSE_DISCONNECT_ACTIVE,
+	GSE_LOADCELL_1,
+	GSE_LOADCELL_2,
+	GSE_LOADCELL_3,
+	GSE_LOADCELL_4,
+	ENGINE_STATE,
+	GSE_VENT,
+	GSE_CMD_STATUS,
+	DOWNRANGE,
+	SERIAL_STATUS,
+	SERIAL_NAME_USE,
+	AV_TIMER,
+	GSE_TIMER,
+	CMD_1,
+	CMD_2,
+	CMD_3,
+	GUI_CMD_LAUNCH,
+	GUI_CMD_SET_SERIAL_STATUS,
+	GUI_CMD_CALIBRATE,
+	GUI_CMD_RECOVER,
+	GUI_CMD_ARM,
+	GUI_CMD_IGNITION,
+	GUI_CMD_ABORT,
+	GUI_CMD_MANUAL_DEPLOY,
+	GUI_CMD_IGNITER_LOX,
+	GUI_CMD_IGNITER_FUEL,
+	GUI_CMD_MAIN_LOX,
+	GUI_CMD_MAIN_FUEL,
+	GUI_CMD_VENT_LOX,
+	GUI_CMD_VENT_FUEL,
+	GUI_CMD_PRESSURIZE,
+	GUI_CMD_FILLING_LOX,
+	GUI_CMD_VENT,
+	GUI_CMD_VENT_N2O,
+	GUI_CMD_GIMBALL_X,
+	GUI_CMD_GIMBALL_Y,
+	GUI_CMD_DISCONNECT,
+	HOPPER_PACKET_NBR,      // 32 bits: packet counter (10Hz update)
+	HOPPER_N2O_PRESSURE,    // 16 bits (12-bit ADC value)
+	HOPPER_ETH_PRESSURE,    // 16 bits
+	HOPPER_N2O_TEMP,        // 8 bits
+	HOPPER_N2O_VENT,        // 1 bit
+	HOPPER_ETH_VENT,        // 1 bit
+	HOPPER_N2O_MAIN,        // 8 bits
+	HOPPER_ETH_MAIN,        // 8 bits
+	HOPPER_GNSS_LON,        // 32 bits (float)
+	HOPPER_GNSS_LAT,        // 32 bits (float)
+	HOPPER_SAT_NBR,         // 8 bits (number of fixed satellites)
+	HOPPER_GYRO_X,          // 16 bits (raw gyro)
+	HOPPER_GYRO_Y,          // 16 bits
+	HOPPER_GYRO_Z,          // 16 bits
+	HOPPER_ACC_X,           // 16 bits (raw accelerometer)
+	HOPPER_ACC_Y,           // 16 bits
+	HOPPER_ACC_Z,           // 16 bits
+	HOPPER_BARO,            // 16 bits (barometric reading)
+	HOPPER_KALMAN_POS_X,    // 16 bits (Kalman filter position estimate)
+	HOPPER_KALMAN_POS_Y,    // 16 bits
+	HOPPER_KALMAN_POS_Z,    // 16 bits
+	HOPPER_KALMAN_YAW,      // 16 bits (Kalman filter angle)
+	HOPPER_KALMAN_PITCH,    // 16 bits
+	HOPPER_KALMAN_ROLL,     // 16 bits
+	HOPPER_GIMBAL_X,        // 8 bits (gimbal position)
+	HOPPER_GIMBAL_Y,        // 8 bits
+	HOPPER_HV_VOLTAGE,      // 8 bits (high-voltage measurement)
+	HOPPER_LV_VOLTAGE,      // 8 bits (low-voltage measurement)
+	HOPPER_AV_TEMP,         // 8 bits (AV temperature)
+	HOPPER_ID_CONFIG,       // 8 bits (configuration ID: PID, flight mode, etc.)
+	HOPPER_AV_STATE,        // 8 bits (AV state)
+	HOPPER_FIELD_COUNT,      // Total number of Hopper packet fields
+	UNKNOWN
+};
+
 
 namespace fieldUtil
 {
@@ -103,22 +216,31 @@ namespace fieldUtil
         case VENT_GSE:
             name = "VENT GSE";
             break;
-        case TANK_PRESSURE:
-            name = "TANK PRESSURE";
+        case GSE_TANK_PRESSURE:
+            name = "GSE TANK PRESSURE";
             break;
-        case TANK_TEMPERATURE:
-            name = "TANK TEMPERATURE";
+        case GSE_TANK_TEMPERATURE:
+            name = "GSE TANK TEMPERATURE";
             break;
-        case FILLING_PRESSURE:
-            name = "FILLING PRESSURE";
+        case GSE_FILLING_PRESSURE:
+            name = "GSE FILLING PRESSURE";
             break;
-        case DISCONNECT_ACTIVE:
-            name = "DISCONNECT ACTIVE";
+        case GSE_DISCONNECT_ACTIVE:
+            name = "GSE DISCONNECT ACTIVE";
             break;
-        case LOADCELL_RAW:
-            name = "LOADCELL RAW";
+        case GSE_LOADCELL_1:
+            name = "GSE LOADCELL 1";
             break;
-        case ENGINE_STATE:
+	case GSE_LOADCELL_2:
+            name = "GSE LOADCELL 2";
+            break;
+	case GSE_LOADCELL_3:
+	    name = "GSE LOADCELL 3";
+    	    break;
+	case GSE_LOADCELL_4:
+		name = "GSE LOADCELL 4";
+	        break;
+	case ENGINE_STATE:
             name = "ENGINE STATE";
             break;
         case GSE_VENT:
@@ -292,16 +414,22 @@ namespace fieldUtil
             return FILLINGN2O;
         else if (fieldName == "VENT GSE")
             return VENT_GSE;
-        else if (fieldName == "TANK PRESSURE")
-            return TANK_PRESSURE;
-        else if (fieldName == "TANK TEMPERATURE")
-            return TANK_TEMPERATURE;
-        else if (fieldName == "FILLING PRESSURE")
-            return FILLING_PRESSURE;
-        else if (fieldName == "DISCONNECT ACTIVE")
-            return DISCONNECT_ACTIVE;
-        else if (fieldName == "LOADCELL RAW")
-            return LOADCELL_RAW;
+        else if (fieldName == "GSE TANK PRESSURE")
+            return GSE_TANK_PRESSURE;
+        else if (fieldName == "GSE TANK TEMPERATURE")
+            return GSE_TANK_TEMPERATURE;
+        else if (fieldName == "GSE FILLING PRESSURE")
+            return GSE_FILLING_PRESSURE;
+        else if (fieldName == "GSE DISCONNECT ACTIVE")
+            return GSE_DISCONNECT_ACTIVE;
+        else if (fieldName == "GSE LOADCELL 1")
+            return GSE_LOADCELL_1;
+	else if (fieldName == "GSE LOADCELL 2")
+            return GSE_LOADCELL_2;
+	else if (fieldName == "GSE LOADCELL 3")
+            return GSE_LOADCELL_3;
+	else if (fieldName == "GSE LOADCELL 4")
+            return GSE_LOADCELL_4;
         else if (fieldName == "ENGINE STATE")
             return ENGINE_STATE;
         else if (fieldName == "GSE VENT")
@@ -376,5 +504,6 @@ namespace fieldUtil
     }
 
 }
+
 
 #endif /* ENUM_GUI_FIELD_UTIL */

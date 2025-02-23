@@ -34,8 +34,8 @@ private slots:
 private:
 
     int setup_db();
-    ModuleLog _packetLogger = ModuleLog("PacketHandler", QCoreApplication::applicationDirPath().toStdString() + "/../Log/packets.logs");
-    ModuleLog _serverLogger = ModuleLog("Server", QCoreApplication::applicationDirPath().toStdString() + "/../Log/server.logs");
+    ModuleLog _packetLogger = ModuleLog("PacketHandler",  "../Log/packets.logs");
+    ModuleLog _serverLogger = ModuleLog("Server",  "../Log/server.logs");
     void receiveSubscribe(const QJsonObject &request,  QTcpSocket *senderSocket);
     void receiveUnsubscribe(const QJsonObject &request,  QTcpSocket *senderSocket);
     void receivePost(const QJsonObject &request,  QTcpSocket *senderSocket);

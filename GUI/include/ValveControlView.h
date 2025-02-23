@@ -11,9 +11,13 @@
 #include <memory>
 
 #include <QMap>
+#include <QtSvg/QSvgRenderer>
+#include <qsvgrenderer.h>
 
-#include "components/ValveControlButton.h"
+#include "FieldUtil.h"
+#include "Log.h"
 #include "components/ValveButton.h"
+#include "FileLocation.h"
 
 struct Position {
         float x;
@@ -40,7 +44,8 @@ private:
     void addComponent(QWidget* component,  float x, float y);
     void addCommandButton(const QString& label, float x, float y);
 
-    std::unique_ptr<QPixmap> backgroundImage;
+    ModuleLog _logger = ModuleLog("ValveControlView", LOG_FILE_PATH);
+    std::unique_ptr<QSvgRenderer> svgRenderer;
     QMap<QWidget*, Position> componentsMap;
 };
 

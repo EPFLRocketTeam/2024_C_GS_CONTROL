@@ -1,4 +1,3 @@
-
 /** 
     @authors M.Rochat & E.Dutruy (Co-TL GS 23-24)
     @date 06-02-2024

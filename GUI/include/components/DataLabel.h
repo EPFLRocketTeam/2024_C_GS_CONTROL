@@ -2,7 +2,7 @@
 
 #include <QLabel>
 
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 
 /**
  * @brief The DataLabel class is a class that thisplay a QLbael as well as it connects to the field sepcified in constructor

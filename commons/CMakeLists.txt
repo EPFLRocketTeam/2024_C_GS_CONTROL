@@ -19,9 +19,7 @@ set(HEADERS_COMMONS
     include/RequestBuilder.h 
     include/FieldUtil.h
     include/Log.h
-    ERT_RF_Protocol_Interface/MacAdresses.h
-    ERT_RF_Protocol_Interface/PacketDefinition.h
-    ERT_RF_Protocol_Interface/ParameterDefinition.h
+    ERT_RF_Protocol_Interface/Protocol.h
 )
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})

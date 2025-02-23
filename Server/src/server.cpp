@@ -14,7 +14,7 @@
 
 
 #include "../Capsule/src/capsule.h"
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 #include "RequestAdapter.h"
 #include <RequestBuilder.h>
 
@@ -296,8 +296,8 @@ void Server::handleCommand(const QJsonObject &command) {
     default:
         int order = command["payload"].toObject()["cmd_order"].toInt();
         std::cout << "cmd: " << f << " order: " << order << std::endl;
-        av_uplink_t p = createUplinkPacketFromRequest((GUI_FIELD)f, order);
-        sendSerialPacket(CAPSULE_ID::GS_CMD, (uint8_t*) &p, av_uplink_size);
+        av_uplink_t* p = createUplinkPacketFromRequest((GUI_FIELD)f, order);
+        sendSerialPacket(CAPSULE_ID::GS_CMD, (uint8_t*) p, av_uplink_size);
         break;
     }
     
@@ -305,9 +305,13 @@ void Server::handleCommand(const QJsonObject &command) {
 
 void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) {
     uint8_t *packetToSend = capsule.encode(packetId, packet, size);
-    serialPort->write((char *) packetToSend,capsule.getCodedLen(size));
-    delete[] packetToSend;
-    std::cout << "Packet sent to radio Board" << std::endl;
+    if (serialPort->isOpen()) {
+        serialPort->write((char *) packetToSend,capsule.getCodedLen(size));
+        std::cout << "Packet sent to radio Board" << std::endl;
+        _packetLogger.info("Packet Sent", "A packet was sent");
+    } else {
+        _serverLogger.error("Serial Send", "The serial port is not opened, packet couldn't be send");
+    }
 }
 
 
@@ -338,24 +342,24 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len)
             jsonObj[QString::number(GUI_FIELD::GNSS_LAT_R)] = static_cast<double>(dataAv.gnss_lat_r);
             jsonObj[QString::number(GUI_FIELD::GNSS_ALT_R)] = static_cast<double>(dataAv.gnss_alt_r);
             jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] = static_cast<double>(dataAv.gnss_vertical_speed);
-            jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = static_cast<double>(dataAv.N2_pressure);
-            jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = static_cast<double>(dataAv.fuel_pressure);
-            jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] = static_cast<double>(dataAv.LOX_pressure);
-            jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] = static_cast<double>(dataAv.fuel_level);
-            jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] = static_cast<double>(dataAv.LOX_level);
-            jsonObj[QString::number(GUI_FIELD::ENGINE_TEMP)] = static_cast<double>(dataAv.engine_temp);
-            jsonObj[QString::number(GUI_FIELD::IGNITER_PRESSURE)] = static_cast<double>(dataAv.igniter_pressure);
-            jsonObj[QString::number(GUI_FIELD::LOX_INJ_PRESSURE)] = static_cast<double>(dataAv.LOX_inj_pressure);
-            jsonObj[QString::number(GUI_FIELD::FUEL_INJ_PRESSURE)] = static_cast<double>(dataAv.fuel_inj_pressure);
-            jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] = static_cast<double>(dataAv.chamber_pressure);
+            /*jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = static_cast<double>(dataAv.N2_pressure);*/
+            /*jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = static_cast<double>(dataAv.fuel_pressure);*/
+            /*jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] = static_cast<double>(dataAv.LOX_pressure);*/
+            /*jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] = static_cast<double>(dataAv.fuel_level);*/
+            /*jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] = static_cast<double>(dataAv.LOX_level);*/
+            /*jsonObj[QString::number(GUI_FIELD::ENGINE_TEMP)] = static_cast<double>(dataAv.engine_temp);*/
+            /*jsonObj[QString::number(GUI_FIELD::IGNITER_PRESSURE)] = static_cast<double>(dataAv.igniter_pressure);*/
+            /*jsonObj[QString::number(GUI_FIELD::LOX_INJ_PRESSURE)] = static_cast<double>(dataAv.LOX_inj_pressure);*/
+            /*jsonObj[QString::number(GUI_FIELD::FUEL_INJ_PRESSURE)] = static_cast<double>(dataAv.fuel_inj_pressure);*/
+            /*jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] = static_cast<double>(dataAv.chamber_pressure);*/
 
             // Create a sub-object for engine_state_t
             QJsonObject engineStateObj;
-            engineStateObj[QString::number(GUI_FIELD::IGNITER_LOX)] = static_cast<int>(dataAv.engine_state.igniter_LOX);
-            engineStateObj[QString::number(GUI_FIELD::IGNITER_FUEL)] = static_cast<int>(dataAv.engine_state.igniter_fuel);
-            engineStateObj[QString::number(GUI_FIELD::MAIN_LOX)] = static_cast<int>(dataAv.engine_state.main_LOX);
-            engineStateObj[QString::number(GUI_FIELD::MAIN_FUEL)] = static_cast<int>(dataAv.engine_state.main_fuel);
-            engineStateObj[QString::number(GUI_FIELD::VENT_LOX)] = static_cast<int>(dataAv.engine_state.vent_LOX);
+            /*engineStateObj[QString::number(GUI_FIELD::IGNITER_LOX)] = static_cast<int>(dataAv.engine_state.igniter_LOX);*/
+            /*engineStateObj[QString::number(GUI_FIELD::IGNITER_FUEL)] = static_cast<int>(dataAv.engine_state.igniter_fuel);*/
+            /*engineStateObj[QString::number(GUI_FIELD::MAIN_LOX)] = static_cast<int>(dataAv.engine_state.main_LOX);*/
+            /*engineStateObj[QString::number(GUI_FIELD::MAIN_FUEL)] = static_cast<int>(dataAv.engine_state.main_fuel);*/
+            /*engineStateObj[QString::number(GUI_FIELD::VENT_LOX)] = static_cast<int>(dataAv.engine_state.vent_LOX);*/
             engineStateObj[QString::number(GUI_FIELD::VENT_FUEL)] = static_cast<int>(dataAv.engine_state.vent_fuel);
 
             // Add the sub-object to the main JSON object
@@ -368,11 +372,14 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len)
             QJsonObject jsonObj;
 
             // Add primitive data members to JSON object
-            jsonObj[QString::number(GUI_FIELD::TANK_PRESSURE)] = static_cast<double>(dataGse.tankPressure);
-            jsonObj[QString::number(GUI_FIELD::TANK_TEMPERATURE)] = static_cast<double>(dataGse.tankTemperature);
-            jsonObj[QString::number(GUI_FIELD::FILLING_PRESSURE)] = static_cast<double>(dataGse.fillingPressure);
-            jsonObj[QString::number(GUI_FIELD::DISCONNECT_ACTIVE)] = dataGse.disconnectActive;
-            jsonObj[QString::number(GUI_FIELD::LOADCELL_RAW)] = static_cast<int>(dataGse.loadcellRaw);
+            jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] = static_cast<double>(dataGse.tankPressure);
+            jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] = static_cast<double>(dataGse.tankTemperature);
+            jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = static_cast<double>(dataGse.fillingPressure);
+            jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = dataGse.disconnectActive;
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] = static_cast<int>(dataGse.loadcell1);
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] = static_cast<int>(dataGse.loadcell2);
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] = static_cast<int>(dataGse.loadcell3);
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] = static_cast<int>(dataGse.loadcell4);
 
             // Create a sub-object for status
             QJsonObject statusObj;
@@ -451,6 +458,10 @@ void Server::simulateJsonData() {
     jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";
     jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";
     jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";
+    jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] = "1";
+    jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] = "45";
+    jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = "3";
+
     jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = QString(serialPort->isOpen() ? "open" : "close");
     jsonObj["1234"] = 50;
 

@@ -18,7 +18,7 @@ ValveButton::ValveButton(Orientation orientation, QWidget *parent) : QLabel(pare
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     setObjectName("valveButton");
     resetStyle();
-    setState(Open);
+    setState(Close);
     
     
 }

@@ -19,6 +19,7 @@
 #include "components/DraggableButton.h"
 #include "ClientManager.h"
 #include "ControlPannelView.h"
+#include "RequestBuilder.h"
 #include <Log.h>
 
 

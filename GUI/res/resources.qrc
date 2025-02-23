@@ -18,5 +18,7 @@
         <file>images/prop-diagram-icarus.png</file>
         <file>images/prop-diagram-icarus-smaller.png</file>
         <file>images/prop-diagram-icarus.svg</file>
+        <file>images/prop_ica_bg.png</file>
+        <file>images/prop_ica_bg.svg</file>
     </qresource>
 </RCC>

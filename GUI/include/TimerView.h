@@ -6,9 +6,8 @@
 #include <QTimer>
 #include <QPushButton>
 #include <QLabel>
-#include <memory>
 
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 
 class TimerView : public QWidget {
     Q_OBJECT

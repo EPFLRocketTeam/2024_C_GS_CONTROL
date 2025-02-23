@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include <QMouseEvent>
+#include <qwidget.h>
 
 class DraggableButton : public QPushButton {
     Q_OBJECT
@@ -15,6 +16,7 @@ protected:
     
 private:    
     QPoint offset;
+    QWidget* parent;
 };
 
 #endif // DRAGGABLEBUTTON_H
