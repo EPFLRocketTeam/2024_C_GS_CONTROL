@@ -20,12 +20,12 @@ SerialView::SerialView(std::unique_ptr<QWidget> parent) : QFrame(parent.get()) {
 
     openButton = new QPushButton; 
     openButton->setObjectName("child");
-    openButton->setText("Toggle");
+    openButton->setText("Open");
 
     layout->addWidget(serialNameLabel, 1, Qt::AlignHCenter);
     layout->addWidget(openButton, 1);
     layout->addWidget(statusLed, 1, Qt::AlignHCenter);
-
+    updateStatus("unknown");
     setupStyle();
     setupConnections();
 

@@ -28,23 +28,52 @@ TelemetryView::TelemetryView(QWidget* parent) : QFrame(parent) {
     
     // addField(GUI_FIELD::DISCONNECT_ACTIVE);
     
-
-    QList<GUI_FIELD> fields = {
-        GUI_FIELD::HOPPER_N2O_PRESSURE,
-        HOPPER_ETH_PRESSURE,
-        HOPPER_N2O_VENT,
-        HOPPER_ETH_VENT,
-        HOPPER_N2O_TEMP,
-        HOPPER_ETH_MAIN,
+    /**/
+    /*QList<GUI_FIELD> fields = {*/
+    /*    GUI_FIELD::HOPPER_N2O_PRESSURE,*/
+    /*    HOPPER_ETH_PRESSURE,*/
+    /*    HOPPER_N2O_VENT,*/
+    /*    HOPPER_ETH_VENT,*/
+    /*    HOPPER_N2O_TEMP,*/
+    /*    HOPPER_ETH_MAIN,*/
+    /*    HOPPER_GNSS_LON,*/
+    /*    HOPPER_GNSS_LAT,*/
+    /*    HOPPER_SAT_NBR,*/
+    /*    HOPPER_GYRO_X,*/
+    /*    HOPPER_GYRO_Y,*/
+    /*    HOPPER_GYRO_Z,*/
+    /*    HOPPER_ACC_X,*/
+    /*    HOPPER_ACC_Y,*/
+    /*    HOPPER_ACC_Z,*/
+    /*    HOPPER_BARO,*/
+    /*    HOPPER_KALMAN_POS_X,*/
+    /*    HOPPER_KALMAN_POS_Y,*/
+    /*    HOPPER_KALMAN_POS_Z,*/
+    /*    HOPPER_KALMAN_YAW,*/
+    /*    HOPPER_KALMAN_PITCH,*/
+    /*    HOPPER_KALMAN_ROLL,*/
+    /*    HOPPER_GIMBAL_X,*/
+    /*    HOPPER_GIMBAL_Y,*/
+    /*    HOPPER_HV_VOLTAGE,*/
+    /*    HOPPER_AV_TEMP,*/
+    /*};*/
+    /*createSection("AV State", &fields);*/
+    QList<GUI_FIELD> gps = {
         HOPPER_GNSS_LON,
         HOPPER_GNSS_LAT,
         HOPPER_SAT_NBR,
+    };
+    createSection("GPS", &gps);
+    QList<GUI_FIELD> imu = {
         HOPPER_GYRO_X,
         HOPPER_GYRO_Y,
         HOPPER_GYRO_Z,
         HOPPER_ACC_X,
         HOPPER_ACC_Y,
         HOPPER_ACC_Z,
+    };
+    createSection("Imu", &imu);
+    QList<GUI_FIELD> position = {
         HOPPER_BARO,
         HOPPER_KALMAN_POS_X,
         HOPPER_KALMAN_POS_Y,
@@ -52,12 +81,17 @@ TelemetryView::TelemetryView(QWidget* parent) : QFrame(parent) {
         HOPPER_KALMAN_YAW,
         HOPPER_KALMAN_PITCH,
         HOPPER_KALMAN_ROLL,
+    };
+    createSection("Vehicule Spatial Data", &position);
+    QList<GUI_FIELD> tbd = {
         HOPPER_GIMBAL_X,
         HOPPER_GIMBAL_Y,
         HOPPER_HV_VOLTAGE,
         HOPPER_AV_TEMP,
     };
-    createSection("AV State", &fields);
+    createSection("TBD", &tbd);
+
+ 
     /**/
     /*fields = {*/
     /*    GUI_FIELD::GNSS_CHOICE,*/

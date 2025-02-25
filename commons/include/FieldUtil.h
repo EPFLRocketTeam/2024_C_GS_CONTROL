@@ -86,6 +86,7 @@ enum GUI_FIELD {
 	HOPPER_N2O_TEMP,        // 8 bits
 	HOPPER_N2O_VENT,        // 1 bit
 	HOPPER_ETH_VENT,        // 1 bit
+	HOPPER_N2_SOL,        // 1 bit
 	HOPPER_N2O_MAIN,        // 8 bits
 	HOPPER_ETH_MAIN,        // 8 bits
 	HOPPER_GNSS_LON,        // 32 bits (float)
@@ -111,7 +112,6 @@ enum GUI_FIELD {
 	HOPPER_AV_TEMP,         // 8 bits (AV temperature)
 	HOPPER_ID_CONFIG,       // 8 bits (configuration ID: PID, flight mode, etc.)
 	HOPPER_AV_STATE,        // 8 bits (AV state)
-	HOPPER_FIELD_COUNT,      // Total number of Hopper packet fields
 	UNKNOWN
 };
 
@@ -267,6 +267,9 @@ namespace fieldUtil
         case HOPPER_ETH_VENT:
             name = "HOPPER ETH VENT";
             break;
+	case HOPPER_N2_SOL:
+            name = "HOPPER N2 SOLENOID";
+            break;
         case HOPPER_N2O_MAIN:
             name = "HOPPER N2O MAIN";
             break;
@@ -342,6 +345,22 @@ namespace fieldUtil
         case HOPPER_AV_STATE:
             name = "HOPPER AV STATE";
             break;
+	case GUI_CMD_CALIBRATE:
+            name = "CALIBRATE COMMAND";
+            break;
+	case GUI_CMD_PRESSURIZE:
+            name = "PRESSURIZE COMMAND";
+            break;
+	case GUI_CMD_ARM:
+            name = "ARM COMMAND";
+            break;
+	case GUI_CMD_LAUNCH:
+            name = "LAUNCH COMMAND";
+            break;
+	case GUI_CMD_ABORT:
+            name = "ABORT COMMAND";
+            break;
+
 
         default:
             name = "UNKNOWN";
@@ -448,6 +467,8 @@ namespace fieldUtil
             return HOPPER_N2O_VENT;
         else if (fieldName == "HOPPER ETH VENT")
             return HOPPER_ETH_VENT;
+	else if (fieldName == "HOPPER N2 SOLENOID")
+            return HOPPER_N2_SOL;
         else if (fieldName == "HOPPER N2O MAIN")
             return HOPPER_N2O_MAIN;
         else if (fieldName == "HOPPER ETH MAIN")
@@ -498,6 +519,16 @@ namespace fieldUtil
             return HOPPER_ID_CONFIG;
         else if (fieldName == "HOPPER AV STATE")
             return HOPPER_AV_STATE;
+	else if (fieldName == "CALIBRATE COMMAND")
+	    return GUI_CMD_CALIBRATE;
+	else if (fieldName == "PRESSURIZE COMMAND")
+	    return GUI_CMD_PRESSURIZE;
+	else if (fieldName == "ARM COMMAND")
+	    return GUI_CMD_ARM;
+	else if (fieldName == "LAUNCH COMMAND")
+	    return GUI_CMD_LAUNCH;
+	else if (fieldName == "ABORT COMMAND")
+	    return GUI_CMD_ABORT;
 
         else
             return UNKNOWN;

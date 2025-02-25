@@ -39,33 +39,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 QHBoxLayout* MainWindow::createSectionsLayout() {
     QHBoxLayout *sectionsLayout = new QHBoxLayout();
 
-    QFrame *leftSection = new LeftView();
-    QFrame *middleSection = new MiddleView();
-    QFrame *rightSection = new RightView();
-    
-    // Instantiate a QMap with std::string keys and std::vector<std::string> values
-    QMap<std::string, std::vector<GUI_FIELD>> valvesMap;
-    QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap;
-    QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap;
+    ui_elements::init_views();
 
-    // Populate the QMap with key-value pairs
-    valvesMap.insert("Engine Valves", {GUI_FIELD::HOPPER_N2O_VENT, GUI_FIELD::HOPPER_ETH_VENT, GUI_FIELD::HOPPER_N2O_MAIN,
-        GUI_FIELD::HOPPER_ETH_MAIN});
-    valvesMap.insert("GSE Valves", {GUI_FIELD::GSE_VENT});
-    
-    pushButtonMap.insert("Command", {GUI_FIELD::CMD_1,GUI_FIELD::CMD_2, GUI_FIELD::CMD_3});
-    controlMap.insert("ValveControlButton", valvesMap);
-    controlMap.insert("QPushButton", pushButtonMap);
-
-    pannelSection = new ControlPannelView(this, &controlMap);
+        
+    pannelSection = new ControlPannelView(this, &ui_elements::controlMap);
     pannelSection->move(100, 300);
-
     replacePannelButton();
-
     
     QScrollArea* scrollArea = new QScrollArea;
-    TelemetryView* telemetryView = new TelemetryView;
-    scrollArea->setWidget(telemetryView);
+    scrollArea->setWidget(ui_elements::leftPlaceholder);
     scrollArea->setWidgetResizable(true);
     // Optionally hide the horizontal scroll bar if you only need vertical scrolling:
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -95,8 +77,8 @@ QHBoxLayout* MainWindow::createSectionsLayout() {
     "    background: none;"
     "}"    );
     sectionsLayout->addWidget(scrollArea, (100-mws::middleSectionWidth)/2);
-    sectionsLayout->addWidget(middleSection, mws::middleSectionWidth);
-    sectionsLayout->addWidget(rightSection, (100-mws::middleSectionWidth)/2);
+    sectionsLayout->addWidget(ui_elements::middlePlaceholder, mws::middleSectionWidth);
+    sectionsLayout->addWidget(ui_elements::rightPlaceholder, (100-mws::middleSectionWidth)/2);
     
 
     return sectionsLayout;

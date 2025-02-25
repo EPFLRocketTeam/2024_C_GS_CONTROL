@@ -5,7 +5,6 @@
 */
 
 #include <memory>
-#include <iostream>
 #include <algorithm>
 
 #include <QLabel>
@@ -19,7 +18,6 @@
 #include <QGridLayout>
 
 #include "ControlPannelView.h"
-#include "components/ToggleButton.h"
 #include "components/ValveControlButton.h"
 #include "MainWindow.h"
 #include "RequestBuilder.h"
@@ -142,8 +140,8 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
                 
                 RequestBuilder b;
                 b.setHeader(RequestType::POST);
-                b.addField("cmd", button->text()); 
-                b.addField("cmd_order", "1"); // TODO: The command order should not always be 1 ??
+                b.addField("cmd", fieldUtil::fieldNameToEnum(button->text())); 
+                b.addField("cmd_order", 1);
                 MainWindow::clientManager->send(b.toString());
             });
 

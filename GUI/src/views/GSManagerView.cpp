@@ -122,16 +122,18 @@ void GSManagerView::setupTimersSection() {
     // layout->addWidget(label_timers.get(), 1);
     QWidget *internalStucture = new QWidget();
     QHBoxLayout *innerLayout = new QHBoxLayout(internalStucture);
-    internalStucture->setMinimumWidth(250);
+    internalStucture->setMinimumWidth(100);
     // Set size policy to expand horizontally
     internalStucture->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
+    innerLayout->setSpacing(0);
     innerLayout->addWidget(timerViewAV, 1);
     innerLayout->addWidget(timerViewGSE, 1);
-
+// For the horizontal layout containing the timers:
+innerLayout->setContentsMargins(5, 0, 5, 0);
+innerLayout->setSpacing(0);
     internalStucture->setObjectName("child");
 
-    QLabel *title = new QLabel("Time Since Last Packets");
+    QLabel *title = new QLabel("Time Since Pckt.");
     title->setObjectName("child");
 
 
@@ -142,7 +144,8 @@ void GSManagerView::setupTimersSection() {
     //timersSection->setStyleSheet("background:yellow;");
 
     QVBoxLayout *timersLayout = new QVBoxLayout(timersSection);
-    
+ timersLayout->setContentsMargins(0, 0, 0, 0);
+timersLayout->setSpacing(0);   
     timersLayout->addWidget(title, 1, Qt::AlignHCenter);
     timersLayout->addWidget(internalStucture, 3, Qt::AlignHCenter);
 

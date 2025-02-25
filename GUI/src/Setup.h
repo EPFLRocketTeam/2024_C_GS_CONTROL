@@ -15,10 +15,11 @@
 #ifndef SETUP_H
 #define SETUP_H
 
-#include "DataView.h"
+#include "FieldUtil.h"
 #include "TelemetryView.h"
 #include "GSManagerView.h"
 #include "ValveControlView.h"
+#include <qframe.h>
 #include <qobject.h>
 #include <QFile>
 #include <QTextStream>
@@ -28,6 +29,27 @@
 using LeftView = TelemetryView;
 using MiddleView = ValveControlView;
 using RightView = GSManagerView;
+
+namespace ui_elements {
+// Instantiate a QMap with std::string keys and std::vector<std::string> values
+    inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", {GUI_FIELD::HOPPER_N2O_VENT, GUI_FIELD::HOPPER_ETH_VENT, 
+        GUI_FIELD::HOPPER_N2O_MAIN, GUI_FIELD::HOPPER_ETH_MAIN}}, 
+        {"GSE Valves", {GUI_FIELD::GSE_VENT}}};
+
+    inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_PRESSURIZE,
+                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT}}};
+    inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
+                                                                            {"QPushButton", pushButtonMap}};
+    inline QFrame *middlePlaceholder;
+    inline QFrame *leftPlaceholder;
+    inline QFrame *rightPlaceholder;
+    inline void init_views() {
+        middlePlaceholder = new ValveControlView();
+        leftPlaceholder = new TelemetryView();
+        rightPlaceholder = new GSManagerView();
+    }
+}
+
 
 
 // ----------------------------- MainWindow setup ------------------------------

@@ -11,6 +11,9 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+#define RF_PROTOCOL_ICARUS 1
+#define RF_PROTOCOL_FIREHORN 0
+
 namespace auth {
     typedef struct AuthKey_t {
         QString key;
