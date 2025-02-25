@@ -183,6 +183,9 @@ uint8_t getOrderIdFromGui(GUI_FIELD f) {
     case GUI_FIELD::HOPPER_N2O_MAIN:
         return CMD_ID::HOPPER_CMD_SERVO_N2O;
 
+    case GUI_FIELD::HOPPER_N2_SOL:
+        return CMD_ID::HOPPER_CMD_N2_SOL;
+
     case GUI_FIELD::GSE_VENT:
         return CMD_ID::GSE_CMD_VENT;
         

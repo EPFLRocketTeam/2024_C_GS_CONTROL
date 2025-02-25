@@ -24,11 +24,22 @@ struct Position {
         float y;
     };
 
+typedef struct  {
+    GUI_FIELD f;
+    Position p;
+    ValveButton::Orientation o;
+} ValveInfo;
+
+typedef struct  {
+    GUI_FIELD f;
+    Position p;
+} LabelInfo;
+
 class ValveControlView : public QFrame {
     Q_OBJECT
 
 public:
-    ValveControlView(QWidget *parent = nullptr);
+    ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, QWidget *parent = nullptr);
     virtual ~ValveControlView() {}
     
 protected:
@@ -44,6 +55,8 @@ private:
     void addComponent(QWidget* component,  float x, float y);
     void addCommandButton(const QString& label, float x, float y);
 
+    std::vector<ValveInfo> _valves;
+    std::vector<LabelInfo> _labels;
     ModuleLog _logger = ModuleLog("ValveControlView", LOG_FILE_PATH);
     std::unique_ptr<QSvgRenderer> svgRenderer;
     QMap<QWidget*, Position> componentsMap;

@@ -18,7 +18,7 @@ class TelemetryView : public QFrame {
     Q_OBJECT
 
 public:
-    TelemetryView(QWidget* parent = nullptr);
+    TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidget* parent = nullptr);
     
     virtual ~TelemetryView() {};
 

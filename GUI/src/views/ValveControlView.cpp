@@ -14,6 +14,7 @@
 
 #include "ValveControlView.h"
 #include "../Setup.h"
+#include "FieldUtil.h"
 #include "components/ValveButton.h"
 #include "components/DataLabel.h"
 #include "MainWindow.h"
@@ -21,10 +22,12 @@
 
 
 
-ValveControlView::ValveControlView(QWidget *parent) : QFrame(parent), svgRenderer(nullptr) {
+ValveControlView::ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, QWidget *parent) : QFrame(parent), svgRenderer(nullptr) {
     setContentsMargins(25, 25, 25, 25);
     setMinimumWidth(mws::middleSectionWidth / 100.0 * mws::width);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    _valves = valves;
+    _labels = labels;
     setSvgBackground(":/images/prop_ica_bg.svg");
     placeValves();
     placeCommandButtons();
@@ -33,20 +36,9 @@ ValveControlView::ValveControlView(QWidget *parent) : QFrame(parent), svgRendere
 }
 
 void ValveControlView::placeValves() {
-    
-    // GSE Valves
-    addButtonIcon(GUI_FIELD::GSE_VENT, 0.234569, 0.70366);
-    
-    //Vent Valves
-    addButtonIcon(GUI_FIELD::HOPPER_N2O_VENT, 0.50665, 0.337662, ValveButton::Orientation::Horizontal);
-    addButtonIcon(GUI_FIELD::HOPPER_ETH_VENT, 0.785838, 0.337301, ValveButton::Orientation::Horizontal);
-    
-    // Pressure Valves
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.645736, 0.139315, ValveButton::Orientation::Horizontal);
-    // Engine valves
-    addButtonIcon(GUI_FIELD::HOPPER_N2O_MAIN, 0.585838, 0.651712, ValveButton::Orientation::Vertical);
-    addButtonIcon(GUI_FIELD::HOPPER_ETH_MAIN, 0.703604, 0.651712, ValveButton::Orientation::Vertical);
-    
+    for(auto valveInfo : _valves) {
+        addButtonIcon(valveInfo.f, valveInfo.p.x, valveInfo.p.y, valveInfo.o);
+    }
 }
 
 void ValveControlView::addDataLabel(const GUI_FIELD field, float x, float y) {
@@ -55,20 +47,23 @@ void ValveControlView::addDataLabel(const GUI_FIELD field, float x, float y) {
 }
 
 void ValveControlView::placeDataLabels() {
-    //GSE top
-    addDataLabel(GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25);
-    addDataLabel(GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315);
-    //GSE bottom
-    addDataLabel(GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576);
-
-    //N2O top pressure   
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905);
-
-    //Engine tank pressure
-    addDataLabel(GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439);
-    addDataLabel(GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502);
-    addDataLabel(GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438);
-
+    for (auto labelInfo: _labels) {
+        addDataLabel(labelInfo.f, labelInfo.p.x, labelInfo.p.y);
+    }
+    /*//GSE top*/
+    /*addDataLabel(GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25);*/
+    /*addDataLabel(GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315);*/
+    /*//GSE bottom*/
+    /*addDataLabel(GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576);*/
+    /**/
+    /*//N2O top pressure   */
+    /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905);*/
+    /**/
+    /*//Engine tank pressure*/
+    /*addDataLabel(GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439);*/
+    /*addDataLabel(GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502);*/
+    /*addDataLabel(GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438);*/
+    /**/
     /*// Engine left pressure */
     /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE,  0.540116, 0.785047);*/
     /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.540116, 0.867824);*/
@@ -140,6 +135,7 @@ void ValveControlView::addButtonIcon(GUI_FIELD field ,float x, float y, ValveBut
    
     connect(button, &ValveButton::clicked, [button, field, this]() {
         RequestBuilder b;
+
         b.setHeader(RequestType::POST);
         b.addField("cmd",field);
         QString value = button->getState() == ValveButton::State::Close ? "90" : "0";
@@ -150,14 +146,7 @@ void ValveControlView::addButtonIcon(GUI_FIELD field ,float x, float y, ValveBut
         b.addField(QString::number(field), "unknown");
         MainWindow::clientManager->send(b.toString());
         _logger.info("Sent Valve Update", QString(R"(The valve of field %1 was clicked and the new %2 value was sent to server)")
-                     .arg(field).arg(value).toStdString());
-
-
-        /*
-        std::thread([&b]() {      
-                MainWindow::clientManager->send(b.toString());   
-                }).detach();
-                */
+                     .arg(fieldUtil::enumToFieldName(field)).arg(value).toStdString());
     });
     addComponent(button, x, y);
  

@@ -40,12 +40,68 @@ namespace ui_elements {
                                                         GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT}}};
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};
+    inline std::vector<ValveInfo> valves = {
+        {GUI_FIELD::GSE_VENT, {0.234569, 0.70366}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::HOPPER_N2O_VENT, {0.50665, 0.337662}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_ETH_VENT, {0.785838, 0.337301}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_N2_SOL, {0.645736, 0.139315}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_N2O_MAIN, {0.585838, 0.651712}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::HOPPER_ETH_MAIN, {0.703604, 0.651712}, ValveButton::Orientation::Vertical}
+    };
+
+    inline std::vector<LabelInfo> labels = {
+        {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
+        {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
+        {GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576},
+        {GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905},
+        {GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439},
+        {GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502},
+        {GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438}
+    };
+
+    inline QList<GUI_FIELD> gps = {
+        HOPPER_GNSS_LON,
+        HOPPER_GNSS_LAT,
+        HOPPER_SAT_NBR,
+    };
+    inline QList<GUI_FIELD> imu = {
+        HOPPER_GYRO_X,
+        HOPPER_GYRO_Y,
+        HOPPER_GYRO_Z,
+        HOPPER_ACC_X,
+        HOPPER_ACC_Y,
+        HOPPER_ACC_Z,
+    };
+    inline QList<GUI_FIELD> position = {
+        HOPPER_BARO,
+        HOPPER_KALMAN_POS_X,
+        HOPPER_KALMAN_POS_Y,
+        HOPPER_KALMAN_POS_Z,
+        HOPPER_KALMAN_YAW,
+        HOPPER_KALMAN_PITCH,
+        HOPPER_KALMAN_ROLL,
+    };
+    inline QList<GUI_FIELD> tbd = {
+        HOPPER_GIMBAL_X,
+        HOPPER_GIMBAL_Y,
+        HOPPER_HV_VOLTAGE,
+        HOPPER_AV_TEMP,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> data_sections = {
+    {"GPS", gps},
+    {"Imu", imu},
+    {"Vehicule Spatial Data", position},
+    {"TBD", tbd}
+    };
+
+
     inline QFrame *middlePlaceholder;
     inline QFrame *leftPlaceholder;
     inline QFrame *rightPlaceholder;
+
     inline void init_views() {
-        middlePlaceholder = new ValveControlView();
-        leftPlaceholder = new TelemetryView();
+        middlePlaceholder = new ValveControlView(valves, labels);
+        leftPlaceholder = new TelemetryView(data_sections);
         rightPlaceholder = new GSManagerView();
     }
 }
