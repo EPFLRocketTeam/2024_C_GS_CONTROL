@@ -150,6 +150,9 @@ std::optional<const QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, u
 uint8_t getOrderIdFromGui(GUI_FIELD f) {
     switch (f)
     {
+    case GUI_CMD_DISCONNECT:
+        return CMD_ID::GSE_CMD_DISCONNECT;
+
     case GUI_FIELD::GUI_CMD_CALIBRATE:
         return CMD_ID::HOPPER_CMD_CALIBRATE;
     

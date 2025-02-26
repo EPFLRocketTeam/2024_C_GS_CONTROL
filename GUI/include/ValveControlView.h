@@ -39,7 +39,8 @@ class ValveControlView : public QFrame {
     Q_OBJECT
 
 public:
-    ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, QWidget *parent = nullptr);
+    ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, 
+                     QString connectedBg, QString disconnectedBg, QWidget *parent = nullptr);
     virtual ~ValveControlView() {}
     
 protected:
@@ -55,6 +56,8 @@ private:
     void addComponent(QWidget* component,  float x, float y);
     void addCommandButton(const QString& label, float x, float y);
 
+    QString connectedBgPath;
+    QString disconnectedBgPath;
     std::vector<ValveInfo> _valves;
     std::vector<LabelInfo> _labels;
     ModuleLog _logger = ModuleLog("ValveControlView", LOG_FILE_PATH);

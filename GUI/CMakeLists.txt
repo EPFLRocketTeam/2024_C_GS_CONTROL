@@ -16,6 +16,7 @@ find_package(Qt6 COMPONENTS Widgets Core Network Svg Concurrent REQUIRED)
 set(SOURCES_GUI
     src/components/DataLabel.cpp
     src/components/DraggableButton.cpp
+    src/components/IcarusCommandsView.cpp
     src/components/ToggleButton.cpp
     src/components/ValveButton.cpp
     src/components/ValveControlButton.cpp
@@ -35,6 +36,7 @@ set(HEADERS_GUI
     src/FileLocation.h
     include/components/DataLabel.h
     include/components/DraggableButton.h
+    include/components/IcarusCommandsView.h
     include/components/ToggleButton.h
     include/components/ValveButton.h
     include/components/ValveControlButton.h

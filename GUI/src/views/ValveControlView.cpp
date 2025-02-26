@@ -22,13 +22,23 @@
 
 
 
-ValveControlView::ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, QWidget *parent) : QFrame(parent), svgRenderer(nullptr) {
+ValveControlView::ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels,
+                                   QString connectedBg, QString disconnectedBg, QWidget *parent) : QFrame(parent), svgRenderer(nullptr) {
     setContentsMargins(25, 25, 25, 25);
     setMinimumWidth(mws::middleSectionWidth / 100.0 * mws::width);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     _valves = valves;
     _labels = labels;
-    setSvgBackground(":/images/prop_ica_bg.svg");
+    connectedBgPath = connectedBg;
+    disconnectedBgPath = disconnectedBg;
+    MainWindow::clientManager->subscribe(GUI_FIELD::GSE_DISCONNECT_ACTIVE, [this](const QString& message) {
+        if (message == "1") {
+            setSvgBackground(disconnectedBgPath);
+        } else{
+            setSvgBackground(connectedBgPath);
+        }
+    });
+    setSvgBackground(connectedBgPath);
     placeValves();
     placeCommandButtons();
     placeDataLabels();
@@ -118,6 +128,7 @@ void ValveControlView::addCommandButton(const QString& label, float x, float y) 
 void ValveControlView::setSvgBackground(const QString& filePath) {
     // Load the SVG image
     svgRenderer = std::make_unique<QSvgRenderer>(filePath);
+    update();
 }
 
 void ValveControlView::addButtonIcon(GUI_FIELD field ,float x, float y, ValveButton::Orientation orientation) {

@@ -360,6 +360,9 @@ namespace fieldUtil
 	case GUI_CMD_ABORT:
             name = "ABORT COMMAND";
             break;
+	case GUI_CMD_DISCONNECT:
+	    name = "DISCONNECT COMMAND";
+	    break;
 
 
         default:
@@ -529,6 +532,8 @@ namespace fieldUtil
 	    return GUI_CMD_LAUNCH;
 	else if (fieldName == "ABORT COMMAND")
 	    return GUI_CMD_ABORT;
+	else if (fieldName == "DISCONNECT COMMAND")
+	    return GUI_CMD_DISCONNECT;
 
         else
             return UNKNOWN;

@@ -37,7 +37,7 @@ int start_client(int argc, char *argv[]) {
 
     MainWindow::clientManager = std::make_unique<ClientManager>(nullptr, network::serverIP, network::serverPort);    
     MainWindow mainWindow;
-    ui_elements::init_views();
+
     mainWindow.show();
     return app.exec();
 }

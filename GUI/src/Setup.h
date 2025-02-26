@@ -19,11 +19,15 @@
 #include "TelemetryView.h"
 #include "GSManagerView.h"
 #include "ValveControlView.h"
+#include "components/IcarusCommandsView.h"
+#include <qboxlayout.h>
 #include <qframe.h>
+#include <qnamespace.h>
 #include <qobject.h>
 #include <QFile>
 #include <QTextStream>
 #include <QException>
+#include <qpushbutton.h>
 #include <stdexcept>
 // ----------------------------- Setup Views -----------------------------------
 using LeftView = TelemetryView;
@@ -37,7 +41,8 @@ namespace ui_elements {
         {"GSE Valves", {GUI_FIELD::GSE_VENT}}};
 
     inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_PRESSURIZE,
-                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT}}};
+                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT}},
+                                                                {"GSE Command", {GUI_CMD_DISCONNECT}}};
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};
     inline std::vector<ValveInfo> valves = {
@@ -98,11 +103,22 @@ namespace ui_elements {
     inline QFrame *middlePlaceholder;
     inline QFrame *leftPlaceholder;
     inline QFrame *rightPlaceholder;
+    
+    inline QString connectedBackgroundImage = ":/images/prop_icarus_connect.svg";
+    inline QString disconnectedBackgroundImage = ":/images/prop_icarus_disconnect.svg";
 
     inline void init_views() {
-        middlePlaceholder = new ValveControlView(valves, labels);
+        middlePlaceholder = new ValveControlView(valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
         leftPlaceholder = new TelemetryView(data_sections);
-        rightPlaceholder = new GSManagerView();
+        QVBoxLayout* rightLayout = new QVBoxLayout;
+        rightLayout->setAlignment(Qt::AlignLeft);
+        rightLayout->addWidget(new GSManagerView());
+        QPushButton* b = new QPushButton("CLICK ME");
+        rightLayout->addWidget(new IcarusCommandsView);
+        rightLayout->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder = new QFrame();
+        rightPlaceholder->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder->setLayout(rightLayout);
     }
 }
 

@@ -20,5 +20,7 @@
         <file>images/prop-diagram-icarus.svg</file>
         <file>images/prop_ica_bg.png</file>
         <file>images/prop_ica_bg.svg</file>
+        <file>images/prop_icarus_connect.svg</file>
+        <file>images/prop_icarus_disconnect.svg</file>
     </qresource>
 </RCC>

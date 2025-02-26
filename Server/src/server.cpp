@@ -349,6 +349,7 @@ void Server::simulateJsonData() {
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] = "1";
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] = "45";
     jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = "3";
+    jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = "1";
 
     jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = QString(serialPort->isOpen() ? "open" : "close");
     jsonObj["1234"] = 50;
