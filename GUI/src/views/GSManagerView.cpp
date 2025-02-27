@@ -39,15 +39,16 @@ void GSManagerView::setupUI() {
 
     QWidget *wrapper = new QWidget; 
     QHBoxLayout *wrapperLayout = new QHBoxLayout(wrapper); 
+    wrapperLayout->setContentsMargins(0, 0, 0, 0);
     wrapperLayout->addWidget(timersSection, 1);
     wrapperLayout->addWidget(infoSection, 1);
-    wrapperLayout->setSpacing(15);
+    /*wrapperLayout->setSpacing(15);*/
     
 
     layout->addWidget(wrapper, 1);
     layout->addWidget(serialSection, 2);
- 
-    layout->addStretch(20);
+    layout->setContentsMargins(0, 0, 0, 0);
+    /*layout->addStretch(20);*/
 
 
     setupConnections();

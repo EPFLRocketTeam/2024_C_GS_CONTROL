@@ -1,31 +1,37 @@
-/** 
-    @authors M.Rochat
-    @date 26-02-2025
-    @brief QFrame displaying Icarus Spcific Commands
-*/
+#ifndef ICARUSCOMMANDSVIEW_H
+#define ICARUSCOMMANDSVIEW_H
 
-#ifndef ICARUS_COMMAND_PANNEL_H
-#define ICARUS_COMMAND_PANNEL_H
+#include "Log.h"
+#include <QWidget>
+#include <qframe.h>
 
-#include <memory>
+#include "FileLocation.h"
 
-#include <QLabel>
-#include <QVBoxLayout>
-
-#include "FieldUtil.h"
+class QLineEdit;
+class QPushButton;
 
 class IcarusCommandsView : public QFrame {
     Q_OBJECT
-
 public:
-    IcarusCommandsView(QWidget* parent = nullptr);
-    
-    virtual ~IcarusCommandsView() {};
+    IcarusCommandsView(QWidget *parent = nullptr);
+    ~IcarusCommandsView();
+
+private slots:
+    void onButtonClicked();
 
 private:
+    QLayout* setupCurrentValueLabels();
+    QLayout* setupGimbalSection();
+    QLayout* setupIDConfigSection();
 
-    QVBoxLayout* layout;
-    std::unique_ptr<QLabel> altitudeLabel;
+    QLineEdit* m_gimbalXLineEdit;
+    QLineEdit* m_gimbalYLineEdit;
+    QLineEdit* m_configLineEdit;
+    QPushButton* m_commandButton;
+    QPushButton* m_sendConfig;
+
+    ModuleLog _logger = ModuleLog("IcarusCommandsView", LOG_FILE_PATH);
 };
 
-#endif /* ICARUS_COMMAND_PANNEL_H */
+#endif // ICARUSCOMMANDSVIEW_H
+

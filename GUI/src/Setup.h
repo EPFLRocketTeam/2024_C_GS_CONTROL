@@ -113,8 +113,8 @@ namespace ui_elements {
         QVBoxLayout* rightLayout = new QVBoxLayout;
         rightLayout->setAlignment(Qt::AlignLeft);
         rightLayout->addWidget(new GSManagerView());
-        QPushButton* b = new QPushButton("CLICK ME");
         rightLayout->addWidget(new IcarusCommandsView);
+        rightLayout->addStretch(1);
         rightLayout->setContentsMargins(0, 0, 0, 0);
         rightPlaceholder = new QFrame();
         rightPlaceholder->setContentsMargins(0, 0, 0, 0);
@@ -186,7 +186,35 @@ namespace col
         )")
                                                       .arg(col::backgroundColorCode)
                                                       .arg("rgba(30, 35, 69, 225)")
-                                                      .arg(id); }
+                                                      .arg(id); 
+    }
+
+    inline QString labelStyle = QString("font-size: 14pt; color: %1;font-weight: 400;background: transparent;").arg(col::primary);
+    inline QString getButtonStyle(QString id) { 
+        return QString(R"(
+            QPushButton#%5 {
+            color: %4;
+            font: bold 14px;
+            background: %1;
+            border:2px solid %1;
+            border-radius: 10px;
+            }
+            QPushButton#%5:hover {
+                background-color: %3;     
+                
+            }
+            QPushButton#%5:pressed {
+                background-color: %2!important;     
+                border:2px solid %4;
+            }
+            
+        )")
+        .arg(col::complementary)
+        .arg(col::backgroundColorCode)
+        .arg(col::complementaryLighter)
+        .arg(col::primary)
+        .arg(id);
+    }
 } // namespace col
 
 #endif /* SETUP_H */

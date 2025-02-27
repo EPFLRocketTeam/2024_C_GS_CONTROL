@@ -2,17 +2,21 @@
 #include "MainWindow.h"
 #include "RequestBuilder.h"
 #include "../Setup.h"
+#include <qboxlayout.h>
 #include <qthread.h>
 
 SerialView::SerialView(std::unique_ptr<QWidget> parent) : QFrame(parent.get()) {
     setObjectName("SerialView");
-    setStyleSheet(col::defaultCardStyle("SerialView") + "#SerialView {margin-left: 8px;margin-right:8px;}");
+    setStyleSheet(col::defaultCardStyle("SerialView"));
     
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     
     isOpen = false;
-    layout = new QHBoxLayout(this);
-
+    QHBoxLayout* outterLayout = new QHBoxLayout(this);
+    outterLayout->setContentsMargins(5, 5, 5, 5);
+    layout = new QHBoxLayout();
+    outterLayout->addLayout(layout);
+    layout->setContentsMargins(0, 0, 0, 0);
     setupStatusLed();
 
     serialNameLabel = new QLabel(QString("Serial port used : %1").arg("-")); 
@@ -51,18 +55,18 @@ void SerialView::setupStyle() {
     openButton->setFixedHeight(35);
     openButton->setObjectName("openButton");
     QString style = QString(R"(
-        QPushButton#openButton {
+        QPushButton#%5 {
         color: %4;
         font: bold 14px;
         background: %1;
         border:2px solid %1;
         border-radius: 10px;
         }
-        QPushButton#openButton:hover {
+        QPushButton#%5:hover {
             background-color: %3;     
             
         }
-        QPushButton#openButton:pressed {
+        QPushButton#%5:pressed {
             background-color: %2!important;     
             border:2px solid %4;
         }
@@ -71,7 +75,8 @@ void SerialView::setupStyle() {
     .arg(col::complementary)
     .arg(col::backgroundColorCode)
     .arg(col::complementaryLighter)
-    .arg(col::primary);
+    .arg(col::primary)
+    .arg("openButton");
     openButton->setStyleSheet(style);
 }
 
