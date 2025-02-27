@@ -38,7 +38,7 @@ enum GUI_FIELD {
 	CHAMBER_PRESSURE,
 	AV_STATE,
 	GNSS_CHOICE,
-	FILLINGN2O,
+	GSE_FILLING_N2O,
 	VENT_GSE,
 	GSE_TANK_PRESSURE,
 	GSE_TANK_TEMPERATURE,
@@ -210,8 +210,8 @@ namespace fieldUtil
         case GNSS_CHOICE:
             name = "GNSS CHOICE";
             break;
-        case FILLINGN2O:
-            name = "FILLINGN2O";
+        case GSE_FILLING_N2O:
+            name = "GSE FILLING N2O";
             break;
         case VENT_GSE:
             name = "VENT GSE";
@@ -432,8 +432,8 @@ namespace fieldUtil
             return AV_STATE;
         else if (fieldName == "GNSS CHOICE")
             return GNSS_CHOICE;
-        else if (fieldName == "FILLINGN2O")
-            return FILLINGN2O;
+        else if (fieldName == "GSE FILLING N2O")
+            return GSE_FILLING_N2O;
         else if (fieldName == "VENT GSE")
             return VENT_GSE;
         else if (fieldName == "GSE TANK PRESSURE")

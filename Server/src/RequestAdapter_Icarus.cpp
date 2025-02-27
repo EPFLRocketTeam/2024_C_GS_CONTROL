@@ -84,7 +84,7 @@ std::optional<const QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, u
 
             // Create a sub-object for status
             QJsonObject statusObj;
-            statusObj[QString::number(GUI_FIELD::FILLINGN2O)] = static_cast<int>(dataGse.status.fillingN2O);
+            statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] = static_cast<int>(dataGse.status.fillingN2O);
             statusObj[QString::number(GUI_FIELD::GSE_VENT)] = static_cast<int>(dataGse.status.vent);
 
             // Add the sub-object to the main JSON object

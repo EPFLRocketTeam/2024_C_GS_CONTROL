@@ -11,14 +11,15 @@ DraggableButton::DraggableButton(QWidget *parent) : QPushButton("test button",pa
 void DraggableButton::mouseMoveEvent(QMouseEvent *event) {
     // Custom handling of mouse move event
     // Example: Print mouse position
-    int yOffset = -12;
-    int xOffset = 45;
+    int yOffset = -152;
+    int xOffset = -30;
     double w = 985.0;
-    double h = 847.0;
+    double h = 700;
 
     if(event->buttons() & Qt::LeftButton)
     {
         this->move(mapToParent(event->pos() - offset));
+        std::cout << (pos().x()) << " " << (pos().y()) << std::endl;
         std::cout << (pos().x()+xOffset)/w << " " << (pos().y()+yOffset)/h << std::endl;
     }
     // If you need to move the button based on mouse movement, you can adjust its position here

@@ -40,7 +40,7 @@ ValveControlView::ValveControlView(std::vector<ValveInfo> valves, std::vector<La
     });
     setSvgBackground(connectedBgPath);
     placeValves();
-    placeCommandButtons();
+    /*placeCommandButtons();*/
     placeDataLabels();
     /*DraggableButton *dButton = new DraggableButton(this);*/
 }
@@ -128,6 +128,7 @@ void ValveControlView::addCommandButton(const QString& label, float x, float y) 
 void ValveControlView::setSvgBackground(const QString& filePath) {
     // Load the SVG image
     svgRenderer = std::make_unique<QSvgRenderer>(filePath);
+    svgRenderer->setAspectRatioMode(Qt::AspectRatioMode::KeepAspectRatio);
     update();
 }
 
@@ -178,7 +179,6 @@ void ValveControlView::paintEvent(QPaintEvent *event) {
     // Ensure the background image is valid
     if (!svgRenderer || !svgRenderer->isValid()) return;
     
-    
     // Get content margins
     int marginLeft = contentsMargins().left();
     int marginRight = contentsMargins().right();
@@ -187,11 +187,26 @@ void ValveControlView::paintEvent(QPaintEvent *event) {
 
     int availableWidth = width() - marginLeft - marginRight;
     int availableHeight = height() - marginTop - marginBottom;
-    /*std::cout << availableWidth << " " << availableHeight << std::endl;*/
-    QRect targetRect(marginLeft, marginTop, availableWidth, availableHeight);
+    
+    // Get the intrinsic size of the SVG
+    QSize svgSize = svgRenderer->defaultSize();
+    
+    // Compute the scaling factor to keep the aspect ratio
+    double scaleFactor = qMin(static_cast<double>(availableWidth) / svgSize.width(),
+                              static_cast<double>(availableHeight) / svgSize.height());
+    
+    int targetWidth = svgSize.width() * scaleFactor;
+    int targetHeight = svgSize.height() * scaleFactor;
+    
+    // Center the target rect within the available area
+    int x = marginLeft + (availableWidth - targetWidth) / 2;
+    int y = marginTop + (availableHeight - targetHeight) / 2;
+    QRect targetRect(x, y, targetWidth, targetHeight);
     // Render the SVG into the available space
     svgRenderer->render(&painter, targetRect);
+    
 
+    
     for (auto it = componentsMap.begin(); it != componentsMap.end(); ++it) {
         QWidget* button = it.key();
         Position position = it.value();

@@ -22,6 +22,8 @@
 #include "components/IcarusCommandsView.h"
 #include <qboxlayout.h>
 #include <qframe.h>
+#include <qlist.h>
+#include <qmap.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <QFile>
@@ -46,12 +48,12 @@ namespace ui_elements {
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};
     inline std::vector<ValveInfo> valves = {
-        {GUI_FIELD::GSE_VENT, {0.234569, 0.70366}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::HOPPER_N2O_VENT, {0.50665, 0.337662}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::HOPPER_ETH_VENT, {0.785838, 0.337301}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::HOPPER_N2_SOL, {0.645736, 0.139315}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::HOPPER_N2O_MAIN, {0.585838, 0.651712}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::HOPPER_ETH_MAIN, {0.703604, 0.651712}, ValveButton::Orientation::Vertical}
+        {GUI_FIELD::GSE_VENT, {0.234569, 0.668}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::HOPPER_N2O_VENT, {0.50665, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_ETH_VENT, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_N2_SOL, {0.645736, 0.144315}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_N2O_MAIN, {0.585838, 0.638}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::HOPPER_ETH_MAIN, {0.703604, 0.638}, ValveButton::Orientation::Vertical}
     };
 
     inline std::vector<LabelInfo> labels = {
@@ -99,6 +101,17 @@ namespace ui_elements {
     {"TBD", tbd}
     };
 
+    inline QList<GUI_FIELD> gseDataFields = {
+        GSE_FILLING_N2O,
+        GSE_LOADCELL_1,
+        GSE_LOADCELL_2,
+        GSE_LOADCELL_3,
+        GSE_LOADCELL_4,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> gse_sections = {
+        {"GSE", gseDataFields}
+    };
+
 
     inline QFrame *middlePlaceholder;
     inline QFrame *leftPlaceholder;
@@ -114,6 +127,7 @@ namespace ui_elements {
         rightLayout->setAlignment(Qt::AlignLeft);
         rightLayout->addWidget(new GSManagerView());
         rightLayout->addWidget(new IcarusCommandsView);
+        rightLayout->addWidget(new TelemetryView(gse_sections));
         rightLayout->addStretch(1);
         rightLayout->setContentsMargins(0, 0, 0, 0);
         rightPlaceholder = new QFrame();

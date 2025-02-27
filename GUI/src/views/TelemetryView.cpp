@@ -26,7 +26,7 @@ TelemetryView::TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidge
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignTop);
-    
+    layout->setContentsMargins(0, 0, 0, 0);
     for (auto key: section_map.keys()) {
         createSection(key, &section_map[key]);
     }
