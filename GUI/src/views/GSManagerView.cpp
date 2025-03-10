@@ -48,7 +48,6 @@ void GSManagerView::setupUI() {
     layout->addWidget(wrapper, 1);
     layout->addWidget(serialSection, 2);
     layout->setContentsMargins(0, 0, 0, 0);
-    /*layout->addStretch(20);*/
 
 
     setupConnections();

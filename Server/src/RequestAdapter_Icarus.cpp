@@ -1,7 +1,5 @@
-#include "ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
-#include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "packet_helper.h"
 #include <iostream>
 #include <optional>
@@ -33,13 +31,13 @@ std::optional<const QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, u
 
             // Iterate over struct members and add them to the JSON object
             jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = static_cast<int>(dataAv.packet_nbr);
-            jsonObj[QString::number(GUI_FIELD::TIMESTAMP)] = static_cast<int>(dataAv.timestamp);
+            /*jsonObj[QString::number(GUI_FIELD::TIMESTAMP)] = static_cast<int>(dataAv.);*/
             jsonObj[QString::number(GUI_FIELD::GNSS_LON)] = static_cast<double>(dataAv.gnss_lon);
             jsonObj[QString::number(GUI_FIELD::GNSS_LAT)] = static_cast<double>(dataAv.gnss_lat);
             jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] = static_cast<double>(dataAv.gnss_alt);
-            jsonObj[QString::number(GUI_FIELD::GNSS_LON_R)] = static_cast<double>(dataAv.gnss_lon_r);
-            jsonObj[QString::number(GUI_FIELD::GNSS_LAT_R)] = static_cast<double>(dataAv.gnss_lat_r);
-            jsonObj[QString::number(GUI_FIELD::GNSS_ALT_R)] = static_cast<double>(dataAv.gnss_alt_r);
+            /*jsonObj[QString::number(GUI_FIELD::GNSS_LON_R)] = static_cast<double>(dataAv.gnss_lon_r);*/
+            /*jsonObj[QString::number(GUI_FIELD::GNSS_LAT_R)] = static_cast<double>(dataAv.gnss_lat_r);*/
+            /*jsonObj[QString::number(GUI_FIELD::GNSS_ALT_R)] = static_cast<double>(dataAv.gnss_alt_r);*/
             jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] = static_cast<double>(dataAv.gnss_vertical_speed);
             /*jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = static_cast<double>(dataAv.N2_pressure);*/
             /*jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = static_cast<double>(dataAv.fuel_pressure);*/
@@ -59,7 +57,7 @@ std::optional<const QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, u
             /*engineStateObj[QString::number(GUI_FIELD::MAIN_LOX)] = static_cast<int>(dataAv.engine_state.main_LOX);*/
             /*engineStateObj[QString::number(GUI_FIELD::MAIN_FUEL)] = static_cast<int>(dataAv.engine_state.main_fuel);*/
             /*engineStateObj[QString::number(GUI_FIELD::VENT_LOX)] = static_cast<int>(dataAv.engine_state.vent_LOX);*/
-            engineStateObj[QString::number(GUI_FIELD::VENT_FUEL)] = static_cast<int>(dataAv.engine_state.vent_fuel);
+            /*engineStateObj[QString::number(GUI_FIELD::VENT_FUEL)] = static_cast<int>(dataAv.engine_state.vent_fuel);*/
 
             // Add the sub-object to the main JSON object
             jsonObj[QString::number(GUI_FIELD::ENGINE_STATE)] = engineStateObj;
@@ -147,6 +145,8 @@ std::optional<const QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, u
     return jsonObj;
 }
 
+
+#if RF_PROTOCOL_ICARUS
 uint8_t getOrderIdFromGui(GUI_FIELD f) {
     switch (f)
     {
@@ -201,3 +201,65 @@ uint8_t getOrderIdFromGui(GUI_FIELD f) {
         break;
     }
 }
+#endif
+
+#if RF_PROTOCOL_FIREHORN
+uint8_t getOrderIdFromGui(GUI_FIELD f) {
+    switch (f)
+    {
+    case GUI_CMD_DISCONNECT:
+        return CMD_ID::GSE_CMD_DISCONNECT;
+
+    case GUI_FIELD::GUI_CMD_CALIBRATE:
+        return CMD_ID::AV_CMD_CALIBRATE;
+    
+    case GUI_FIELD::GUI_CMD_PRESSURIZE:
+        return CMD_ID::AV_CMD_PRESSURIZE;
+
+    case GUI_FIELD::GUI_CMD_RECOVER:
+        return CMD_ID::AV_CMD_RECOVER;
+
+    case GUI_FIELD::GUI_CMD_MANUAL_DEPLOY:
+        return CMD_ID::AV_CMD_MANUAL_DEPLOY;
+
+    case GUI_FIELD::GUI_CMD_IGNITION:
+        return CMD_ID::AV_CMD_IGNITION;
+
+    case GUI_FIELD::GUI_CMD_ARM:
+        return CMD_ID::AV_CMD_ARM;
+
+    case GUI_FIELD::GUI_CMD_ABORT:
+        return CMD_ID::AV_CMD_ABORT;
+
+    case GUI_FIELD::VENT_LOX:
+        return CMD_ID::AV_CMD_VENT_LOX;
+
+    case GUI_FIELD::VENT_FUEL:
+        return CMD_ID::AV_CMD_VENT_FUEL;
+    
+    case GUI_FIELD::MAIN_LOX:
+        return CMD_ID::AV_CMD_MAIN_LOX;
+
+    case GUI_FIELD::MAIN_FUEL:
+        return CMD_ID::AV_CMD_MAIN_FUEL;
+
+    case GUI_FIELD::IGNITER_FUEL:
+        return CMD_ID::AV_CMD_IGNITER_FUEL;
+
+    case GUI_FIELD::IGNITER_LOX:
+        return CMD_ID::AV_CMD_IGNITER_LOX;
+
+    case GUI_FIELD::GUI_CMD_FILLING_LOX:
+        return CMD_ID::GSE_CMD_FILLING_LOX;
+
+    case GUI_FIELD::GSE_VENT:
+        return CMD_ID::GSE_CMD_VENT;
+    
+        
+
+    default:
+        throw std::invalid_argument("Invalid GUI_FIELD, no command matching");
+        break;
+    }
+}
+#endif

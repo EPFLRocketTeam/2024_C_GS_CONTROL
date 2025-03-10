@@ -36,6 +36,11 @@ using LeftView = TelemetryView;
 using MiddleView = ValveControlView;
 using RightView = GSManagerView;
 
+
+#define ICARUS_GUI 0
+#define FIREHORN_GUI 1
+
+#if ICARUS_GUI 
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
     inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", {GUI_FIELD::HOPPER_N2O_VENT, GUI_FIELD::HOPPER_ETH_VENT, 
@@ -135,7 +140,109 @@ namespace ui_elements {
         rightPlaceholder->setLayout(rightLayout);
     }
 }
+#endif
 
+#if FIREHORN_GUI
+namespace ui_elements {
+// Instantiate a QMap with std::string keys and std::vector<std::string> values
+    inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", 
+        {
+        GUI_FIELD::MAIN_LOX,
+        GUI_FIELD::MAIN_FUEL, 
+        GUI_FIELD::VENT_LOX,
+        GUI_FIELD::VENT_FUEL,
+        GUI_FIELD::IGNITER_LOX,
+        GUI_FIELD::IGNITER_FUEL,
+        }}, 
+        {"GSE Valves", {GUI_FIELD::GSE_VENT}}};
+
+    inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_RECOVER,GUI_CMD_PRESSURIZE,
+                                                        GUI_CMD_ARM, GUI_CMD_IGNITION, GUI_CMD_ABORT, GUI_CMD_MANUAL_DEPLOY}},
+                                                                {"GSE Command", {GUI_CMD_DISCONNECT, GUI_CMD_FILLING_LOX}}};
+    inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
+                                                                            {"QPushButton", pushButtonMap}};
+    inline std::vector<ValveInfo> valves = {
+        {GUI_FIELD::GSE_VENT, {0.234569, 0.668}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::MAIN_LOX, {0.50665, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_LOX, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::MAIN_FUEL, {0.645736, 0.144315}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_FUEL, {0.585838, 0.638}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_LOX, {0.703604, 0.638}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_FUEL, {0.703604, 0.738}, ValveButton::Orientation::Vertical}
+    };
+
+    inline std::vector<LabelInfo> labels = {
+        {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
+        {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
+        {GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576},
+        {GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905},
+        {GUI_FIELD::N2_PRESSURE, 0.447, 0.439},
+        {GUI_FIELD::FUEL_PRESSURE, 0.447, 0.502},
+        {GUI_FIELD::LOX_PRESSURE, 0.893, 0.438},
+        {GUI_FIELD::LOX_INJ_PRESSURE, 0.893, 0.438},
+        {GUI_FIELD::FUEL_INJ_PRESSURE, 0.893, 0.438},
+        {GUI_FIELD::FUEL_LEVEL, 0.893, 0.438},
+        {GUI_FIELD::LOX_LEVEL, 0.893, 0.438},
+        {GUI_FIELD::LOX_TEMP, 0.893, 0.438},
+        {GUI_FIELD::N2_TEMP, 0.893, 0.438},
+        {GUI_FIELD::LOX_INJ_TEMP, 0.893, 0.438},
+    };
+
+    inline QList<GUI_FIELD> gps = {
+        GNSS_LON,
+        GNSS_LAT,
+        GNSS_ALT,
+        GNSS_VERTICAL_SPEED,
+    };
+    
+    inline QList<GUI_FIELD> tbd = {
+        AV_STATE,
+        LPB_VOLTAGE,
+        HPB_VOLTAGE,
+        AV_FC_TEMP,
+        AMBIENT_TEMP,
+        CAM_REC,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> data_sections = {
+    {"GPS", gps},
+    {"TBD", tbd}
+    };
+
+    inline QList<GUI_FIELD> gseDataFields = {
+        GSE_FILLING_N2O,
+        GSE_LOADCELL_1,
+        GSE_LOADCELL_2,
+        GSE_LOADCELL_3,
+        GSE_LOADCELL_4,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> gse_sections = {
+        {"GSE", gseDataFields}
+    };
+
+
+    inline QFrame *middlePlaceholder;
+    inline QFrame *leftPlaceholder;
+    inline QFrame *rightPlaceholder;
+    
+    inline QString connectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
+    inline QString disconnectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
+
+    inline void init_views() {
+        middlePlaceholder = new ValveControlView(valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
+        leftPlaceholder = new TelemetryView(data_sections);
+        QVBoxLayout* rightLayout = new QVBoxLayout;
+        rightLayout->setAlignment(Qt::AlignLeft);
+        rightLayout->addWidget(new GSManagerView());
+        // rightLayout->addWidget(new IcarusCommandsView);
+        rightLayout->addWidget(new TelemetryView(gse_sections));
+        rightLayout->addStretch(1);
+        rightLayout->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder = new QFrame();
+        rightPlaceholder->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder->setLayout(rightLayout);
+    }
+}
+#endif
 
 
 // ----------------------------- MainWindow setup ------------------------------
