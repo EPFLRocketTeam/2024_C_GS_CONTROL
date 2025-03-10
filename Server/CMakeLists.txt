@@ -52,7 +52,6 @@ target_link_libraries(${PROJECT_NAME}_lib
 # Create the executable
 add_executable(${PROJECT_NAME} src/main.cpp)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE RF_PROTOCOL_FIREHORN)
 # Link the executable with the library
 target_link_libraries(${PROJECT_NAME} 
     PRIVATE 

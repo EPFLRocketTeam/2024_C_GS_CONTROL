@@ -390,7 +390,6 @@ void Server::simulateJsonData() {
     /*// Send the JSON string to all connected clients*/
     /*std::cout << "Fake data sent" << std::endl;*/
     /*updateSubscriptions(jsonObj);*/
-     av_downlink_unpacked packet;
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -404,6 +403,8 @@ void Server::simulateJsonData() {
     std::uniform_real_distribution<float> distVoltage(0.0f, 50.0f);
     std::uniform_int_distribution<int> distState(0, 255);
     
+    #ifdef RF_PROTOCOL_FIREHORN
+    av_downlink_unpacked packet;
     packet.packet_nbr = distPacketNbr(gen);
     packet.gnss_lon = distCoord(gen);
     packet.gnss_lat = distCoord(gen);
@@ -425,14 +426,14 @@ void Server::simulateJsonData() {
     packet.av_state = static_cast<uint8_t>(distState(gen));
     packet.cam_rec = static_cast<uint8_t>(distState(gen));
     handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
-
+    #endif
 
     std::uniform_int_distribution<int> distBool(0, 1);
     PacketGSE_downlink gsePacket;
     gsePacket.tankPressure    = distPressure(gen);
     gsePacket.tankTemperature = distTemp(gen);
     gsePacket.fillingPressure = distTemp(gen);
-    gsePacket.status= {(uint8_t)distTemp(gen), (uint8_t)distTemp(gen)};
+    gsePacket.status= {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};
     gsePacket.disconnectActive = static_cast<bool>(distBool(gen));
     gsePacket.loadcell1 = distTemp(gen);
     gsePacket.loadcell2 = distTemp(gen);

@@ -77,6 +77,7 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
 
             // Add primitive data members to JSON object
             jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] = QString::number(static_cast<double>(dataGse.tankPressure));
+            jsonObj[QString::number(GUI_FIELD::GSE_TIMER)] = QString("1");
             jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] = QString::number(static_cast<double>(dataGse.tankTemperature));
             jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = QString::number(static_cast<double>(dataGse.fillingPressure));
             jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = QString::number(dataGse.disconnectActive);
@@ -108,6 +109,7 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
             // Create a JSON object and fill it with the Hopper packet's fields.
             QJsonObject jsonObj;
             jsonObj[QString::number(GUI_FIELD::HOPPER_PACKET_NBR)]   = static_cast<int>(dataHopper.packet_nbr);
+            jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
             jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)]   = static_cast<int>(dataHopper.N2O_pressure);
             jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_PRESSURE)]   = static_cast<int>(dataHopper.ETH_pressure);
             jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_TEMP)]       = static_cast<int>(dataHopper.N2O_temp);
@@ -152,53 +154,56 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
 
 
 #if RF_PROTOCOL_ICARUS
-uint8_t getOrderIdFromGui(GUI_FIELD f) {
+TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     switch (f)
     {
     case GUI_CMD_DISCONNECT:
-        return CMD_ID::GSE_CMD_DISCONNECT;
+        return {CMD_ID::GSE_CMD_DISCONNECT, GSE_TELEMETRY};
 
     case GUI_FIELD::GUI_CMD_CALIBRATE:
-        return CMD_ID::HOPPER_CMD_CALIBRATE;
+        return {CMD_ID::HOPPER_CMD_CALIBRATE, HOPPER_DOWNLINK};
     
     case GUI_FIELD::GUI_CMD_PRESSURIZE:
-        return CMD_ID::HOPPER_CMD_PRESSURIZE;
+        return {CMD_ID::HOPPER_CMD_PRESSURIZE, HOPPER_DOWNLINK};
 
     case GUI_FIELD::GUI_CMD_LAUNCH:
-        return CMD_ID::HOPPER_CMD_LAUNCH;
+        return {CMD_ID::HOPPER_CMD_LAUNCH, HOPPER_DOWNLINK};
 
     case GUI_FIELD::GUI_CMD_ARM:
-        return CMD_ID::HOPPER_CMD_ARM;
+        return {CMD_ID::HOPPER_CMD_ARM, HOPPER_DOWNLINK};
 
     case GUI_FIELD::GUI_CMD_ABORT:
-        return CMD_ID::HOPPER_CMD_ABORT;
+        return {CMD_ID::HOPPER_CMD_ABORT, HOPPER_DOWNLINK};
 
     case GUI_FIELD::HOPPER_N2O_VENT:
-        return CMD_ID::HOPPER_CMD_VENT_N2O;
+        return {CMD_ID::HOPPER_CMD_VENT_N2O, HOPPER_DOWNLINK};
 
     case GUI_FIELD::HOPPER_ETH_VENT:
-        return CMD_ID::HOPPER_CMD_VENT_FUEL;
+        return {CMD_ID::HOPPER_CMD_VENT_FUEL, HOPPER_DOWNLINK};
     
     case GUI_FIELD::GUI_CMD_GIMBALL_X:
-        return CMD_ID::HOPPER_CMD_GIMBALL_X;
+        return {CMD_ID::HOPPER_CMD_GIMBALL_X, HOPPER_DOWNLINK};
 
     case GUI_FIELD::GUI_CMD_GIMBALL_Y:
-        return CMD_ID::HOPPER_CMD_GIMBALL_Y;
+        return {CMD_ID::HOPPER_CMD_GIMBALL_Y, HOPPER_DOWNLINK};
 
     case GUI_FIELD::HOPPER_ETH_MAIN:
-        return CMD_ID::HOPPER_CMD_SERVO_FUEL;
+        return {CMD_ID::HOPPER_CMD_SERVO_FUEL, HOPPER_DOWNLINK};
 
     case GUI_FIELD::HOPPER_N2O_MAIN:
-        return CMD_ID::HOPPER_CMD_SERVO_N2O;
+        return {CMD_ID::HOPPER_CMD_SERVO_N2O, HOPPER_DOWNLINK};
 
     case GUI_FIELD::HOPPER_N2_SOL:
-        return CMD_ID::HOPPER_CMD_N2_SOL;
+        return {CMD_ID::HOPPER_CMD_N2_SOL, HOPPER_DOWNLINK};
 
     case GUI_FIELD::GSE_VENT:
-        return CMD_ID::GSE_CMD_VENT;
-    
+        return {CMD_ID::GSE_CMD_VENT, GSE_TELEMETRY};
+
+    case GUI_FIELD::GSE_FILLING_N2O:
+        return {CMD_ID::GSE_CMD_FILLING_N2O, GSE_TELEMETRY};
+
     case GUI_FIELD::HOPPER_ID_CONFIG:
-        return CMD_ID::HOPPER_CMD_ID_CONFIG;
+        return {CMD_ID::HOPPER_CMD_ID_CONFIG, HOPPER_DOWNLINK};
         
 
     default:

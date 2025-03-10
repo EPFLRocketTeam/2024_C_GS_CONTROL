@@ -48,7 +48,7 @@ namespace ui_elements {
         {"GSE Valves", {GUI_FIELD::GSE_VENT}}};
 
     inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_PRESSURIZE,
-                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT}},
+                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT, GUI_CMD_FILLING_N2O}},
                                                                 {"GSE Command", {GUI_CMD_DISCONNECT}}};
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};

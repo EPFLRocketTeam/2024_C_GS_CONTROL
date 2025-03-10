@@ -80,6 +80,7 @@ enum GUI_FIELD {
   GUI_CMD_VENT_LOX,
   GUI_CMD_VENT_FUEL,
   GUI_CMD_PRESSURIZE,
+  GUI_CMD_FILLING_N2O,
   GUI_CMD_FILLING_LOX,
   GUI_CMD_VENT,
   GUI_CMD_VENT_N2O,
@@ -398,6 +399,10 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_FILLING_LOX:
     name = "FILLING LOX";
     break;
+  case GUI_CMD_FILLING_N2O:
+    name = "FILLING N2O";
+    break;
+
   default:
     name = "UNKNOWN";
     break;
@@ -588,6 +593,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_DISCONNECT;
   else if (fieldName == "FILLING LOX")
     return GUI_CMD_FILLING_LOX;
+  else if (fieldName == "FILLING N2O")
+    return GUI_CMD_FILLING_N2O;
   else
     return UNKNOWN;
 }
