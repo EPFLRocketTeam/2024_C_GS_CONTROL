@@ -34,35 +34,36 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
             memcpy(&dataAv, data, sizeof(dataAv));
 
             
-    jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = QString::number(static_cast<int>(dataAv.packet_nbr));
-    jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
-    jsonObj[QString::number(GUI_FIELD::GNSS_LON)] = QString::number(static_cast<double>(dataAv.gnss_lon));
-    jsonObj[QString::number(GUI_FIELD::GNSS_LAT)] = QString::number(static_cast<double>(dataAv.gnss_lat));
-    jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] = QString::number(static_cast<double>(dataAv.gnss_alt));
-    jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] = QString::number(static_cast<int>(dataAv.gnss_vertical_speed));
-    jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = QString::number(static_cast<double>(dataAv.N2_pressure));
-    jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = QString::number(static_cast<double>(dataAv.fuel_pressure));
-    jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] = QString::number(static_cast<double>(dataAv.LOX_pressure));
-    jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] = QString::number(static_cast<double>(dataAv.fuel_level));
-    jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] = QString::number(static_cast<double>(dataAv.LOX_level));
-    jsonObj[QString::number(GUI_FIELD::N2_TEMP)] = QString::number(static_cast<int>(dataAv.N2_temp));
-    jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] = QString::number(static_cast<int>(dataAv.LOX_temp));
-    jsonObj[QString::number(GUI_FIELD::LOX_INJ_TEMP)] = QString::number(static_cast<int>(dataAv.LOX_inj_temp));
-    jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] = QString::number(static_cast<double>(dataAv.lpb_voltage));
-    jsonObj[QString::number(GUI_FIELD::HPB_VOLTAGE)] = QString::number(static_cast<double>(dataAv.hpb_voltage));
-    jsonObj[QString::number(GUI_FIELD::AV_FC_TEMP)] = QString::number(static_cast<int>(dataAv.av_fc_temp));
-    jsonObj[QString::number(GUI_FIELD::AMBIENT_TEMP)] = QString::number(static_cast<int>(dataAv.ambient_temp));
-    
-    int engine_states = static_cast<int>(dataAv.engine_state);
-    jsonObj[QString::number(GUI_FIELD::IGNITER_LOX)] = QString::number((engine_states & ENGINE_STATE_IGN_LOX) > 0 ? 1 : 0);
-    jsonObj[QString::number(GUI_FIELD::IGNITER_FUEL)] = QString::number((engine_states & ENGINE_STATE_IGN_FUEL) > 0 ? 1 : 0);
-    jsonObj[QString::number(GUI_FIELD::VENT_LOX)] = QString::number((engine_states & ENGINE_STATE_VENT_LOX) > 0 ? 1 : 0);
-    jsonObj[QString::number(GUI_FIELD::VENT_FUEL)] = QString::number((engine_states & ENGINE_STATE_VENT_FUEL) > 0 ? 1 : 0);
-    jsonObj[QString::number(GUI_FIELD::MAIN_LOX)] = QString::number((engine_states & ENGINE_STATE_MAIN_LOX) > 0 ? 1 : 0);
-    jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = QString::number((engine_states & ENGINE_STATE_MAIN_FUEL) > 0 ? 1 : 0);
-    
-    jsonObj[QString::number(GUI_FIELD::AV_STATE)] = QString::number(static_cast<int>(dataAv.av_state));
-    jsonObj[QString::number(GUI_FIELD::CAM_REC)] = QString::number(static_cast<int>(dataAv.cam_rec));            QJsonObject engineStateObj;
+            jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = QString::number(static_cast<int>(dataAv.packet_nbr));
+            jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
+            jsonObj[QString::number(GUI_FIELD::GNSS_LON)] = QString::number(static_cast<double>(dataAv.gnss_lon));
+            jsonObj[QString::number(GUI_FIELD::GNSS_LAT)] = QString::number(static_cast<double>(dataAv.gnss_lat));
+            jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] = QString::number(static_cast<double>(dataAv.gnss_alt));
+            jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] = QString::number(static_cast<int>(dataAv.gnss_vertical_speed));
+            jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = QString::number(static_cast<double>(dataAv.N2_pressure));
+            jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = QString::number(static_cast<double>(dataAv.fuel_pressure));
+            jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] = QString::number(static_cast<double>(dataAv.LOX_pressure));
+            jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] = QString::number(static_cast<double>(dataAv.fuel_level));
+            jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] = QString::number(static_cast<double>(dataAv.LOX_level));
+            jsonObj[QString::number(GUI_FIELD::N2_TEMP)] = QString::number(static_cast<int>(dataAv.N2_temp));
+            jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] = QString::number(static_cast<int>(dataAv.LOX_temp));
+            jsonObj[QString::number(GUI_FIELD::LOX_INJ_TEMP)] = QString::number(static_cast<int>(dataAv.LOX_inj_temp));
+            jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] = QString::number(static_cast<double>(dataAv.lpb_voltage));
+            jsonObj[QString::number(GUI_FIELD::HPB_VOLTAGE)] = QString::number(static_cast<double>(dataAv.hpb_voltage));
+            jsonObj[QString::number(GUI_FIELD::AV_FC_TEMP)] = QString::number(static_cast<int>(dataAv.av_fc_temp));
+            jsonObj[QString::number(GUI_FIELD::AMBIENT_TEMP)] = QString::number(static_cast<int>(dataAv.ambient_temp));
+            
+            int engine_states = static_cast<int>(dataAv.engine_state);
+            jsonObj[QString::number(GUI_FIELD::IGNITER_LOX)] = QString::number((engine_states & ENGINE_STATE_IGN_LOX) > 0 ? 1 : 0);
+            jsonObj[QString::number(GUI_FIELD::IGNITER_FUEL)] = QString::number((engine_states & ENGINE_STATE_IGN_FUEL) > 0 ? 1 : 0);
+            jsonObj[QString::number(GUI_FIELD::VENT_LOX)] = QString::number((engine_states & ENGINE_STATE_VENT_LOX) > 0 ? 1 : 0);
+            jsonObj[QString::number(GUI_FIELD::VENT_FUEL)] = QString::number((engine_states & ENGINE_STATE_VENT_FUEL) > 0 ? 1 : 0);
+            jsonObj[QString::number(GUI_FIELD::MAIN_LOX)] = QString::number((engine_states & ENGINE_STATE_MAIN_LOX) > 0 ? 1 : 0);
+            jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = QString::number((engine_states & ENGINE_STATE_MAIN_FUEL) > 0 ? 1 : 0);
+            
+            jsonObj[QString::number(GUI_FIELD::AV_STATE)] = QString::number(static_cast<int>(dataAv.av_state));
+            jsonObj[QString::number(GUI_FIELD::CAM_REC)] = QString::number(static_cast<int>(dataAv.cam_rec));            
+            QJsonObject engineStateObj;
             // Add the sub-object to the main JSON object
             /*jsonObj[QString::number(GUI_FIELD::ENGINE_STATE)] = engineStateObj;*/
             break;
@@ -75,19 +76,19 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
             memcpy(&dataGse, data, sizeof(PacketGSE_downlink));
 
             // Add primitive data members to JSON object
-            jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] = static_cast<double>(dataGse.tankPressure);
-            jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] = static_cast<double>(dataGse.tankTemperature);
-            jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = static_cast<double>(dataGse.fillingPressure);
-            jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = dataGse.disconnectActive;
-            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] = static_cast<int>(dataGse.loadcell1);
-            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] = static_cast<int>(dataGse.loadcell2);
-            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] = static_cast<int>(dataGse.loadcell3);
-            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] = static_cast<int>(dataGse.loadcell4);
+            jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] = QString::number(static_cast<double>(dataGse.tankPressure));
+            jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] = QString::number(static_cast<double>(dataGse.tankTemperature));
+            jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = QString::number(static_cast<double>(dataGse.fillingPressure));
+            jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = QString::number(dataGse.disconnectActive);
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] = QString::number(static_cast<int>(dataGse.loadcell1));
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] = QString::number(static_cast<int>(dataGse.loadcell2));
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] = QString::number(static_cast<int>(dataGse.loadcell3));
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] = QString::number(static_cast<int>(dataGse.loadcell4));
 
             // Create a sub-object for status
             QJsonObject statusObj;
-            statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] = static_cast<int>(dataGse.status.fillingN2O);
-            statusObj[QString::number(GUI_FIELD::GSE_VENT)] = static_cast<int>(dataGse.status.vent);
+            statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] = QString::number(static_cast<int>(dataGse.status.fillingN2O));
+            statusObj[QString::number(GUI_FIELD::GSE_VENT)] = QString::number(static_cast<int>(dataGse.status.vent));
 
             // Add the sub-object to the main JSON object
             jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;

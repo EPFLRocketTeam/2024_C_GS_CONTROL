@@ -150,7 +150,7 @@ void ValveControlView::addButtonIcon(GUI_FIELD field ,float x, float y, ValveBut
 
         b.setHeader(RequestType::POST);
         b.addField("cmd",field);
-        QString value = button->getState() == ValveButton::State::Close ? "90" : "0";
+        int value = button->getState() == ValveButton::State::Close ? 1 : 0;
         b.addField("cmd_order", value);
         MainWindow::clientManager->send(b.toString());
         b.clear();

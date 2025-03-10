@@ -33,11 +33,11 @@ ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent) : QWidge
         RequestBuilder b = RequestBuilder();
                     b.setHeader(RequestType::POST);
         b.addField("cmd", m_fieldSensitivity);
-        b.addField("cmd_order", m_checked ? "open" : "close");
+        b.addField("cmd_order", m_checked ? 1 : 0);
         MainWindow::clientManager->send(b.toString()); 
         b.clear();
         b.setHeader(RequestType::INTERNAL);
-        b.addField(QString::number(m_fieldSensitivity), "unkown");;
+        b.addField(QString::number(m_fieldSensitivity), "unknown");;
         MainWindow::clientManager->send(b.toString());
     });
 }
@@ -50,7 +50,7 @@ void ToggleButton::updateState(const QString& res) {
             update();
             toggleCallback(); 
         }
-        else if (res == "unkown") {
+        else if (res == "unknown") {
             setUnknown();
         } else {
             m_state = Open;

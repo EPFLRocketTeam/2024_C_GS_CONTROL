@@ -14,8 +14,8 @@
 #include <QJsonObject>
 #include <sqlite3.h>
 #include <random>
+#include <QSerialPortInfo>
 
-#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "../Capsule/src/capsule.h"
 #include "FieldUtil.h"
@@ -36,7 +36,7 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
 
     setup_db();
 
-    /*openSerialPort();*/
+    openSerialPort();
 }
 
 
@@ -74,26 +74,41 @@ void Server::openSerialPort() {
     int ctr = 0;
     serialPort->setBaudRate(QSerialPort::Baud115200);
     QString serial_port_name = "";
-    if (!serialPort->isOpen()) {
-        do {
-            serial_port_name = "ttyACM" + QString::number(ctr++);
+    // First try ttyACM ports.
+    bool foundPort = false;
+    if (serialPort->isOpen()) {
+        return;
+    }
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+        _serverLogger.info("PORT", info.portName().toStdString());
+        if (info.portName().startsWith("ttyACM")) {
+            serial_port_name = info.portName();
             serialPort->setPortName(serial_port_name);
-        } while (!serialPort->open(QIODevice::ReadWrite) && ctr <= 50);
-        if (!serialPort->isOpen()) { // opening on WSL => ttyS
-            ctr = 0;
-            do {
-                serial_port_name = "ttyS" + QString::number(ctr++);
-                serialPort->setPortName(serial_port_name);
-            } while (!serialPort->open(QIODevice::ReadWrite) && ctr <= 50);
-        }
-        if (serialPort->isOpen()) {
-            std::cout << "Serial port open" << std::endl;
-        } else {
-            std::cout << "Impossible to find valid serialPort port" << std::endl;
+            if (serialPort->open(QIODevice::ReadWrite)) {
+                foundPort = true;
+                break;
+            }
         }
     }
-
-}
+    // If not found, try ttyS ports.
+    if (!foundPort) {
+        foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+            if (info.portName().startsWith("ttyS")) {
+                serial_port_name = info.portName();
+                serialPort->setPortName(serial_port_name);
+                if (serialPort->open(QIODevice::ReadWrite)) {
+                    foundPort = true;
+                    break;
+                }
+            }
+        }
+    }
+    
+    if (foundPort) {
+        _serverLogger.info("SerialActions", QString("Serial port open on %1").arg(serial_port_name).toStdString());
+    } else {
+        _serverLogger.error("SerialActions", "Serial port could not open");
+    }}
 
 void Server::receiveSerialData() {
     QByteArray data = serialPort->readAll();
@@ -323,9 +338,6 @@ void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) 
 
 
 void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len) {
-    //    packet_ctr++;
-    static int altitude_max = 0;
-    static int altitude_max_r = 0;
     std::optional<QJsonObject> result = parse_packet(packetId, dataIn, len);
     if (result) {
         QJsonDocument doc(result.value());
@@ -413,4 +425,18 @@ void Server::simulateJsonData() {
     packet.av_state = static_cast<uint8_t>(distState(gen));
     packet.cam_rec = static_cast<uint8_t>(distState(gen));
     handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
+
+
+    std::uniform_int_distribution<int> distBool(0, 1);
+    PacketGSE_downlink gsePacket;
+    gsePacket.tankPressure    = distPressure(gen);
+    gsePacket.tankTemperature = distTemp(gen);
+    gsePacket.fillingPressure = distTemp(gen);
+    gsePacket.status= {(uint8_t)distTemp(gen), (uint8_t)distTemp(gen)};
+    gsePacket.disconnectActive = static_cast<bool>(distBool(gen));
+    gsePacket.loadcell1 = distTemp(gen);
+    gsePacket.loadcell2 = distTemp(gen);
+    gsePacket.loadcell3 = distTemp(gen);
+    gsePacket.loadcell4 = distTemp(gen);
+    handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
 }
