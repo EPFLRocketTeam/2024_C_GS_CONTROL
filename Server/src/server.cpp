@@ -13,8 +13,10 @@
 #include <QString>
 #include <QJsonObject>
 #include <sqlite3.h>
+#include <random>
 
-
+#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
+#include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "../Capsule/src/capsule.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
@@ -299,8 +301,9 @@ void Server::handleCommand(const QJsonObject &command) {
     default:
         int order = command["payload"].toObject()["cmd_order"].toInt();
         std::cout << "cmd: " << f << " order: " << order << std::endl;
-        av_uplink_t* p = createUplinkPacketFromRequest((GUI_FIELD)f, order);
-        sendSerialPacket(CAPSULE_ID::GS_CMD, (uint8_t*) p, av_uplink_size);
+        av_uplink_t p;
+        int capsule_id = createUplinkPacketFromRequest((GUI_FIELD)f, order, &p);
+        sendSerialPacket(capsule_id, (uint8_t*) &p, av_uplink_size);
         break;
     }
     
@@ -323,9 +326,12 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len)
     //    packet_ctr++;
     static int altitude_max = 0;
     static int altitude_max_r = 0;
-    std::optional<const QJsonObject> result = parse_packet(packetId, dataIn, len);
-    _packetLogger.info("Received a packet", "# TODO");
+    std::optional<QJsonObject> result = parse_packet(packetId, dataIn, len);
     if (result) {
+        QJsonDocument doc(result.value());
+        QByteArray jsonData = doc.toJson(QJsonDocument::Indented);
+        _packetLogger.info("Received a packet", "");
+        _packetLogger.debug("Packet transformed to json", jsonData.toStdString());
         updateSubscriptions(result.value());
     } else {
         _packetLogger.error("Parsing Error", QString(R"(The message with ID=%1 could not be parsed)").arg(packetId).toStdString());
@@ -337,39 +343,74 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len)
 
 void Server::simulateJsonData() {
     // Create a JSON object
-    QJsonObject jsonObj;
+    /*QJsonObject jsonObj;*/
+    /**/
+    /*_packetLogger.info("Received a packet", "A Packet was received");*/
+    /*// Add primitive data members to JSON object*/
+    /*jsonObj[QString::number(GUI_FIELD::AV_STATE)] = "1000";*/
+    /*jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = "1";*/
+    /*jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";*/
+    /*jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";*/
+    /*jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] = "1";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] = "45";*/
+    /*jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = "3";*/
+    /*jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = "1";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)] = "15";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)] = "-15";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_ID_CONFIG)] = "1234";*/
+    /**/
+    /*jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = QString(serialPort->isOpen() ? "open" : "close");*/
+    /*jsonObj["1234"] = 50;*/
+    /**/
+    /*// Create a sub-object for location*/
+    /*QJsonObject locationObj;*/
+    /*locationObj["4532"] = 45.5;*/
+    /*locationObj["1123"] = 9.2;*/
+    /**/
+    /*// Add the sub-object to the main JSON object*/
+    /*jsonObj["53252"] = locationObj;*/
+    /**/
+    /**/
+    /*// Convert the JSON object to a string*/
+    /*QString jsonString = QString(QJsonDocument(jsonObj).toJson());*/
+    /**/
+    /*// Send the JSON string to all connected clients*/
+    /*std::cout << "Fake data sent" << std::endl;*/
+    /*updateSubscriptions(jsonObj);*/
+     av_downlink_unpacked packet;
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-    _packetLogger.info("Received a packet", "A Packet was received");
-    // Add primitive data members to JSON object
-    jsonObj[QString::number(GUI_FIELD::AV_STATE)] = "1000";
-    jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = "1";
-    jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";
-    jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";
-    jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";
-    jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] = "1";
-    jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] = "45";
-    jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = "3";
-    jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = "1";
-    jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)] = "15";
-    jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)] = "-15";
-    jsonObj[QString::number(GUI_FIELD::HOPPER_ID_CONFIG)] = "1234";
-
-    jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = QString(serialPort->isOpen() ? "open" : "close");
-    jsonObj["1234"] = 50;
-
-    // Create a sub-object for location
-    QJsonObject locationObj;
-    locationObj["4532"] = 45.5;
-    locationObj["1123"] = 9.2;
-
-    // Add the sub-object to the main JSON object
-    jsonObj["53252"] = locationObj;
-
-
-    // Convert the JSON object to a string
-    QString jsonString = QString(QJsonDocument(jsonObj).toJson());
-
-    // Send the JSON string to all connected clients
-    std::cout << "Fake data sent" << std::endl;
-    updateSubscriptions(jsonObj);
+    std::uniform_int_distribution<uint32_t> distPacketNbr(0, 1000000);
+    std::uniform_real_distribution<float> distCoord(-180.0f, 180.0f); // for lon/lat
+    std::uniform_real_distribution<float> distAlt(0.0f, 10000.0f);
+    std::uniform_int_distribution<int> distSpeed(-20, 20);
+    std::uniform_real_distribution<float> distPressure(0.0f, 100.0f);
+    std::uniform_real_distribution<float> distLevel(0.0f, 100.0f);
+    std::uniform_int_distribution<int> distTemp(-50, 150);
+    std::uniform_real_distribution<float> distVoltage(0.0f, 50.0f);
+    std::uniform_int_distribution<int> distState(0, 255);
+    
+    packet.packet_nbr = distPacketNbr(gen);
+    packet.gnss_lon = distCoord(gen);
+    packet.gnss_lat = distCoord(gen);
+    packet.gnss_alt = distAlt(gen);
+    packet.gnss_vertical_speed = static_cast<int8_t>(distSpeed(gen));
+    packet.N2_pressure = distPressure(gen);
+    packet.fuel_pressure = distPressure(gen);
+    packet.LOX_pressure = distPressure(gen);
+    packet.fuel_level = distLevel(gen);
+    packet.LOX_level = distLevel(gen);
+    packet.N2_temp = static_cast<int16_t>(distTemp(gen));
+    packet.LOX_temp = static_cast<int16_t>(distTemp(gen));
+    packet.LOX_inj_temp = static_cast<int16_t>(distTemp(gen));
+    packet.lpb_voltage = distVoltage(gen);
+    packet.hpb_voltage = distVoltage(gen);
+    packet.av_fc_temp = static_cast<int16_t>(distTemp(gen));
+    packet.ambient_temp = static_cast<int16_t>(distTemp(gen));
+    packet.engine_state = static_cast<uint8_t>(distState(gen));
+    packet.av_state = static_cast<uint8_t>(distState(gen));
+    packet.cam_rec = static_cast<uint8_t>(distState(gen));
+    handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
 }

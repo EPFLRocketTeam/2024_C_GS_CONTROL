@@ -44,18 +44,19 @@ ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent) : QWidge
 
 void ToggleButton::updateState(const QString& res) {
 
-        if (res == "open") {       
+        if (res == "0") {       
+            m_state = Close;
+            m_checked = false;
+            update();
+            toggleCallback(); 
+        }
+        else if (res == "unkown") {
+            setUnknown();
+        } else {
             m_state = Open;
             m_checked = true;
             update();
             toggleCallback();
-        } else if (res == "close") {
-            m_state = Close;
-            m_checked = false;
-            update();
-            toggleCallback();
-        } else {
-            setUnknown();
         }
 }
 

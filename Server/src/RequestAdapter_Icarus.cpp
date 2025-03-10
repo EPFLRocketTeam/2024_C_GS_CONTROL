@@ -1,6 +1,8 @@
+#include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
 #include "packet_helper.h"
+#include <cstdint>
 #include <iostream>
 #include <optional>
 #include <ostream>
@@ -8,59 +10,61 @@
 #include <stdexcept>
 #include "Setup.h"
 
-av_uplink_t* createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value) {
-    av_uplink_t* p = (av_uplink_t*)calloc(1, av_uplink_size);
-    p->order_id = getOrderIdFromGui(field);
+
+int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value, av_uplink_t* p) {
+    TranmissionsIDs tIDs = getOrderIdFromGui(field);
+    p->order_id = tIDs.order_id;
     p->order_value = order_value;
-    return p;
+    return tIDs.capsule_id;
 }
 
-std::optional<const QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_t len) {
+std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_t len) {
     // Create a JSON object
-    const QJsonObject jsonObj;
+    QJsonObject jsonObj;
     switch (packetId) {
         case 0x00: 
             std::cout << "Packet with ID 00 received : " << +packetId << std::endl;
             break;
         #if RF_PROTOCOL_FIREHORN
         case CAPSULE_ID::AV_TELEMETRY: {
-            av_downlink_t dataAv;
+            av_downlink_unpacked dataAv;
 
+            std::cout << "Packet with ID received : " << +packetId << std::endl;
             // Copy the incoming raw data into our packet structure.
-            memcpy(&dataAv, data, sizeof(av_downlink_t));
+            memcpy(&dataAv, data, sizeof(dataAv));
 
-            // Iterate over struct members and add them to the JSON object
-            jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = static_cast<int>(dataAv.packet_nbr);
-            /*jsonObj[QString::number(GUI_FIELD::TIMESTAMP)] = static_cast<int>(dataAv.);*/
-            jsonObj[QString::number(GUI_FIELD::GNSS_LON)] = static_cast<double>(dataAv.gnss_lon);
-            jsonObj[QString::number(GUI_FIELD::GNSS_LAT)] = static_cast<double>(dataAv.gnss_lat);
-            jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] = static_cast<double>(dataAv.gnss_alt);
-            /*jsonObj[QString::number(GUI_FIELD::GNSS_LON_R)] = static_cast<double>(dataAv.gnss_lon_r);*/
-            /*jsonObj[QString::number(GUI_FIELD::GNSS_LAT_R)] = static_cast<double>(dataAv.gnss_lat_r);*/
-            /*jsonObj[QString::number(GUI_FIELD::GNSS_ALT_R)] = static_cast<double>(dataAv.gnss_alt_r);*/
-            jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] = static_cast<double>(dataAv.gnss_vertical_speed);
-            /*jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = static_cast<double>(dataAv.N2_pressure);*/
-            /*jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = static_cast<double>(dataAv.fuel_pressure);*/
-            /*jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] = static_cast<double>(dataAv.LOX_pressure);*/
-            /*jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] = static_cast<double>(dataAv.fuel_level);*/
-            /*jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] = static_cast<double>(dataAv.LOX_level);*/
-            /*jsonObj[QString::number(GUI_FIELD::ENGINE_TEMP)] = static_cast<double>(dataAv.engine_temp);*/
-            /*jsonObj[QString::number(GUI_FIELD::IGNITER_PRESSURE)] = static_cast<double>(dataAv.igniter_pressure);*/
-            /*jsonObj[QString::number(GUI_FIELD::LOX_INJ_PRESSURE)] = static_cast<double>(dataAv.LOX_inj_pressure);*/
-            /*jsonObj[QString::number(GUI_FIELD::FUEL_INJ_PRESSURE)] = static_cast<double>(dataAv.fuel_inj_pressure);*/
-            /*jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] = static_cast<double>(dataAv.chamber_pressure);*/
-
-            // Create a sub-object for engine_state_t
-            QJsonObject engineStateObj;
-            /*engineStateObj[QString::number(GUI_FIELD::IGNITER_LOX)] = static_cast<int>(dataAv.engine_state.igniter_LOX);*/
-            /*engineStateObj[QString::number(GUI_FIELD::IGNITER_FUEL)] = static_cast<int>(dataAv.engine_state.igniter_fuel);*/
-            /*engineStateObj[QString::number(GUI_FIELD::MAIN_LOX)] = static_cast<int>(dataAv.engine_state.main_LOX);*/
-            /*engineStateObj[QString::number(GUI_FIELD::MAIN_FUEL)] = static_cast<int>(dataAv.engine_state.main_fuel);*/
-            /*engineStateObj[QString::number(GUI_FIELD::VENT_LOX)] = static_cast<int>(dataAv.engine_state.vent_LOX);*/
-            /*engineStateObj[QString::number(GUI_FIELD::VENT_FUEL)] = static_cast<int>(dataAv.engine_state.vent_fuel);*/
-
+            
+    jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = QString::number(static_cast<int>(dataAv.packet_nbr));
+    jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
+    jsonObj[QString::number(GUI_FIELD::GNSS_LON)] = QString::number(static_cast<double>(dataAv.gnss_lon));
+    jsonObj[QString::number(GUI_FIELD::GNSS_LAT)] = QString::number(static_cast<double>(dataAv.gnss_lat));
+    jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] = QString::number(static_cast<double>(dataAv.gnss_alt));
+    jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] = QString::number(static_cast<int>(dataAv.gnss_vertical_speed));
+    jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = QString::number(static_cast<double>(dataAv.N2_pressure));
+    jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = QString::number(static_cast<double>(dataAv.fuel_pressure));
+    jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] = QString::number(static_cast<double>(dataAv.LOX_pressure));
+    jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] = QString::number(static_cast<double>(dataAv.fuel_level));
+    jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] = QString::number(static_cast<double>(dataAv.LOX_level));
+    jsonObj[QString::number(GUI_FIELD::N2_TEMP)] = QString::number(static_cast<int>(dataAv.N2_temp));
+    jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] = QString::number(static_cast<int>(dataAv.LOX_temp));
+    jsonObj[QString::number(GUI_FIELD::LOX_INJ_TEMP)] = QString::number(static_cast<int>(dataAv.LOX_inj_temp));
+    jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] = QString::number(static_cast<double>(dataAv.lpb_voltage));
+    jsonObj[QString::number(GUI_FIELD::HPB_VOLTAGE)] = QString::number(static_cast<double>(dataAv.hpb_voltage));
+    jsonObj[QString::number(GUI_FIELD::AV_FC_TEMP)] = QString::number(static_cast<int>(dataAv.av_fc_temp));
+    jsonObj[QString::number(GUI_FIELD::AMBIENT_TEMP)] = QString::number(static_cast<int>(dataAv.ambient_temp));
+    
+    int engine_states = static_cast<int>(dataAv.engine_state);
+    jsonObj[QString::number(GUI_FIELD::IGNITER_LOX)] = QString::number((engine_states & ENGINE_STATE_IGN_LOX) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::IGNITER_FUEL)] = QString::number((engine_states & ENGINE_STATE_IGN_FUEL) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::VENT_LOX)] = QString::number((engine_states & ENGINE_STATE_VENT_LOX) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::VENT_FUEL)] = QString::number((engine_states & ENGINE_STATE_VENT_FUEL) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::MAIN_LOX)] = QString::number((engine_states & ENGINE_STATE_MAIN_LOX) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = QString::number((engine_states & ENGINE_STATE_MAIN_FUEL) > 0 ? 1 : 0);
+    
+    jsonObj[QString::number(GUI_FIELD::AV_STATE)] = QString::number(static_cast<int>(dataAv.av_state));
+    jsonObj[QString::number(GUI_FIELD::CAM_REC)] = QString::number(static_cast<int>(dataAv.cam_rec));            QJsonObject engineStateObj;
             // Add the sub-object to the main JSON object
-            jsonObj[QString::number(GUI_FIELD::ENGINE_STATE)] = engineStateObj;
+            /*jsonObj[QString::number(GUI_FIELD::ENGINE_STATE)] = engineStateObj;*/
             break;
         }
         #endif
@@ -204,58 +208,56 @@ uint8_t getOrderIdFromGui(GUI_FIELD f) {
 #endif
 
 #if RF_PROTOCOL_FIREHORN
-uint8_t getOrderIdFromGui(GUI_FIELD f) {
+TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     switch (f)
     {
     case GUI_CMD_DISCONNECT:
-        return CMD_ID::GSE_CMD_DISCONNECT;
+        return { CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY } ;
 
     case GUI_FIELD::GUI_CMD_CALIBRATE:
-        return CMD_ID::AV_CMD_CALIBRATE;
+        return { AV_CMD_CALIBRATE, CAPSULE_ID::AV_TELEMETRY};
     
     case GUI_FIELD::GUI_CMD_PRESSURIZE:
-        return CMD_ID::AV_CMD_PRESSURIZE;
+        return { AV_CMD_CALIBRATE, AV_TELEMETRY };
 
     case GUI_FIELD::GUI_CMD_RECOVER:
-        return CMD_ID::AV_CMD_RECOVER;
+        return { AV_CMD_RECOVER, AV_TELEMETRY };
 
     case GUI_FIELD::GUI_CMD_MANUAL_DEPLOY:
-        return CMD_ID::AV_CMD_MANUAL_DEPLOY;
+        return { AV_CMD_MANUAL_DEPLOY, AV_TELEMETRY };
 
     case GUI_FIELD::GUI_CMD_IGNITION:
-        return CMD_ID::AV_CMD_IGNITION;
+        return { AV_CMD_IGNITION, AV_TELEMETRY };
 
     case GUI_FIELD::GUI_CMD_ARM:
-        return CMD_ID::AV_CMD_ARM;
+        return { AV_CMD_ARM, AV_TELEMETRY };
 
     case GUI_FIELD::GUI_CMD_ABORT:
-        return CMD_ID::AV_CMD_ABORT;
+        return { AV_CMD_ABORT, AV_TELEMETRY };
 
     case GUI_FIELD::VENT_LOX:
-        return CMD_ID::AV_CMD_VENT_LOX;
+        return { AV_CMD_VENT_LOX, AV_TELEMETRY };
 
     case GUI_FIELD::VENT_FUEL:
-        return CMD_ID::AV_CMD_VENT_FUEL;
+        return { AV_CMD_VENT_FUEL, AV_TELEMETRY };
     
     case GUI_FIELD::MAIN_LOX:
-        return CMD_ID::AV_CMD_MAIN_LOX;
+        return { AV_CMD_MAIN_LOX, AV_TELEMETRY };
 
     case GUI_FIELD::MAIN_FUEL:
-        return CMD_ID::AV_CMD_MAIN_FUEL;
+        return { AV_CMD_MAIN_FUEL, AV_TELEMETRY };
 
     case GUI_FIELD::IGNITER_FUEL:
-        return CMD_ID::AV_CMD_IGNITER_FUEL;
+        return { AV_CMD_IGNITER_FUEL, AV_TELEMETRY };
 
     case GUI_FIELD::IGNITER_LOX:
-        return CMD_ID::AV_CMD_IGNITER_LOX;
+        return { AV_CMD_IGNITER_LOX, AV_TELEMETRY };
 
     case GUI_FIELD::GUI_CMD_FILLING_LOX:
-        return CMD_ID::GSE_CMD_FILLING_LOX;
+        return { GSE_CMD_FILLING_LOX, GSE_TELEMETRY };
 
     case GUI_FIELD::GSE_VENT:
-        return CMD_ID::GSE_CMD_VENT;
-    
-        
+        return { CMD_ID::GSE_CMD_VENT, GSE_TELEMETRY };
 
     default:
         throw std::invalid_argument("Invalid GUI_FIELD, no command matching");

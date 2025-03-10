@@ -12,6 +12,6 @@
 
 
 /*std::string to_string(const av_downlink_t &packet);*/
-std::optional<const QJsonObject> parse_packet(uint8_t packetId, uint8_t* data, uint32_t len);
+std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t* data, uint32_t len);
 
 #endif /* SERVER_H */
