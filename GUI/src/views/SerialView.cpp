@@ -40,14 +40,17 @@ void SerialView::buttonClicked() {
     RequestBuilder b;
     b.setHeader(RequestType::POST);
     b.addField("cmd", GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS);
+        b.addField("cmd", GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS);
+ 
     if (isOpen) {
         b.addField("cmd_order", "close");
-    _logger.info("Serial Command", "Sent serial close");
-    } else {
-        b.addField("cmd_order", "open");
-    _logger.info("Serial Command", "Sent serial open");
+        MainWindow::clientManager->send(b.toString());
+        _logger.info("Serial Command", "Sent serial close");
+        return;
     }
+    b.addField("cmd_order", "open");
     MainWindow::clientManager->send(b.toString());
+    _logger.info("Serial Command", "Sent serial open");
 }
 
 void SerialView::setupStyle() {
