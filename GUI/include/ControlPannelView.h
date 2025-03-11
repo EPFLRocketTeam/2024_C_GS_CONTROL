@@ -13,7 +13,7 @@
 #include <QPushButton>
 #include <QGridLayout>
 
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 #include "Log.h"
 #include "FileLocation.h"
 

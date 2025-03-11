@@ -4,18 +4,25 @@
 #include <cstring>
 #include <iostream>
 #include "ClientManager.h"
+#include <optional>
 #include <qglobal.h>
+#include <qjsondocument.h>
+#include <qjsonobject.h>
+#include <stdexcept>
 #include <string>
 #include <QJsonDocument>
 #include <QMap>
 #include <QString>
 #include <QJsonObject>
 #include <sqlite3.h>
+#include <random>
+#include <QSerialPortInfo>
 
-
+#include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "../Capsule/src/capsule.h"
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 #include "RequestAdapter.h"
+#include "packet_helper.h"
 #include <RequestBuilder.h>
 
 #define DB_ERROR_MESSAGE_PREFIX "The Databse couldn't be open, and produce the following error message"
@@ -28,10 +35,9 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
     connect(&requestHandler, &RequestHandler::post, this, &Server::receivePost);
     connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
     connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
-
     setup_db();
 
-    /*openSerialPort();*/
+    openSerialPort();
 }
 
 
@@ -69,26 +75,41 @@ void Server::openSerialPort() {
     int ctr = 0;
     serialPort->setBaudRate(QSerialPort::Baud115200);
     QString serial_port_name = "";
-    if (!serialPort->isOpen()) {
-        do {
-            serial_port_name = "ttyACM" + QString::number(ctr++);
+    // First try ttyACM ports.
+    bool foundPort = false;
+    if (serialPort->isOpen()) {
+        return;
+    }
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+        if (info.portName().startsWith("ttyACM")) {
+            serial_port_name = info.portName();
             serialPort->setPortName(serial_port_name);
-        } while (!serialPort->open(QIODevice::ReadWrite) && ctr <= 50);
-        if (!serialPort->isOpen()) { // opening on WSL => ttyS
-            ctr = 0;
-            do {
-                serial_port_name = "ttyS" + QString::number(ctr++);
-                serialPort->setPortName(serial_port_name);
-            } while (!serialPort->open(QIODevice::ReadWrite) && ctr <= 50);
-        }
-        if (serialPort->isOpen()) {
-            std::cout << "Serial port open" << std::endl;
-        } else {
-            std::cout << "Impossible to find valid serialPort port" << std::endl;
+            if (serialPort->open(QIODevice::ReadWrite)) {
+                foundPort = true;
+                break;
+            }
         }
     }
-
-}
+    // If not found, try ttyS ports.
+    if (!foundPort) {
+        foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+            if (info.portName().startsWith("ttyS")) {
+                serial_port_name = info.portName();
+                serialPort->setPortName(serial_port_name);
+                if (serialPort->open(QIODevice::ReadWrite)) {
+                    foundPort = true;
+                    break;
+                }
+            }
+        }
+    }
+    
+    if (foundPort) {
+        _serverLogger.info("SerialActions", QString("Serial port open on %1").arg(serial_port_name).toStdString());
+    } else {
+        serialPort->setPortName("-");
+        _serverLogger.error("SerialActions", "Serial port could not open");
+    }}
 
 void Server::receiveSerialData() {
     QByteArray data = serialPort->readAll();
@@ -98,7 +119,7 @@ void Server::receiveSerialData() {
 }
 
 void Server::serialError() {
-    std::cout << "Serial port error: " << serialPort->errorString().toStdString() << std::endl;
+    _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
 }
 
 void Server::incomingConnection(qintptr socketDescriptor) {
@@ -111,46 +132,52 @@ void Server::incomingConnection(qintptr socketDescriptor) {
 
     clients.append(client);
     
-    std::cout << "Client connected: " << socketDescriptor << std::endl;
+    _serverLogger.info("Client Connected", QString(R"(Client on socket %1)").arg(socketDescriptor).toStdString());
 }
 
 void Server::receiveSubscribe(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the subscribe request
     int field = request.value("payload").toObject().value("field").toInt();
 
-    std::cout << "socket: " << senderSocket << std::endl;
+    _serverLogger.debug("Subscription", QString(R"(The client %1 is trying to subscribe to %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
+
     if (subscriptionMap[field].contains(senderSocket)) {
-        std::cout << "Already subscribed to: " << QString::number(field).toStdString() << std::endl;
+        _serverLogger.warn("Subscription failed", QString(R"(The client %1 is already subscribed to %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
         return;
     }
     subscriptionMap[field].append(senderSocket);
-    std::cout << "Subscribed to: " << QString::number(field).toStdString() << std::endl; 
+    _serverLogger.debug("Subscription Successfull", QString(R"(The client %1 subscribed to %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
 }
 
 void Server::receiveUnsubscribe(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the unsubscribe request
     int field = request.value("payload").toObject().value("field").toInt();
     subscriptionMap[field].removeOne(senderSocket);
-    std::cout << "Unsubscribed from: " << subscriptionMap[field].size() << std::endl;
+    _serverLogger.debug("Unsubscribed Successfully", QString(R"(The client %1 unsubscribed from %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
 }
 
 void Server::receiveGet(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the get request
-    std::cout << "Received get request" << std::endl;
+    QJsonDocument doc(request);
+    _serverLogger.debug("Received Get Request", doc.toJson(QJsonDocument::Indented).toStdString());
     QString field = request["field"].toString();
     QByteArray data = "Data for " + field.toUtf8();
+    throw std::logic_error("Not Implemented");
     sendToAllClients(data);
 }
 
 void Server::receivePost(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the post request
-    std::cout << "Received post request" << std::endl;
     QJsonDocument doc(request);
+    _serverLogger.debug("Received Post Request", doc.toJson(QJsonDocument::Indented).toStdString());
     QString strJson(doc.toJson(QJsonDocument::Compact));
     if (request["payload"].toObject().contains("cmd")) {
         handleCommand(request); 
     }
-    std::cout << strJson.toStdString() << std::endl;
 }
 
 void Server::readyRead() {
@@ -162,7 +189,6 @@ void Server::readyRead() {
         QByteArray data = senderSocket->readAll();
 
         QString dataString = QString::fromUtf8(data);
-        std::cout << "\033[32m" << dataString.toStdString() << "\033[0m" << std::endl;
         QString jsonString(dataString);
         // jsonString.remove("\n");
         // Split the string by '}{'
@@ -181,8 +207,7 @@ void Server::readyRead() {
             }
             counter++;
             
-            std::cout << jsonStr.toStdString() << std::endl;
-            std::cout << " " << std::endl;
+            _serverLogger.debug("Received Message From Client", jsonStr.toStdString());
 
             requestHandler.handleRequest(jsonStr, senderSocket);
             
@@ -227,9 +252,9 @@ void Server::updateSubscriptions(const QJsonObject &newData) {
         if (value.isObject()) {
             updateSubscriptions(value.toObject());
             for (QTcpSocket *socket: sockets) {
-                std::cout << "Sending data to client" << std::endl;
                 rBuilder.addField(it.key(), QString(QJsonDocument(value.toObject()).toJson()));
                 QByteArray data = rBuilder.toString().toUtf8();
+                _packetLogger.debug("Sent packets to client", rBuilder.toString().toStdString());
                 socket->write(data, data.size());
                 socket->waitForBytesWritten();
                 socket->flush();
@@ -244,29 +269,22 @@ void Server::updateSubscriptions(const QJsonObject &newData) {
             }
         } else {
             for (QTcpSocket *socket: sockets) {
-                std::cout << "Sending data to client" << std::endl;
                 rBuilder.addField(it.key(), value.toString());
                 QByteArray data = rBuilder.toString().toUtf8();
+                _packetLogger.debug("Sent packets to client", rBuilder.toString().toStdString());
                 socket->write(data, data.size());
                 socket->waitForBytesWritten();
                 socket->flush();
-                
-                
-                
             }
         }
     }
-
-
 }
 
 void Server::handleCommand(const QJsonObject &command) {
     // Handle the command
     int f = command["payload"].toObject()["cmd"].toInt();
     RequestBuilder b = RequestBuilder();
-    switch (f)
-    {
-
+    switch (f) {
     case GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS:
         if (command["payload"].toObject()["cmd_order"].toString() == "close") {
             if (serialPort->isOpen()) {
@@ -275,12 +293,13 @@ void Server::handleCommand(const QJsonObject &command) {
         } else {
             openSerialPort();
         }
+
     case GUI_FIELD::SERIAL_STATUS: {
-        std::cout << "Serial status" << std::endl;
+        _serverLogger.info("Received Command", "Get Serial Status Command");
         b.setHeader(RequestType::POST);
         const QString & serialStatus = QString(serialPort->isOpen() ? "open" : "close");
         b.addField(QString::number(GUI_FIELD::SERIAL_STATUS), serialStatus);
-        std::cout << b.toString().toStdString() << std::endl;   
+        _serverLogger.info("Send Response", QString(R"(The response to Serial Status is %1)").arg(b.toString()).toStdString());
         updateSubscriptions(b.build());
         break;
         }
@@ -291,150 +310,40 @@ void Server::handleCommand(const QJsonObject &command) {
         updateSubscriptions(b.build());
         break;
 
-        
-
     default:
         int order = command["payload"].toObject()["cmd_order"].toInt();
-        std::cout << "cmd: " << f << " order: " << order << std::endl;
-        av_uplink_t p = createUplinkPacketFromRequest((GUI_FIELD)f, order);
-        sendSerialPacket(CAPSULE_ID::GS_CMD, (uint8_t*) &p, av_uplink_size);
+        _serverLogger.info("Received Command", QString(R"(Send command for %1 with value %2)")
+                           .arg(fieldUtil::enumToFieldName((GUI_FIELD)f)).arg(order).toStdString());
+        av_uplink_t p;
+        int capsule_id = createUplinkPacketFromRequest((GUI_FIELD)f, order, &p);
+        sendSerialPacket(capsule_id, (uint8_t*) &p, av_uplink_size);
         break;
     }
-    
 }
 
 void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) {
     uint8_t *packetToSend = capsule.encode(packetId, packet, size);
-    serialPort->write((char *) packetToSend,capsule.getCodedLen(size));
-    delete[] packetToSend;
-    std::cout << "Packet sent to radio Board" << std::endl;
+    if (serialPort->isOpen()) {
+        serialPort->write((char *) packetToSend,capsule.getCodedLen(size));
+        _packetLogger.info("Send Packet", QString(R"(A packet with packet id %1 was sent to radio board)").arg(packetId).toStdString());
+    } else {
+        _serverLogger.error("Serial Send", "The serial port is not opened, packet couldn't be send");
+    }
 }
 
 
 
 void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len) {
-    //    packet_ctr++;
-    static int altitude_max = 0;
-    static int altitude_max_r = 0;
-    av_downlink_t dataAv;
-    PacketGSE_downlink dataGse;
-    _packetLogger.info("Received a packet", "# TODO");
-    switch (packetId) {
-        case 0x00: 
-            std::cout << "Packet with ID 00 received : " << +packetId << std::endl;
-            break;
-        case CAPSULE_ID::AV_TELEMETRY: {
-            
-             // Create a JSON object
-            QJsonObject jsonObj;
-            
-            // Iterate over struct members and add them to the JSON object
-            jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = static_cast<int>(dataAv.packet_nbr);
-            jsonObj[QString::number(GUI_FIELD::TIMESTAMP)] = static_cast<int>(dataAv.timestamp);
-            jsonObj[QString::number(GUI_FIELD::GNSS_LON)] = static_cast<double>(dataAv.gnss_lon);
-            jsonObj[QString::number(GUI_FIELD::GNSS_LAT)] = static_cast<double>(dataAv.gnss_lat);
-            jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] = static_cast<double>(dataAv.gnss_alt);
-            jsonObj[QString::number(GUI_FIELD::GNSS_LON_R)] = static_cast<double>(dataAv.gnss_lon_r);
-            jsonObj[QString::number(GUI_FIELD::GNSS_LAT_R)] = static_cast<double>(dataAv.gnss_lat_r);
-            jsonObj[QString::number(GUI_FIELD::GNSS_ALT_R)] = static_cast<double>(dataAv.gnss_alt_r);
-            jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] = static_cast<double>(dataAv.gnss_vertical_speed);
-            jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] = static_cast<double>(dataAv.N2_pressure);
-            jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] = static_cast<double>(dataAv.fuel_pressure);
-            jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] = static_cast<double>(dataAv.LOX_pressure);
-            jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] = static_cast<double>(dataAv.fuel_level);
-            jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] = static_cast<double>(dataAv.LOX_level);
-            jsonObj[QString::number(GUI_FIELD::ENGINE_TEMP)] = static_cast<double>(dataAv.engine_temp);
-            jsonObj[QString::number(GUI_FIELD::IGNITER_PRESSURE)] = static_cast<double>(dataAv.igniter_pressure);
-            jsonObj[QString::number(GUI_FIELD::LOX_INJ_PRESSURE)] = static_cast<double>(dataAv.LOX_inj_pressure);
-            jsonObj[QString::number(GUI_FIELD::FUEL_INJ_PRESSURE)] = static_cast<double>(dataAv.fuel_inj_pressure);
-            jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] = static_cast<double>(dataAv.chamber_pressure);
-
-            // Create a sub-object for engine_state_t
-            QJsonObject engineStateObj;
-            engineStateObj[QString::number(GUI_FIELD::IGNITER_LOX)] = static_cast<int>(dataAv.engine_state.igniter_LOX);
-            engineStateObj[QString::number(GUI_FIELD::IGNITER_FUEL)] = static_cast<int>(dataAv.engine_state.igniter_fuel);
-            engineStateObj[QString::number(GUI_FIELD::MAIN_LOX)] = static_cast<int>(dataAv.engine_state.main_LOX);
-            engineStateObj[QString::number(GUI_FIELD::MAIN_FUEL)] = static_cast<int>(dataAv.engine_state.main_fuel);
-            engineStateObj[QString::number(GUI_FIELD::VENT_LOX)] = static_cast<int>(dataAv.engine_state.vent_LOX);
-            engineStateObj[QString::number(GUI_FIELD::VENT_FUEL)] = static_cast<int>(dataAv.engine_state.vent_fuel);
-
-            // Add the sub-object to the main JSON object
-            jsonObj[QString::number(GUI_FIELD::ENGINE_STATE)] = engineStateObj;
-            updateSubscriptions(jsonObj);
-            break;
-        }
-        case CAPSULE_ID::GSE_TELEMETRY: {
-            // Create a JSON object
-            QJsonObject jsonObj;
-
-            // Add primitive data members to JSON object
-            jsonObj[QString::number(GUI_FIELD::TANK_PRESSURE)] = static_cast<double>(dataGse.tankPressure);
-            jsonObj[QString::number(GUI_FIELD::TANK_TEMPERATURE)] = static_cast<double>(dataGse.tankTemperature);
-            jsonObj[QString::number(GUI_FIELD::FILLING_PRESSURE)] = static_cast<double>(dataGse.fillingPressure);
-            jsonObj[QString::number(GUI_FIELD::DISCONNECT_ACTIVE)] = dataGse.disconnectActive;
-            jsonObj[QString::number(GUI_FIELD::LOADCELL_RAW)] = static_cast<int>(dataGse.loadcellRaw);
-
-            // Create a sub-object for status
-            QJsonObject statusObj;
-            statusObj[QString::number(GUI_FIELD::FILLINGN2O)] = static_cast<int>(dataGse.status.fillingN2O);
-            statusObj[QString::number(GUI_FIELD::GSE_VENT)] = static_cast<int>(dataGse.status.vent);
-
-            // Add the sub-object to the main JSON object
-            jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;
-
-            updateSubscriptions(jsonObj);
-            break;
-        }
-        case CAPSULE_ID::HOPPER_DOWNLINK: {
-            // Make sure the incoming data is at least the size of the Hopper packet.
-            if (len < sizeof(PacketHopper_downlink)) {
-                QString err_msg = QString("Hopper packet to short %1 bytes").arg(len);
-                _serverLogger.error("Packet Parsing", err_msg.toStdString());
-                break;
-            }
-            PacketHopper_downlink dataHopper;
-            // Copy the incoming raw data into our Hopper packet structure.
-            memcpy(&dataHopper, dataIn, sizeof(PacketHopper_downlink));
-            
-            // Create a JSON object and fill it with the Hopper packet's fields.
-            QJsonObject jsonObj;
-            jsonObj[QString::number(GUI_FIELD::HOPPER_PACKET_NBR)]   = static_cast<int>(dataHopper.packet_nbr);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)]   = static_cast<int>(dataHopper.N2O_pressure);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_PRESSURE)]   = static_cast<int>(dataHopper.ETH_pressure);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_TEMP)]       = static_cast<int>(dataHopper.N2O_temp);
-            // Vents are defined as nside a nested struct.
-            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_VENT)]       = static_cast<int>(dataHopper.vents.N2O_vent);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_VENT)]       = static_cast<int>(dataHopper.vents.ETH_vent);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_MAIN)]       = static_cast<int>(dataHopper.N2O_main);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)]       = static_cast<int>(dataHopper.ETH_main);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LON)]       = static_cast<double>(dataHopper.gnss_lon);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LAT)]       = static_cast<double>(dataHopper.gnss_lat);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_SAT_NBR)]        = static_cast<int>(dataHopper.sat_nbr);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_X)]         = static_cast<int>(dataHopper.gyro_x);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Y)]         = static_cast<int>(dataHopper.gyro_y);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Z)]         = static_cast<int>(dataHopper.gyro_z);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_X)]          = static_cast<int>(dataHopper.acc_x);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Y)]          = static_cast<int>(dataHopper.acc_y);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Z)]          = static_cast<int>(dataHopper.acc_z);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_BARO)]           = static_cast<int>(dataHopper.baro);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_X)]   = static_cast<int>(dataHopper.kalman_pos_x);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Y)]   = static_cast<int>(dataHopper.kalman_pos_y);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Z)]   = static_cast<int>(dataHopper.kalman_pos_z);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_YAW)]     = static_cast<int>(dataHopper.kalman_yaw);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_PITCH)]   = static_cast<int>(dataHopper.kalman_pitch);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_ROLL)]    = static_cast<int>(dataHopper.kalman_roll);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)]       = static_cast<int>(dataHopper.gimbal_x);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)]       = static_cast<int>(dataHopper.gimbal_y);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_HV_VOLTAGE)]     = static_cast<int>(dataHopper.HV_voltage);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_LV_VOLTAGE)]     = static_cast<int>(dataHopper.LV_voltage);
-            jsonObj[QString::number(GUI_FIELD::HOPPER_AV_TEMP)]        = static_cast<int>(dataHopper.AV_temp);
-            
-            updateSubscriptions(jsonObj);
-            break;
-        }
-        default:
-            break;
-    }        
+    std::optional<QJsonObject> result = parse_packet(packetId, dataIn, len);
+    if (result) {
+        QJsonDocument doc(result.value());
+        QByteArray jsonData = doc.toJson(QJsonDocument::Indented);
+        _packetLogger.info("Received a packet", "");
+        _packetLogger.debug("Packet transformed to json", jsonData.toStdString());
+        updateSubscriptions(result.value());
+    } else {
+        _packetLogger.error("Parsing Error", QString(R"(The message with ID=%1 could not be parsed)").arg(packetId).toStdString());
+    }
 }
 
 
@@ -442,31 +351,88 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len)
 
 void Server::simulateJsonData() {
     // Create a JSON object
-    QJsonObject jsonObj;
+    /*QJsonObject jsonObj;*/
+    /**/
+    /*_packetLogger.info("Received a packet", "A Packet was received");*/
+    /*// Add primitive data members to JSON object*/
+    /*jsonObj[QString::number(GUI_FIELD::AV_STATE)] = "1000";*/
+    /*jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = "1";*/
+    /*jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";*/
+    /*jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";*/
+    /*jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] = "1";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] = "45";*/
+    /*jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = "3";*/
+    /*jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = "1";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)] = "15";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)] = "-15";*/
+    /*jsonObj[QString::number(GUI_FIELD::HOPPER_ID_CONFIG)] = "1234";*/
+    /**/
+    /*jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = QString(serialPort->isOpen() ? "open" : "close");*/
+    /*jsonObj["1234"] = 50;*/
+    /**/
+    /*// Create a sub-object for location*/
+    /*QJsonObject locationObj;*/
+    /*locationObj["4532"] = 45.5;*/
+    /*locationObj["1123"] = 9.2;*/
+    /**/
+    /*// Add the sub-object to the main JSON object*/
+    /*jsonObj["53252"] = locationObj;*/
+    /**/
+    /**/
+    /*// Convert the JSON object to a string*/
+    /*QString jsonString = QString(QJsonDocument(jsonObj).toJson());*/
+    /**/
+    /*// Send the JSON string to all connected clients*/
+    /*std::cout << "Fake data sent" << std::endl;*/
+    /*updateSubscriptions(jsonObj);*/
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-    _packetLogger.info("Received a packet", "A Packet was received");
-    // Add primitive data members to JSON object
-    jsonObj[QString::number(GUI_FIELD::AV_STATE)] = "1000";
-    jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = "1";
-    jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = "25";
-    jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "1013";
-    jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] = "close";
-    jsonObj[QString::number(GUI_FIELD::SERIAL_STATUS)] = QString(serialPort->isOpen() ? "open" : "close");
-    jsonObj["1234"] = 50;
+    std::uniform_int_distribution<uint32_t> distPacketNbr(0, 1000000);
+    std::uniform_real_distribution<float> distCoord(-180.0f, 180.0f); // for lon/lat
+    std::uniform_real_distribution<float> distAlt(0.0f, 10000.0f);
+    std::uniform_int_distribution<int> distSpeed(-20, 20);
+    std::uniform_real_distribution<float> distPressure(0.0f, 100.0f);
+    std::uniform_real_distribution<float> distLevel(0.0f, 100.0f);
+    std::uniform_int_distribution<int> distTemp(-50, 150);
+    std::uniform_real_distribution<float> distVoltage(0.0f, 50.0f);
+    std::uniform_int_distribution<int> distState(0, 255);
+    
+    #ifdef RF_PROTOCOL_FIREHORN
+    av_downlink_unpacked packet;
+    packet.packet_nbr = distPacketNbr(gen);
+    packet.gnss_lon = distCoord(gen);
+    packet.gnss_lat = distCoord(gen);
+    packet.gnss_alt = distAlt(gen);
+    packet.gnss_vertical_speed = static_cast<int8_t>(distSpeed(gen));
+    packet.N2_pressure = distPressure(gen);
+    packet.fuel_pressure = distPressure(gen);
+    packet.LOX_pressure = distPressure(gen);
+    packet.fuel_level = distLevel(gen);
+    packet.LOX_level = distLevel(gen);
+    packet.N2_temp = static_cast<int16_t>(distTemp(gen));
+    packet.LOX_temp = static_cast<int16_t>(distTemp(gen));
+    packet.LOX_inj_temp = static_cast<int16_t>(distTemp(gen));
+    packet.lpb_voltage = distVoltage(gen);
+    packet.hpb_voltage = distVoltage(gen);
+    packet.av_fc_temp = static_cast<int16_t>(distTemp(gen));
+    packet.ambient_temp = static_cast<int16_t>(distTemp(gen));
+    packet.engine_state = static_cast<uint8_t>(distState(gen));
+    packet.av_state = static_cast<uint8_t>(distState(gen));
+    packet.cam_rec = static_cast<uint8_t>(distState(gen));
+    handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
+    #endif
 
-    // Create a sub-object for location
-    QJsonObject locationObj;
-    locationObj["4532"] = 45.5;
-    locationObj["1123"] = 9.2;
-
-    // Add the sub-object to the main JSON object
-    jsonObj["53252"] = locationObj;
-
-
-    // Convert the JSON object to a string
-    QString jsonString = QString(QJsonDocument(jsonObj).toJson());
-
-    // Send the JSON string to all connected clients
-    std::cout << "Fake data sent" << std::endl;
-    updateSubscriptions(jsonObj);
+    std::uniform_int_distribution<int> distBool(0, 1);
+    PacketGSE_downlink gsePacket;
+    gsePacket.tankPressure    = distPressure(gen);
+    gsePacket.tankTemperature = distTemp(gen);
+    gsePacket.fillingPressure = distTemp(gen);
+    gsePacket.status= {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};
+    gsePacket.disconnectActive = static_cast<bool>(distBool(gen));
+    #ifdef RF_PROTOCOL_FIREHORN
+    gsePacket.loadcell_raw = distTemp(gen);
+    #endif
+    handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
 }

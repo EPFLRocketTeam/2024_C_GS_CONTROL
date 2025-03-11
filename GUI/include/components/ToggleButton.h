@@ -5,7 +5,7 @@
 #include <QMovie>
 #include <QTimer>
 
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 
 enum State { Open, Close, Unknown };
 

@@ -2,13 +2,15 @@
 #include "MainWindow.h"
 #include "../Setup.h"
 #include <QFont>
+#include <qnamespace.h>
 
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 
 DataLabel::DataLabel(const GUI_FIELD field, QWidget *parent) : QLabel(parent), field(field)
 {
     setObjectName(QString("dataLabel-%1").arg(field));
-    setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    setAlignment(Qt::AlignLeft);
+    setMinimumWidth(120);
 
     
     setStyleSheet(QString("background: transparent; color: %1;").arg(col::primary));

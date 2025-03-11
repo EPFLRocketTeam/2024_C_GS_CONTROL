@@ -1,7 +1,7 @@
 [submodule "Server/ERT_RF_Protocol_Interface"]
-	path = Server/ERT_RF_Protocol_Interface
+	path = commons/ERT_RF_Protocol_Interface
 	url = https://github.com/EPFLRocketTeam/ERT_RF_Protocol_Interface.git
-	branch = main
+	branch = icarus_update
 [submodule "Server/Capsule"]
 	path = Server/Capsule
 	url = https://github.com/EPFLRocketTeam/2024_C_AV-GS_CAPSULE.git

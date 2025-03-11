@@ -5,56 +5,50 @@
 */
 #include <iostream>
 #include <memory>
-#include <utility>
-#include <vector>
-#include <thread>
 
 #include <QPushButton>
 #include <QPainter>
 #include <QtSvg/QSvgRenderer>
+#include <qnamespace.h>
+#include <qsvgrenderer.h>
 
 #include "ValveControlView.h"
 #include "../Setup.h"
+#include "FieldUtil.h"
 #include "components/ValveButton.h"
-#include "components/DraggableButton.h"
 #include "components/DataLabel.h"
 #include "MainWindow.h"
 #include "RequestBuilder.h"
 
 
 
-ValveControlView::ValveControlView(QWidget *parent) : QFrame(parent), backgroundImage(nullptr) {
+ValveControlView::ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels,
+                                   QString connectedBg, QString disconnectedBg, QWidget *parent) : QFrame(parent), svgRenderer(nullptr) {
     setContentsMargins(25, 25, 25, 25);
     setMinimumWidth(mws::middleSectionWidth / 100.0 * mws::width);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    setSvgBackground(":/images/prop-diagram-firehorn-highres.png");
+    _valves = valves;
+    _labels = labels;
+    connectedBgPath = connectedBg;
+    disconnectedBgPath = disconnectedBg;
+    MainWindow::clientManager->subscribe(GUI_FIELD::GSE_DISCONNECT_ACTIVE, [this](const QString& message) {
+        if (message == "1") {
+            setSvgBackground(disconnectedBgPath);
+        } else{
+            setSvgBackground(connectedBgPath);
+        }
+    });
+    setSvgBackground(connectedBgPath);
     placeValves();
-    placeCommandButtons();
+    /*placeCommandButtons();*/
     placeDataLabels();
-    // DraggableButton *dButton = new DraggableButton(this);
-    
+    /*DraggableButton *dButton = new DraggableButton(this);*/
 }
 
 void ValveControlView::placeValves() {
-    
-    // GSE Valves
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.224152, 0.463284);
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.226, 0.55);
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.226, 0.635, ValveButton::Orientation::Horizontal);
-
-    //Vent Valves
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.605, 0.3825, ValveButton::Orientation::Horizontal);
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.925, 0.3825, ValveButton::Orientation::Horizontal);
-    // Pressure Valves
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.7025, 0.297, ValveButton::Orientation::Vertical);
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.8218, 0.297, ValveButton::Orientation::Vertical);
-    // Engine valves
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.717, 0.66555, ValveButton::Orientation::Horizontal);
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.8072, 0.66555, ValveButton::Orientation::Horizontal);
-    // Active Cooling valves
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.6775, 0.725, ValveButton::Orientation::Vertical);
-    addButtonIcon(GUI_FIELD::MAIN_FUEL, 0.84305, 0.725, ValveButton::Orientation::Vertical);
-
+    for(auto valveInfo : _valves) {
+        addButtonIcon(valveInfo.f, valveInfo.p.x, valveInfo.p.y, valveInfo.o);
+    }
 }
 
 void ValveControlView::addDataLabel(const GUI_FIELD field, float x, float y) {
@@ -63,33 +57,37 @@ void ValveControlView::addDataLabel(const GUI_FIELD field, float x, float y) {
 }
 
 void ValveControlView::placeDataLabels() {
-    //GSE top
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.0471464, 0.0934579);
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.044665, 0.190921);
-    //GSE bottom
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.0587262, 0.546061);
-
-    //N2O top pressure   
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905);
-
-    //Engine tank pressure
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.55335, 0.473965);
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.944582, 0.473965);
-
-    // Engine left pressure 
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE,  0.540116, 0.785047);
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.540116, 0.867824);
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.540116, 0.94526);
-
-    // Engine right pressure
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.924731, 0.783712);
-    addDataLabel(GUI_FIELD::CHAMBER_PRESSURE,0.924731, 0.87984);
+    for (auto labelInfo: _labels) {
+        addDataLabel(labelInfo.f, labelInfo.p.x, labelInfo.p.y);
+    }
+    /*//GSE top*/
+    /*addDataLabel(GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25);*/
+    /*addDataLabel(GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315);*/
+    /*//GSE bottom*/
+    /*addDataLabel(GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576);*/
+    /**/
+    /*//N2O top pressure   */
+    /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905);*/
+    /**/
+    /*//Engine tank pressure*/
+    /*addDataLabel(GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439);*/
+    /*addDataLabel(GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502);*/
+    /*addDataLabel(GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438);*/
+    /**/
+    /*// Engine left pressure */
+    /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE,  0.540116, 0.785047);*/
+    /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.540116, 0.867824);*/
+    /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.540116, 0.94526);*/
+    /**/
+    /*// Engine right pressure*/
+    /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.924731, 0.783712);*/
+    /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE,0.924731, 0.87984);*/
 
 }
 
 void ValveControlView::placeCommandButtons() {
     addCommandButton("Pressurize",0.757651, -0.0440587);
-    addCommandButton("Ignition",  0.760132, 1.03338);
+    addCommandButton("Ignition",  0.68, 0.9);
     addCommandButton("Disconnect", 0.409429, 0.863818);
 }
 
@@ -129,41 +127,38 @@ void ValveControlView::addCommandButton(const QString& label, float x, float y) 
 
 void ValveControlView::setSvgBackground(const QString& filePath) {
     // Load the SVG image
-    backgroundImage = std::make_unique<QPixmap>(filePath);
+    svgRenderer = std::make_unique<QSvgRenderer>(filePath);
+    svgRenderer->setAspectRatioMode(Qt::AspectRatioMode::KeepAspectRatio);
+    update();
 }
 
 void ValveControlView::addButtonIcon(GUI_FIELD field ,float x, float y, ValveButton::Orientation orientation) {
     ValveButton *button = new ValveButton(orientation,this);
     
     MainWindow::clientManager->subscribe(field, [button](const QString& message) {
-        
-        if (message == "open") {
-            button->setState(ValveButton::State::Open);
-        } else if (message == "close") {
+        if (message == "0") {
             button->setState(ValveButton::State::Close);
-        } else {
+        } else if (message == "unknown") {
             button->setState(ValveButton::State::Unknown);
+        } else {
+            button->setState(ValveButton::State::Open);
         }
     });
-
-    connect(button, &ValveButton::clicked, [button, field]() {
+   
+    connect(button, &ValveButton::clicked, [button, field, this]() {
         RequestBuilder b;
+
         b.setHeader(RequestType::POST);
         b.addField("cmd",field);
-        b.addField("cmd_order", button->getState() == ValveButton::State::Close ? "open" : "close");
+        int value = button->getState() == ValveButton::State::Close ? 1 : 0;
+        b.addField("cmd_order", value);
         MainWindow::clientManager->send(b.toString());
         b.clear();
         b.setHeader(RequestType::INTERNAL);
-        b.addField(QString::number(field), "unkown");
+        b.addField(QString::number(field), "unknown");
         MainWindow::clientManager->send(b.toString());
-        std::cout << "Send internal" << std::endl;
-
-
-        /*
-        std::thread([&b]() {      
-                MainWindow::clientManager->send(b.toString());   
-                }).detach();
-                */
+        _logger.info("Sent Valve Update", QString(R"(The valve of field %1 was clicked and the new %2 value was sent to server)")
+                     .arg(fieldUtil::enumToFieldName(field)).arg(value).toStdString());
     });
     addComponent(button, x, y);
  
@@ -182,28 +177,42 @@ void ValveControlView::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     // painter.setCompositionMode(QPainter::CompositionMode_Source);
     // Ensure the background image is valid
-    if (!backgroundImage) return;
+    if (!svgRenderer || !svgRenderer->isValid()) return;
     
+    // Get content margins
+    int marginLeft = contentsMargins().left();
+    int marginRight = contentsMargins().right();
+    int marginTop = contentsMargins().top();
+    int marginBottom = contentsMargins().bottom();
+
+    int availableWidth = width() - marginLeft - marginRight;
+    int availableHeight = height() - marginTop - marginBottom;
     
-    QPixmap scaledPixmap = backgroundImage->scaledToWidth(width() - contentsMargins().left() * 2, Qt::SmoothTransformation);
+    // Get the intrinsic size of the SVG
+    QSize svgSize = svgRenderer->defaultSize();
+    
+    // Compute the scaling factor to keep the aspect ratio
+    double scaleFactor = qMin(static_cast<double>(availableWidth) / svgSize.width(),
+                              static_cast<double>(availableHeight) / svgSize.height());
+    
+    int targetWidth = svgSize.width() * scaleFactor;
+    int targetHeight = svgSize.height() * scaleFactor;
+    
+    // Center the target rect within the available area
+    int x = marginLeft + (availableWidth - targetWidth) / 2;
+    int y = marginTop + (availableHeight - targetHeight) / 2;
+    QRect targetRect(x, y, targetWidth, targetHeight);
+    // Render the SVG into the available space
+    svgRenderer->render(&painter, targetRect);
+    
 
-    // Calculate the offsets to center the image horizontally and vertically
-    int xOffset = (width() - scaledPixmap.width()) / 2;
-    int yOffset = (height() - scaledPixmap.height()) / 2;
-    // std::cout << yOffset << std::endl;
-    // std::cout << scaledPixmap.width() << std::endl;
-    // std::cout << scaledPixmap.height() << std::endl;
-    // Draw the background image
-    painter.drawPixmap(xOffset, yOffset, scaledPixmap);
-
+    
     for (auto it = componentsMap.begin(); it != componentsMap.end(); ++it) {
         QWidget* button = it.key();
         Position position = it.value();
-        int xPos = scaledPixmap.width()*position.x - button->width()/2; 
-        int yPos = scaledPixmap.height()*position.y- button->height()/2; 
-        button->move(xOffset + xPos, yOffset + yPos);
+        int xPos = targetRect.x() + targetRect.width() * position.x - button->width() / 2;
+        int yPos = targetRect.y() + targetRect.height() * position.y - button->height() / 2;
+        button->move(xPos, yPos);    
     }
-
-    
 }
 

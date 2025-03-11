@@ -15,19 +15,231 @@
 #ifndef SETUP_H
 #define SETUP_H
 
-#include "DataView.h"
+#include "FieldUtil.h"
 #include "TelemetryView.h"
 #include "GSManagerView.h"
 #include "ValveControlView.h"
+#include "components/IcarusCommandsView.h"
+#include <qboxlayout.h>
+#include <qframe.h>
+#include <qlist.h>
+#include <qmap.h>
+#include <qnamespace.h>
 #include <qobject.h>
 #include <QFile>
 #include <QTextStream>
 #include <QException>
+#include <qpushbutton.h>
 #include <stdexcept>
 // ----------------------------- Setup Views -----------------------------------
 using LeftView = TelemetryView;
 using MiddleView = ValveControlView;
 using RightView = GSManagerView;
+
+
+#define ICARUS_GUI 0
+#define FIREHORN_GUI 1
+
+#if ICARUS_GUI 
+namespace ui_elements {
+// Instantiate a QMap with std::string keys and std::vector<std::string> values
+    inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", {GUI_FIELD::HOPPER_N2O_VENT, GUI_FIELD::HOPPER_ETH_VENT, 
+        GUI_FIELD::HOPPER_N2O_MAIN, GUI_FIELD::HOPPER_ETH_MAIN}}, 
+        {"GSE Valves", {GUI_FIELD::GSE_VENT, GUI_FIELD::GSE_FILLING_N2O}}};
+
+    inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_PRESSURIZE,
+                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT}},
+                                                                {"GSE Command", {GUI_CMD_DISCONNECT}}};
+    inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
+                                                                            {"QPushButton", pushButtonMap}};
+    inline std::vector<ValveInfo> valves = {
+        {GUI_FIELD::GSE_VENT, {0.234569, 0.668}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::HOPPER_N2O_VENT, {0.50665, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_ETH_VENT, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_N2_SOL, {0.645736, 0.144315}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::HOPPER_N2O_MAIN, {0.585838, 0.638}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::HOPPER_ETH_MAIN, {0.703604, 0.638}, ValveButton::Orientation::Vertical}
+    };
+
+    inline std::vector<LabelInfo> labels = {
+        {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
+        {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
+        {GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576},
+        {GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905},
+        {GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439},
+        {GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502},
+        {GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438}
+    };
+
+    inline QList<GUI_FIELD> gps = {
+        HOPPER_GNSS_LON,
+        HOPPER_GNSS_LAT,
+        HOPPER_SAT_NBR,
+    };
+    inline QList<GUI_FIELD> imu = {
+        HOPPER_GYRO_X,
+        HOPPER_GYRO_Y,
+        HOPPER_GYRO_Z,
+        HOPPER_ACC_X,
+        HOPPER_ACC_Y,
+        HOPPER_ACC_Z,
+    };
+    inline QList<GUI_FIELD> position = {
+        HOPPER_BARO,
+        HOPPER_KALMAN_POS_X,
+        HOPPER_KALMAN_POS_Y,
+        HOPPER_KALMAN_POS_Z,
+        HOPPER_KALMAN_YAW,
+        HOPPER_KALMAN_PITCH,
+        HOPPER_KALMAN_ROLL,
+    };
+    inline QList<GUI_FIELD> tbd = {
+        HOPPER_GIMBAL_X,
+        HOPPER_GIMBAL_Y,
+        HOPPER_HV_VOLTAGE,
+        HOPPER_AV_TEMP,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> data_sections = {
+    {"GPS", gps},
+    {"Imu", imu},
+    {"Vehicule Spatial Data", position},
+    {"TBD", tbd}
+    };
+
+    inline QList<GUI_FIELD> gseDataFields = {
+        GSE_FILLING_N2O,
+        GSE_LOADCELL_1,
+        GSE_LOADCELL_2,
+        GSE_LOADCELL_3,
+        GSE_LOADCELL_4,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> gse_sections = {
+        {"GSE", gseDataFields}
+    };
+
+
+    inline QFrame *middlePlaceholder;
+    inline QFrame *leftPlaceholder;
+    inline QFrame *rightPlaceholder;
+    
+    inline QString connectedBackgroundImage = ":/images/prop_icarus_connect.svg";
+    inline QString disconnectedBackgroundImage = ":/images/prop_icarus_disconnect.svg";
+
+    inline void init_views() {
+        middlePlaceholder = new ValveControlView(valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
+        leftPlaceholder = new TelemetryView(data_sections);
+        QVBoxLayout* rightLayout = new QVBoxLayout;
+        rightLayout->setAlignment(Qt::AlignLeft);
+        rightLayout->addWidget(new GSManagerView());
+        rightLayout->addWidget(new IcarusCommandsView);
+        rightLayout->addWidget(new TelemetryView(gse_sections));
+        rightLayout->addStretch(1);
+        rightLayout->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder = new QFrame();
+        rightPlaceholder->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder->setLayout(rightLayout);
+    }
+}
+#endif
+
+#if FIREHORN_GUI
+namespace ui_elements {
+// Instantiate a QMap with std::string keys and std::vector<std::string> values
+    inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", 
+        {
+        GUI_FIELD::MAIN_LOX,
+        GUI_FIELD::MAIN_FUEL, 
+        GUI_FIELD::VENT_LOX,
+        GUI_FIELD::VENT_FUEL,
+        GUI_FIELD::IGNITER_LOX,
+        GUI_FIELD::IGNITER_FUEL,
+        }}, 
+        {"GSE Valves", {GUI_FIELD::GSE_VENT, GUI_FIELD::GSE_FILLING_N2O}}};
+
+    inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_RECOVER,GUI_CMD_PRESSURIZE,
+                                                        GUI_CMD_ARM, GUI_CMD_IGNITION, GUI_CMD_ABORT, GUI_CMD_MANUAL_DEPLOY}},
+                                                                {"GSE Command", {GUI_CMD_DISCONNECT}}};
+    inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
+                                                                            {"QPushButton", pushButtonMap}};
+    inline std::vector<ValveInfo> valves = {
+        {GUI_FIELD::GSE_VENT, {0.234569, 0.668}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::MAIN_LOX, {0.50665, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_LOX, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::MAIN_FUEL, {0.645736, 0.144315}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_FUEL, {0.585838, 0.638}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_LOX, {0.703604, 0.638}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_FUEL, {0.703604, 0.738}, ValveButton::Orientation::Vertical}
+    };
+
+    inline std::vector<LabelInfo> labels = {
+        {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
+        {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
+        {GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576},
+        {GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905},
+        {GUI_FIELD::N2_PRESSURE, 0.447, 0.439},
+        {GUI_FIELD::FUEL_PRESSURE, 0.447, 0.502},
+        {GUI_FIELD::LOX_PRESSURE, 0.893, 0.438},
+        {GUI_FIELD::LOX_INJ_PRESSURE, 0.893, 0.438},
+        {GUI_FIELD::FUEL_INJ_PRESSURE, 0.893, 0.438},
+        {GUI_FIELD::FUEL_LEVEL, 0.893, 0.438},
+        {GUI_FIELD::LOX_LEVEL, 0.893, 0.438},
+        {GUI_FIELD::LOX_TEMP, 0.893, 0.438},
+        {GUI_FIELD::N2_TEMP, 0.893, 0.438},
+        {GUI_FIELD::LOX_INJ_TEMP, 0.893, 0.438},
+    };
+
+    inline QList<GUI_FIELD> gps = {
+        GNSS_LON,
+        GNSS_LAT,
+        GNSS_ALT,
+        GNSS_VERTICAL_SPEED,
+    };
+    
+    inline QList<GUI_FIELD> tbd = {
+        AV_STATE,
+        LPB_VOLTAGE,
+        HPB_VOLTAGE,
+        AV_FC_TEMP,
+        AMBIENT_TEMP,
+        CAM_REC,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> data_sections = {
+    {"GPS", gps},
+    {"TBD", tbd}
+    };
+
+    inline QList<GUI_FIELD> gseDataFields = {
+        GSE_FILLING_N2O,
+        GSE_LOADCELL_1,
+    };
+    inline QMap<QString, QList<GUI_FIELD>> gse_sections = {
+        {"GSE", gseDataFields}
+    };
+
+
+    inline QFrame *middlePlaceholder;
+    inline QFrame *leftPlaceholder;
+    inline QFrame *rightPlaceholder;
+    
+    inline QString connectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
+    inline QString disconnectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
+
+    inline void init_views() {
+        middlePlaceholder = new ValveControlView(valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
+        leftPlaceholder = new TelemetryView(data_sections);
+        QVBoxLayout* rightLayout = new QVBoxLayout;
+        rightLayout->setAlignment(Qt::AlignLeft);
+        rightLayout->addWidget(new GSManagerView());
+        // rightLayout->addWidget(new IcarusCommandsView);
+        rightLayout->addWidget(new TelemetryView(gse_sections));
+        rightLayout->addStretch(1);
+        rightLayout->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder = new QFrame();
+        rightPlaceholder->setContentsMargins(0, 0, 0, 0);
+        rightPlaceholder->setLayout(rightLayout);
+    }
+}
+#endif
 
 
 // ----------------------------- MainWindow setup ------------------------------
@@ -36,9 +248,9 @@ namespace mws
     const QString title = "Firehorn Project Ground Control Station";
     const int x = 100;
     const int y = 100;
-    const int width = 800;
-    const int height = 600;
-    const int middleSectionWidth = 50; // % left and right  will be (100-x)/2
+    const int width = 1080;
+    const int height = 1920;
+    const int middleSectionWidth = 60; // % left and right  will be (100-x)/2
     const int sideWidth = (100 - middleSectionWidth) / 2;
 } // namespace mws
 
@@ -92,233 +304,35 @@ namespace col
         )")
                                                       .arg(col::backgroundColorCode)
                                                       .arg("rgba(30, 35, 69, 225)")
-                                                      .arg(id); }
+                                                      .arg(id); 
+    }
+
+    inline QString labelStyle = QString("font-size: 14pt; color: %1;font-weight: 400;background: transparent;").arg(col::primary);
+    inline QString getButtonStyle(QString id) { 
+        return QString(R"(
+            QPushButton#%5 {
+            color: %4;
+            font: bold 14px;
+            background: %1;
+            border:2px solid %1;
+            border-radius: 10px;
+            }
+            QPushButton#%5:hover {
+                background-color: %3;     
+                
+            }
+            QPushButton#%5:pressed {
+                background-color: %2!important;     
+                border:2px solid %4;
+            }
+            
+        )")
+        .arg(col::complementary)
+        .arg(col::backgroundColorCode)
+        .arg(col::complementaryLighter)
+        .arg(col::primary)
+        .arg(id);
+    }
 } // namespace col
 
 #endif /* SETUP_H */
-
-#ifndef ENUM_GUI_FIELD_UTIL
-#define ENUM_GUI_FIELD_UTIL
-
-// Field naming
-
-namespace fieldUtil
-{
-    inline QString enumToFieldName(GUI_FIELD field)
-    {
-        QString name;
-        switch (field)
-        {
-        case IGNITER_LOX:
-            name = "IGNITER LOX";
-            break;
-        case IGNITER_FUEL:
-            name = "IGNITER FUEL";
-            break;
-        case MAIN_LOX:
-            name = "MAIN LOX";
-            break;
-        case MAIN_FUEL:
-            name = "MAIN FUEL";
-            break;
-        case VENT_LOX:
-            name = "VENT LOX";
-            break;
-        case VENT_FUEL:
-            name = "VENT FUEL";
-            break;
-        case ORDER_ID:
-            name = "ORDER ID";
-            break;
-        case ORDER_VALUE:
-            name = "ORDER VALUE";
-            break;
-        case PACKET_NBR:
-            name = "PACKET NBR";
-            break;
-        case TIMESTAMP:
-            name = "TIMESTAMP";
-            break;
-        case GNSS_LON:
-            name = "GNSS LON";
-            break;
-        case GNSS_LAT:
-            name = "GNSS LAT";
-            break;
-        case GNSS_ALT:
-            name = "GNSS ALT";
-            break;
-        case GNSS_LON_R:
-            name = "GNSS LON R";
-            break;
-        case GNSS_LAT_R:
-            name = "GNSS LAT R";
-            break;
-        case GNSS_ALT_R:
-            name = "GNSS ALT R";
-            break;
-        case GNSS_VERTICAL_SPEED:
-            name = "GNSS VERTICAL SPEED";
-            break;
-        case N2_PRESSURE:
-            name = "N2 PRESSURE";
-            break;
-        case FUEL_PRESSURE:
-            name = "FUEL PRESSURE";
-            break;
-        case LOX_PRESSURE:
-            name = "LOX PRESSURE";
-            break;
-        case FUEL_LEVEL:
-            name = "FUEL LEVEL";
-            break;
-        case LOX_LEVEL:
-            name = "LOX LEVEL";
-            break;
-        case ENGINE_TEMP:
-            name = "ENGINE TEMP";
-            break;
-        case IGNITER_PRESSURE:
-            name = "IGNITER PRESSURE";
-            break;
-        case LOX_INJ_PRESSURE:
-            name = "LOX INJ PRESSURE";
-            break;
-        case FUEL_INJ_PRESSURE:
-            name = "FUEL INJ PRESSURE";
-            break;
-        case CHAMBER_PRESSURE:
-            name = "CHAMBER PRESSURE";
-            break;
-        case AV_STATE:
-            name = "AV STATE";
-            break;
-        case GNSS_CHOICE:
-            name = "GNSS CHOICE";
-            break;
-        case FILLINGN2O:
-            name = "FILLINGN2O";
-            break;
-        case VENT_GSE:
-            name = "VENT GSE";
-            break;
-        case TANK_PRESSURE:
-            name = "TANK PRESSURE";
-            break;
-        case TANK_TEMPERATURE:
-            name = "TANK TEMPERATURE";
-            break;
-        case FILLING_PRESSURE:
-            name = "FILLING PRESSURE";
-            break;
-        case DISCONNECT_ACTIVE:
-            name = "DISCONNECT ACTIVE";
-            break;
-        case LOADCELL_RAW:
-            name = "LOADCELL RAW";
-            break;
-        case ENGINE_STATE:
-            name = "ENGINE STATE";
-            break;
-        case GSE_VENT:
-            name = "GSE VENT";
-            break;
-        case GSE_CMD_STATUS:
-            name = "GSE CMD STATUS";
-            break;
-        default:
-            name = "UNKNOWN";
-            break;
-        }
-        return name;
-    }
-
-    inline GUI_FIELD fieldNameToEnum(const QString& fieldName)
-    {
-        if (fieldName == "IGNITER LOX")
-            return IGNITER_LOX;
-        else if (fieldName == "IGNITER FUEL")
-            return IGNITER_FUEL;
-        else if (fieldName == "MAIN LOX")
-            return MAIN_LOX;
-        else if (fieldName == "MAIN FUEL")
-            return MAIN_FUEL;
-        else if (fieldName == "VENT LOX")
-            return VENT_LOX;
-        else if (fieldName == "VENT FUEL")
-            return VENT_FUEL;
-        else if (fieldName == "ORDER ID")
-            return ORDER_ID;
-        else if (fieldName == "ORDER VALUE")
-            return ORDER_VALUE;
-        else if (fieldName == "PACKET NBR")
-            return PACKET_NBR;
-        else if (fieldName == "TIMESTAMP")
-            return TIMESTAMP;
-        else if (fieldName == "GNSS LON")
-            return GNSS_LON;
-        else if (fieldName == "GNSS LAT")
-            return GNSS_LAT;
-        else if (fieldName == "GNSS ALT")
-            return GNSS_ALT;
-        else if (fieldName == "GNSS LON R")
-            return GNSS_LON_R;
-        else if (fieldName == "GNSS LAT R")
-            return GNSS_LAT_R;
-        else if (fieldName == "GNSS ALT R")
-            return GNSS_ALT_R;
-        else if (fieldName == "GNSS VERTICAL SPEED")
-            return GNSS_VERTICAL_SPEED;
-        else if (fieldName == "N2 PRESSURE")
-            return N2_PRESSURE;
-        else if (fieldName == "FUEL PRESSURE")
-            return FUEL_PRESSURE;
-        else if (fieldName == "LOX PRESSURE")
-            return LOX_PRESSURE;
-        else if (fieldName == "FUEL LEVEL")
-            return FUEL_LEVEL;
-        else if (fieldName == "LOX LEVEL")
-            return LOX_LEVEL;
-        else if (fieldName == "ENGINE TEMP")
-            return ENGINE_TEMP;
-        else if (fieldName == "IGNITER PRESSURE")
-            return IGNITER_PRESSURE;
-        else if (fieldName == "LOX INJ PRESSURE")
-            return LOX_INJ_PRESSURE;
-        else if (fieldName == "FUEL INJ PRESSURE")
-            return FUEL_INJ_PRESSURE;
-        else if (fieldName == "CHAMBER PRESSURE")
-            return CHAMBER_PRESSURE;
-        else if (fieldName == "AV STATE")
-            return AV_STATE;
-        else if (fieldName == "GNSS CHOICE")
-            return GNSS_CHOICE;
-        else if (fieldName == "FILLINGN2O")
-            return FILLINGN2O;
-        else if (fieldName == "VENT GSE")
-            return VENT_GSE;
-        else if (fieldName == "TANK PRESSURE")
-            return TANK_PRESSURE;
-        else if (fieldName == "TANK TEMPERATURE")
-            return TANK_TEMPERATURE;
-        else if (fieldName == "FILLING PRESSURE")
-            return FILLING_PRESSURE;
-        else if (fieldName == "DISCONNECT ACTIVE")
-            return DISCONNECT_ACTIVE;
-        else if (fieldName == "LOADCELL RAW")
-            return LOADCELL_RAW;
-        else if (fieldName == "ENGINE STATE")
-            return ENGINE_STATE;
-        else if (fieldName == "GSE VENT")
-            return GSE_VENT;
-        else if (fieldName == "GSE CMD STATUS")
-            return GSE_CMD_STATUS;
-        else
-            return UNKNOWN;
-    }
-
-}
-
-
-
-#endif /* ENUM_GUI_FIELD_UTIL */

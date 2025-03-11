@@ -11,9 +11,17 @@
         <file>images/GS-valve-unknown.svg</file>
         <file>images/prop-diagram-firehorn.png</file>
         <file>images/prop-diagram-firehorn-highres.png</file>
+        <file>images/prop-diagram-firehorn-highres.svg</file>
         <file>images/prop-diagram-firehorn.svg</file>
         <file>images/prop-diagram-firehorn-dark.svg</file>
         <file>images/prop-diagram-firehorn-light.svg</file>
         <file>images/prop-diagram-firehorn-disconnect.png</file>
+        <file>images/prop-diagram-icarus.png</file>
+        <file>images/prop-diagram-icarus-smaller.png</file>
+        <file>images/prop-diagram-icarus.svg</file>
+        <file>images/prop_ica_bg.png</file>
+        <file>images/prop_ica_bg.svg</file>
+        <file>images/prop_icarus_connect.svg</file>
+        <file>images/prop_icarus_disconnect.svg</file>
     </qresource>
 </RCC>

@@ -9,7 +9,7 @@
 #include <MainWindow.h>
 
 #include <RequestBuilder.h>
-#include "ERT_RF_Protocol_Interface/PacketDefinition.h"
+#include "FieldUtil.h"
 
 ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent) : QWidget(parent), m_checked(false), m_offset(0), m_fieldSensitivity(fieldSensitivity)
 {
@@ -33,29 +33,30 @@ ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent) : QWidge
         RequestBuilder b = RequestBuilder();
                     b.setHeader(RequestType::POST);
         b.addField("cmd", m_fieldSensitivity);
-        b.addField("cmd_order", m_checked ? "open" : "close");
+        b.addField("cmd_order", m_checked ? 1 : 0);
         MainWindow::clientManager->send(b.toString()); 
         b.clear();
         b.setHeader(RequestType::INTERNAL);
-        b.addField(QString::number(m_fieldSensitivity), "unkown");;
+        b.addField(QString::number(m_fieldSensitivity), "unknown");;
         MainWindow::clientManager->send(b.toString());
     });
 }
 
 void ToggleButton::updateState(const QString& res) {
 
-        if (res == "open") {       
+        if (res == "0") {       
+            m_state = Close;
+            m_checked = false;
+            update();
+            toggleCallback(); 
+        }
+        else if (res == "unknown") {
+            setUnknown();
+        } else {
             m_state = Open;
             m_checked = true;
             update();
             toggleCallback();
-        } else if (res == "close") {
-            m_state = Close;
-            m_checked = false;
-            update();
-            toggleCallback();
-        } else {
-            setUnknown();
         }
 }
 

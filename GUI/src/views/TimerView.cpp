@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QPixmap>
 #include <QLayout>
+#include <qnamespace.h>
 
 #include "TimerView.h"
 #include "MainWindow.h"
@@ -13,7 +14,7 @@
 TimerView::TimerView(QString title, GUI_FIELD field ,QWidget *parent) : QWidget(parent), timer1Count(0), timerTitle(title) {
     QVBoxLayout *layout = new QVBoxLayout(this);
     setObjectName("TimerView");
-    
+    /*setStyleSheet("border: 2px solid black;");*/
     
 
     timer1Label.setText(formatTime(timer1Count));
@@ -22,17 +23,17 @@ TimerView::TimerView(QString title, GUI_FIELD field ,QWidget *parent) : QWidget(
     QPixmap pm(":/icons/clock-icon-white.png");
     originalPixmap = pm;
     imageLabel = new QLabel;
-    
+    imageLabel->setAlignment(Qt::AlignCenter); // Center the pixmap within the label
     
     // imageLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     imageLabel->setObjectName("child");
     
-    imageLabel->setPixmap(pm.scaled(this->widthMM(), this->heightMM(), Qt::KeepAspectRatio));
+    imageLabel->setPixmap(pm.scaled(this->widthMM()-10, this->heightMM()-10, Qt::KeepAspectRatio));
 
     timerTitle.setObjectName("child");
     
     layout->addWidget(&timerTitle, 1, Qt::AlignCenter);
-    layout->addWidget(imageLabel, 6, Qt::AlignCenter);
+    layout->addWidget(imageLabel, 6, Qt::AlignCenter | Qt::AlignHCenter);
     layout->addWidget(&timer1Label, 1, Qt::AlignCenter);
     connect(&timer1, &QTimer::timeout, this, &TimerView::updateTimer1);
     
@@ -44,7 +45,7 @@ TimerView::TimerView(QString title, GUI_FIELD field ,QWidget *parent) : QWidget(
 
 void TimerView::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
-    QPixmap scaledPixmap = originalPixmap.scaled(imageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap scaledPixmap = originalPixmap.scaled(event->size().width()-10, event->size().height()-10, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     imageLabel->setPixmap(scaledPixmap);
 }
 

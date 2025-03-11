@@ -10,40 +10,26 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <string>
 
 #include "MainWindow.h"
 
+#include "FieldUtil.h"
 #include "components/DataLabel.h"
 #include "../Setup.h"
 #include "TelemetryView.h"
 
-TelemetryView::TelemetryView(QWidget* parent) : QFrame(parent) {
+TelemetryView::TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidget* parent) : QFrame(parent) {
     
     // Set up the appearance or behavior as needed
     //setStyleSheet("background-color: lightblue;");
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignTop);
-    
-    // addField(GUI_FIELD::DISCONNECT_ACTIVE);
-    
-
-    QList<GUI_FIELD> fields = {
-        GUI_FIELD::AV_STATE
-    };
-    createSection("AV State", &fields);
-
-    fields = {
-        GUI_FIELD::GNSS_CHOICE,
-        GUI_FIELD::GNSS_LON, 
-        GUI_FIELD::GNSS_LAT,
-        GUI_FIELD::GNSS_ALT,
-        GUI_FIELD::GNSS_LON_R, 
-        GUI_FIELD::GNSS_LAT_R,
-        GUI_FIELD::GNSS_ALT_R,
-        GUI_FIELD::GNSS_VERTICAL_SPEED
-    };
-    createSection("Positioning", &fields);
+    layout->setContentsMargins(0, 0, 0, 0);
+    for (auto key: section_map.keys()) {
+        createSection(key, &section_map[key]);
+    }
 }
 
 void TelemetryView::createSection(QString title, QList<GUI_FIELD> *fields) {

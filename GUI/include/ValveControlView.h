@@ -11,20 +11,36 @@
 #include <memory>
 
 #include <QMap>
+#include <QtSvg/QSvgRenderer>
+#include <qsvgrenderer.h>
 
-#include "components/ValveControlButton.h"
+#include "FieldUtil.h"
+#include "Log.h"
 #include "components/ValveButton.h"
+#include "FileLocation.h"
 
 struct Position {
         float x;
         float y;
     };
 
+typedef struct  {
+    GUI_FIELD f;
+    Position p;
+    ValveButton::Orientation o;
+} ValveInfo;
+
+typedef struct  {
+    GUI_FIELD f;
+    Position p;
+} LabelInfo;
+
 class ValveControlView : public QFrame {
     Q_OBJECT
 
 public:
-    ValveControlView(QWidget *parent = nullptr);
+    ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, 
+                     QString connectedBg, QString disconnectedBg, QWidget *parent = nullptr);
     virtual ~ValveControlView() {}
     
 protected:
@@ -40,7 +56,12 @@ private:
     void addComponent(QWidget* component,  float x, float y);
     void addCommandButton(const QString& label, float x, float y);
 
-    std::unique_ptr<QPixmap> backgroundImage;
+    QString connectedBgPath;
+    QString disconnectedBgPath;
+    std::vector<ValveInfo> _valves;
+    std::vector<LabelInfo> _labels;
+    ModuleLog _logger = ModuleLog("ValveControlView", LOG_FILE_PATH);
+    std::unique_ptr<QSvgRenderer> svgRenderer;
     QMap<QWidget*, Position> componentsMap;
 };
 

@@ -5,7 +5,6 @@
 */
 
 #include <memory>
-#include <iostream>
 #include <algorithm>
 
 #include <QLabel>
@@ -19,11 +18,11 @@
 #include <QGridLayout>
 
 #include "ControlPannelView.h"
-#include "components/ToggleButton.h"
 #include "components/ValveControlButton.h"
 #include "MainWindow.h"
 #include "RequestBuilder.h"
 #include <Setup.h>
+#include "FieldUtil.h"
 
 ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> *controls) : QFrame(parent) {
     
@@ -50,6 +49,8 @@ ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std:
     createPushButtonLayouts(containerLayout, &pushButtonControls);
     
     containerLayout->setContentsMargins(20, 10, 20, 10);
+    containerLayout->setSpacing(15);
+
     controlContainerWidget->setFixedHeight(240);    
     
     connect(expandButton, &QPushButton::clicked, this, &ControlPannelView::expandClicked);
@@ -105,20 +106,22 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
         controlLayout->addWidget(titleLabel, 1, Qt::AlignLeft);
         controlLayout->setSpacing(15);
         QGridLayout *gridLayout = new QGridLayout;
-        gridLayout->setSpacing(25);
-        int maxColumns = std::ceil(buttonField.size() / 2.0);
+
+        gridLayout->setSpacing(15);
+        int maxColumns = std::max(static_cast<int>(std::floor(buttonField.size() / 2.0)), 1);
+
 
         for (int i = 0; i < buttonField.size(); ++i) {
             std::string trimmedName = fieldUtil::enumToFieldName(buttonField[i]).toStdString();
             QPushButton *button = new QPushButton(fieldUtil::enumToFieldName(buttonField[i]));
             std::replace(trimmedName.begin(), trimmedName.end(), ' ', '_');
-            
             button->setObjectName(QString::fromStdString(trimmedName));
             QString style = QString(R"(
                 #%5 {
                 color: %4;
                 font: bold 14px;
                 background: %1;
+                padding:5px;
                 border:2px solid %1;
                 border-radius: 10px;
                 }
@@ -137,11 +140,13 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
                 .arg(col::primary)
                 .arg(QString::fromStdString(trimmedName));
 
-            QObject::connect(button, &QPushButton::clicked, [button]() {
+            QObject::connect(button, &QPushButton::clicked, [button, this]() {
+                
                 RequestBuilder b;
                 b.setHeader(RequestType::POST);
-                b.addField("cmd", button->text()); 
-                b.addField("cmd_order", "1"); // TODO: The command order should not always be 1 ??
+                b.addField("cmd", fieldUtil::fieldNameToEnum(button->text())); 
+                b.addField("cmd_order", 1);
+                _logger.debug("Clicked Control Pannel Button", b.toString().toStdString());
                 MainWindow::clientManager->send(b.toString());
             });
 
