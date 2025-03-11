@@ -31,10 +31,12 @@ jobs:
       run: |
         mkdir build && cd build
         cmake ..
+        cmake --build .
 
     - name: Run tests
       run: |
-        ./build/GUI/tests/my_tests > test_results.txt
+        cd build
+        ./GUI/tests/my_tests > ../test_results.txt    
 
     - name: Commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v4
