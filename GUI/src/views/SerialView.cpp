@@ -42,11 +42,12 @@ void SerialView::buttonClicked() {
     b.addField("cmd", GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS);
     if (isOpen) {
         b.addField("cmd_order", "close");
-        MainWindow::clientManager->send(b.toString());
+    _logger.info("Serial Command", "Sent serial close");
     } else {
         b.addField("cmd_order", "open");
-        MainWindow::clientManager->send(b.toString());
+    _logger.info("Serial Command", "Sent serial open");
     }
+    MainWindow::clientManager->send(b.toString());
 }
 
 void SerialView::setupStyle() {
