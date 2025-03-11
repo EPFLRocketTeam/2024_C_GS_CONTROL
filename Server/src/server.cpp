@@ -294,6 +294,7 @@ void Server::handleCommand(const QJsonObject &command) {
         } else {
             openSerialPort();
         }
+        // Since there is no break the serial status is automatically updated
 
     case GUI_FIELD::SERIAL_STATUS: {
         _serverLogger.info("Received Command", "Get Serial Status Command");
@@ -302,9 +303,8 @@ void Server::handleCommand(const QJsonObject &command) {
         b.addField(QString::number(GUI_FIELD::SERIAL_STATUS), serialStatus);
         _serverLogger.info("Send Response", QString(R"(The response to Serial Status is %1)").arg(b.toString()).toStdString());
         updateSubscriptions(b.build());
-        break;
         }
-
+        // Since there is no break the serial name is automatically updated
     case GUI_FIELD::SERIAL_NAME_USE:
         b.setHeader(RequestType::POST);
         b.addField(QString::number(GUI_FIELD::SERIAL_NAME_USE), serialPort->portName());
