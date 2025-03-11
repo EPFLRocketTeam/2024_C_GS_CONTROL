@@ -18,9 +18,7 @@ ValveButton::ValveButton(Orientation orientation, QWidget *parent) : QLabel(pare
     setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     setObjectName("valveButton");
     resetStyle();
-    setState(Close);
-    
-    
+    updateButtonIcon();
 }
 
 void ValveButton::setState(State state) {
@@ -42,7 +40,6 @@ void ValveButton::updateButtonIcon() {
         case Unknown:
             iconFilePath = ":/images/GS-valve-unknown.svg";
             break;
-    
     }
 
     QIcon icon(iconFilePath);

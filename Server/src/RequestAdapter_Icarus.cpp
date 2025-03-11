@@ -22,17 +22,14 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
     // Create a JSON object
     QJsonObject jsonObj;
     switch (packetId) {
-        case 0x00: 
-            std::cout << "Packet with ID 00 received : " << +packetId << std::endl;
-            break;
         #if RF_PROTOCOL_FIREHORN
         case CAPSULE_ID::AV_TELEMETRY: {
-            av_downlink_unpacked dataAv;
+            av_downlink_t packedData;
 
-            std::cout << "Packet with ID received : " << +packetId << std::endl;
             // Copy the incoming raw data into our packet structure.
-            memcpy(&dataAv, data, sizeof(dataAv));
-
+            memcpy(&packedData, data, sizeof(packedData));
+            
+            av_downlink_unpacked dataAv = decode_downlink(packedData);
             
             jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = QString::number(static_cast<int>(dataAv.packet_nbr));
             jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
@@ -81,11 +78,14 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
             jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] = QString::number(static_cast<double>(dataGse.tankTemperature));
             jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] = QString::number(static_cast<double>(dataGse.fillingPressure));
             jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] = QString::number(dataGse.disconnectActive);
+            #if RF_PROTOCOL_FIREHORN
+            jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] = QString::number(static_cast<int>(dataGse.loadcell_raw));
+            #else 
             jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] = QString::number(static_cast<int>(dataGse.loadcell1));
             jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] = QString::number(static_cast<int>(dataGse.loadcell2));
             jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] = QString::number(static_cast<int>(dataGse.loadcell3));
             jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] = QString::number(static_cast<int>(dataGse.loadcell4));
-
+            #endif
             // Create a sub-object for status
             QJsonObject statusObj;
             statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] = QString::number(static_cast<int>(dataGse.status.fillingN2O));
@@ -259,7 +259,7 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     case GUI_FIELD::IGNITER_LOX:
         return { AV_CMD_IGNITER_LOX, AV_TELEMETRY };
 
-    case GUI_FIELD::GUI_CMD_FILLING_LOX:
+    case GUI_FIELD::GSE_FILLING_N2O:
         return { GSE_CMD_FILLING_LOX, GSE_TELEMETRY };
 
     case GUI_FIELD::GSE_VENT:

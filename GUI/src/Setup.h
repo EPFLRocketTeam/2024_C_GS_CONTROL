@@ -45,10 +45,10 @@ namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
     inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", {GUI_FIELD::HOPPER_N2O_VENT, GUI_FIELD::HOPPER_ETH_VENT, 
         GUI_FIELD::HOPPER_N2O_MAIN, GUI_FIELD::HOPPER_ETH_MAIN}}, 
-        {"GSE Valves", {GUI_FIELD::GSE_VENT}}};
+        {"GSE Valves", {GUI_FIELD::GSE_VENT, GUI_FIELD::GSE_FILLING_N2O}}};
 
     inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_PRESSURIZE,
-                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT, GUI_CMD_FILLING_N2O}},
+                                                        GUI_CMD_ARM, GUI_CMD_LAUNCH, GUI_CMD_ABORT}},
                                                                 {"GSE Command", {GUI_CMD_DISCONNECT}}};
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};
@@ -154,11 +154,11 @@ namespace ui_elements {
         GUI_FIELD::IGNITER_LOX,
         GUI_FIELD::IGNITER_FUEL,
         }}, 
-        {"GSE Valves", {GUI_FIELD::GSE_VENT}}};
+        {"GSE Valves", {GUI_FIELD::GSE_VENT, GUI_FIELD::GSE_FILLING_N2O}}};
 
     inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{{"Command", {GUI_CMD_CALIBRATE, GUI_CMD_RECOVER,GUI_CMD_PRESSURIZE,
                                                         GUI_CMD_ARM, GUI_CMD_IGNITION, GUI_CMD_ABORT, GUI_CMD_MANUAL_DEPLOY}},
-                                                                {"GSE Command", {GUI_CMD_DISCONNECT, GUI_CMD_FILLING_LOX}}};
+                                                                {"GSE Command", {GUI_CMD_DISCONNECT}}};
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};
     inline std::vector<ValveInfo> valves = {
@@ -211,9 +211,6 @@ namespace ui_elements {
     inline QList<GUI_FIELD> gseDataFields = {
         GSE_FILLING_N2O,
         GSE_LOADCELL_1,
-        GSE_LOADCELL_2,
-        GSE_LOADCELL_3,
-        GSE_LOADCELL_4,
     };
     inline QMap<QString, QList<GUI_FIELD>> gse_sections = {
         {"GSE", gseDataFields}

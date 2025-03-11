@@ -11,6 +11,9 @@
 int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
+    #if DEBUG_LOG
+    MainLog::setDebugLevel(DEBUG);
+    #endif
     QString appDir = QCoreApplication::applicationDirPath();
     auth::loadKeysFromFile(appDir + "//../Server/src/auth_keys.json"); 
     Server server = Server();
@@ -22,7 +25,9 @@ int start_server(int argc, char *argv[]) {
         std::cout << "Error: Failed to start server. Check if the port is already in use or permissions issue." <<std::endl;      
     }    QTimer *timer = new QTimer();
 
+    #if SIMULATE_PACKETS
     QObject::connect(timer, &QTimer::timeout, &server, &Server::simulateJsonData);
+    #endif
     timer->start(2000); // Timer fires every 2000 milliseconds (2 seconds)
 
     /*QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();*/

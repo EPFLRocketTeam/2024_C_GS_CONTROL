@@ -6,7 +6,9 @@
 #include "ClientManager.h"
 #include <optional>
 #include <qglobal.h>
+#include <qjsondocument.h>
 #include <qjsonobject.h>
+#include <stdexcept>
 #include <string>
 #include <QJsonDocument>
 #include <QMap>
@@ -33,7 +35,6 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
     connect(&requestHandler, &RequestHandler::post, this, &Server::receivePost);
     connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
     connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
-
     setup_db();
 
     openSerialPort();
@@ -80,7 +81,6 @@ void Server::openSerialPort() {
         return;
     }
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
-        _serverLogger.info("PORT", info.portName().toStdString());
         if (info.portName().startsWith("ttyACM")) {
             serial_port_name = info.portName();
             serialPort->setPortName(serial_port_name);
@@ -107,6 +107,7 @@ void Server::openSerialPort() {
     if (foundPort) {
         _serverLogger.info("SerialActions", QString("Serial port open on %1").arg(serial_port_name).toStdString());
     } else {
+        serialPort->setPortName("-");
         _serverLogger.error("SerialActions", "Serial port could not open");
     }}
 
@@ -118,7 +119,7 @@ void Server::receiveSerialData() {
 }
 
 void Server::serialError() {
-    std::cout << "Serial port error: " << serialPort->errorString().toStdString() << std::endl;
+    _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
 }
 
 void Server::incomingConnection(qintptr socketDescriptor) {
@@ -131,46 +132,52 @@ void Server::incomingConnection(qintptr socketDescriptor) {
 
     clients.append(client);
     
-    std::cout << "Client connected: " << socketDescriptor << std::endl;
+    _serverLogger.info("Client Connected", QString(R"(Client on socket %1)").arg(socketDescriptor).toStdString());
 }
 
 void Server::receiveSubscribe(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the subscribe request
     int field = request.value("payload").toObject().value("field").toInt();
 
-    std::cout << "socket: " << senderSocket << std::endl;
+    _serverLogger.debug("Subscription", QString(R"(The client %1 is trying to subscribe to %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
+
     if (subscriptionMap[field].contains(senderSocket)) {
-        std::cout << "Already subscribed to: " << QString::number(field).toStdString() << std::endl;
+        _serverLogger.warn("Subscription failed", QString(R"(The client %1 is already subscribed to %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
         return;
     }
     subscriptionMap[field].append(senderSocket);
-    std::cout << "Subscribed to: " << QString::number(field).toStdString() << std::endl; 
+    _serverLogger.debug("Subscription Successfull", QString(R"(The client %1 subscribed to %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
 }
 
 void Server::receiveUnsubscribe(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the unsubscribe request
     int field = request.value("payload").toObject().value("field").toInt();
     subscriptionMap[field].removeOne(senderSocket);
-    std::cout << "Unsubscribed from: " << subscriptionMap[field].size() << std::endl;
+    _serverLogger.debug("Unsubscribed Successfully", QString(R"(The client %1 unsubscribed from %2)")
+                           .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
 }
 
 void Server::receiveGet(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the get request
-    std::cout << "Received get request" << std::endl;
+    QJsonDocument doc(request);
+    _serverLogger.debug("Received Get Request", doc.toJson(QJsonDocument::Indented).toStdString());
     QString field = request["field"].toString();
     QByteArray data = "Data for " + field.toUtf8();
+    throw std::logic_error("Not Implemented");
     sendToAllClients(data);
 }
 
 void Server::receivePost(const QJsonObject &request,  QTcpSocket *senderSocket) {
     // Handle the post request
-    std::cout << "Received post request" << std::endl;
     QJsonDocument doc(request);
+    _serverLogger.debug("Received Post Request", doc.toJson(QJsonDocument::Indented).toStdString());
     QString strJson(doc.toJson(QJsonDocument::Compact));
     if (request["payload"].toObject().contains("cmd")) {
         handleCommand(request); 
     }
-    std::cout << strJson.toStdString() << std::endl;
 }
 
 void Server::readyRead() {
@@ -182,7 +189,6 @@ void Server::readyRead() {
         QByteArray data = senderSocket->readAll();
 
         QString dataString = QString::fromUtf8(data);
-        std::cout << "\033[32m" << dataString.toStdString() << "\033[0m" << std::endl;
         QString jsonString(dataString);
         // jsonString.remove("\n");
         // Split the string by '}{'
@@ -201,8 +207,7 @@ void Server::readyRead() {
             }
             counter++;
             
-            std::cout << jsonStr.toStdString() << std::endl;
-            std::cout << " " << std::endl;
+            _serverLogger.debug("Received Message From Client", jsonStr.toStdString());
 
             requestHandler.handleRequest(jsonStr, senderSocket);
             
@@ -247,9 +252,9 @@ void Server::updateSubscriptions(const QJsonObject &newData) {
         if (value.isObject()) {
             updateSubscriptions(value.toObject());
             for (QTcpSocket *socket: sockets) {
-                std::cout << "Sending data to client" << std::endl;
                 rBuilder.addField(it.key(), QString(QJsonDocument(value.toObject()).toJson()));
                 QByteArray data = rBuilder.toString().toUtf8();
+                _packetLogger.debug("Sent packets to client", rBuilder.toString().toStdString());
                 socket->write(data, data.size());
                 socket->waitForBytesWritten();
                 socket->flush();
@@ -264,29 +269,22 @@ void Server::updateSubscriptions(const QJsonObject &newData) {
             }
         } else {
             for (QTcpSocket *socket: sockets) {
-                std::cout << "Sending data to client" << std::endl;
                 rBuilder.addField(it.key(), value.toString());
                 QByteArray data = rBuilder.toString().toUtf8();
+                _packetLogger.debug("Sent packets to client", rBuilder.toString().toStdString());
                 socket->write(data, data.size());
                 socket->waitForBytesWritten();
                 socket->flush();
-                
-                
-                
             }
         }
     }
-
-
 }
 
 void Server::handleCommand(const QJsonObject &command) {
     // Handle the command
     int f = command["payload"].toObject()["cmd"].toInt();
     RequestBuilder b = RequestBuilder();
-    switch (f)
-    {
-
+    switch (f) {
     case GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS:
         if (command["payload"].toObject()["cmd_order"].toString() == "close") {
             if (serialPort->isOpen()) {
@@ -295,12 +293,13 @@ void Server::handleCommand(const QJsonObject &command) {
         } else {
             openSerialPort();
         }
+
     case GUI_FIELD::SERIAL_STATUS: {
-        std::cout << "Serial status" << std::endl;
+        _serverLogger.info("Received Command", "Get Serial Status Command");
         b.setHeader(RequestType::POST);
         const QString & serialStatus = QString(serialPort->isOpen() ? "open" : "close");
         b.addField(QString::number(GUI_FIELD::SERIAL_STATUS), serialStatus);
-        std::cout << b.toString().toStdString() << std::endl;   
+        _serverLogger.info("Send Response", QString(R"(The response to Serial Status is %1)").arg(b.toString()).toStdString());
         updateSubscriptions(b.build());
         break;
         }
@@ -311,25 +310,22 @@ void Server::handleCommand(const QJsonObject &command) {
         updateSubscriptions(b.build());
         break;
 
-        
-
     default:
         int order = command["payload"].toObject()["cmd_order"].toInt();
-        std::cout << "cmd: " << f << " order: " << order << std::endl;
+        _serverLogger.info("Received Command", QString(R"(Send command for %1 with value %2)")
+                           .arg(fieldUtil::enumToFieldName((GUI_FIELD)f)).arg(order).toStdString());
         av_uplink_t p;
         int capsule_id = createUplinkPacketFromRequest((GUI_FIELD)f, order, &p);
         sendSerialPacket(capsule_id, (uint8_t*) &p, av_uplink_size);
         break;
     }
-    
 }
 
 void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) {
     uint8_t *packetToSend = capsule.encode(packetId, packet, size);
     if (serialPort->isOpen()) {
         serialPort->write((char *) packetToSend,capsule.getCodedLen(size));
-        std::cout << "Packet sent to radio Board" << std::endl;
-        _packetLogger.info("Packet Sent", "A packet was sent");
+        _packetLogger.info("Send Packet", QString(R"(A packet with packet id %1 was sent to radio board)").arg(packetId).toStdString());
     } else {
         _serverLogger.error("Serial Send", "The serial port is not opened, packet couldn't be send");
     }
@@ -435,9 +431,8 @@ void Server::simulateJsonData() {
     gsePacket.fillingPressure = distTemp(gen);
     gsePacket.status= {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};
     gsePacket.disconnectActive = static_cast<bool>(distBool(gen));
-    gsePacket.loadcell1 = distTemp(gen);
-    gsePacket.loadcell2 = distTemp(gen);
-    gsePacket.loadcell3 = distTemp(gen);
-    gsePacket.loadcell4 = distTemp(gen);
+    #ifdef RF_PROTOCOL_FIREHORN
+    gsePacket.loadcell_raw = distTemp(gen);
+    #endif
     handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
 }
