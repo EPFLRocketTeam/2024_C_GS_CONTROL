@@ -44,7 +44,7 @@ private:
     void setupConnections();
     
 
-    ModuleLog _logger = ModuleLog("ValveControlView", LOG_FILE_PATH);
+    ModuleLog _logger = ModuleLog("SerialView", LOG_FILE_PATH);
     std::unique_ptr<QLabel> displayText;
     QHBoxLayout *layout;
     bool isOpen;
