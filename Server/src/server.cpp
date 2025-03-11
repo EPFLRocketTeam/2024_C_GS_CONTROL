@@ -69,6 +69,9 @@ Server::~Server() {
     if (database != NULL) {
         sqlite3_close(database);
     }
+    if (serialPort->isOpen()) {
+        serialPort->close();
+    }
 }
 
 void Server::openSerialPort() {
@@ -207,8 +210,6 @@ void Server::readyRead() {
             }
             counter++;
             
-            _serverLogger.debug("Received Message From Client", jsonStr.toStdString());
-
             requestHandler.handleRequest(jsonStr, senderSocket);
             
         }
