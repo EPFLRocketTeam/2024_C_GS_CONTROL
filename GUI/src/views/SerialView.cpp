@@ -36,19 +36,17 @@ SerialView::SerialView(std::unique_ptr<QWidget> parent) : QFrame(parent.get()) {
 }
 
 void SerialView::buttonClicked() {
+    updateStatus("unknown");
     RequestBuilder b;
     b.setHeader(RequestType::POST);
     b.addField("cmd", GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS);
     if (isOpen) {
         b.addField("cmd_order", "close");
         MainWindow::clientManager->send(b.toString());
-        
-        return;
-    } 
-    b.addField("cmd_order", "open");
-    MainWindow::clientManager->send(b.toString());
-    
-    
+    } else {
+        b.addField("cmd_order", "open");
+        MainWindow::clientManager->send(b.toString());
+    }
 }
 
 void SerialView::setupStyle() {
