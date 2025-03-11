@@ -38,11 +38,5 @@ jobs:
         cd build
         ./GUI/tests/my_tests > ../test_results.txt    
 
-    - name: Commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: "Automatically update README"
-
-        
     - name: Debug README.md contents
       run: cat README.md
