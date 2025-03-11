@@ -29,7 +29,6 @@ jobs:
 
     - name: Configure and build project
       run: |
-        cmake -S GUI -B build
         cmake --build build 
 
     - name: Run tests
