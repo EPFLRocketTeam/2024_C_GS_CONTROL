@@ -372,6 +372,12 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_CALIBRATE:
     name = "CALIBRATE";
     break;
+  case GUI_CMD_GIMBALL_X:
+    name = "CMD GIMBAL X";
+    break;
+  case GUI_CMD_GIMBALL_Y:
+    name = "CMD GIMBAL Y";
+    break;
   case GUI_CMD_RECOVER:
     name = "RECOVER";
     break;
@@ -577,6 +583,10 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_CALIBRATE;
   else if (fieldName == "RECOVER")
     return GUI_CMD_RECOVER;
+  else if (fieldName == "CMD GIMBAL X")
+      return GUI_CMD_GIMBALL_X;
+  else if (fieldName == "CMD GIMBAL Y")
+      return GUI_CMD_GIMBALL_Y;
   else if (fieldName == "IGNITION")
     return GUI_CMD_IGNITION;
   else if (fieldName == "MANUAL DEPLOY")

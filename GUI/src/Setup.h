@@ -37,8 +37,8 @@ using MiddleView = ValveControlView;
 using RightView = GSManagerView;
 
 
-#define ICARUS_GUI 0
-#define FIREHORN_GUI 1
+#define ICARUS_GUI 1
+#define FIREHORN_GUI 0
 
 #if ICARUS_GUI 
 namespace ui_elements {

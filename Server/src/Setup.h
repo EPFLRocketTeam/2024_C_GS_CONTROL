@@ -11,9 +11,9 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
-// #define RF_PROTOCOL_ICARUS 1
-#define RF_PROTOCOL_FIREHORN 1
-#define SIMULATE_PACKETS 0
+#define RF_PROTOCOL_ICARUS 1
+// #define RF_PROTOCOL_FIREHORN 1
+#define SIMULATE_PACKETS 1
 #define DEBUG_LOG 1
 
 namespace auth {
