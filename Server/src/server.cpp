@@ -86,6 +86,10 @@ void Server::openSerialPort() {
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
         if (info.portName().startsWith("ttyACM")) {
             serial_port_name = info.portName();
+
+            _serverLogger.debug("Serial Opening", QString(R"(manufacturer=%1, pId=%2, vendoreId=%3)")
+                                .arg(info.manufacturer()).arg(info.productIdentifier()).arg(info.vendorIdentifier())
+                                .toStdString());
             serialPort->setPortName(serial_port_name);
             if (serialPort->open(QIODevice::ReadWrite)) {
                 foundPort = true;
