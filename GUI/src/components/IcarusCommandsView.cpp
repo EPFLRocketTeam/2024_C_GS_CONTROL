@@ -160,6 +160,10 @@ void IcarusCommandsView::onButtonClicked()
     bool okX, okY;
     int xValue = m_gimbalXLineEdit->text().toInt(&okX);
     int yValue = m_gimbalYLineEdit->text().toInt(&okY);
+    if (xValue < -15 || xValue > 15 || yValue < -15 || yValue > 15) {
+        _logger.error("Invalid Command Value", QString(R"(The value gimbal_x=%1, gimbal_y=%2, contain an invalid value, they should be between -15 and 15)").arg(xValue).arg(yValue).toStdString());
+        return;
+    }
 
     if (okX && okY) {
         RequestBuilder b = RequestBuilder();
