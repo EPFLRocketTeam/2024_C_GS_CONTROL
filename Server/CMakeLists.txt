@@ -17,7 +17,7 @@ add_library(CapsuleLib Capsule/src/capsule.h)
 
 set(SOURCES_SERVER
     src/server.cpp
-    src/RequestAdapter_Icarus.cpp
+    src/RequestAdapter.cpp
     src/network/RequestHandler.cpp
 )
 
