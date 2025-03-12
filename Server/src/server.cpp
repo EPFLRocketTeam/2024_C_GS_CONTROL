@@ -99,8 +99,9 @@ void Server::openSerialPort() {
         foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
             if (info.portName().startsWith("ttyS")) {
                 serial_port_name = info.portName();
-                _serverLogger.debug("Serial Opening", QString(R"(manufacturer=%1, pId=%2, vendoreId=%3)")
-                                .arg(info.manufacturer()).arg(info.productIdentifier()).arg(info.vendorIdentifier())
+                _serverLogger.debug("Serial Opening", QString(R"(name=%4, manufacturer=%1, pId=%2, vendoreId=%3, isNull=%5)")
+                                .arg(info.manufacturer()).arg(info.productIdentifier()).arg(info.vendorIdentifier()).arg(serial_port_name)
+                                .arg(info.isNull())
                                 .toStdString());
 
                 serialPort->setPortName(serial_port_name);
