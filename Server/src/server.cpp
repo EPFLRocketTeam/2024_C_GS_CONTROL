@@ -87,7 +87,7 @@ void Server::openSerialPort() {
         if (info.portName().startsWith("ttyACM")) {
             serial_port_name = info.portName();
 
-            /*_serverLogger.debug("Serial Opening", info.description().toStdString());*/
+            _serverLogger.debug("Serial Opening", info.description().toStdString());
             serialPort->setPortName(serial_port_name);
             if (serialPort->open(QIODevice::ReadWrite)) {
                 foundPort = true;
@@ -100,6 +100,7 @@ void Server::openSerialPort() {
         foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
             if (info.portName().startsWith("ttyS")) {
                 serial_port_name = info.portName();
+                _serverLogger.debug("Serial Opening", info.description().toStdString());
                 serialPort->setPortName(serial_port_name);
                 if (serialPort->open(QIODevice::ReadWrite)) {
                     foundPort = true;
