@@ -11,33 +11,27 @@
 int start_server(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
+    ModuleLog logger = ModuleLog("Server Launcher",  "../Log/server.logs");
     #if DEBUG_LOG
     MainLog::setDebugLevel(DEBUG);
     #endif
     QString appDir = QCoreApplication::applicationDirPath();
-    auth::loadKeysFromFile(appDir + "//../Server/src/auth_keys.json"); 
+    auth::loadKeysFromFile(appDir + "/../Server/src/auth_keys.json"); 
     Server server = Server();
     int port(12345);
     std::cout << "Server started" << std::endl;
     if (server.listen(QHostAddress::Any, port)) {
-        std::cout << "Server started. Listening on port" << port << std::endl;
+        logger.info("Server Start", QString(R"(Server Listening on port %1)").arg(port).toStdString());
     } else {
-        std::cout << "Error: Failed to start server. Check if the port is already in use or permissions issue." <<std::endl;      
-    }    QTimer *timer = new QTimer();
+        logger.error("Server Start Error", "Failed to start server. Check if the port is already in use or permissions issue.");
+    }    
 
     #if SIMULATE_PACKETS
+    QTimer *timer = new QTimer();
     QObject::connect(timer, &QTimer::timeout, &server, &Server::simulateJsonData);
-    #endif
     timer->start(2000); // Timer fires every 2000 milliseconds (2 seconds)
+    #endif
 
-    /*QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();*/
-    /*std::cout << "found " << availablePorts.size() << " devices" << std::endl;*/
-    /*foreach(const QSerialPortInfo &portInfo, availablePorts) {*/
-    /*    std::cout << "Port name: " << portInfo.portName().toStdString() << std::endl;*/
-    /*    std::cout << "Description: " << portInfo.description().toStdString() << std::endl;*/
-    /*    std::cout << "Manufacturer: " << portInfo.manufacturer().toStdString() << std::endl;*/
-    /*}*/
-    std::cout << "setup finished" << std::endl;
     return a.exec();
 }
 

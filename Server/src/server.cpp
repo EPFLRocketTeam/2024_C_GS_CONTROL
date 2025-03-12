@@ -326,7 +326,7 @@ void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) 
     uint8_t *packetToSend = capsule.encode(packetId, packet, size);
     if (serialPort->isOpen()) {
         serialPort->write((char *) packetToSend,capsule.getCodedLen(size));
-        _packetLogger.info("Send Packet", QString(R"(A packet with packet id %1 was sent to radio board)").arg(packetId).toStdString());
+        _packetLogger.info("Serial Send", QString(R"(A packet with packet id %1 was sent to radio board)").arg(packetId).toStdString());
     } else {
         _serverLogger.error("Serial Send", "The serial port is not opened, packet couldn't be send");
     }
