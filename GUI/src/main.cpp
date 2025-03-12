@@ -37,6 +37,7 @@ int start_client(int argc, char *argv[]) {
 
     MainWindow::clientManager = std::make_unique<ClientManager>(nullptr, network::serverIP, network::serverPort);    
     MainWindow mainWindow;
+    mainWindow.setWindowIcon(QIcon(":/icons/firehorn.ico"));
 
     mainWindow.show();
     return app.exec();
