@@ -26,6 +26,23 @@ And build all the targets:
 ```shell 
 cmake .. && make
 ```
+
+Now you should create the 2 following files:
+- in /Server/src create a auth_key.json file with for example the following content:
+```json 
+[
+    {
+        "key": "ClientSecretKey1",
+        "accessRight": 3
+    },
+    {
+        "key": "ClientSecretKey2",
+        "accessRight": 3
+    }
+]
+```
+- in /GUI/src create a .key file that just contain one of the keys setup above. for example just "ClientSecretKey1" 
+
 Then you should executre both the server and the GUI buy running
 ```shell 
 ./FirehornServer
