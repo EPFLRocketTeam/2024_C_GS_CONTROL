@@ -38,6 +38,8 @@ using RightView = GSManagerView;
 
 
 // just set the version of the GUI you want to use to true and the other to false
+// /!\ if changing the version shown, you also need to make sure that in commons/CMakeLists.txt line 27 the 
+// definition RF_PROTOCOL_FIREHORN or RF_PROTOCOL_ICARUS is added
 #define ICARUS_GUI false
 #define FIREHORN_GUI true
 
