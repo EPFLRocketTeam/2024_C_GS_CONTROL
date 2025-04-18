@@ -12,8 +12,8 @@
 #include <QJsonObject>
 
 // To select either the Icarus setup or the Firehorn setup uncomment the line of the Protocol you are using and comment the other
-#define RF_PROTOCOL_ICARUS 1
-// #define RF_PROTOCOL_FIREHORN 1
+// #define RF_PROTOCOL_ICARUS 1
+#define RF_PROTOCOL_FIREHORN 1
 
 // Generate packets every seconds with random data for part of the fields
 #define SIMULATE_PACKETS true

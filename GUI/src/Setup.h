@@ -38,8 +38,8 @@ using RightView = GSManagerView;
 
 
 // just set the version of the GUI you want to use to true and the other to false
-#define ICARUS_GUI true
-#define FIREHORN_GUI false
+#define ICARUS_GUI false
+#define FIREHORN_GUI true
 
 
 // <---------- DO NOT CHANGE ---------->
