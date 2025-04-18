@@ -11,11 +11,18 @@
 #include <QJsonArray>
 #include <QJsonObject>
 
+// To select either the Icarus setup or the Firehorn setup uncomment the line of the Protocol you are using and comment the other
 #define RF_PROTOCOL_ICARUS 1
 // #define RF_PROTOCOL_FIREHORN 1
-#define SIMULATE_PACKETS 1
-#define DEBUG_LOG 1
 
+// Generate packets every seconds with random data for part of the fields
+#define SIMULATE_PACKETS true
+// CHange the debug level to show the debug messages
+#define DEBUG_LOG true
+
+
+
+// <----------- DO NOT CHANGE ----------->
 namespace auth {
     typedef struct AuthKey_t {
         QString key;

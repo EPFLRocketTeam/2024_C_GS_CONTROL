@@ -37,9 +37,12 @@ using MiddleView = ValveControlView;
 using RightView = GSManagerView;
 
 
-#define ICARUS_GUI 1
-#define FIREHORN_GUI 0
+// just set the version of the GUI you want to use to true and the other to false
+#define ICARUS_GUI true
+#define FIREHORN_GUI false
 
+
+// <---------- DO NOT CHANGE ---------->
 #if ICARUS_GUI 
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
