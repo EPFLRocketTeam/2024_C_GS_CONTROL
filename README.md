@@ -56,6 +56,17 @@ And in another terminal window
 ./FirehornGUI
 ```
 
+# Config files
+There are 2 config files:
+- GUI/src/Setup.h 
+- Server/src/Setup.h 
+
+In those 2 files the main thing you can change is whether you want the Firehorn version of the program of the Icarus version. 
+However in the server setup there are 2 additional fields you can change:
+- SIMULATE_PACKETS: can be set to true or false and is an option to enable debug packets that are generated randomly and send to the GUI every second
+- DEBUG_LOG: that can be set to true or false and change de debug level to print the debug log in the terminal output
+
+# Random library references (Not relevant)
 QTSvg : sudo apt-get -y install libqt6svg6-dev
 
 Rcc command : fedora : sudo dnf install qt-devel
