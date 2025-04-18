@@ -3,6 +3,10 @@
 </p>
 
 # Installation 
+First of all you need to pull all the submodules with the following command:
+```shell
+git submodule update --init --recursive
+```
 
 In order to compile the 2 parts of the software you need to install qt6 base dev, on ubuntu it gives the following: 
 ```shell
