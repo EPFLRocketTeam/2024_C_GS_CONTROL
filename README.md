@@ -22,6 +22,12 @@ Then you must compile the resources by going:
 ```shell
 rcc -binary GUI/res/resources.qrc -o GUI/res/resources.rcc
 ```
+If not already installed on ubuntu system you might need a compiler and SQLite3 :
+```shell
+sudo apt install g++ build-essential
+sudo apt install libsqlite3-dev
+```
+
 After this you can install create a build directory at the root of the project: 
 ```shell
 mkdir build && cd build
