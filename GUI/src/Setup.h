@@ -153,7 +153,7 @@ namespace ui_elements {
     inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", 
         {
         GUI_FIELD::MAIN_LOX,
-        GUI_FIELD::MAIN_FUEL, 
+        GUI_FIELD::MAIN_FUEL,
         GUI_FIELD::VENT_LOX,
         GUI_FIELD::VENT_FUEL,
         GUI_FIELD::IGNITER_LOX,
@@ -167,13 +167,14 @@ namespace ui_elements {
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};
     inline std::vector<ValveInfo> valves = {
-        {GUI_FIELD::GSE_VENT, {0.234569, 0.668}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::MAIN_LOX, {0.50665, 0.338}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::VENT_LOX, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::MAIN_FUEL, {0.645736, 0.144315}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::VENT_FUEL, {0.585838, 0.638}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::IGNITER_LOX, {0.703604, 0.638}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::IGNITER_FUEL, {0.703604, 0.738}, ValveButton::Orientation::Vertical}
+        {GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::MAIN_LOX, {0.567, 0.74}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::MAIN_FUEL, {0.725, 0.68}, ValveButton::Orientation::Horizontal},
+        // {GUI_FIELD::PRESSURI, {0.645736, 0.2}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_FUEL, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_LOX, {0.51, 0.338}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_LOX, {0.6, 0.611}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_FUEL, {0.69, 0.611}, ValveButton::Orientation::Vertical}
     };
 
     inline std::vector<LabelInfo> labels = {
@@ -226,8 +227,8 @@ namespace ui_elements {
     inline QFrame *leftPlaceholder;
     inline QFrame *rightPlaceholder;
     
-    inline QString connectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
-    inline QString disconnectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
+    inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";
+    inline QString disconnectedBackgroundImage = ":/images/prop_firehorn_disconnect.svg";
 
     inline void init_views() {
         middlePlaceholder = new ValveControlView(valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
