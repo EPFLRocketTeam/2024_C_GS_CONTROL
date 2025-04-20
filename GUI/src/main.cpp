@@ -24,6 +24,9 @@ int start_client(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QString appDir = QCoreApplication::applicationDirPath();
     ModuleLog logger = ModuleLog("App Launcher", LOG_FILE_PATH);
+    #if DEBUG_LOG
+    MainLog::setDebugLevel(DEBUG);
+    #endif
 
     QString resPath = QDir(appDir).absoluteFilePath("../GUI/res/resources.rcc");
     if (QResource::registerResource(resPath))

@@ -42,6 +42,8 @@ using RightView = GSManagerView;
 // definition RF_PROTOCOL_FIREHORN or RF_PROTOCOL_ICARUS is added
 #define ICARUS_GUI true
 #define FIREHORN_GUI false
+// CHange the debug level to show the debug messages
+#define DEBUG_LOG true
 
 
 // <---------- DO NOT CHANGE ---------->
@@ -153,7 +155,7 @@ namespace ui_elements {
     inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{{"Engine Valves", 
         {
         GUI_FIELD::MAIN_LOX,
-        GUI_FIELD::MAIN_FUEL, 
+        GUI_FIELD::MAIN_FUEL,
         GUI_FIELD::VENT_LOX,
         GUI_FIELD::VENT_FUEL,
         GUI_FIELD::IGNITER_LOX,
@@ -167,30 +169,39 @@ namespace ui_elements {
     inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{{"ValveControlButton", valvesMap},
                                                                             {"QPushButton", pushButtonMap}};
     inline std::vector<ValveInfo> valves = {
-        {GUI_FIELD::GSE_VENT, {0.234569, 0.668}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::MAIN_LOX, {0.50665, 0.338}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::VENT_LOX, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::MAIN_FUEL, {0.645736, 0.144315}, ValveButton::Orientation::Horizontal},
-        {GUI_FIELD::VENT_FUEL, {0.585838, 0.638}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::IGNITER_LOX, {0.703604, 0.638}, ValveButton::Orientation::Vertical},
-        {GUI_FIELD::IGNITER_FUEL, {0.703604, 0.738}, ValveButton::Orientation::Vertical}
+        {GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::MAIN_LOX, {0.567, 0.74}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::MAIN_FUEL, {0.725, 0.68}, ValveButton::Orientation::Horizontal},
+        // {GUI_FIELD::PRESSURI, {0.645736, 0.2}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_FUEL, {0.785838, 0.338}, ValveButton::Orientation::Horizontal},
+        {GUI_FIELD::VENT_LOX, {0.51, 0.338}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_LOX, {0.6, 0.611}, ValveButton::Orientation::Vertical},
+        {GUI_FIELD::IGNITER_FUEL, {0.69, 0.611}, ValveButton::Orientation::Vertical}
     };
 
     inline std::vector<LabelInfo> labels = {
         {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
         {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
         {GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576},
-        {GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905},
-        {GUI_FIELD::N2_PRESSURE, 0.447, 0.439},
-        {GUI_FIELD::FUEL_PRESSURE, 0.447, 0.502},
-        {GUI_FIELD::LOX_PRESSURE, 0.893, 0.438},
-        {GUI_FIELD::LOX_INJ_PRESSURE, 0.893, 0.438},
-        {GUI_FIELD::FUEL_INJ_PRESSURE, 0.893, 0.438},
-        {GUI_FIELD::FUEL_LEVEL, 0.893, 0.438},
-        {GUI_FIELD::LOX_LEVEL, 0.893, 0.438},
-        {GUI_FIELD::LOX_TEMP, 0.893, 0.438},
-        {GUI_FIELD::N2_TEMP, 0.893, 0.438},
-        {GUI_FIELD::LOX_INJ_TEMP, 0.893, 0.438},
+
+        {GUI_FIELD::N2_PRESSURE, 0.55, 0.19},
+        {GUI_FIELD::N2_TEMP, 0.8, 0.19},
+
+        {GUI_FIELD::LOX_PRESSURE, 0.447, 0.439},
+        {GUI_FIELD::LOX_TEMP, 0.447, 0.505},
+        {GUI_FIELD::LOX_LEVEL, 0.642, 0.502},
+
+        {GUI_FIELD::FUEL_PRESSURE, 0.893, 0.438},
+        {GUI_FIELD::FUEL_LEVEL, 0.761, 0.502},
+
+        {GUI_FIELD::IGNITER_PRESSURE, 0.883, 0.7},
+        {GUI_FIELD::FUEL_INJ_PRESSURE, 0.883, 0.781},
+
+        {GUI_FIELD::LOX_INJ_PRESSURE, 0.455, 0.78},
+        {GUI_FIELD::LOX_INJ_TEMP, 0.455, 0.86},
+
+        {GUI_FIELD::CHAMBER_PRESSURE, 0.883, 0.86},
+
     };
 
     inline QList<GUI_FIELD> gps = {
@@ -226,8 +237,8 @@ namespace ui_elements {
     inline QFrame *leftPlaceholder;
     inline QFrame *rightPlaceholder;
     
-    inline QString connectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
-    inline QString disconnectedBackgroundImage = ":/images/prop-diagram-firehorn.svg";
+    inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";
+    inline QString disconnectedBackgroundImage = ":/images/prop_firehorn_disconnect.svg";
 
     inline void init_views() {
         middlePlaceholder = new ValveControlView(valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);

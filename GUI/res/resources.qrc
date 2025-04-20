@@ -15,6 +15,7 @@
         <file>images/prop-diagram-firehorn-highres.png</file>
         <file>images/prop-diagram-firehorn-highres.svg</file>
         <file>images/prop-diagram-firehorn.svg</file>
+        <file>images/prop-diagram-firehorn-fixed.svg</file>
         <file>images/prop-diagram-firehorn-dark.svg</file>
         <file>images/prop-diagram-firehorn-light.svg</file>
         <file>images/prop-diagram-firehorn-disconnect.png</file>
@@ -24,6 +25,10 @@
         <file>images/prop_ica_bg.png</file>
         <file>images/prop_ica_bg.svg</file>
         <file>images/prop_icarus_connect.svg</file>
+        <file>images/prop_firehorn_connect.svg</file>
         <file>images/prop_icarus_disconnect.svg</file>
+        <file>images/prop_firehorn_disconnect.svg</file>
+	<file>images/svgviewer-output.svg</file>
+	<file>images/fixed_prop_diagram_firehorn.svg</file>
     </qresource>
 </RCC>

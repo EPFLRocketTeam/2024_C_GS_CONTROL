@@ -5,6 +5,7 @@ project(FirehornGUI VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 # Add subdirectory for tests if needed
 add_subdirectory(tests)
@@ -29,6 +30,8 @@ set(SOURCES_GUI
     src/views/TimerView.cpp
     src/views/ValveControlView.cpp
     src/MainWindow.cpp
+
+    ./res/resources.qrc
 )
 
 set(HEADERS_GUI
