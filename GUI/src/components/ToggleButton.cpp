@@ -36,6 +36,8 @@ ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent) : QWidge
         b.addField("cmd_order", m_checked ? 1 : 0);
         MainWindow::clientManager->send(b.toString()); 
         b.clear();
+        _logger.debug("Toggle Button Clicked",
+                      QString(R"(The button for valve %1 was clicked)").arg(fieldUtil::enumToFieldName(m_fieldSensitivity)).toStdString());
         b.setHeader(RequestType::INTERNAL);
         b.addField(QString::number(m_fieldSensitivity), "unknown");;
         MainWindow::clientManager->send(b.toString());

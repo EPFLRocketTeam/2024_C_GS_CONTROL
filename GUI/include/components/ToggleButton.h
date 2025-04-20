@@ -6,6 +6,8 @@
 #include <QTimer>
 
 #include "FieldUtil.h"
+#include "Log.h"
+#include "FileLocation.h"
 
 enum State { Open, Close, Unknown };
 
@@ -47,6 +49,7 @@ private:
     void updateAnim();
     QMovie *m_loadingMovie;
     GUI_FIELD m_fieldSensitivity;
+    ModuleLog _logger = ModuleLog("ValveToggle", LOG_FILE_PATH);
 };
 
 #endif // TOGGLEBUTTON_H

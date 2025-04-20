@@ -146,7 +146,7 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<st
                 b.setHeader(RequestType::POST);
                 b.addField("cmd", fieldUtil::fieldNameToEnum(button->text())); 
                 b.addField("cmd_order", 1);
-                _logger.debug("Clicked Control Pannel Button", b.toString().toStdString());
+                _logger.debug(QString(R"(Clicked %1 Button)").arg(button->text()).toStdString(), b.toString().toStdString());
                 MainWindow::clientManager->send(b.toString());
             });
 

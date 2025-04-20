@@ -22,6 +22,7 @@
 #include "../Capsule/src/capsule.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
+#include "Setup.h"
 #include "packet_helper.h"
 #include <RequestBuilder.h>
 
@@ -75,19 +76,21 @@ Server::~Server() {
 }
 
 void Server::openSerialPort() {
+
     int ctr = 0;
     serialPort->setBaudRate(QSerialPort::Baud115200);
     QString serial_port_name = "";
-    // First try ttyACM ports.
     bool foundPort = false;
+    #if not MANUALLY_SET_PORT 
+    // First try ttyACM ports.
     if (serialPort->isOpen()) {
         return;
     }
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
         if (info.portName().startsWith("ttyACM")) {
-            serial_port_name = info.portName();
-
-                        serialPort->setPortName(serial_port_name);
+            serial_port_name =  "/dev/" + info.portName();
+            _serverLogger.info(serial_port_name.toStdString(), serial_port_name.toStdString());
+            serialPort->setPortName(serial_port_name);
             if (serialPort->open(QIODevice::ReadWrite)) {
                 foundPort = true;
                 break;
@@ -98,7 +101,7 @@ void Server::openSerialPort() {
     if (!foundPort) {
         foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
             if (info.portName().startsWith("ttyS")) {
-                serial_port_name = info.portName();
+                serial_port_name = "/dev/" + info.portName();
                 _serverLogger.debug("Serial Opening", QString(R"(name=%4, manufacturer=%1, pId=%2, vendoreId=%3, isNull=%5)")
                                 .arg(info.manufacturer()).arg(info.productIdentifier()).arg(info.vendorIdentifier()).arg(serial_port_name)
                                 .arg(info.isNull())
@@ -112,13 +115,23 @@ void Server::openSerialPort() {
             }
         }
     }
-    
+    #else
+    serial_port_name = SERIAL_USED;
+    serialPort->setPortName(serial_port_name);
+    if (serialPort->open(QIODevice::ReadWrite)) {
+        foundPort = true;
+    } else {
+        _serverLogger.info("SerialActions", QString(R"(Could not open serila port %1)").arg(serial_port_name).toStdString());
+    }
+    #endif
+
     if (foundPort) {
         _serverLogger.info("SerialActions", QString("Serial port open on %1").arg(serial_port_name).toStdString());
     } else {
         serialPort->setPortName("-");
         _serverLogger.error("SerialActions", "Serial port could not open");
-    }}
+    }
+}
 
 void Server::receiveSerialData() {
     QByteArray data = serialPort->readAll();
