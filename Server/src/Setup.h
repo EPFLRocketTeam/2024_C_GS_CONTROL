@@ -14,8 +14,8 @@
 // To select either the Icarus setup or the Firehorn setup uncomment the line of the Protocol you are using and comment the other
 // /!\ if changing the version shown, you also need to make sure that in commons/CMakeLists.txt line 27 the 
 // definition RF_PROTOCOL_FIREHORN or RF_PROTOCOL_ICARUS is added
-#define RF_PROTOCOL_ICARUS 1
-// #define RF_PROTOCOL_FIREHORN 1
+// #define RF_PROTOCOL_ICARUS 1
+#define RF_PROTOCOL_FIREHORN 1
 
 // Generate packets every seconds with random data for part of the fields
 #define SIMULATE_PACKETS true
