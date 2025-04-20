@@ -18,10 +18,6 @@ Then some other dependencies required need to be installed:
 sudo apt install libqt6svg6-dev libqt6serialport6-dev qtbase5-dev-tools libboost-all-dev libgtest-dev qt6-base-dev-tools
 
 ```
-Then you must compile the resources by going:
-```shell
-rcc -binary GUI/res/resources.qrc -o GUI/res/resources.rcc
-```
 If not already installed on ubuntu system you might need a compiler and SQLite3 :
 ```shell
 sudo apt install g++ build-essential

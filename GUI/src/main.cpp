@@ -18,6 +18,7 @@
 
 #include <Log.h>
 
+
 void fakeDataHandling();
 
 int start_client(int argc, char *argv[]) {
@@ -27,13 +28,13 @@ int start_client(int argc, char *argv[]) {
     #if DEBUG_LOG
     MainLog::setDebugLevel(DEBUG);
     #endif
-
-    QString resPath = QDir(appDir).absoluteFilePath("../GUI/res/resources.rcc");
-    if (QResource::registerResource(resPath))
-        logger.info("Load Resources", "The resources were loaded");
-    else 
-        logger.error("Load Resources", "Couldn't register the resources");
-
+    Q_INIT_RESOURCE(resources);
+    /*QString resPath = QDir(appDir).absoluteFilePath("../GUI/res/resources.rcc");*/
+    /*if (QResource::registerResource(resPath))*/
+    /*    logger.info("Load Resources", "The resources were loaded");*/
+    /*else */
+    /*    logger.error("Load Resources", "Couldn't register the resources");*/
+    /**/
     auth::loadKeyFromFile(appDir + "/../GUI/src/.key");
     RequestBuilder::authorizationKey = auth::key;
     logger.info("Load Authentication Keys", "A Key was found");
