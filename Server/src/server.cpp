@@ -257,6 +257,16 @@ void Server::sendToAllClients(const QByteArray &data) {
 }
 
 
+int Server::sendDataToSocket(QTcpSocket * socket, RequestBuilder request) {
+    QByteArray data = request.toString().toUtf8();
+    _packetLogger.debug("Sent packets to client", request.toString().toStdString());
+    socket->write(data, data.size());
+    socket->waitForBytesWritten();
+    socket->flush();
+    return 0;
+}
+
+
 void Server::updateSubscriptions(const QJsonObject &newData) {
     
 
@@ -317,18 +327,18 @@ void Server::handleCommand(const QJsonObject &command) {
 
     case GUI_FIELD::SERIAL_STATUS: {
         _serverLogger.info("Received Command", "Get Serial Status Command");
-        b.setHeader(RequestType::POST);
+        QJsonObject m_payload;
         const QString & serialStatus = QString(serialPort->isOpen() ? "open" : "close");
-        b.addField(QString::number(GUI_FIELD::SERIAL_STATUS), serialStatus);
-        _serverLogger.info("Send Response", QString(R"(The response to Serial Status is %1)").arg(b.toString()).toStdString());
-        updateSubscriptions(b.build());
+        m_payload[QString::number(GUI_FIELD::SERIAL_STATUS)] = serialStatus;
+        _serverLogger.info("Send Response", QString(R"(The response to Serial Status is %1)").arg(QString(QJsonDocument(m_payload).toJson())).toStdString());
+        updateSubscriptions(m_payload);
         }
         // Since there is no break the serial name is automatically updated
-    case GUI_FIELD::SERIAL_NAME_USE:
-        b.setHeader(RequestType::POST);
-        b.addField(QString::number(GUI_FIELD::SERIAL_NAME_USE), serialPort->portName());
-        updateSubscriptions(b.build());
+    case GUI_FIELD::SERIAL_NAME_USE: {
+        QJsonObject m_payload;
+        m_payload[QString::number(GUI_FIELD::SERIAL_NAME_USE)] = serialPort->portName();
         break;
+        }
 
     default:
         int order = command["payload"].toObject()["cmd_order"].toInt();

@@ -9,6 +9,7 @@
 #include <QMap>
 #include <sqlite3.h>
 
+#include "RequestBuilder.h"
 #include "RequestHandler.h"
 #include "../Capsule/src/capsule.h"
 
@@ -46,6 +47,7 @@ private:
     void updateSubscriptions(const QJsonObject &newData);
     void sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size);
 
+    int sendDataToSocket(QTcpSocket * socket, RequestBuilder request);
     void handleCommand(const QJsonObject &command);
     
 

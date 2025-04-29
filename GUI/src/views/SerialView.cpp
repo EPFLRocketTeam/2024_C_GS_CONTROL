@@ -39,7 +39,6 @@ void SerialView::buttonClicked() {
     RequestBuilder b;
     b.setHeader(RequestType::POST);
     b.addField("cmd", GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS);
-        b.addField("cmd", GUI_FIELD::GUI_CMD_SET_SERIAL_STATUS);
  
     if (isOpen) {
         b.addField("cmd_order", "close");

@@ -3,12 +3,9 @@
 #include <../ERT_RF_Protocol_Interface/Protocol.h>
 #include <QString>
 
-enum GUI_CMD {
-  GET_SERIAL_STATUS = 0,
-};
 
 enum GUI_FIELD {
-  IGNITER_LOX = 0,
+  IGNITER_LOX = 42,
   IGNITER_FUEL,
   MAIN_LOX,
   MAIN_FUEL,
