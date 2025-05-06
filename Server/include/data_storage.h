@@ -55,22 +55,30 @@ struct GSE_cmd_pkt {
     
 };*/
 
-int create_database();
+class SqliteDB {
+	public:
+		int create_database();
 
-int write_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
+		int write_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
+		
+		int write_AV_downlink_pkt(AV_downlink_pkt* pkt_ptr);
+		
+		int write_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
+		
+		//int write_GSE_cmd_pkt();
+		
+		int read_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
+		
+		int read_AV_downlink_pkt(AV_downlink_pkt* pkt_ptr);
+		
+		int read_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
+		
+		//int read_GSE_cmd_pkt();
+		
+		int delete_database();
+	private:
+		uint32_t pkt_id;
 
-int write_AV_downlink_pkt(AV_downlink_pkt* pkt_ptr);
+		uint32_t get_next_pkt_id();
+	};
 
-int write_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
-
-//int write_GSE_cmd_pkt();
-
-int read_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
-
-int read_AV_downlink_pkt(AV_downlink_pkt* pkt_ptr);
-
-int read_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
-
-//int read_GSE_cmd_pkt();
-
-int delete_database();
