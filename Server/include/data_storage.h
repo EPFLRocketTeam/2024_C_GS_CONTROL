@@ -48,12 +48,6 @@ struct GSE_downlink_pkt {
 	bool disconnectActive;
 	uint32_t loadcell_raw;
 };
-/*
-struct GSE_cmd_pkt {
-    uint8_t id;
-    timespec ts;
-    
-};*/
 
 class SqliteDB {
 	public:
@@ -65,15 +59,11 @@ class SqliteDB {
 		
 		int write_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
 		
-		//int write_GSE_cmd_pkt();
-		
 		int read_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
 		
 		int read_AV_downlink_pkt(AV_downlink_pkt* pkt_ptr);
 		
 		int read_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
-		
-		//int read_GSE_cmd_pkt();
 		
 		int delete_database();
 	private:
