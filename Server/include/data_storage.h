@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <time.h>
+#include <string>
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 
 struct timespec ts;
@@ -51,7 +52,11 @@ struct GSE_downlink_pkt {
 
 class SqliteDB {
 	public:
-		int create_database();
+		/*to be called one time at the initialisation of the server
+		the constructor creates the sqlite3 DB where specified*/
+		SqliteDB(std::string path_to_db);
+
+		~SqliteDB();
 
 		int write_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
 		
@@ -65,10 +70,15 @@ class SqliteDB {
 		
 		int read_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
 		
-		int delete_database();
+		/*sould not be called unless for the tests*/
+		int delete_database(std::string path_to_db);
 	private:
 		uint32_t pkt_id;
 
-		uint32_t get_next_pkt_id();
+		std::string path_to_db;
+
+		uint32_t update_pkt_id();
+
+		timespec get_current_ts();
 	};
 
