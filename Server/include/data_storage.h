@@ -4,6 +4,7 @@
 #include <string>
 #include <sqlite3.h>
 #include <vector>
+#include "sqlite_orm.h"
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 
 typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK } PacketType;
@@ -63,7 +64,7 @@ class SqliteDB {
 	public:
 		/*to be called one time at the initialisation of the server
 		the constructor creates the sqlite3 DB where specified*/
-		SqliteDB(std::string path_to_db);
+		SqliteDB();
 
 		~SqliteDB();
 
@@ -83,6 +84,8 @@ class SqliteDB {
 		sqlite3* db;
 
 		const size_t BATCH_SIZE = 100;
+
+		const char* PATH_TO_DB = "../../";
 
 		std::vector<Packet> buffer;
 

@@ -1,7 +1,51 @@
 #include "../include/data_storage.h"
-#include <string>
 
-SqliteDB::SqliteDB(std::string path_to_db) {}
+SqliteDB::SqliteDB() {
+    auto storage = sqlite_orm::make_storage(this->PATH_TO_DB,
+    sqlite_orm::make_table<Packet>("AV_UPLINK",
+        sqlite_orm::make_column("id", &AV_uplink_pkt::id, sqlite_orm::primary_key()),
+        sqlite_orm::make_column("ts", &AV_uplink_pkt::ts),
+        sqlite_orm::make_column("order_id", &AV_uplink_pkt::order_id),
+        sqlite_orm::make_column("order_value", &AV_uplink_pkt::order_value)
+    ),
+    sqlite_orm::make_table<Packet>("AV_DOWNLINK",
+        sqlite_orm::make_column("id", &AV_downlink_pkt::id, sqlite_orm::primary_key()),
+        sqlite_orm::make_column("ts", &AV_downlink_pkt::ts),
+        sqlite_orm::make_column("packet_nbr", &AV_downlink_pkt::packet_nbr),
+        sqlite_orm::make_column("gnss_lon", &AV_downlink_pkt::gnss_lon),
+        sqlite_orm::make_column("gnss_lat", &AV_downlink_pkt::gnss_lat),
+        sqlite_orm::make_column("gnss_alt", &AV_downlink_pkt::gnss_alt),
+        sqlite_orm::make_column("gnss_vertical_speed", &AV_downlink_pkt::gnss_vertical_speed),
+        sqlite_orm::make_column("N2_pressure", &AV_downlink_pkt::N2_pressure),
+        sqlite_orm::make_column("fuel_pressure", &AV_downlink_pkt::fuel_pressure),
+        sqlite_orm::make_column("LOX_pressure", &AV_downlink_pkt::LOX_pressure),
+        sqlite_orm::make_column("fuel_level", &AV_downlink_pkt::fuel_level),
+        sqlite_orm::make_column("LOX_level", &AV_downlink_pkt::LOX_level),
+        sqlite_orm::make_column("N2_temp", &AV_downlink_pkt::N2_temp),
+        sqlite_orm::make_column("LOX_temp", &AV_downlink_pkt::LOX_temp),
+        sqlite_orm::make_column("LOX_inj_temp", &AV_downlink_pkt::LOX_inj_temp),
+        sqlite_orm::make_column("lpb_voltage", &AV_downlink_pkt::lpb_voltage),
+        sqlite_orm::make_column("hpb_voltage", &AV_downlink_pkt::hpb_voltage),
+        sqlite_orm::make_column("av_fc_temp", &AV_downlink_pkt::av_fc_temp),
+        sqlite_orm::make_column("ambient_temp", &AV_downlink_pkt::ambient_temp),
+        sqlite_orm::make_column("engine_state", &AV_downlink_pkt::engine_state),
+        sqlite_orm::make_column("av_state", &AV_downlink_pkt::av_state),
+        sqlite_orm::make_column("cam_rec", &AV_downlink_pkt::cam_rec)
+    ),
+    sqlite_orm::make_table<Packet>("GSE_DOWNLINK",
+        sqlite_orm::make_column("id", &GSE_downlink_pkt::id, sqlite_orm::primary_key()),
+        sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
+        sqlite_orm::make_column("tankPressure", &GSE_downlink_pkt::tankPressure),
+        sqlite_orm::make_column("tankTemperature", &GSE_downlink_pkt::tankTemperature),
+        sqlite_orm::make_column("fillingPressure", &GSE_downlink_pkt::fillingPressure),
+        sqlite_orm::make_column("fillingN2O", &GSE_downlink_pkt::fillingN2O),
+        sqlite_orm::make_column("vent", &GSE_downlink_pkt::vent),
+        sqlite_orm::make_column("disconnectActive", &GSE_downlink_pkt::disconnectActive),
+        sqlite_orm::make_column("loadcell_raw", &GSE_downlink_pkt::loadcell_raw)
+    )
+);
+storage.sync_schema();
+}
 
 SqliteDB::~SqliteDB() {}
 
