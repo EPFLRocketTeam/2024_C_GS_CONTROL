@@ -2,19 +2,28 @@
 #include <stddef.h>
 #include <time.h>
 #include <string>
+#include <sqlite3.h>
+#include <vector>
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
+
+typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK } PacketType;
+
+typedef struct {
+    PacketType type;
+    void *data;
+} Packet;
 
 struct timespec ts;
 
 struct AV_uplink_pkt {
-    uint8_t id;
+    uint32_t id;
     timespec ts;
     uint8_t order_id;
 	uint8_t order_value;
 };
 
 struct AV_downlink_pkt {
-    uint8_t id;
+    uint32_t id;
     timespec ts;
     uint32_t packet_nbr;
 	int32_t	 gnss_lon;
@@ -39,7 +48,7 @@ struct AV_downlink_pkt {
 };
 
 struct GSE_downlink_pkt {
-    uint8_t id;
+    uint32_t id;
     timespec ts;
     float tankPressure;
 	float tankTemperature;
@@ -58,17 +67,11 @@ class SqliteDB {
 
 		~SqliteDB();
 
-		int write_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
-		
-		int write_AV_downlink_pkt(AV_downlink_pkt* pkt_ptr);
-		
-		int write_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
-		
-		int read_AV_uplink_pkt(AV_uplink_pkt* pkt_ptr);
-		
-		int read_AV_downlink_pkt(AV_downlink_pkt* pkt_ptr);
-		
-		int read_GSE_downlink_pkt(GSE_downlink_pkt* pkt_ptr);
+		int write_pkt(Packet pkt);
+
+		int read_pkt(uint32_t pkt_id, Packet pkt);
+
+		int flush();
 		
 		/*sould not be called unless for the tests*/
 		int delete_database(std::string path_to_db);
@@ -77,8 +80,13 @@ class SqliteDB {
 
 		std::string path_to_db;
 
+		sqlite3* db;
+
+		const size_t BATCH_SIZE = 100;
+
+		std::vector<Packet> buffer;
+
 		uint32_t update_pkt_id();
 
 		timespec get_current_ts();
 	};
-
