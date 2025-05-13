@@ -69,10 +69,10 @@ class SqliteDB {
 
 		~SqliteDB();
 
-		/*add to buffer (0); add to buffer and flush (1); packet type specified is NULL (2)*/
+		/*return value : add to buffer (0), add to buffer and flush (1), packet type specified is NULL (2)
+		put null pointer for unused packet types*/
 		int write_pkt(const Packet pkt);
 
-		/*put null pointer for unused packet types*/
 		int read_pkt(uint32_t pkt_id, Packet pkt);
 
 		int flush();
@@ -80,14 +80,14 @@ class SqliteDB {
 		/*sould not be called unless for the tests*/
 		int delete_database();
 
+		uint32_t get_pkt_id();
+
+		timespec get_current_ts();
+
 	private:
 		uint32_t pkt_id;
 
-		std::string path_to_db;
-
-		sqlite3* db;
-
-		const size_t BATCH_SIZE = 100;
+		const size_t BATCH_SIZE = 100; //value to be reconsidered
 
 		const char* PATH_TO_DB = "../../";
 
@@ -96,10 +96,6 @@ class SqliteDB {
 		std::vector<AV_downlink_pkt> buffer_av_down;
 
 		std::vector<GSE_downlink_pkt> buffer_gse_down;
-
-		uint32_t update_pkt_id();
-
-		timespec get_current_ts();
 
 		using Storage = decltype(sqlite_orm::make_storage(PATH_TO_DB,
 			sqlite_orm::make_table<Packet>("AV_UPLINK",
