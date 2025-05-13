@@ -1,7 +1,7 @@
 #include "../include/data_storage.h"
 
 SqliteDB::SqliteDB() {
-    auto storage = sqlite_orm::make_storage(this->PATH_TO_DB,
+    auto strg = sqlite_orm::make_storage(this->PATH_TO_DB,
     sqlite_orm::make_table<Packet>("AV_UPLINK",
         sqlite_orm::make_column("id", &AV_uplink_pkt::id, sqlite_orm::primary_key()),
         sqlite_orm::make_column("ts", &AV_uplink_pkt::ts),
@@ -44,15 +44,48 @@ SqliteDB::SqliteDB() {
         sqlite_orm::make_column("loadcell_raw", &GSE_downlink_pkt::loadcell_raw)
     )
 );
-storage.sync_schema();
+strg.sync_schema();
+this->storage = &strg;
 }
 
 SqliteDB::~SqliteDB() {}
 
-int write_pkt(Packet pkt) {}
+int SqliteDB::write_pkt(const Packet pkt) {
 
-int read_pkt(uint32_t pkt_id, Packet pkt) {}
+    switch(pkt.type) {
+        case PacketType::AV_UPLINK:
+            AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
+            if (avUpPkt == NULL) {return 2;}
+            buffer_av_up.emplace_back(avUpPkt);
+            if(buffer_av_up.size() >= BATCH_SIZE) {
+                flush();
+                return 1;
+            }
+            break;
+        case PacketType::AV_DOWNLINK:
+            AV_downlink_pkt* avDownPkt = pkt.av_down_pkt;
+            if (avDownPkt == NULL) {return 2;}
+            buffer_av_down.emplace_back(avDownPkt);
+            if(buffer_av_down.size() >= BATCH_SIZE) {
+                flush();
+                return 1;
+            }
+            break;
+        case PacketType::GSE_DOWNLINK:
+            GSE_downlink_pkt* gseDownPkt = pkt.gse_down_pkt;
+            if (gseDownPkt == NULL) {return 2;}
+            buffer_gse_down.emplace_back(gseDownPkt);
+            if(buffer_gse_down.size() >= BATCH_SIZE) {
+                flush();
+                return 1;
+            }
+            break;
+    }
+    return 0;
+}
 
-int flush() {}
+int SqliteDB::read_pkt(uint32_t pkt_id, Packet pkt) {}
 
-int delete_database(std::string path_to_db) {}
+int SqliteDB::flush() {}//one flush function for each buffer ?
+
+int SqliteDB::delete_database() {}
