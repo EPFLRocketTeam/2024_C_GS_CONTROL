@@ -4,11 +4,8 @@
 #include <string>
 #include <sqlite3.h>
 #include <vector>
-#include <variant>
-#include <type_traits>
 #include "sqlite_orm.h"
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
-using Packet = std::variant<AV_uplink_pkt, AV_downlink_pkt, GSE_downlink_pkt>;
 
 typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK } PacketType;
 
@@ -75,6 +72,7 @@ class SqliteDB {
 		/*add to buffer (0); add to buffer and flush (1); packet type specified is NULL (2)*/
 		int write_pkt(const Packet pkt);
 
+		/*put null pointer for unused packet types*/
 		int read_pkt(uint32_t pkt_id, Packet pkt);
 
 		int flush();
