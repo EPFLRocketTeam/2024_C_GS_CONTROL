@@ -85,9 +85,9 @@ class SqliteDB {
 	private:
 		uint32_t pkt_id;
 
-		const size_t BATCH_SIZE = 100; //value to be reconsidered
+		const size_t BATCH_SIZE = 2; //value to be reconsidered
 
-		const char* PATH_TO_DB = "../../";
+		const char* PATH_TO_DB = "test.db";
 
 		std::vector<AV_uplink_pkt> buffer_av_up;
 

@@ -1,6 +1,7 @@
 #include "../include/data_storage.h"
 
 SqliteDB::SqliteDB() {
+    printf("creating db\n");
     auto strg = sqlite_orm::make_storage(this->PATH_TO_DB,
     sqlite_orm::make_table<Packet>("AV_UPLINK",
         sqlite_orm::make_column("id", &AV_uplink_pkt::id, sqlite_orm::primary_key()),
@@ -44,8 +45,11 @@ SqliteDB::SqliteDB() {
         sqlite_orm::make_column("loadcell_raw", &GSE_downlink_pkt::loadcell_raw)
     )
 );
+printf("success of make_storage\n");
 strg.sync_schema();
+printf("success of sync_schema\n");
 this->storage = &strg;
+printf("object is in attribute\n");
 }
 
 SqliteDB::~SqliteDB() {}
@@ -56,8 +60,10 @@ int SqliteDB::write_pkt(const Packet pkt) {
         case PacketType::AV_UPLINK: {
             AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
             if (avUpPkt == NULL) {return 2;}
+            printf("place av up pkt in buffer\n");
             buffer_av_up.emplace_back(*avUpPkt);
             if(buffer_av_up.size() >= BATCH_SIZE) {
+                printf("av up buffer is full\n");
                 flush();
                 return 1;
             }
@@ -89,6 +95,6 @@ int SqliteDB::write_pkt(const Packet pkt) {
 
 int SqliteDB::read_pkt(uint32_t pkt_id, Packet pkt) {}
 
-int SqliteDB::flush() {}//one flush function for each buffer ?
+int SqliteDB::flush() {printf("flush has been called\n"); return 0;}//one flush function for each buffer ?
 
 int SqliteDB::delete_database() {}

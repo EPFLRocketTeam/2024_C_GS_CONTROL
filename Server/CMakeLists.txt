@@ -64,8 +64,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 ### data_storage stuff
 
-# Add sqlite_orm
-#add_library(sqlite_orm )
+find_package(SQLite3 REQUIRED)
 
 SET(HEADERS_STORAGE
     include/data_storage.h
@@ -77,3 +76,10 @@ SET(SOURCES_STORAGE
 )
 
 add_library(data_storage_lib STATIC ${SOURCES_STORAGE} ${HEADERS_STORAGE})
+
+add_executable(test tests/data_storage_tests.cpp)
+
+target_link_libraries(test PRIVATE 
+    data_storage_lib
+    SQLite::SQLite3
+)
