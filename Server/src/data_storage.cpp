@@ -53,33 +53,36 @@ SqliteDB::~SqliteDB() {}
 int SqliteDB::write_pkt(const Packet pkt) {
 
     switch(pkt.type) {
-        case PacketType::AV_UPLINK:
+        case PacketType::AV_UPLINK: {
             AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
             if (avUpPkt == NULL) {return 2;}
-            buffer_av_up.emplace_back(avUpPkt);
+            buffer_av_up.emplace_back(*avUpPkt);
             if(buffer_av_up.size() >= BATCH_SIZE) {
                 flush();
                 return 1;
             }
             break;
-        case PacketType::AV_DOWNLINK:
+        }
+        case PacketType::AV_DOWNLINK: {
             AV_downlink_pkt* avDownPkt = pkt.av_down_pkt;
             if (avDownPkt == NULL) {return 2;}
-            buffer_av_down.emplace_back(avDownPkt);
+            buffer_av_down.emplace_back(*avDownPkt);
             if(buffer_av_down.size() >= BATCH_SIZE) {
                 flush();
                 return 1;
             }
             break;
-        case PacketType::GSE_DOWNLINK:
+        }
+        case PacketType::GSE_DOWNLINK: {
             GSE_downlink_pkt* gseDownPkt = pkt.gse_down_pkt;
             if (gseDownPkt == NULL) {return 2;}
-            buffer_gse_down.emplace_back(gseDownPkt);
+            buffer_gse_down.emplace_back(*gseDownPkt);
             if(buffer_gse_down.size() >= BATCH_SIZE) {
                 flush();
                 return 1;
             }
             break;
+        }
     }
     return 0;
 }

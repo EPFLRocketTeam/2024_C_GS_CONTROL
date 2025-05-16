@@ -61,3 +61,19 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+### data_storage stuff
+
+# Add sqlite_orm
+#add_library(sqlite_orm )
+
+SET(HEADERS_STORAGE
+    include/data_storage.h
+    include/sqlite_orm.h
+)
+
+SET(SOURCES_STORAGE
+    src/data_storage.cpp
+)
+
+add_library(data_storage_lib STATIC ${SOURCES_STORAGE} ${HEADERS_STORAGE})

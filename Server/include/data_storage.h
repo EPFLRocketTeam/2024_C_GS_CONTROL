@@ -9,25 +9,16 @@
 
 typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK } PacketType;
 
-typedef struct {
-    PacketType type;
-    AV_uplink_pkt* av_up_pkt;
-	AV_downlink_pkt* av_down_pkt;
-	GSE_downlink_pkt* gse_down_pkt;
-} Packet;
-
-struct timespec ts;
-
 struct AV_uplink_pkt {
     uint32_t id;
-    timespec ts;
+    int64_t ts;
     uint8_t order_id;
 	uint8_t order_value;
 };
 
 struct AV_downlink_pkt {
     uint32_t id;
-    timespec ts;
+    int64_t ts;
     uint32_t packet_nbr;
 	int32_t	 gnss_lon;
 	int32_t	 gnss_lat;
@@ -52,7 +43,7 @@ struct AV_downlink_pkt {
 
 struct GSE_downlink_pkt {
     uint32_t id;
-    timespec ts;
+    int64_t ts;
     float tankPressure;
 	float tankTemperature;
 	float fillingPressure;
@@ -61,6 +52,13 @@ struct GSE_downlink_pkt {
 	bool disconnectActive;
 	uint32_t loadcell_raw;
 };
+
+typedef struct {
+    PacketType type;
+    AV_uplink_pkt* av_up_pkt;
+	AV_downlink_pkt* av_down_pkt;
+	GSE_downlink_pkt* gse_down_pkt;
+} Packet;
 
 class SqliteDB {
 	public:
@@ -82,7 +80,7 @@ class SqliteDB {
 
 		uint32_t get_pkt_id();
 
-		timespec get_current_ts();
+		int64_t  get_current_ts();
 
 	private:
 		uint32_t pkt_id;
