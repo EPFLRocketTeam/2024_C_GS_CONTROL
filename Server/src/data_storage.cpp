@@ -1,15 +1,14 @@
 #include "../include/data_storage.h"
 
-SqliteDB::SqliteDB() {
-    printf("creating db\n");
-    auto strg = sqlite_orm::make_storage(this->PATH_TO_DB,
-    sqlite_orm::make_table<Packet>("AV_UPLINK",
+SqliteDB::SqliteDB()
+    : storage(sqlite_orm::make_storage(this->PATH_TO_DB,
+    sqlite_orm::make_table<AV_uplink_pkt>("AV_UPLINK",
         sqlite_orm::make_column("id", &AV_uplink_pkt::id, sqlite_orm::primary_key()),
         sqlite_orm::make_column("ts", &AV_uplink_pkt::ts),
         sqlite_orm::make_column("order_id", &AV_uplink_pkt::order_id),
         sqlite_orm::make_column("order_value", &AV_uplink_pkt::order_value)
     ),
-    sqlite_orm::make_table<Packet>("AV_DOWNLINK",
+    sqlite_orm::make_table<AV_downlink_pkt>("AV_DOWNLINK",
         sqlite_orm::make_column("id", &AV_downlink_pkt::id, sqlite_orm::primary_key()),
         sqlite_orm::make_column("ts", &AV_downlink_pkt::ts),
         sqlite_orm::make_column("packet_nbr", &AV_downlink_pkt::packet_nbr),
@@ -33,7 +32,7 @@ SqliteDB::SqliteDB() {
         sqlite_orm::make_column("av_state", &AV_downlink_pkt::av_state),
         sqlite_orm::make_column("cam_rec", &AV_downlink_pkt::cam_rec)
     ),
-    sqlite_orm::make_table<Packet>("GSE_DOWNLINK",
+    sqlite_orm::make_table<GSE_downlink_pkt>("GSE_DOWNLINK",
         sqlite_orm::make_column("id", &GSE_downlink_pkt::id, sqlite_orm::primary_key()),
         sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
         sqlite_orm::make_column("tankPressure", &GSE_downlink_pkt::tankPressure),
@@ -44,12 +43,9 @@ SqliteDB::SqliteDB() {
         sqlite_orm::make_column("disconnectActive", &GSE_downlink_pkt::disconnectActive),
         sqlite_orm::make_column("loadcell_raw", &GSE_downlink_pkt::loadcell_raw)
     )
-);
-printf("success of make_storage\n");
-strg.sync_schema();
-printf("success of sync_schema\n");
-this->storage = &strg;
-printf("object is in attribute\n");
+))
+{
+storage.sync_schema();
 }
 
 SqliteDB::~SqliteDB() {}
@@ -63,8 +59,8 @@ int SqliteDB::write_pkt(const Packet pkt) {
             printf("place av up pkt in buffer\n");
             buffer_av_up.emplace_back(*avUpPkt);
             if(buffer_av_up.size() >= BATCH_SIZE) {
-                printf("av up buffer is full\n");
-                flush();
+                printf("av up buffer is full --> call flush\n");
+                flushAvUp();
                 return 1;
             }
             break;
@@ -74,7 +70,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             if (avDownPkt == NULL) {return 2;}
             buffer_av_down.emplace_back(*avDownPkt);
             if(buffer_av_down.size() >= BATCH_SIZE) {
-                flush();
+                flushAvDown();
                 return 1;
             }
             break;
@@ -84,7 +80,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             if (gseDownPkt == NULL) {return 2;}
             buffer_gse_down.emplace_back(*gseDownPkt);
             if(buffer_gse_down.size() >= BATCH_SIZE) {
-                flush();
+                flushGseDown();
                 return 1;
             }
             break;
@@ -95,6 +91,22 @@ int SqliteDB::write_pkt(const Packet pkt) {
 
 int SqliteDB::read_pkt(uint32_t pkt_id, Packet pkt) {}
 
-int SqliteDB::flush() {printf("flush has been called\n"); return 0;}//one flush function for each buffer ?
+int SqliteDB::flushAvUp() {
+    if (buffer_av_up.empty()) {return 1;}
+
+    printf("starting transaction\n");
+    this->storage.transaction([this]() -> bool {
+        for (const auto& pktavup : buffer_av_up) {
+            this->storage.replace(pktavup);
+        }
+        return true;
+    });
+    buffer_av_up.clear();
+    return 0;
+}
+
+int SqliteDB::flushAvDown() {}
+
+int SqliteDB::flushGseDown() {}
 
 int SqliteDB::delete_database() {}

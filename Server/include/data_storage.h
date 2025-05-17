@@ -72,8 +72,6 @@ class SqliteDB {
 		int write_pkt(const Packet pkt);
 
 		int read_pkt(uint32_t pkt_id, Packet pkt);
-
-		int flush();
 		
 		/*sould not be called unless for the tests*/
 		int delete_database();
@@ -95,14 +93,21 @@ class SqliteDB {
 
 		std::vector<GSE_downlink_pkt> buffer_gse_down;
 
+		/*return value : flush buffer (0), buffer already empty (1)*/
+		int flushAvUp();
+
+		int flushAvDown();
+
+		int flushGseDown();
+
 		using Storage = decltype(sqlite_orm::make_storage(PATH_TO_DB,
-			sqlite_orm::make_table<Packet>("AV_UPLINK",
+			sqlite_orm::make_table<AV_uplink_pkt>("AV_UPLINK",
 				sqlite_orm::make_column("id", &AV_uplink_pkt::id, sqlite_orm::primary_key()),
 				sqlite_orm::make_column("ts", &AV_uplink_pkt::ts),
 				sqlite_orm::make_column("order_id", &AV_uplink_pkt::order_id),
 				sqlite_orm::make_column("order_value", &AV_uplink_pkt::order_value)
 			),
-			sqlite_orm::make_table<Packet>("AV_DOWNLINK",
+			sqlite_orm::make_table<AV_downlink_pkt>("AV_DOWNLINK",
 				sqlite_orm::make_column("id", &AV_downlink_pkt::id, sqlite_orm::primary_key()),
 				sqlite_orm::make_column("ts", &AV_downlink_pkt::ts),
 				sqlite_orm::make_column("packet_nbr", &AV_downlink_pkt::packet_nbr),
@@ -126,7 +131,7 @@ class SqliteDB {
 				sqlite_orm::make_column("av_state", &AV_downlink_pkt::av_state),
 				sqlite_orm::make_column("cam_rec", &AV_downlink_pkt::cam_rec)
 			),
-			sqlite_orm::make_table<Packet>("GSE_DOWNLINK",
+			sqlite_orm::make_table<GSE_downlink_pkt>("GSE_DOWNLINK",
 				sqlite_orm::make_column("id", &GSE_downlink_pkt::id, sqlite_orm::primary_key()),
 				sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
 				sqlite_orm::make_column("tankPressure", &GSE_downlink_pkt::tankPressure),
@@ -138,5 +143,5 @@ class SqliteDB {
 				sqlite_orm::make_column("loadcell_raw", &GSE_downlink_pkt::loadcell_raw)
 			)));
 
-			Storage* storage;
+			Storage storage;
 	};
