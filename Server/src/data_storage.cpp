@@ -56,10 +56,10 @@ int SqliteDB::write_pkt(const Packet pkt) {
         case PacketType::AV_UPLINK: {
             AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
             if (avUpPkt == NULL) {return 2;}
-            printf("place av up pkt in buffer\n");
+            printf("    place av up pkt in buffer\n");
             buffer_av_up.emplace_back(*avUpPkt);
             if(buffer_av_up.size() >= BATCH_SIZE) {
-                printf("av up buffer is full --> call flush\n");
+                printf("    av up buffer is full --> call flush\n");
                 flushAvUp();
                 return 1;
             }
@@ -68,10 +68,10 @@ int SqliteDB::write_pkt(const Packet pkt) {
         case PacketType::AV_DOWNLINK: {
             AV_downlink_pkt* avDownPkt = pkt.av_down_pkt;
             if (avDownPkt == NULL) {return 2;}
-            printf("place av down pkt in buffer\n");
+            printf("    place av down pkt in buffer\n");
             buffer_av_down.emplace_back(*avDownPkt);
             if(buffer_av_down.size() >= BATCH_SIZE) {
-                printf("av down buffer is full --> call flush\n");
+                printf("    av down buffer is full --> call flush\n");
                 flushAvDown();
                 return 1;
             }
@@ -80,10 +80,10 @@ int SqliteDB::write_pkt(const Packet pkt) {
         case PacketType::GSE_DOWNLINK: {
             GSE_downlink_pkt* gseDownPkt = pkt.gse_down_pkt;
             if (gseDownPkt == NULL) {return 2;}
-            printf("place gse down pkt in buffer\n");
+            printf("    place gse down pkt in buffer\n");
             buffer_gse_down.emplace_back(*gseDownPkt);
             if(buffer_gse_down.size() >= BATCH_SIZE) {
-                printf("gse down buffer is full --> call flush\n");
+                printf("    gse down buffer is full --> call flush\n");
                 flushGseDown();
                 return 1;
             }
@@ -98,7 +98,7 @@ int SqliteDB::read_pkt(uint32_t pkt_id, Packet pkt) {}
 int SqliteDB::flushAvUp() {
     if (buffer_av_up.empty()) {return 1;}
 
-    printf("starting transaction\n");
+    printf("    starting transaction\n");
     this->storage.transaction([this]() -> bool {
         for (const auto& pktavup : buffer_av_up) {
             this->storage.replace(pktavup);
@@ -112,7 +112,7 @@ int SqliteDB::flushAvUp() {
 int SqliteDB::flushAvDown() {
     if (buffer_av_down.empty()) {return 1;}
 
-    printf("starting transaction\n");
+    printf("    starting transaction\n");
     this->storage.transaction([this]() -> bool {
         for (const auto& pktavdown : buffer_av_down) {
             this->storage.replace(pktavdown);
@@ -126,7 +126,7 @@ int SqliteDB::flushAvDown() {
 int SqliteDB::flushGseDown() {
     if (buffer_gse_down.empty()) {return 1;}
 
-    printf("starting transaction\n");
+    printf("    starting transaction\n");
     this->storage.transaction([this]() -> bool {
         for (const auto& pktgsedown : buffer_gse_down) {
             this->storage.replace(pktgsedown);
