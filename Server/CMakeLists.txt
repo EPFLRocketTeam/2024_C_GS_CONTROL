@@ -62,7 +62,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-### data_storage stuff
+##### data_storage stuff #####
 
 find_package(SQLite3 REQUIRED)
 
@@ -70,16 +70,20 @@ SET(HEADERS_STORAGE
     include/data_storage.h
     include/sqlite_orm.h
 )
-
 SET(SOURCES_STORAGE
     src/data_storage.cpp
 )
 
 add_library(data_storage_lib STATIC ${SOURCES_STORAGE} ${HEADERS_STORAGE})
-
 add_executable(test tests/data_storage_tests.cpp)
-
 target_link_libraries(test PRIVATE 
     data_storage_lib
     SQLite::SQLite3
 )
+
+# google tests (comment manual testing (main function of data_storag_tests.cpp) in order to perform gtests)
+enable_testing()
+
+target_link_libraries(test PRIVATE gtest_main data_storage_lib)
+
+add_test(NAME write_2_tests COMMAND test)

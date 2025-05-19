@@ -1,16 +1,21 @@
-
-#include <string>
 #include "../include/data_storage.h"
+#include <gtest/gtest.h>
+
+
+TEST(exampleTest, failureTest) {
+    EXPECT_EQ(1, 2);
+}
 
 
 
+/*
 int main(int argc, char *argv[]) {
     printf("starting data-storage tests\n");
 
     //create db
     SqliteDB* db = new SqliteDB;
     printf("db created\n");
-    
+
     //create first av up pkt
     AV_uplink_pkt* avup1 = new AV_uplink_pkt;
     *avup1 = {.id=1, .ts=4, .order_id=2, .order_value=3};
@@ -32,3 +37,4 @@ int main(int argc, char *argv[]) {
     printf("end of data-storage tests\n");
     return 0;
 }
+*/
