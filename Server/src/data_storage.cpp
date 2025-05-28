@@ -1,7 +1,4 @@
 #include "../include/data_storage.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include <cstdint>
 #include <iostream>
 
 SqliteDB::SqliteDB()
