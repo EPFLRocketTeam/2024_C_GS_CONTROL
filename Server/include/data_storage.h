@@ -7,7 +7,7 @@
 #include "sqlite_orm.h"
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 
-typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK } PacketType;
+typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK, INVALID } PacketType;
 
 struct AV_uplink_pkt {
     uint32_t id;
@@ -76,9 +76,10 @@ class SqliteDB {
 		/*sould not be called unless for the tests*/
 		int delete_database();
 
-		uint32_t get_pkt_id();
-
-		int64_t  get_current_ts();
+		/*process pkt before writing it
+		this consist of adding id, adding timestamp, adding PacketType
+		and returns the Packet ready to be written*/
+		Packet process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw);
 
 	private:
 		uint32_t pkt_id;
@@ -92,6 +93,10 @@ class SqliteDB {
 		std::vector<AV_downlink_pkt> buffer_av_down;
 
 		std::vector<GSE_downlink_pkt> buffer_gse_down;
+
+		uint32_t get_pkt_id();
+
+		int64_t  get_current_ts();
 
 		/*return value : flush buffer (0), buffer already empty (1)*/
 		int flushAvUp();
