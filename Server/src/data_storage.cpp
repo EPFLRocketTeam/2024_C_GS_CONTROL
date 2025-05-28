@@ -58,10 +58,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
     
     switch(pkt.type) {
         case PacketType::AV_UPLINK: {
-            std::cout << "write_pkt_before = " << pkt.av_up_pkt->id << " " << pkt.av_up_pkt->order_id 
-                << " " << pkt.av_up_pkt->order_value << std::endl;
             AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
-            std::cout << "write_pkt = " << avUpPkt->id << " " << avUpPkt->order_id << " " << avUpPkt->order_value << std::endl;
             if (avUpPkt == NULL) {return 2;}
             printf("    place av up pkt in buffer\n");
             buffer_av_up.emplace_back(*avUpPkt);
