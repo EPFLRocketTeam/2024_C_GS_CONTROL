@@ -1,4 +1,5 @@
 #include "../include/data_storage.h"
+#include <iostream>
 
 SqliteDB::SqliteDB()
     : storage(sqlite_orm::make_storage(this->PATH_TO_DB,
@@ -7,7 +8,7 @@ SqliteDB::SqliteDB()
         sqlite_orm::make_column("ts", &AV_uplink_pkt::ts),
         sqlite_orm::make_column("order_id", &AV_uplink_pkt::order_id),
         sqlite_orm::make_column("order_value", &AV_uplink_pkt::order_value)
-    ),
+    ),    
     sqlite_orm::make_table<AV_downlink_pkt>("AV_DOWNLINK",
         sqlite_orm::make_column("id", &AV_downlink_pkt::id, sqlite_orm::primary_key()),
         sqlite_orm::make_column("ts", &AV_downlink_pkt::ts),
@@ -52,7 +53,7 @@ this->pkt_id = -1;
 SqliteDB::~SqliteDB() {}
 
 int SqliteDB::write_pkt(const Packet pkt) {
-
+    
     switch(pkt.type) {
         case PacketType::AV_UPLINK: {
             AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
@@ -94,7 +95,16 @@ int SqliteDB::write_pkt(const Packet pkt) {
     return 0;
 }
 
-int SqliteDB::read_pkt(uint32_t pkt_id, Packet pkt) {}
+int SqliteDB::read_pkt(uint32_t pkt_id, Packet pkt) {
+    if(auto packet = storage.get_pointer<AV_uplink_pkt>(pkt_id)){
+        std::cout << "user = " << packet->id << " " << (uint32_t)packet->order_id << " " << (uint32_t)packet->order_value << std::endl;
+        return 1;
+    }else{
+        std::cout << "no user with id " << pkt_id << std::endl;
+        return 0;
+}
+    
+}
 
 int SqliteDB::flushAvUp() {
     if (buffer_av_up.empty()) {return 1;}

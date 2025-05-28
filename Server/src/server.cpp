@@ -25,6 +25,7 @@
 #include "Setup.h"
 #include "packet_helper.h"
 #include <RequestBuilder.h>
+#include <data_storage.h>
 
 #define DB_ERROR_MESSAGE_PREFIX "The Databse couldn't be open, and produce the following error message"
 
@@ -43,6 +44,7 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
 
 
 int Server::setup_db() {
+    sqlDatabase = new SqliteDB();
     QString db_path = (QCoreApplication::applicationDirPath() + "/../data.db");
     int exit = sqlite3_open(db_path.toStdString().c_str(), &database);
     /*sqlite3* DB; */
@@ -464,5 +466,21 @@ void Server::simulateJsonData() {
     #ifdef RF_PROTOCOL_FIREHORN
     gsePacket.loadcell_raw = distTemp(gen);
     #endif
-    handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
+
+    struct AV_uplink_pkt uplink_test = {
+        12,
+        2,
+        4,
+        5
+    };// Debug print right after initialization
+    
+    Packet dbPacket = {
+        AV_UPLINK,
+        &uplink_test,
+        nullptr,
+        nullptr
+    };
+    sqlDatabase->write_pkt(dbPacket);
+    sqlDatabase->read_pkt(12,  dbPacket);
+    // handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
 }

@@ -19,6 +19,7 @@ set(SOURCES_SERVER
     src/server.cpp
     src/RequestAdapter.cpp
     src/network/RequestHandler.cpp
+    src/data_storage.cpp
 )
 
 set(HEADERS_SERVER
@@ -26,6 +27,8 @@ set(HEADERS_SERVER
     include/Server.h 
     include/RequestHandler.h
     include/RequestAdapter.h
+    include/sqlite_orm.h
+    include/data_storage.h
 )
 
 # Create the library

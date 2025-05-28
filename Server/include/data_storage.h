@@ -1,3 +1,6 @@
+#ifndef SQLITEDB_H
+#define SQLITEDB_H
+
 #include <stdint.h>
 #include <stddef.h>
 #include <time.h>
@@ -150,3 +153,5 @@ class SqliteDB {
 
 			Storage storage;
 	};
+
+#endif /* SQLITEDB_H */
