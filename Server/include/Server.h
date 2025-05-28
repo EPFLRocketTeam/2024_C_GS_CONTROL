@@ -12,6 +12,7 @@
 #include "RequestBuilder.h"
 #include "RequestHandler.h"
 #include "../Capsule/src/capsule.h"
+#include "data_storage.h"
 
 #include "Log.h"
 
@@ -54,6 +55,8 @@ private:
     QMap<int, QList<QTcpSocket *>> subscriptionMap;
     QList<QTcpSocket *> clients;
     sqlite3 *database;
+    SqliteDB *sqlDatabase;
+    
     
     QSerialPort *serialPort;
     RequestHandler requestHandler;
