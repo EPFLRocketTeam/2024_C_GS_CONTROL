@@ -1,3 +1,4 @@
+#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
@@ -218,13 +219,13 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     switch (f)
     {
     case GUI_CMD_DISCONNECT:
-        return { CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY } ;
+        return { GSE_CMD_DISCONNECT, GSE_TELEMETRY } ;
 
     case GUI_FIELD::GUI_CMD_CALIBRATE:
-        return { AV_CMD_CALIBRATE, CAPSULE_ID::AV_TELEMETRY};
+        return { AV_CMD_CALIBRATE, AV_TELEMETRY};
     
     case GUI_FIELD::GUI_CMD_PRESSURIZE:
-        return { AV_CMD_CALIBRATE, AV_TELEMETRY };
+        return { AV_CMD_PRESSURIZE, AV_TELEMETRY };
 
     case GUI_FIELD::GUI_CMD_RECOVER:
         return { AV_CMD_RECOVER, AV_TELEMETRY };
