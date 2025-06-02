@@ -152,14 +152,28 @@ uint32_t SqliteDB::get_pkt_id() {
     return this->pkt_id += 1;
 }
 
-int64_t SqliteDB::get_current_ts() {return 0;}
+std::string SqliteDB::get_current_ts() {
+    auto now = std::chrono::system_clock::now();
+    auto seconds = std::chrono::floor<std::chrono::seconds>(now);
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(now - seconds).count();
+
+    std::time_t time = std::chrono::system_clock::to_time_t(seconds);
+    std::tm tm = *std::gmtime(&time);
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%dT%H:%M:%S");
+    oss << "." << std::setfill('0') << std::setw(3) << millis;
+    oss << "Z";
+
+    return oss.str();
+}
 
 Packet SqliteDB::process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw) {
     if (avup==NULL && avdw==NULL && gsdw==NULL) {
         return {.type=INVALID, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=NULL};
     }
     uint32_t id = this->get_pkt_id();
-    int64_t ts = this->get_current_ts();
+    std::string ts = this->get_current_ts();
     //process pkt if av_uplink_t
     if (avdw == NULL && gsdw == NULL) {
         AV_uplink_pkt* raw_avup = static_cast<AV_uplink_pkt*>(malloc(sizeof(AV_uplink_pkt)));

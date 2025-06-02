@@ -469,7 +469,7 @@ void Server::simulateJsonData() {
 
     struct AV_uplink_pkt uplink_test = {
         12,
-        2,
+        "2",
         4,
         5
     };// Debug print right after initialization

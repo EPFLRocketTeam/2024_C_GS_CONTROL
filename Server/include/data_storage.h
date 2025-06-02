@@ -7,6 +7,9 @@
 #include <string>
 #include <sqlite3.h>
 #include <vector>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 #include "sqlite_orm.h"
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 
@@ -14,14 +17,14 @@ typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK, INVALID } PacketType;
 
 struct AV_uplink_pkt {
     uint32_t id;
-    int64_t ts;
+    std::string ts;
     uint8_t order_id;
 	uint8_t order_value;
 };
 
 struct AV_downlink_pkt {
     uint32_t id;
-    int64_t ts;
+    std::string ts;
     uint32_t packet_nbr;
 	int32_t	 gnss_lon;
 	int32_t	 gnss_lat;
@@ -46,7 +49,7 @@ struct AV_downlink_pkt {
 
 struct GSE_downlink_pkt {
     uint32_t id;
-    int64_t ts;
+    std::string ts;
     float tankPressure;
 	float tankTemperature;
 	float fillingPressure;
@@ -99,7 +102,8 @@ class SqliteDB {
 
 		uint32_t get_pkt_id();
 
-		int64_t  get_current_ts();
+		/*timestamp format : RFC3339 with miliseconds*/
+		std::string get_current_ts();
 
 		/*return value : flush buffer (0), buffer already empty (1)*/
 		int flushAvUp();
