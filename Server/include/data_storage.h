@@ -88,7 +88,11 @@ class SqliteDB {
 		Packet process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw);
 
 	private:
-		uint32_t pkt_id;
+		uint32_t pkt_id_avup;
+
+		uint32_t pkt_id_avdw;
+
+		uint32_t pkt_id_gsdw;
 
 		const size_t BATCH_SIZE = 2; //value to be reconsidered
 
@@ -100,7 +104,7 @@ class SqliteDB {
 
 		std::vector<GSE_downlink_pkt> buffer_gse_down;
 
-		uint32_t get_pkt_id();
+		uint32_t get_pkt_id(PacketType type);
 
 		/*timestamp format : RFC3339 with miliseconds*/
 		std::string get_current_ts();

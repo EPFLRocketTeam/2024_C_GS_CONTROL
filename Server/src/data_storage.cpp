@@ -47,7 +47,9 @@ SqliteDB::SqliteDB()
 ))
 {
 storage.sync_schema();
-this->pkt_id = -1;
+this->pkt_id_avup = -1;
+this->pkt_id_avdw = -1;
+this->pkt_id_gsdw = -1;
 }
 
 SqliteDB::~SqliteDB() {}
@@ -148,8 +150,19 @@ int SqliteDB::flushGseDown() {
     return 0;
 }
 
-uint32_t SqliteDB::get_pkt_id() {
-    return this->pkt_id += 1;
+uint32_t SqliteDB::get_pkt_id(PacketType type) {
+    switch(type) {
+        case PacketType::AV_UPLINK: {
+            return this->pkt_id_avup += 1;
+        }
+        case PacketType::AV_DOWNLINK: {
+            return this->pkt_id_avdw += 1;
+        }
+        case PacketType::GSE_DOWNLINK: {
+            return this->pkt_id_gsdw += 1;
+        }
+    }
+    return NULL;
 }
 
 std::string SqliteDB::get_current_ts() {
@@ -172,22 +185,24 @@ Packet SqliteDB::process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_d
     if (avup==NULL && avdw==NULL && gsdw==NULL) {
         return {.type=INVALID, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=NULL};
     }
-    uint32_t id = this->get_pkt_id();
     std::string ts = this->get_current_ts();
     //process pkt if av_uplink_t
     if (avdw == NULL && gsdw == NULL) {
+        uint32_t id = this->get_pkt_id(AV_UPLINK);
         AV_uplink_pkt* raw_avup = static_cast<AV_uplink_pkt*>(malloc(sizeof(AV_uplink_pkt)));
         *raw_avup = {.id=id, .ts=ts, .order_id=avup->order_id, .order_value=avup->order_value};
         return {.type=AV_UPLINK, .av_up_pkt=raw_avup, .av_down_pkt=NULL, .gse_down_pkt=NULL};
     }
     //process pkt if av_downlink_t
     if (avup == NULL && gsdw == NULL) {
+        uint32_t id = this->get_pkt_id(AV_DOWNLINK);
         AV_downlink_pkt* raw_avdw = static_cast<AV_downlink_pkt*>(malloc(sizeof(AV_downlink_pkt)));
         *raw_avdw = {.id=id, .ts=ts, .packet_nbr=avdw->packet_nbr, .gnss_lon=avdw->gnss_lon, .gnss_lat=avdw->gnss_lat, .gnss_alt=avdw->gnss_alt, .gnss_vertical_speed=avdw->gnss_vertical_speed, .N2_pressure=avdw->N2_pressure, .fuel_pressure=avdw->fuel_pressure, .LOX_pressure=avdw->LOX_pressure, .fuel_level=avdw->fuel_level, .LOX_level=avdw->LOX_level, .N2_temp=avdw->N2_temp, .LOX_temp=avdw->LOX_temp, .LOX_inj_temp=avdw->LOX_inj_temp, .lpb_voltage=avdw->lpb_voltage, .hpb_voltage=avdw->hpb_voltage, .av_fc_temp=avdw->av_fc_temp, .ambient_temp=avdw->ambient_temp, .engine_state=avdw->engine_state, .av_state=avdw->av_state, .cam_rec=avdw->cam_rec};
         return (Packet){.type=AV_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=raw_avdw, .gse_down_pkt=NULL};
     }
     //process pkt if PacketGSE_downlink
     if (avup == NULL && avdw == NULL) {
+        uint32_t id = this->get_pkt_id(GSE_DOWNLINK);
         GSE_downlink_pkt* raw_gsdw = static_cast<GSE_downlink_pkt*>(malloc(sizeof(GSE_downlink_pkt)));
         *raw_gsdw = {.id=id, .ts=ts, .tankPressure=gsdw->tankPressure, .tankTemperature=gsdw->tankTemperature, .fillingPressure=gsdw->fillingPressure, .fillingN2O=gsdw->status.fillingN2O, .vent=gsdw->status.vent, .disconnectActive=gsdw->disconnectActive, .loadcell_raw=gsdw->loadcell_raw};
         return (Packet){.type=GSE_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=raw_gsdw};
