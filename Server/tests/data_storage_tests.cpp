@@ -64,6 +64,9 @@ int main(int argc, char *argv[]) {
     Packet read_avup1 = db->read_pkt(AV_UPLINK, 0);
     Packet read_avdw2 = db->read_pkt(AV_DOWNLINK, 1);
 
+    printf("flush and free db\n");
+    delete db;
+
     printf("end of data-storage tests\n");
     return 0;
 }

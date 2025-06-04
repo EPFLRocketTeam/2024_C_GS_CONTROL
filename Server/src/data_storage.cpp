@@ -52,7 +52,11 @@ this->pkt_id_avdw = -1;
 this->pkt_id_gsdw = -1;
 }
 
-SqliteDB::~SqliteDB() {}
+SqliteDB::~SqliteDB() {
+    flushAvUp();
+    flushAvDown();
+    flushGseDown();
+}
 
 int SqliteDB::write_pkt(const Packet pkt) {
     
