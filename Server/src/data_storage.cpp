@@ -106,8 +106,9 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
     switch(type) {
         case PacketType::AV_UPLINK: {
             try {
-                AV_uplink_pkt content = storage.get<AV_uplink_pkt>(pkt_id);
-                pkt = {.type=AV_UPLINK, .av_up_pkt=&content, .av_down_pkt=NULL, .gse_down_pkt=NULL};
+                AV_uplink_pkt* content = new AV_uplink_pkt;
+                *content = storage.get<AV_uplink_pkt>(pkt_id);
+                pkt = {.type=AV_UPLINK, .av_up_pkt=content, .av_down_pkt=NULL, .gse_down_pkt=NULL};
             } catch (const std::runtime_error& e) {
                 std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
                 break;
@@ -116,8 +117,9 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
         }
         case PacketType::AV_DOWNLINK: {
             try {
-                AV_downlink_pkt content = storage.get<AV_downlink_pkt>(pkt_id);
-                pkt = {.type=AV_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=&content, .gse_down_pkt=NULL};
+                AV_downlink_pkt* content = new AV_downlink_pkt;
+                *content = storage.get<AV_downlink_pkt>(pkt_id);
+                pkt = {.type=AV_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=content, .gse_down_pkt=NULL};
             } catch (const std::runtime_error& e) {
                 std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
                 break;
@@ -126,8 +128,9 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
         }
         case PacketType::GSE_DOWNLINK: {
             try {
-                GSE_downlink_pkt content = storage.get<GSE_downlink_pkt>(pkt_id);
-                pkt = {.type=GSE_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=&content};
+                GSE_downlink_pkt* content = new GSE_downlink_pkt;
+                *content = storage.get<GSE_downlink_pkt>(pkt_id);
+                pkt = {.type=GSE_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=content};
             } catch (const std::runtime_error& e) {
                 std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
                 break;

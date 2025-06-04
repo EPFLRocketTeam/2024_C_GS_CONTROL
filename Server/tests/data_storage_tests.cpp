@@ -36,8 +36,6 @@ PacketGSE_downlink* get_gsdw() {
 
 //functions to compare the content of two pkts
 void equal_avup(av_uplink_t* avup1, av_uplink_t* avup2) {
-    printf("    o_id 1 = %d\n", avup1->order_id);
-    printf("    o_id 2 = %d\n", avup2->order_id);
     EXPECT_EQ(avup1->order_id, avup2->order_id);
     EXPECT_EQ(avup1->order_value, avup2->order_value);
 }
