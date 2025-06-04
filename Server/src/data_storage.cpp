@@ -97,15 +97,42 @@ int SqliteDB::write_pkt(const Packet pkt) {
     return 0;
 }
 
-int SqliteDB::read_pkt(uint32_t pkt_id, Packet pkt) {
-    if(auto packet = storage.get_pointer<AV_uplink_pkt>(pkt_id)){
-        std::cout << "user = " << packet->id << " " << (uint32_t)packet->order_id << " " << (uint32_t)packet->order_value << std::endl;
-        return 1;
-    }else{
-        std::cout << "no user with id " << pkt_id << std::endl;
-        return 0;
+Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
+    Packet pkt;
+    switch(type) {
+        case PacketType::AV_UPLINK: {
+            try {
+                AV_uplink_pkt content = storage.get<AV_uplink_pkt>(pkt_id);
+                pkt = {.type=AV_UPLINK, .av_up_pkt=&content, .av_down_pkt=NULL, .gse_down_pkt=NULL};
+            } catch (const std::runtime_error& e) {
+                std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
+                break;
+            }
+            return pkt;
+        }
+        case PacketType::AV_DOWNLINK: {
+            try {
+                AV_downlink_pkt content = storage.get<AV_downlink_pkt>(pkt_id);
+                pkt = {.type=AV_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=&content, .gse_down_pkt=NULL};
+            } catch (const std::runtime_error& e) {
+                std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
+                break;
+            }
+            return pkt;
+        }
+        case PacketType::GSE_DOWNLINK: {
+            try {
+                GSE_downlink_pkt content = storage.get<GSE_downlink_pkt>(pkt_id);
+                pkt = {.type=GSE_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=&content};
+            } catch (const std::runtime_error& e) {
+                std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
+                break;
+            }
+            return pkt;
+        }
+    }
+    return {.type=INVALID, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=NULL};
 }
-    
 }
 
 int SqliteDB::flushAvUp() {

@@ -77,7 +77,7 @@ class SqliteDB {
 		put null pointer for unused packet types*/
 		int write_pkt(const Packet pkt);
 
-		int read_pkt(uint32_t pkt_id, Packet pkt);
+		Packet read_pkt(PacketType type, uint32_t pkt_id);
 		
 		/*sould not be called unless for the tests*/
 		int delete_database();

@@ -56,6 +56,14 @@ int main(int argc, char *argv[]) {
     db->write_pkt(db->process_pkt(NULL, NULL, gsdw1));
     db->write_pkt(db->process_pkt(NULL, NULL, gsdw2));
 
+    printf("reading packets by id\n");
+    Packet read_avup2 = db->read_pkt(AV_UPLINK, 1);
+    Packet read_gsdw1 = db->read_pkt(GSE_DOWNLINK, 0);
+    Packet read_gsdw2 = db->read_pkt(GSE_DOWNLINK, 1);
+    Packet read_avdw1 = db->read_pkt(AV_DOWNLINK, 0);
+    Packet read_avup1 = db->read_pkt(AV_UPLINK, 0);
+    Packet read_avdw2 = db->read_pkt(AV_DOWNLINK, 1);
+
     printf("end of data-storage tests\n");
     return 0;
 }

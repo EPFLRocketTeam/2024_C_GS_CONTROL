@@ -481,6 +481,6 @@ void Server::simulateJsonData() {
         nullptr
     };
     sqlDatabase->write_pkt(dbPacket);
-    sqlDatabase->read_pkt(12,  dbPacket);
+    //sqlDatabase->read_pkt(12,  dbPacket);
     // handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
 }
