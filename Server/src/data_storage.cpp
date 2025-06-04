@@ -133,6 +133,15 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
     }
     return {.type=INVALID, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=NULL};
 }
+
+std::vector<AV_uplink_pkt> SqliteDB::read_all_avup() {
+    return storage.get_all<AV_uplink_pkt>();
+}
+std::vector<AV_downlink_pkt> SqliteDB::read_all_avdw() {
+    return storage.get_all<AV_downlink_pkt>();
+}
+std::vector<GSE_downlink_pkt> SqliteDB::read_all_gsdw() {
+    return storage.get_all<GSE_downlink_pkt>();
 }
 
 int SqliteDB::flushAvUp() {

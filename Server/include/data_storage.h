@@ -78,6 +78,10 @@ class SqliteDB {
 		int write_pkt(const Packet pkt);
 
 		Packet read_pkt(PacketType type, uint32_t pkt_id);
+
+		std::vector<AV_uplink_pkt> read_all_avup();
+		std::vector<AV_downlink_pkt> read_all_avdw();
+		std::vector<GSE_downlink_pkt> read_all_gsdw();
 		
 		/*sould not be called unless for the tests*/
 		int delete_database();
