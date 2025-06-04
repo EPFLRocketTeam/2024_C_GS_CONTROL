@@ -91,6 +91,10 @@ class SqliteDB {
 		and returns the Packet ready to be written*/
 		Packet process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw);
 
+		/*unprocess (only usefull to verify integrity of data in the unit tests)
+		takes pkt, unprocess and writes it at the right place (avup, avdw or gsdw)*/
+		void unprocess_pkt(Packet pkt, av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw);
+
 	private:
 		uint32_t pkt_id_avup;
 

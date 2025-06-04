@@ -250,4 +250,24 @@ Packet SqliteDB::process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_d
     return {.type=INVALID, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=NULL};
 }
 
+void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw) {
+    switch(pkt.type) {
+        case PacketType::AV_UPLINK: {
+            *avup = (av_uplink_t){.order_id=pkt.av_up_pkt->order_id, .order_value=pkt.av_up_pkt->order_value};
+            break;
+        }
+        case PacketType::AV_DOWNLINK: {
+            *avdw = (av_downlink_t){.packet_nbr=pkt.av_down_pkt->packet_nbr, .gnss_lon=pkt.av_down_pkt->gnss_lon, .gnss_lat=pkt.av_down_pkt->gnss_lat, .gnss_alt=pkt.av_down_pkt->gnss_alt, .gnss_vertical_speed=pkt.av_down_pkt->gnss_vertical_speed, .N2_pressure=pkt.av_down_pkt->N2_pressure, .fuel_pressure=pkt.av_down_pkt->fuel_pressure, .LOX_pressure=pkt.av_down_pkt->LOX_pressure, .fuel_level=pkt.av_down_pkt->fuel_level, .LOX_level=pkt.av_down_pkt->LOX_level, .N2_temp=pkt.av_down_pkt->N2_temp, .LOX_temp=pkt.av_down_pkt->LOX_temp, .LOX_inj_temp=pkt.av_down_pkt->LOX_inj_temp, .lpb_voltage=pkt.av_down_pkt->lpb_voltage, .hpb_voltage=pkt.av_down_pkt->hpb_voltage, .av_fc_temp=pkt.av_down_pkt->av_fc_temp, .ambient_temp=pkt.av_down_pkt->ambient_temp, .engine_state=pkt.av_down_pkt->engine_state, .av_state=pkt.av_down_pkt->av_state, .cam_rec=pkt.av_down_pkt->cam_rec};
+            break;
+        }
+        case PacketType::GSE_DOWNLINK: {
+            GSE_cmd_status status = (GSE_cmd_status){.fillingN2O=pkt.gse_down_pkt->fillingN2O, .vent=pkt.gse_down_pkt->vent};
+            *gsdw = (PacketGSE_downlink){.tankPressure=pkt.gse_down_pkt->tankPressure, .tankTemperature=pkt.gse_down_pkt->tankTemperature, .fillingPressure=pkt.gse_down_pkt->fillingPressure, .status=status, .disconnectActive=pkt.gse_down_pkt->disconnectActive, .loadcell_raw=pkt.gse_down_pkt->loadcell_raw};
+            break;
+        }
+    }
+    return;
+}
+
+
 int SqliteDB::delete_database() {}
