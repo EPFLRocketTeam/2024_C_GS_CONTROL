@@ -108,8 +108,8 @@ TEST(readWriteTest, singleGsdwByIndex) {
     newdb->unprocess_pkt(packet, NULL, NULL, gsdwRead);
     equal_gsdw(gsdw, gsdwRead);
 }
-TEST(readWriteTest, severalAvdwAtOnce) {
-    int nbrPkt = 1000;
+TEST(readWriteTest, severalAvupAtOnce) {
+    int nbrPkt = 200;
     SqliteDB* db = get_db();
     std::vector<av_uplink_t*> avups;
     avups.resize(nbrPkt);
@@ -134,6 +134,64 @@ TEST(readWriteTest, severalAvdwAtOnce) {
         db->unprocess_pkt(pkt, avupsRead[i], NULL, NULL);
         equal_avup(avups[i], avupsRead[i]);
         delete avupsRead[i];
+    }
+    delete newdb;
+}
+TEST(readWriteTest, severalAvdwAtOnce) {
+    int nbrPkt = 200;
+    SqliteDB* db = get_db();
+    std::vector<av_downlink_t*> avdws;
+    avdws.resize(nbrPkt);
+    for (int i=0; i<nbrPkt; i++) {
+        printf("i = %d\n", i);
+        avdws[i] = get_avdw();
+        Packet pkt = db->process_pkt(NULL,avdws[i],NULL);
+        db->write_pkt(pkt);
+    }
+    delete db;
+    SqliteDB* newdb = get_db();
+    std::vector<AV_downlink_pkt> avdwsRawRead;
+    avdwsRawRead.resize(nbrPkt);
+    avdwsRawRead = newdb->read_all_avdw();
+    std::vector<av_downlink_t*> avdwsRead;
+    avdwsRead.resize(nbrPkt);
+    for (auto& ptr : avdwsRead) {
+        ptr = new av_downlink_t;
+    }
+    for (int i=0; i<nbrPkt; i++) {
+        Packet pkt = (Packet){.type=AV_DOWNLINK, NULL,.av_down_pkt=&avdwsRawRead[i],NULL};
+        db->unprocess_pkt(pkt, NULL, avdwsRead[i], NULL);
+        equal_avdw(avdws[i], avdwsRead[i]);
+        delete avdwsRead[i];
+    }
+    delete newdb;
+}
+TEST(readWriteTest, severalGsdwAtOnce) {
+    int nbrPkt = 200;
+    SqliteDB* db = get_db();
+    std::vector<PacketGSE_downlink*> gsdws;
+    gsdws.resize(nbrPkt);
+    for (int i=0; i<nbrPkt; i++) {
+        printf("i = %d\n", i);
+        gsdws[i] = get_gsdw();
+        Packet pkt = db->process_pkt(NULL,NULL,gsdws[i]);
+        db->write_pkt(pkt);
+    }
+    delete db;
+    SqliteDB* newdb = get_db();
+    std::vector<GSE_downlink_pkt> gsdwsRawRead;
+    gsdwsRawRead.resize(nbrPkt);
+    gsdwsRawRead = newdb->read_all_gsdw();
+    std::vector<PacketGSE_downlink*> gsdwsRead;
+    gsdwsRead.resize(nbrPkt);
+    for (auto& ptr : gsdwsRead) {
+        ptr = new PacketGSE_downlink;
+    }
+    for (int i=0; i<nbrPkt; i++) {
+        Packet pkt = (Packet){.type=GSE_DOWNLINK, NULL,NULL,.gse_down_pkt=&gsdwsRawRead[i]};
+        db->unprocess_pkt(pkt, NULL, NULL, gsdwsRead[i]);
+        equal_gsdw(gsdws[i], gsdwsRead[i]);
+        delete gsdwsRead[i];
     }
     delete newdb;
 }

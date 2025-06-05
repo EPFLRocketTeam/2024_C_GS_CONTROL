@@ -108,9 +108,9 @@ class SqliteDB {
 
 		std::vector<AV_uplink_pkt*> buffer_av_up;
 
-		std::vector<AV_downlink_pkt> buffer_av_down;
+		std::vector<AV_downlink_pkt*> buffer_av_down;
 
-		std::vector<GSE_downlink_pkt> buffer_gse_down;
+		std::vector<GSE_downlink_pkt*> buffer_gse_down;
 
 		uint32_t get_pkt_id(PacketType type);
 

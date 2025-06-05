@@ -79,7 +79,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             AV_downlink_pkt* avDownPkt = pkt.av_down_pkt;
             if (avDownPkt == NULL) {return 2;}
             printf("    place av down pkt in buffer\n");
-            buffer_av_down.emplace_back(*avDownPkt);
+            buffer_av_down.emplace_back(avDownPkt);
             if(buffer_av_down.size() >= BATCH_SIZE) {
                 printf("    av down buffer is full\n");
                 flushAvDown();
@@ -91,7 +91,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             GSE_downlink_pkt* gseDownPkt = pkt.gse_down_pkt;
             if (gseDownPkt == NULL) {return 2;}
             printf("    place gse down pkt in buffer\n");
-            buffer_gse_down.emplace_back(*gseDownPkt);
+            buffer_gse_down.emplace_back(gseDownPkt);
             if(buffer_gse_down.size() >= BATCH_SIZE) {
                 printf("    gse down buffer is full\n");
                 flushGseDown();
@@ -152,10 +152,18 @@ std::vector<AV_uplink_pkt> SqliteDB::read_all_avup() {
     return avups;
 }
 std::vector<AV_downlink_pkt> SqliteDB::read_all_avdw() {
-    return storage.get_all<AV_downlink_pkt>();
+    size_t nbrPkt = storage.count<AV_downlink_pkt>();
+    std::vector<AV_downlink_pkt> avdws;
+    avdws.resize(nbrPkt);
+    avdws = storage.get_all<AV_downlink_pkt>();
+    return avdws;
 }
 std::vector<GSE_downlink_pkt> SqliteDB::read_all_gsdw() {
-    return storage.get_all<GSE_downlink_pkt>();
+    size_t nbrPkt = storage.count<GSE_downlink_pkt>();
+    std::vector<GSE_downlink_pkt> gsdws;
+    gsdws.resize(nbrPkt);
+    gsdws = storage.get_all<GSE_downlink_pkt>();
+    return gsdws;
 }
 
 int SqliteDB::flushAvUp() {
@@ -180,8 +188,9 @@ int SqliteDB::flushAvDown() {
 
     printf("    starting transaction\n");
     this->storage.transaction([this]() -> bool {
-        for (const auto& pktavdown : buffer_av_down) {
-            this->storage.replace(pktavdown);
+        for (const AV_downlink_pkt* pktavdown : buffer_av_down) {
+            this->storage.replace(*pktavdown);
+            delete pktavdown;
         }
         return true;
     });
@@ -195,8 +204,9 @@ int SqliteDB::flushGseDown() {
 
     printf("    starting transaction\n");
     this->storage.transaction([this]() -> bool {
-        for (const auto& pktgsedown : buffer_gse_down) {
-            this->storage.replace(pktgsedown);
+        for (const GSE_downlink_pkt* pktgsedown : buffer_gse_down) {
+            this->storage.replace(*pktgsedown);
+            delete pktgsedown;
         }
         return true;
     });
