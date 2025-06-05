@@ -69,6 +69,7 @@ int Server::setup_db() {
 
 
 Server::~Server() {
+    delete sqlDatabase;
     if (database != NULL) {
         sqlite3_close(database);
     }
@@ -366,7 +367,7 @@ void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) 
 
 
 void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len) {
-    std::optional<QJsonObject> result = parse_packet(packetId, dataIn, len);
+    std::optional<QJsonObject> result = parse_packet(packetId, dataIn, len, sqlDatabase);
     if (result) {
         QJsonDocument doc(result.value());
         QByteArray jsonData = doc.toJson(QJsonDocument::Indented);
@@ -466,21 +467,6 @@ void Server::simulateJsonData() {
     #ifdef RF_PROTOCOL_FIREHORN
     gsePacket.loadcell_raw = distTemp(gen);
     #endif
-
-    struct AV_uplink_pkt uplink_test = {
-        12,
-        "2",
-        4,
-        5
-    };// Debug print right after initialization
-    
-    Packet dbPacket = {
-        AV_UPLINK,
-        &uplink_test,
-        nullptr,
-        nullptr
-    };
-    sqlDatabase->write_pkt(dbPacket);
-    //sqlDatabase->read_pkt(12,  dbPacket);
-    // handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
+    //sqlDatabase->write_pkt(sqlDatabase->process_pkt(NULL,NULL,gsePacket));
+    handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
 }
