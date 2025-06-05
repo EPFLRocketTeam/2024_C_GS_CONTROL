@@ -36,10 +36,12 @@ PacketGSE_downlink* get_gsdw() {
 
 //functions to compare the content of two pkts
 void equal_avup(av_uplink_t* avup1, av_uplink_t* avup2) {
+    printf("equal_avup called\n");
     EXPECT_EQ(avup1->order_id, avup2->order_id);
     EXPECT_EQ(avup1->order_value, avup2->order_value);
 }
 void equal_avdw(av_downlink_t* avdw1, av_downlink_t* avdw2) {
+    printf("equal_avdw called\n");
     EXPECT_EQ(avdw1->ambient_temp, avdw2->ambient_temp);
     EXPECT_EQ(avdw1->av_fc_temp, avdw2->av_fc_temp);
     EXPECT_EQ(avdw1->av_state, avdw2->av_state);
@@ -62,6 +64,7 @@ void equal_avdw(av_downlink_t* avdw1, av_downlink_t* avdw2) {
     EXPECT_EQ(avdw1->packet_nbr, avdw2->packet_nbr);
 }
 void equal_gsdw(PacketGSE_downlink* gsdw1, PacketGSE_downlink* gsdw2) {
+    printf("equal_gsdw called\n");
     EXPECT_EQ(gsdw1->disconnectActive, gsdw2->disconnectActive);
     EXPECT_EQ(gsdw1->fillingPressure, gsdw2->fillingPressure);
     EXPECT_EQ(gsdw1->loadcell_raw, gsdw2->loadcell_raw);
@@ -72,7 +75,7 @@ void equal_gsdw(PacketGSE_downlink* gsdw1, PacketGSE_downlink* gsdw2) {
 }
 
 /* UNIT TESTS (if the google tests don't run, comment the manual tests) */
-TEST(readWriteTest, singleAvup) {
+TEST(readWriteTest, singleAvupByIndex) {
     SqliteDB* db = get_db();
     av_uplink_t* avup = get_avup();
     db->write_pkt(db->process_pkt(avup,NULL,NULL));
@@ -82,6 +85,28 @@ TEST(readWriteTest, singleAvup) {
     Packet packet = newdb->read_pkt(AV_UPLINK, 0);
     newdb->unprocess_pkt(packet, avupRead, NULL, NULL);
     equal_avup(avup, avupRead);
+}
+TEST(readWriteTest, singleAvdwByIndex) {
+    SqliteDB* db = get_db();
+    av_downlink_t* avdw = get_avdw();
+    db->write_pkt(db->process_pkt(NULL,avdw,NULL));
+    delete db;
+    SqliteDB* newdb = get_db();
+    av_downlink_t* avdwRead = new av_downlink_t;
+    Packet packet = newdb->read_pkt(AV_DOWNLINK, 0);
+    newdb->unprocess_pkt(packet, NULL, avdwRead, NULL);
+    equal_avdw(avdw, avdwRead);
+}
+TEST(readWriteTest, singleGsdwByIndex) {
+    SqliteDB* db = get_db();
+    PacketGSE_downlink* gsdw = get_gsdw();
+    db->write_pkt(db->process_pkt(NULL,NULL,gsdw));
+    delete db;
+    SqliteDB* newdb = get_db();
+    PacketGSE_downlink* gsdwRead = new PacketGSE_downlink;
+    Packet packet = newdb->read_pkt(GSE_DOWNLINK, 0);
+    newdb->unprocess_pkt(packet, NULL, NULL, gsdwRead);
+    equal_gsdw(gsdw, gsdwRead);
 }
 
 /* MANUAL TESTS */

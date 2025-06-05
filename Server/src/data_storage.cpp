@@ -46,6 +46,7 @@ SqliteDB::SqliteDB()
     )
 ))
 {
+printf("creating db\n");
 storage.sync_schema();
 this->pkt_id_avup = -1;
 this->pkt_id_avdw = -1;
@@ -53,13 +54,14 @@ this->pkt_id_gsdw = -1;
 }
 
 SqliteDB::~SqliteDB() {
+    printf("destroying db\n");
     flushAvUp();
     flushAvDown();
     flushGseDown();
 }
 
 int SqliteDB::write_pkt(const Packet pkt) {
-    
+    printf("write_pkt called\n");
     switch(pkt.type) {
         case PacketType::AV_UPLINK: {
             AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
@@ -67,7 +69,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             printf("    place av up pkt in buffer\n");
             buffer_av_up.emplace_back(*avUpPkt);
             if(buffer_av_up.size() >= BATCH_SIZE) {
-                printf("    av up buffer is full --> call flush\n");
+                printf("    av up buffer is full\n");
                 flushAvUp();
                 return 1;
             }
@@ -79,7 +81,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             printf("    place av down pkt in buffer\n");
             buffer_av_down.emplace_back(*avDownPkt);
             if(buffer_av_down.size() >= BATCH_SIZE) {
-                printf("    av down buffer is full --> call flush\n");
+                printf("    av down buffer is full\n");
                 flushAvDown();
                 return 1;
             }
@@ -91,7 +93,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             printf("    place gse down pkt in buffer\n");
             buffer_gse_down.emplace_back(*gseDownPkt);
             if(buffer_gse_down.size() >= BATCH_SIZE) {
-                printf("    gse down buffer is full --> call flush\n");
+                printf("    gse down buffer is full\n");
                 flushGseDown();
                 return 1;
             }
@@ -102,6 +104,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
 }
 
 Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
+    printf("read_pkt called\n");
     Packet pkt;
     switch(type) {
         case PacketType::AV_UPLINK: {
@@ -110,7 +113,7 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
                 *content = storage.get<AV_uplink_pkt>(pkt_id);
                 pkt = {.type=AV_UPLINK, .av_up_pkt=content, .av_down_pkt=NULL, .gse_down_pkt=NULL};
             } catch (const std::runtime_error& e) {
-                std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
+                std::cerr << "      trying to read at invalid pkt_id\n" << e.what() << std::endl;
                 break;
             }
             return pkt;
@@ -121,7 +124,7 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
                 *content = storage.get<AV_downlink_pkt>(pkt_id);
                 pkt = {.type=AV_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=content, .gse_down_pkt=NULL};
             } catch (const std::runtime_error& e) {
-                std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
+                std::cerr << "      trying to read at invalid pkt_id\n" << e.what() << std::endl;
                 break;
             }
             return pkt;
@@ -132,7 +135,7 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
                 *content = storage.get<GSE_downlink_pkt>(pkt_id);
                 pkt = {.type=GSE_DOWNLINK, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=content};
             } catch (const std::runtime_error& e) {
-                std::cerr << "trying to read at invalid pkt_id\n" << e.what() << std::endl;
+                std::cerr << "      trying to read at invalid pkt_id\n" << e.what() << std::endl;
                 break;
             }
             return pkt;
@@ -152,6 +155,7 @@ std::vector<GSE_downlink_pkt> SqliteDB::read_all_gsdw() {
 }
 
 int SqliteDB::flushAvUp() {
+    printf("flushAvUp called\n");
     if (buffer_av_up.empty()) {return 1;}
 
     printf("    starting transaction\n");
@@ -166,6 +170,7 @@ int SqliteDB::flushAvUp() {
 }
 
 int SqliteDB::flushAvDown() {
+    printf("flushAvDown called\n");
     if (buffer_av_down.empty()) {return 1;}
 
     printf("    starting transaction\n");
@@ -180,6 +185,7 @@ int SqliteDB::flushAvDown() {
 }
 
 int SqliteDB::flushGseDown() {
+    printf("flushGseDown called\n");
     if (buffer_gse_down.empty()) {return 1;}
 
     printf("    starting transaction\n");
@@ -225,6 +231,7 @@ std::string SqliteDB::get_current_ts() {
 }
 
 Packet SqliteDB::process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw) {
+    printf("process_pkt called\n");
     if (avup==NULL && avdw==NULL && gsdw==NULL) {
         return {.type=INVALID, .av_up_pkt=NULL, .av_down_pkt=NULL, .gse_down_pkt=NULL};
     }
@@ -254,6 +261,7 @@ Packet SqliteDB::process_pkt(av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_d
 }
 
 void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t* avup, av_downlink_t* avdw, PacketGSE_downlink* gsdw) {
+    printf("unprocess_pkt called\n");
     switch(pkt.type) {
         case PacketType::AV_UPLINK: {
             *avup = (av_uplink_t){.order_id=pkt.av_up_pkt->order_id, .order_value=pkt.av_up_pkt->order_value};
