@@ -71,6 +71,7 @@ void equal_gsdw(PacketGSE_downlink* gsdw1, PacketGSE_downlink* gsdw2) {
     EXPECT_EQ(gsdw1->status.vent, gsdw2->status.vent);
 }
 
+/* UNIT TESTS (if the google tests don't run, comment the manual tests) */
 TEST(readWriteTest, singleAvup) {
     SqliteDB* db = get_db();
     av_uplink_t* avup = get_avup();
@@ -83,11 +84,7 @@ TEST(readWriteTest, singleAvup) {
     equal_avup(avup, avupRead);
 }
 
-TEST(exampleTest, failureTest) {
-    EXPECT_EQ(1, 2);
-}
-
-
+/* MANUAL TESTS */
 /*
 int main(int argc, char *argv[]) {
     printf("starting data-storage tests\n");
