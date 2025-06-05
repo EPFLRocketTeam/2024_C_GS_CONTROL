@@ -67,7 +67,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
             AV_uplink_pkt* avUpPkt = pkt.av_up_pkt;
             if (avUpPkt == NULL) {return 2;}
             printf("    place av up pkt in buffer\n");
-            buffer_av_up.emplace_back(*avUpPkt);
+            buffer_av_up.emplace_back(avUpPkt);
             if(buffer_av_up.size() >= BATCH_SIZE) {
                 printf("    av up buffer is full\n");
                 flushAvUp();
@@ -145,7 +145,11 @@ Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {
 }
 
 std::vector<AV_uplink_pkt> SqliteDB::read_all_avup() {
-    return storage.get_all<AV_uplink_pkt>();
+    size_t nbrPkt = storage.count<AV_uplink_pkt>();
+    std::vector<AV_uplink_pkt> avups;
+    avups.resize(nbrPkt);
+    avups = storage.get_all<AV_uplink_pkt>();
+    return avups;
 }
 std::vector<AV_downlink_pkt> SqliteDB::read_all_avdw() {
     return storage.get_all<AV_downlink_pkt>();
@@ -160,8 +164,9 @@ int SqliteDB::flushAvUp() {
 
     printf("    starting transaction\n");
     this->storage.transaction([this]() -> bool {
-        for (const auto& pktavup : buffer_av_up) {
-            this->storage.replace(pktavup);
+        for (const AV_uplink_pkt* pktavup : buffer_av_up) {
+            this->storage.replace(*pktavup);
+            delete pktavup;
         }
         return true;
     });

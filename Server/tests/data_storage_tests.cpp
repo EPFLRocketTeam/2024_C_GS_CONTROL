@@ -108,6 +108,35 @@ TEST(readWriteTest, singleGsdwByIndex) {
     newdb->unprocess_pkt(packet, NULL, NULL, gsdwRead);
     equal_gsdw(gsdw, gsdwRead);
 }
+TEST(readWriteTest, severalAvdwAtOnce) {
+    int nbrPkt = 1000;
+    SqliteDB* db = get_db();
+    std::vector<av_uplink_t*> avups;
+    avups.resize(nbrPkt);
+    for (int i=0; i<nbrPkt; i++) {
+        printf("i = %d\n", i);
+        avups[i] = get_avup();
+        Packet pkt = db->process_pkt(avups[i],NULL,NULL);
+        db->write_pkt(pkt);
+    }
+    delete db;
+    SqliteDB* newdb = get_db();
+    std::vector<AV_uplink_pkt> avupsRawRead;
+    avupsRawRead.resize(nbrPkt);
+    avupsRawRead = newdb->read_all_avup();
+    std::vector<av_uplink_t*> avupsRead;
+    avupsRead.resize(nbrPkt);
+    for (auto& ptr : avupsRead) {
+        ptr = new av_uplink_t;
+    }
+    for (int i=0; i<nbrPkt; i++) {
+        Packet pkt = (Packet){.type=AV_UPLINK, .av_up_pkt=&avupsRawRead[i],NULL,NULL};
+        db->unprocess_pkt(pkt, avupsRead[i], NULL, NULL);
+        equal_avup(avups[i], avupsRead[i]);
+        delete avupsRead[i];
+    }
+    delete newdb;
+}
 
 /* MANUAL TESTS */
 /*
