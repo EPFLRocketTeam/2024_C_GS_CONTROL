@@ -29,8 +29,10 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
             // Copy the incoming raw data into our packet structure.
             memcpy(packedData, data, sizeof(*packedData));
             db->write_pkt(db->process_pkt(NULL,packedData,NULL));
-            
+
             av_downlink_unpacked dataAv = decode_downlink(*packedData);
+
+            delete packedData;
             
             jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] = QString::number(static_cast<int>(dataAv.packet_nbr));
             jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
@@ -92,6 +94,8 @@ std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_
             QJsonObject statusObj;
             statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] = QString::number(static_cast<int>(dataGse->status.fillingN2O));
             statusObj[QString::number(GUI_FIELD::GSE_VENT)] = QString::number(static_cast<int>(dataGse->status.vent));
+
+            delete dataGse;
 
             // Add the sub-object to the main JSON object
             jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;
