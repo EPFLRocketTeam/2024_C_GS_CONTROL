@@ -347,9 +347,11 @@ void Server::handleCommand(const QJsonObject &command) {
         int order = command["payload"].toObject()["cmd_order"].toInt();
         _serverLogger.info("Received Command", QString(R"(Send command for %1 with value %2)")
                            .arg(fieldUtil::enumToFieldName((GUI_FIELD)f)).arg(order).toStdString());
-        av_uplink_t p;
-        int capsule_id = createUplinkPacketFromRequest((GUI_FIELD)f, order, &p);
-        sendSerialPacket(capsule_id, (uint8_t*) &p, av_uplink_size);
+        av_uplink_t* packet = new av_uplink_t;
+        int capsule_id = createUplinkPacketFromRequest((GUI_FIELD)f, order, packet);
+        sqlDatabase->write_pkt(sqlDatabase->process_pkt(packet,NULL,NULL));
+        sendSerialPacket(capsule_id, (uint8_t*) packet, av_uplink_size);
+        delete packet;
         break;
     }
 }
