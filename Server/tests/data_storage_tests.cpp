@@ -134,6 +134,7 @@ TEST(readWriteTest, severalAvupAtOnce) {
         db->unprocess_pkt(pkt, avupsRead[i], NULL, NULL);
         equal_avup(avups[i], avupsRead[i]);
         delete avupsRead[i];
+        delete avups[i];
     }
     delete newdb;
 }
@@ -163,6 +164,7 @@ TEST(readWriteTest, severalAvdwAtOnce) {
         db->unprocess_pkt(pkt, NULL, avdwsRead[i], NULL);
         equal_avdw(avdws[i], avdwsRead[i]);
         delete avdwsRead[i];
+        delete avdws[i];
     }
     delete newdb;
 }
@@ -192,6 +194,7 @@ TEST(readWriteTest, severalGsdwAtOnce) {
         db->unprocess_pkt(pkt, NULL, NULL, gsdwsRead[i]);
         equal_gsdw(gsdws[i], gsdwsRead[i]);
         delete gsdwsRead[i];
+        delete gsdws[i];
     }
     delete newdb;
 }

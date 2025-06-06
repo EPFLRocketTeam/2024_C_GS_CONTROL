@@ -13,6 +13,6 @@
 
 
 /*std::string to_string(const av_downlink_t &packet);*/
-std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t* data, uint32_t len, SqliteDB* db);
+std::optional<QJsonObject> process_packet (uint8_t packetId, uint8_t* data, uint32_t len, SqliteDB* db);
 
 #endif /* SERVER_H */

@@ -18,7 +18,7 @@ int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value, av_uplin
     return tIDs.capsule_id;
 }
 
-std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t *data, uint32_t len, SqliteDB* db) {
+std::optional<QJsonObject> process_packet (uint8_t packetId, uint8_t *data, uint32_t len, SqliteDB* db) {
     // Create a JSON object
     QJsonObject jsonObj;
     switch (packetId) {

@@ -367,7 +367,7 @@ void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) 
 
 
 void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len) {
-    std::optional<QJsonObject> result = parse_packet(packetId, dataIn, len, sqlDatabase);
+    std::optional<QJsonObject> result = process_packet (packetId, dataIn, len, sqlDatabase);
     if (result) {
         QJsonDocument doc(result.value());
         QByteArray jsonData = doc.toJson(QJsonDocument::Indented);
