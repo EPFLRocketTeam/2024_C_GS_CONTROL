@@ -78,15 +78,19 @@ SET(SOURCES_STORAGE
 )
 
 add_library(data_storage_lib STATIC ${SOURCES_STORAGE} ${HEADERS_STORAGE})
-add_executable(test tests/data_storage_tests.cpp)
-target_link_libraries(test PRIVATE 
+
+file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tests/*_tests.cpp")
+foreach(_src IN LISTS TEST_SOURCES)
+  get_filename_component(_name ${_src} NAME_WE)
+
+  add_executable(${_name} ${_src})
+
+  target_link_libraries(${_name} PRIVATE
+    gtest_main
     data_storage_lib
+    ${PROJECT_NAME}_lib
     SQLite::SQLite3
-)
+  )
 
-# google tests (comment manual testing (main function of data_storag_tests.cpp) in order to perform gtests)
-enable_testing()
-
-target_link_libraries(test PRIVATE gtest_main data_storage_lib)
-
-add_test(NAME write_2_tests COMMAND test)
+  add_test(NAME ${_name} COMMAND ${_name})
+endforeach()
