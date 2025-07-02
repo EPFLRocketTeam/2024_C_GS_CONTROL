@@ -58,12 +58,11 @@ jobs:
         cat Server/src/auth_keys.json
         echo "------------------------------------"
 
-    - name: Run tests
-      run: |
-        cd build 
-        export QT_QPA_PLATFORM=offscreen
-        make check
 
+    - name: Run Tree
+      run: |
+          tree
+        
     - name: Run tests
       run: |
         cd build 
