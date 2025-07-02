@@ -80,17 +80,17 @@ SET(SOURCES_STORAGE
 add_library(data_storage_lib STATIC ${SOURCES_STORAGE} ${HEADERS_STORAGE})
 
 file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tests/*_tests.cpp")
-foreach(_src IN LISTS TEST_SOURCES)
-  get_filename_component(_name ${_src} NAME_WE)
-
-  add_executable(${_name} ${_src})
-
-  target_link_libraries(${_name} PRIVATE
-    gtest_main
-    data_storage_lib
-    ${PROJECT_NAME}_lib
-    SQLite::SQLite3
-  )
-
-  add_test(NAME ${_name} COMMAND ${_name})
-endforeach()
+# foreach(_src IN LISTS TEST_SOURCES)
+#   get_filename_component(_name ${_src} NAME_WE)
+#
+#   add_executable(${_name} ${_src})
+#
+#   target_link_libraries(${_name} PRIVATE
+#     gtest_main
+#     data_storage_lib
+#     ${PROJECT_NAME}_lib
+#     SQLite::SQLite3
+#   )
+#
+#   add_test(NAME ${_name} COMMAND ${_name})
+# endforeach()

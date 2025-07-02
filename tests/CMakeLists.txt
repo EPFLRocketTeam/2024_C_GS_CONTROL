@@ -1,94 +1,76 @@
+# In tests/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 
-# Enable AUTOMOC globally for this directory
-set(CMAKE_AUTOMOC ON)
-
-# Find required Qt components for testing
+# --- Common Setup ---
 find_package(Qt6 COMPONENTS Test Network Widgets REQUIRED)
+find_package(SQLite3 REQUIRED)
 
-# Enable testing
-enable_testing()
+# --- Google Test Setup (using FetchContent for portability) ---
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip # v1.10.0
+)
+FetchContent_MakeAvailable(googletest)
 
-# First, create a library for the base test class
-add_library(base_integration_test_lib STATIC  # Renamed to avoid conflict
+# --- Section 1: Server Unit Tests (gtest) ---
+file(GLOB SERVER_TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/server/*_tests.cpp")
+
+foreach(_src IN LISTS SERVER_TEST_SOURCES)
+    get_filename_component(_name ${_src} NAME_WE)
+    
+    add_executable(${_name} ${_src})
+    
+    target_link_libraries(${_name} PRIVATE
+        gtest_main
+        FirehornServer_lib
+        SQLite::SQLite3
+    )
+    
+    add_test(NAME server_${_name} COMMAND ${_name})
+endforeach()
+
+
+# --- Section 2: GUI/Server Integration Tests (QtTest) ---
+
+# 2a. Create the base library for integration tests
+add_library(base_integration_test_lib STATIC
     integration/base_integration_test.cpp
     integration/base_integration_test.h
 )
-
+target_compile_options(base_integration_test_lib PUBLIC -Wno-packed-bitfield-compat)
 target_include_directories(base_integration_test_lib PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/integration
-    ${CMAKE_SOURCE_DIR}/GUI/include
-    ${CMAKE_SOURCE_DIR}/GUI/src
-    ${CMAKE_SOURCE_DIR}/Server/include
-    ${CMAKE_SOURCE_DIR}/Server/src
-    ${CMAKE_SOURCE_DIR}/commons/include
+    ${CMAKE_SOURCE_DIR}
 )
-
 target_link_libraries(base_integration_test_lib PUBLIC
     Qt6::Test
-    Qt6::Network
-    Qt6::Widgets
     FirehornGUI_lib
     FirehornServer_lib
     FirehornCommons
 )
 
-# Suppress the GCC packed bitfield warning for base test class
-target_compile_options(base_integration_test_lib PRIVATE
-    -Wno-packed-bitfield-compat
-)
+# 2b. Create the actual test executables
+file(GLOB INTEGRATION_TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/integration/*_test.cpp")
 
-# Add integration tests - exclude the base test file
-file(GLOB INTEGRATION_TEST_SOURCES 
-    "${CMAKE_CURRENT_SOURCE_DIR}/integration/*_test.cpp"
-)
-
-# Remove base_integration_test.cpp from the list if it exists
+# --- THIS IS THE FIX ---
+# Explicitly remove the base class source file from the list of executables to be built.
 list(FILTER INTEGRATION_TEST_SOURCES EXCLUDE REGEX ".*base_integration_test\\.cpp$")
+# ---------------------
 
 foreach(_src IN LISTS INTEGRATION_TEST_SOURCES)
     get_filename_component(_name ${_src} NAME_WE)
     
     add_executable(${_name} ${_src})
     
-    # Include the base test header
-    target_include_directories(${_name} PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/integration
-        ${CMAKE_SOURCE_DIR}/GUI/include
-        ${CMAKE_SOURCE_DIR}/GUI/src
-        ${CMAKE_SOURCE_DIR}/Server/include
-        ${CMAKE_SOURCE_DIR}/Server/src
-        ${CMAKE_SOURCE_DIR}/commons/include
-    )
+    # Inherits all properties from the base library
+    target_link_libraries(${_name} PRIVATE base_integration_test_lib)
     
-    target_link_libraries(${_name} PRIVATE
-        Qt6::Test
-        Qt6::Network
-        Qt6::Widgets
-        FirehornGUI_lib      # Your GUI library
-        FirehornServer_lib   # Your Server library  
-        FirehornCommons      # Your commons library
-        base_integration_test_lib # The base test library (renamed)
-    )
-    
-    # Suppress the GCC packed bitfield warning
-    target_compile_options(${_name} PRIVATE
-        -Wno-packed-bitfield-compat
-    )
-    
-    # Add as a test
-    add_test(NAME ${_name} COMMAND ${_name})
-    
-    # Set test properties if needed
-    set_tests_properties(${_name} PROPERTIES
-        TIMEOUT 30
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
+    add_test(NAME integration_${_name} COMMAND ${_name})
 endforeach()
 
-# Optional: Add a custom target to run only integration tests
-add_custom_target(integration_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} -R ".*_test" --output-on-failure
+
+add_custom_target(check
+    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Running integration tests"
+    COMMENT "Running all tests..."
 )

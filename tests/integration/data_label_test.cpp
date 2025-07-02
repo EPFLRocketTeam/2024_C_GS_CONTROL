@@ -1,4 +1,4 @@
-#include "ServerSetup.h"
+#include "Server/src/ServerSetup.h"
 #include "base_integration_test.h"
 #include "MainWindow.h"
 #include "ValveControlView.h"
