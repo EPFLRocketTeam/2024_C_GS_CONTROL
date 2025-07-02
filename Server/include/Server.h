@@ -20,6 +20,7 @@ class Server : public QTcpServer {
     Q_OBJECT
 
     friend class BaseIntegrationTest;
+    friend class DataLabelTest;
     friend class FullIntegrationTest;
     friend class ToggleButtonTest;
     friend class CommandButtonTest;
