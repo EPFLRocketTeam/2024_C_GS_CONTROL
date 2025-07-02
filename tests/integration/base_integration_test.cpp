@@ -1,12 +1,8 @@
 #include "base_integration_test.h"
 // #include "ServerSetup.h"
 #include "Server/src/ServerSetup.h"
-#include <QDebug>
 #include "Setup.h"
-
-// Helper macros to turn the CMake definition into a C++ string
-#define QUOTE(str) #str
-#define EXPAND_AND_QUOTE(str) QUOTE(str)
+#include <QDebug>
 
 void BaseIntegrationTest::initTestCase() {
 
@@ -20,13 +16,14 @@ void BaseIntegrationTest::initTestCase() {
     qDebug() << "QApplication already exists";
   }
 
-    
-qDebug() << "[DEBUG] Current Working Directory (CWD) is:" << QDir::currentPath();
-    qDebug() << "[DEBUG] Application Directory Path is:" << QCoreApplication::applicationDirPath();
+  qDebug() << "[DEBUG] Current Working Directory (CWD) is:"
+           << QDir::currentPath();
+  qDebug() << "[DEBUG] Application Directory Path is:"
+           << QCoreApplication::applicationDirPath();
 
-    QString project_root_path = TEST_SOURCE_DIR;
+  QString project_root_path = TEST_SOURCE_DIR;
 
-    // 2. Build the absolute path to the keys file
+  // 2. Build the absolute path to the keys file
   QString keys_file_path = project_root_path + "/Server/src/auth_key.json";
 
   auth::loadKeyFromFile(project_root_path + "/GUI/src/.key");
@@ -50,7 +47,6 @@ qDebug() << "[DEBUG] Current Working Directory (CWD) is:" << QDir::currentPath()
   subscribeSpy = new QSignalSpy(requestHandler,
                                 SIGNAL(subscribe(QJsonObject, QTcpSocket *)));
 
-
   // Replace the global ClientManager with test version
   originalClientManager = std::move(MainWindow::clientManager);
   MainWindow::clientManager =
@@ -64,11 +60,10 @@ void BaseIntegrationTest::init() {
   // Clear spies before each test
   if (postSpy) {
     postSpy->clear();
-
   }
   if (subscribeSpy) {
     subscribeSpy->clear();
-      qDebug() << "Cleared all subscibe signals";
+    qDebug() << "Cleared all subscibe signals";
   }
 }
 
