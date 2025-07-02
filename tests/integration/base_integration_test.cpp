@@ -4,6 +4,10 @@
 #include <QDebug>
 #include "Setup.h"
 
+// Helper macros to turn the CMake definition into a C++ string
+#define QUOTE(str) #str
+#define EXPAND_AND_QUOTE(str) QUOTE(str)
+
 void BaseIntegrationTest::initTestCase() {
 
   // Create QApplication if not exists
