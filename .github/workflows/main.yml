@@ -35,9 +35,7 @@ jobs:
 
     - name: Run tests
       run: |
-        cd build
-        ./GUI/tests/my_tests > ../test_results.txt
-        ./Server/test
+        cd build && make check
 
     - name: Debug README.md contents
       run: cat README.md
