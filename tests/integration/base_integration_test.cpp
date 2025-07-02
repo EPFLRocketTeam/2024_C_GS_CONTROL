@@ -16,10 +16,19 @@ void BaseIntegrationTest::initTestCase() {
     qDebug() << "QApplication already exists";
   }
 
-  auth::loadKeyFromFile("../../GUI/src/.key");
+    
+qDebug() << "[DEBUG] Current Working Directory (CWD) is:" << QDir::currentPath();
+    qDebug() << "[DEBUG] Application Directory Path is:" << QCoreApplication::applicationDirPath();
+
+    QString project_root_path = EXPAND_AND_QUOTE(TEST_SOURCE_DIR);
+
+    // 2. Build the absolute path to the keys file
+    QString keys_file_path = project_root_path + "/Server/src/auth_key.json";
+
+  auth::loadKeyFromFile(project_root_path+"/GUI/src/.key");
   RequestBuilder::authorizationKey = auth::key;
 
-  auth_server::loadKeysFromFile("../../Server/src/auth_keys.json");
+  auth_server::loadKeysFromFile(keys_file_path);
 
   // Start the real server
   server = new Server(this);
