@@ -22,6 +22,27 @@ jobs:
     - name: Initialize submodules
       run: git submodule update --init --recursive
 
+    # --- NEW STEP ADDED HERE ---
+    - name: Create Test Authentication Files
+      run: |
+        echo "Creating Server/src/auth_key.json..."
+        cat << 'EOF' > Server/src/auth_key.json
+        [
+            {
+                "key": "ClientSecretKey1",
+                "accessRight": 3
+            },
+            {
+                "key": "ClientSecretKey2",
+                "accessRight": 3
+            }
+        ]
+        EOF
+
+        echo "Creating GUI/src/.key..."
+        echo "ClientSecretKey1" > GUI/src/.key
+
+        echo "Authentication files created successfully."
 
     - name: Configure and build project
       run: |
