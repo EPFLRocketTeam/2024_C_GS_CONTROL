@@ -14,14 +14,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install Qt6 dependencies
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y qt6-base-dev-tools libqt6serialport6-dev qt6-base-dev libqt6svg6-dev libqt5serialport5-dev libgtest-dev
-
-    - name: Install CMake
-      run: |
-        sudo apt-get install -y cmake
+        sudo apt-get install -y qt6-base-dev-tools libqt6serialport6-dev qt6-base-dev libqt6svg6-dev libqt5serialport5-dev libgtest-dev build-essential cmake libsqlite3-dev qt6-base-dev libgl1-mesa-dev libegl1-mesa-dev cmake
 
     - name: Initialize submodules
       run: git submodule update --init --recursive
@@ -35,7 +31,9 @@ jobs:
 
     - name: Run tests
       run: |
-        cd build && make check
+        cd build 
+        export QT_QPA_PLATFORM=offscreen
+        make check
 
     - name: Debug README.md contents
       run: cat README.md
