@@ -50,6 +50,20 @@ jobs:
         cmake ..
         cmake --build .
 
+    - name: Verify Created Files
+      run: |
+        echo "Verifying contents of Server/src/ ..."
+        ls -l Server/src/
+        echo "--- Contents of auth_keys.json ---"
+        cat Server/src/auth_keys.json
+        echo "------------------------------------"
+
+    - name: Run tests
+      run: |
+        cd build 
+        export QT_QPA_PLATFORM=offscreen
+        make check
+
     - name: Run tests
       run: |
         cd build 
