@@ -23,7 +23,7 @@ set(SOURCES_SERVER
 )
 
 set(HEADERS_SERVER
-    src/Setup.h
+    src/ServerSetup.h
     include/Server.h 
     include/RequestHandler.h
     include/RequestAdapter.h

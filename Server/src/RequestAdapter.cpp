@@ -8,7 +8,7 @@
 #include <ostream>
 #include <qjsonobject.h>
 #include <stdexcept>
-#include "Setup.h"
+#include "ServerSetup.h"
 
 
 int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value, av_uplink_t* p) {

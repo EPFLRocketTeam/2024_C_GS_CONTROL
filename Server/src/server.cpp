@@ -22,7 +22,7 @@
 #include "../Capsule/src/capsule.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
-#include "Setup.h"
+#include "ServerSetup.h"
 #include "packet_helper.h"
 #include <RequestBuilder.h>
 #include <data_storage.h>
@@ -164,7 +164,7 @@ void Server::receiveSubscribe(const QJsonObject &request,  QTcpSocket *senderSoc
     // Handle the subscribe request
     int field = request.value("payload").toObject().value("field").toInt();
 
-    _serverLogger.debug("Subscription", QString(R"(The client %1 is trying to subscribe to %2)")
+    _serverLogger.info("Subscription", QString(R"(The client %1 is trying to subscribe to %2)")
                            .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
 
     if (subscriptionMap[field].contains(senderSocket)) {
@@ -231,7 +231,8 @@ void Server::readyRead() {
                 jsonStr.append("}");
             }
             counter++;
-            
+            _serverLogger.debug("Server", "Here we are");
+            _serverLogger.debug("Server", jsonStr.toStdString());
             requestHandler.handleRequest(jsonStr, senderSocket);
             
         }

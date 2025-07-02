@@ -78,8 +78,8 @@ void ClientManager::readyRead() {
 }
 
 void ClientManager::subscribe(const GUI_FIELD field, CallbackFunction<QString> callback) {
-  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1)").
-                arg(fieldUtil::enumToFieldName(field)).toStdString());
+  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1, on server %2:%3)").
+                arg(fieldUtil::enumToFieldName(field)).arg(serverHost).arg(serverPort).toStdString());
   if (subscriptionsStrings[field].size() == 0)
     sendSubscribeRequest(field);
   // sendSubscribeRequest(field);

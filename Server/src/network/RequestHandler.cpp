@@ -3,7 +3,7 @@
 #include "RequestHandler.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include "../Setup.h"
+#include "../ServerSetup.h"
 
 RequestHandler::RequestHandler(QObject *parent) : QObject(parent) {}
 
@@ -17,10 +17,12 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
     }
     QJsonObject json = doc.object();
 
+    std::cout << "Error parsing JSON: " << "before" << std::endl;
     int found = 0;
     int readBit = 0;
     int writeBit = 0;
-    for (auth::AuthKey key : auth::validKeys) {
+    for (auth_server::AuthKey key : auth_server::validKeys) {
+        std::cout << "Error parsing JSON: " << "in" << std::endl;
         if (key.key == json["Authorization"].toString()) {
             found = 1;
             readBit = (key.accessRight >> 1) & 0x1;
@@ -36,6 +38,7 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
 
     QString header = json["header"].toString();
 
+        std::cout << "Error parsing JSON: " << header.toStdString() << std::endl;
     // Emit the corresponding signal based on the header type
     if (header == "subscribe" && readBit)
         emit subscribe(json, senderSocket);

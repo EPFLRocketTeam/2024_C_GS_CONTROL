@@ -1,7 +1,7 @@
 
 
-#ifndef SETUP_H
-#define SETUP_H
+#ifndef SERVERSETUP_H
+#define SERVERSETUP_H
 
 #include <QString>
 #include <vector>
@@ -29,7 +29,7 @@
 
 
 // <----------- DO NOT CHANGE ----------->
-namespace auth {
+namespace auth_server {
     typedef struct AuthKey_t {
         QString key;
         uint8_t accessRight; // Access [X X X X X X R W], bit 0 = Write, bit 1 = Read
@@ -73,4 +73,4 @@ namespace auth {
     }
 }
 
-#endif
+#endif // END SERVERSETUP_H

@@ -19,6 +19,10 @@
 class Server : public QTcpServer {
     Q_OBJECT
 
+    friend class BaseIntegrationTest;
+    friend class FullIntegrationTest;
+    friend class ToggleButtonTest;
+    friend class CommandButtonTest;
 public:
     Server(QObject *parent = nullptr);
     void sendToAllClients(const QByteArray &data);
