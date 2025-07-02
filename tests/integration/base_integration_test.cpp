@@ -16,10 +16,10 @@ void BaseIntegrationTest::initTestCase() {
     qDebug() << "QApplication already exists";
   }
 
-  auth::loadKeyFromFile("../../GUI/src/.key");
+  auth::loadKeyFromFile("../GUI/src/.key");
   RequestBuilder::authorizationKey = auth::key;
 
-  auth_server::loadKeysFromFile("../../Server/src/auth_keys.json");
+  auth_server::loadKeysFromFile("../Server/src/auth_keys.json");
 
   // Start the real server
   server = new Server(this);
