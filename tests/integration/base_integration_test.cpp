@@ -24,12 +24,12 @@ void BaseIntegrationTest::initTestCase() {
 qDebug() << "[DEBUG] Current Working Directory (CWD) is:" << QDir::currentPath();
     qDebug() << "[DEBUG] Application Directory Path is:" << QCoreApplication::applicationDirPath();
 
-    QString project_root_path = EXPAND_AND_QUOTE(TEST_SOURCE_DIR);
+    QString project_root_path = TEST_SOURCE_DIR;
 
     // 2. Build the absolute path to the keys file
-    QString keys_file_path = project_root_path + "/Server/src/auth_key.json";
+  QString keys_file_path = project_root_path + "/Server/src/auth_key.json";
 
-  auth::loadKeyFromFile(project_root_path+"/GUI/src/.key");
+  auth::loadKeyFromFile(project_root_path + "/GUI/src/.key");
   RequestBuilder::authorizationKey = auth::key;
 
   auth_server::loadKeysFromFile(keys_file_path);
