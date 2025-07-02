@@ -42,6 +42,11 @@ target_compile_options(base_integration_test_lib PUBLIC -Wno-packed-bitfield-com
 target_include_directories(base_integration_test_lib PUBLIC
     ${CMAKE_SOURCE_DIR}
 )
+
+target_compile_definitions(base_integration_test_lib PUBLIC
+    -DTEST_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
+)
+
 target_link_libraries(base_integration_test_lib PUBLIC
     Qt6::Test
     FirehornGUI_lib
