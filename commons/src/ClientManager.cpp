@@ -157,7 +157,6 @@ QString removeExtraCurlyBrackets(const QString &jsonString) {
 }
 
 void ClientManager::handleReceivedData(const QString &data) {
-                          qDebug() << "In handle internal" << data ;
   QString jsonString(data);
   _logger.debug("Received Data", data.toStdString());
   // Split the string by '}{'
@@ -192,11 +191,8 @@ void ClientManager::handleReceivedData(const QString &data) {
 
     // Extract payload from JSON object
     QJsonObject payload = jsonDoc.object()["payload"].toObject();
-                                qDebug() << "before handle internal" << payload ;
     notifyChildrenFields(payload);
-                                    qDebug() << "after handle internal" ;
   }
-                            qDebug() << "Finished handle internal" ;
 
   // notifyChildrenFields(jsonFromString(data).value("payload").toObject());
 }
@@ -212,14 +208,12 @@ QJsonObject ClientManager::jsonFromString(const QString &data) {
 }
 
 void ClientManager::notifyChildrenFields(const QJsonObject &localObject) {
-        qDebug() << "Enter notify";
   for (auto it = localObject.constBegin(); it != localObject.constEnd(); ++it) {
     const QVector<CallbackFunction<QString>> &callbacksStrings =
         subscriptionsStrings.value((GUI_FIELD)it.key().toInt());
     const QVector<CallbackFunction<QJsonValue>> &callbacksJson =
         subscriptionsJson.value((GUI_FIELD)it.key().toInt());
 
-        qDebug() << "Find all callbaks" << callbacksStrings.length() << callbacksJson.length();
     const QJsonValue &value = it.value();
     for (const auto &callback : callbacksJson) {
       callback(value);
@@ -237,9 +231,7 @@ void ClientManager::notifyChildrenFields(const QJsonObject &localObject) {
     } else {
 
       for (const auto &callback : callbacksStrings) {
-              qDebug() << "Callback found ";
         callback(value.toVariant().toString());
-                      qDebug() << "Callback after ";
       }
     }
   }
@@ -259,9 +251,7 @@ void ClientManager::send(const QString &data) {
   }
   QJsonObject json = jsonFromString(data);
   if (json.value("header").toString() == "internal") {
-                        qDebug() << "We are in the cm send";
     handleReceivedData(data);
-                            qDebug() << "We are in the cm send";
   } else {
     socket->write(data.toUtf8());
     socket->waitForBytesWritten();

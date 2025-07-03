@@ -32,13 +32,10 @@ ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent)
   MainWindow::clientManager->subscribe(
       fieldSensitivity,
       [this](const QString &message) {
-            qDebug() << "Start of the Toggle cb";
             updateState(message); 
-                        qDebug() << "END of the Toggle cb";
         });
 
   connect(this, &ToggleButton::toggled, this, [this](bool checked) {
-    qDebug() << "Here we are in the toggle cb";
     RequestBuilder b = RequestBuilder();
     b.setHeader(RequestType::POST);
     b.addField("cmd", m_fieldSensitivity);
@@ -52,7 +49,6 @@ ToggleButton::ToggleButton(GUI_FIELD fieldSensitivity, QWidget *parent)
     b.setHeader(RequestType::INTERNAL);
     b.addField(QString::number(m_fieldSensitivity), "unknown");
     MainWindow::clientManager->send(b.toString());
-                    qDebug() << "finishedcb";
   });
 }
 
@@ -98,9 +94,7 @@ void ToggleButton::setChecked(bool checked) {
     } else {
       m_loadingMovie->stop();
     }
-    qDebug() << "About to emit";
     emit toggled(checked);
-            qDebug() << "Just emited";
   }
 }
 
@@ -169,7 +163,6 @@ void ToggleButton::updateAnim() {
 
 void ToggleButton::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-            qDebug() << "IT CLICKED";
     setChecked(!m_checked);
   }
 }
