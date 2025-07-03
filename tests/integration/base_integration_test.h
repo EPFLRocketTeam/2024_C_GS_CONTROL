@@ -37,6 +37,7 @@ protected:
     bool hasPostCommands() const;
     int getPostCommandCount() const;
     void verifyCommand(const QJsonObject& command, GUI_FIELD expectedField, int expectedOrder);
+    bool hasPostCommand(GUI_FIELD f, int order);
 };
 
 #endif // BASE_INTEGRATION_TEST_H

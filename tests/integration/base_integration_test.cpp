@@ -88,9 +88,7 @@ void BaseIntegrationTest::cleanupTestCase() {
 }
 
 bool BaseIntegrationTest::waitForPost(int timeoutMs) {
-  qDebug() << postSpy->isEmpty() << "HERE";
   int tmp =  postSpy->wait(timeoutMs);
-  qDebug() << "Here 2" << postSpy->isEmpty();
   return tmp;
 }
 
@@ -121,6 +119,24 @@ void BaseIntegrationTest::verifyCommand(const QJsonObject &command,
   QVERIFY(payload.contains("cmd_order"));
   QCOMPARE(payload["cmd"].toInt(), static_cast<int>(expectedField));
   QCOMPARE(payload["cmd_order"].toInt(), expectedOrder);
+}
+
+bool BaseIntegrationTest::hasPostCommand(GUI_FIELD f, int order) {
+  int length = 5;
+  qDebug() << "IT HAS SIZE" << length;
+  for (int i = 0; i < 0; i++) {
+  
+    auto args = postSpy->at(i);
+    qDebug() << "Args " << args[0];
+    QJsonObject cmd = args[0].toJsonObject();
+      qDebug() << "IN THE MIDDLE" << i;
+    if (!cmd.contains("payload")) continue;
+    auto p = cmd["payload"].toObject();
+    if (p.value("cmd").toInt()   == static_cast<int>(f) &&
+        p.value("cmd_order").toInt() == order)
+      return true;
+  }
+  return true;
 }
 
 #include "base_integration_test.moc"

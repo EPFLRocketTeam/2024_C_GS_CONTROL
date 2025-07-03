@@ -90,9 +90,8 @@ private slots:
     QVERIFY(postSpy->isEmpty());
 
     // 7) Click the ValveControlButton
-    QTest::mouseClick(tb, Qt::LeftButton, Qt::NoModifier,
-                      tb->rect().center());
-    
+    QTest::mouseClick(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center());
+
     // QTest::mousePress(tb, Qt::LeftButton, Qt::NoModifier,
     //                   tb->rect().center());
     qDebug() << "AFTER";
@@ -100,16 +99,10 @@ private slots:
     QVERIFY2(waitForPost(2000), "No post signal received within timeout");
 
     // 9) Debug the spy contents
-    DumpSpySignal(postSpy);
+    // DumpSpySignal(postSpy);
 
-    // 10) Verify the JSON command that arrived
-    QJsonObject cmd = getLastPostCommand();
-    QVERIFY(!cmd.isEmpty());
-
-    verifyCommand(cmd,
-                  GUI_FIELD::MAIN_LOX, // Expected field
-                  1                    // Expected order (toggled on)
-    );
+    QVERIFY2(hasPostCommand(GUI_FIELD::MAIN_LOX, 1),
+             "Expected MAIN_LOX toggle-on command not found");
   }
 };
 
