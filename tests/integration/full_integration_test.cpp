@@ -5,11 +5,15 @@
 #include "base_integration_test.h"
 #include "components/DataLabel.h"
 #include "components/ValveControlButton.h"
-#include <QDebug>
-#include <qglobal.h>
-#include <qtestcase.h>
-#include <qtestsupport_core.h>
 #include "tests/helpers/LogSpySignals.h"
+#include <QDebug>
+#include <QElapsedTimer>
+#include <qglobal.h>
+#include <qmetaobject.h>
+#include <qnamespace.h>
+#include <qtestcase.h>
+#include <qtestmouse.h>
+#include <qtestsupport_core.h>
 
 class FullIntegrationTest : public BaseIntegrationTest {
   Q_OBJECT
@@ -33,61 +37,78 @@ private slots:
     MainWindow window;
     Q_INIT_RESOURCE(resources);
     window.show();
-    // Optionally wait until Qt considers it exposed:
     QTest::qWaitForWindowExposed(&window);
+
+    qDebug() << "Before wiat";
+    // Give some time for the window to fully initialize
+    qDebug() << "After wiat";
 
     // 2) Find all ValveControlButton children
     auto valves = window.findChildren<ValveControlButton *>();
-    qDebug() << "TTTTTTTTTT valve " << valves << "\n";
+    qDebug() << "Found valve buttons:" << valves.size();
     QVERIFY(!valves.isEmpty());
 
-    // 3) Pick the one for MAIN_LOX
+    // 3) Find the target button for MAIN_LOX
     ValveControlButton *targetVcb = nullptr;
     for (auto *vcb : valves) {
-      if (vcb->findChild<ToggleButton *>()->fieldSensitivity() ==
-          static_cast<int>(GUI_FIELD::MAIN_LOX)) {
-        qDebug() << "TTTTTTTTTT FOUNDDDD " << vcb << "\n";
+      auto *tb = vcb->findChild<ToggleButton *>();
+      if (tb &&
+          tb->fieldSensitivity() == static_cast<int>(GUI_FIELD::MAIN_LOX)) {
+        qDebug() << "Found MAIN_LOX button:" << vcb;
         targetVcb = vcb;
         break;
       }
     }
 
-    // If fieldSensitivity isn't exposed as a property, fallback to first:
-    if (!targetVcb)
+    // Fallback to first button if MAIN_LOX not found
+    if (!targetVcb) {
       targetVcb = valves.first();
+      qDebug() << "Using first button as fallback:" << targetVcb;
+    }
     QVERIFY(targetVcb);
 
-    // 4) Get its ToggleButton child
+    // 4) Get the ToggleButton child
     auto *tb = targetVcb->findChild<ToggleButton *>();
     QVERIFY(tb);
 
-    // 5) Clear any previous server signals
+    // 5) Ensure widgets are properly set up
+    targetVcb->ensurePolished();
+    tb->ensurePolished();
+    QVERIFY(targetVcb->isVisible());
+    QVERIFY(targetVcb->isEnabled());
+    QVERIFY(tb->isVisible());
+    QVERIFY(tb->isEnabled());
+
+    // Debug info
+    qDebug() << "ToggleButton geometry:" << tb->geometry();
+    qDebug() << "ValveControlButton geometry:" << targetVcb->geometry();
+    qDebug() << "ToggleButton field sensitivity:" << tb->fieldSensitivity();
+
+    // 6) Clear any previous server signals
     postSpy->clear();
-    // get the child’s center in global screen coordinates
-QPoint global = tb->mapToGlobal(tb->rect().center());
-// now convert that back into the MainWindow’s local coords
-QPoint windowClick = window.mapFromGlobal(global);
-QTest::mouseClick(&window, Qt::LeftButton, Qt::NoModifier, windowClick);        // QTest::mouseClick(tb, Qt::LeftButton);
-    QMetaObject::invokeMethod(
-        tb,
-        "setChecked",
-        Qt::QueuedConnection,
-        Q_ARG(bool, true)
-    );
+    QVERIFY(postSpy->isValid());
+    QVERIFY(postSpy->isEmpty());
 
-    // waitForPost(1000);
-    qDebug() << "OUT OF IT" << postSpy->isValid();
+    // 7) Click the ValveControlButton
+    QTest::mouseClick(tb, Qt::LeftButton, Qt::NoModifier,
+                      tb->rect().center());
+    
+    // QTest::mousePress(tb, Qt::LeftButton, Qt::NoModifier,
+    //                   tb->rect().center());
+    qDebug() << "AFTER";
+    // 8) Wait for the server's post signal
+    QVERIFY2(waitForPost(2000), "No post signal received within timeout");
 
-    // 7) Wait for the server's post(...) signal
-    QVERIFY(waitForPost(1300));
-
+    // 9) Debug the spy contents
     DumpSpySignal(postSpy);
 
-    // 8) Verify the JSON that arrived
+    // 10) Verify the JSON command that arrived
     QJsonObject cmd = getLastPostCommand();
+    QVERIFY(!cmd.isEmpty());
+
     verifyCommand(cmd,
-                  GUI_FIELD::MAIN_LOX, // or whatever field you expect
-                  1                    // toggled => 1
+                  GUI_FIELD::MAIN_LOX, // Expected field
+                  1                    // Expected order (toggled on)
     );
   }
 };

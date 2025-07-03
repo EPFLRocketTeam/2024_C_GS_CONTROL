@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QtSvg/QSvgRenderer>
+#include <qglobal.h>
 #include <qnamespace.h>
 #include <qsvgrenderer.h>
 
@@ -136,13 +137,17 @@ void ValveControlView::addButtonIcon(GUI_FIELD field ,float x, float y, ValveBut
     ValveButton *button = new ValveButton(orientation,this);
     
     MainWindow::clientManager->subscribe(field, [button](const QString& message) {
+                    qDebug() << "Start of the ValveControl cb";
         if (message == "0") {
             button->setState(ValveButton::State::Close);
         } else if (message == "unknown") {
+            qDebug() << "we should it unkown";
             button->setState(ValveButton::State::Unknown);
+                        qDebug() << "finish should it unkown";
         } else {
             button->setState(ValveButton::State::Open);
         }
+                            qDebug() << "END of the ValveControl cb";
     });
    
     connect(button, &ValveButton::clicked, [button, field, this]() {

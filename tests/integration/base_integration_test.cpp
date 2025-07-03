@@ -96,7 +96,6 @@ bool BaseIntegrationTest::waitForPost(int timeoutMs) {
 
 QJsonObject BaseIntegrationTest::getLastPostCommand() {
   qDebug() << "Inside " << postSpy->isValid() << postSpy->signal();
-  postSpy->wait(200);
   qDebug() << "Inside 2" << postSpy->isEmpty();
   if (postSpy->isEmpty()) {
     return QJsonObject(); // Return empty object

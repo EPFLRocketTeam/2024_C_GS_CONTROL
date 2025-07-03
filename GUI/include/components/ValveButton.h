@@ -1,43 +1,42 @@
 #ifndef VALVEBUTTON_H
 #define VALVEBUTTON_H
 
-#include <QPushButton>
 #include <QLabel>
+#include <QPushButton>
+#include <qsvgrenderer.h>
 
 class ValveButton : public QLabel {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    enum State {
-        Open = 0,
-        Close,
-        Unknown
-    };
+  enum State { Open = 0, Close, Unknown };
 
-    enum Orientation { 
-        Horizontal = 0,
-        Vertical
-    };
+  enum Orientation { Horizontal = 0, Vertical };
 
-    explicit ValveButton(Orientation orientation = Horizontal, QWidget *parent = nullptr);
-    void resetStyle();
-    State getState();
-    void setState(State state);
+  explicit ValveButton(Orientation orientation = Horizontal,
+                       QWidget *parent = nullptr);
+  void resetStyle();
+  State getState();
+  void setState(State state);
 
 signals:
-    void clicked();
+  void clicked();
 
 private:
-    State currentState;
+  State currentState;
 
-    void updateButtonIcon();
+  void updateButtonIcon();
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
-    Orientation orientation;
-    QSize iconSize;
+  void paintEvent(QPaintEvent *) override;
+  QSize sizeHint() const override { return QSize(52,52); }
+  void mousePressEvent(QMouseEvent *event) override;
 
+private:
+  Orientation orientation;
+  QSize iconSize;
 
+  QSvgRenderer *m_rOpen, *m_rClose, *m_rUnknown;
 };
 
 #endif // VALVEBUTTON_H

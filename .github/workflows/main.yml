@@ -53,6 +53,5 @@ jobs:
     - name: Run tests
       run: |
         cd build 
-        export QT_QPA_PLATFORM=offscreen
         make check
  
