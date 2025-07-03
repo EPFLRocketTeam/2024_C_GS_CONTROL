@@ -34,7 +34,7 @@ cmake .. && make
 ```
 
 Now you should create the 2 following files:
-- in /Server/src create a auth_key.json file with for example the following content:
+- in /Server/src create a auth_keys.json file with for example the following content:
 ```json 
 [
     {

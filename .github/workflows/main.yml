@@ -25,8 +25,8 @@ jobs:
     # --- NEW STEP ADDED HERE ---
     - name: Create Test Authentication Files
       run: |
-        echo "Creating Server/src/auth_key.json..."
-        cat << 'EOF' > Server/src/auth_key.json
+        echo "Creating Server/src/auth_keys.json..."
+        cat << 'EOF' > Server/src/auth_keys.json
         [
             {
                 "key": "ClientSecretKey1",

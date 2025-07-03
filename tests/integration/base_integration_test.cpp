@@ -3,6 +3,7 @@
 #include "Server/src/ServerSetup.h"
 #include "Setup.h"
 #include <QDebug>
+#include <qglobal.h>
 
 void BaseIntegrationTest::initTestCase() {
 
@@ -21,10 +22,10 @@ void BaseIntegrationTest::initTestCase() {
   qDebug() << "[DEBUG] Application Directory Path is:"
            << QCoreApplication::applicationDirPath();
 
-  QString project_root_path = TEST_SOURCE_DIR;
+  QString project_root_path = PROJECT_ROOT_PATH;
 
   // 2. Build the absolute path to the keys file
-  QString keys_file_path = project_root_path + "/Server/src/auth_key.json";
+  QString keys_file_path = project_root_path + "/Server/src/auth_keys.json";
 
   auth::loadKeyFromFile(project_root_path + "/GUI/src/.key");
   RequestBuilder::authorizationKey = auth::key;
@@ -87,10 +88,16 @@ void BaseIntegrationTest::cleanupTestCase() {
 }
 
 bool BaseIntegrationTest::waitForPost(int timeoutMs) {
-  return postSpy->wait(timeoutMs);
+  qDebug() << postSpy->isEmpty() << "HERE";
+  int tmp =  postSpy->wait(timeoutMs);
+  qDebug() << "Here 2" << postSpy->isEmpty();
+  return tmp;
 }
 
 QJsonObject BaseIntegrationTest::getLastPostCommand() {
+  qDebug() << "Inside " << postSpy->isValid() << postSpy->signal();
+  postSpy->wait(200);
+  qDebug() << "Inside 2" << postSpy->isEmpty();
   if (postSpy->isEmpty()) {
     return QJsonObject(); // Return empty object
   }

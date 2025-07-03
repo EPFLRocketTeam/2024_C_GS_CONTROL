@@ -13,6 +13,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+add_library(test_helper_lib STATIC
+    helpers/LogSpySignals.h)
+
+
 # --- Section 1: Server Unit Tests (gtest) ---
 file(GLOB SERVER_TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/server/*_tests.cpp")
 
@@ -44,7 +48,7 @@ target_include_directories(base_integration_test_lib PUBLIC
 )
 
 target_compile_definitions(base_integration_test_lib PUBLIC
-    -DTEST_SOURCE_DIR="${CMAKE_SOURCE_DIR}"
+    -DPROJECT_ROOT_PATH="${CMAKE_SOURCE_DIR}"
 )
 
 target_link_libraries(base_integration_test_lib PUBLIC
@@ -52,6 +56,7 @@ target_link_libraries(base_integration_test_lib PUBLIC
     FirehornGUI_lib
     FirehornServer_lib
     FirehornCommons
+    test_helper_lib
 )
 
 # 2b. Create the actual test executables
@@ -71,11 +76,18 @@ foreach(_src IN LISTS INTEGRATION_TEST_SOURCES)
     target_link_libraries(${_name} PRIVATE base_integration_test_lib)
     
     add_test(NAME integration_${_name} COMMAND ${_name})
+    set_tests_properties(integration_${_name}
+  PROPERTIES
+    ENVIRONMENT "QT_QPA_PLATFORM=minimal"
+    )
 endforeach()
 
 
 add_custom_target(check
-    COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Running all tests..."
+  COMMENT "Building everything then running all tests…"
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  # 1) build any out-of-date targets
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}
+  # 2) run ctest with verbose output on failure
+  COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
 )

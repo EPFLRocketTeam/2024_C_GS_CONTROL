@@ -76,6 +76,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         Qt6::Svg
         Qt6::Concurrent
         FirehornCommons
+        config_interface
 )
 
 # Create the executable
