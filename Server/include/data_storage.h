@@ -7,9 +7,6 @@
 #include <string>
 #include <sqlite3.h>
 #include <vector>
-#include <chrono>
-#include <iomanip>
-#include <sstream>
 #include "sqlite_orm.h"
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 
