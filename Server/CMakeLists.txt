@@ -50,6 +50,8 @@ target_link_libraries(${PROJECT_NAME}_lib
         sqlite3
         CapsuleLib
         FirehornCommons
+        config_interface
+
 )
 
 # Create the executable
@@ -78,6 +80,18 @@ SET(SOURCES_STORAGE
 )
 
 add_library(data_storage_lib STATIC ${SOURCES_STORAGE} ${HEADERS_STORAGE})
+
+# Set include directories for the library
+target_include_directories(data_storage_lib
+    PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(data_storage_lib
+    PRIVATE
+        config_interface
+
+)
 
 file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tests/*_tests.cpp")
 # foreach(_src IN LISTS TEST_SOURCES)

@@ -1,3 +1,4 @@
+#include <csignal>
 #include <iostream>
 
 #include <QCoreApplication>
@@ -8,8 +9,25 @@
 #include "Server.h"
 #include "ServerSetup.h"
 
+
+static QCoreApplication *g_app = nullptr;
+
+// this runs from the signal‐handler thread, so we only queue the actual quit
+static void sigint_handler(int /*unused*/) {
+  if (g_app) {
+    // thread-safe, queued invocation of quit()
+    QMetaObject::invokeMethod(g_app, "quit", Qt::QueuedConnection);
+  }
+}
+
+
 int start_server(int argc, char *argv[]) {
   QCoreApplication a(argc, argv);
+  g_app = &a;
+
+  std::signal(SIGINT, sigint_handler);
+    std::signal(SIGABRT, sigint_handler);
+
 
   ModuleLog logger = ModuleLog("Server Launcher", "../Log/server.logs");
 #if DEBUG_LOG

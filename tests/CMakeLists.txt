@@ -25,10 +25,19 @@ foreach(_src IN LISTS SERVER_TEST_SOURCES)
     
     add_executable(${_name} ${_src})
     
+    target_include_directories(${_name}
+    PRIVATE
+      ${CMAKE_SOURCE_DIR}/Server/include
+  )
+    target_include_directories(${_name}
+  PRIVATE
+    ${googletest_SOURCE_DIR}/googletest/include
+)
     target_link_libraries(${_name} PRIVATE
-        gtest_main
+        GTest::gtest_main
         FirehornServer_lib
         SQLite::SQLite3
+        data_storage_lib
     )
     
     add_test(NAME server_${_name} COMMAND ${_name})

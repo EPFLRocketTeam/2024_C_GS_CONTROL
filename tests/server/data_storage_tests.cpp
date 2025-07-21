@@ -1,4 +1,4 @@
-#include "../include/data_storage.h"
+#include "data_storage.h"
 #include <gtest/gtest.h>
 
 //function to create test db
@@ -13,8 +13,8 @@ av_uplink_t* get_avup() {
     *avup = {.order_id=1, .order_value=2};
     return avup;
 }
-av_downlink_t* get_avdw() {
-    av_downlink_t* avdw = new av_downlink_t;
+av_downlink_unpacked* get_avdw() {
+    av_downlink_unpacked* avdw = new av_downlink_unpacked;
     *avdw = {.packet_nbr=9, .gnss_lon=10,
         .gnss_lat=11, .gnss_alt=12, .gnss_vertical_speed=13,
         .N2_pressure=14, .fuel_pressure=15, .LOX_pressure=16,
@@ -40,7 +40,7 @@ void equal_avup(av_uplink_t* avup1, av_uplink_t* avup2) {
     EXPECT_EQ(avup1->order_id, avup2->order_id);
     EXPECT_EQ(avup1->order_value, avup2->order_value);
 }
-void equal_avdw(av_downlink_t* avdw1, av_downlink_t* avdw2) {
+void equal_avdw(av_downlink_unpacked* avdw1, av_downlink_unpacked* avdw2) {
     printf("equal_avdw called\n");
     EXPECT_EQ(avdw1->ambient_temp, avdw2->ambient_temp);
     EXPECT_EQ(avdw1->av_fc_temp, avdw2->av_fc_temp);
@@ -88,11 +88,11 @@ TEST(readWriteTest, singleAvupByIndex) {
 }
 TEST(readWriteTest, singleAvdwByIndex) {
     SqliteDB* db = get_db();
-    av_downlink_t* avdw = get_avdw();
+    av_downlink_unpacked* avdw = get_avdw();
     db->write_pkt(db->process_pkt(NULL,avdw,NULL));
     delete db;
     SqliteDB* newdb = get_db();
-    av_downlink_t* avdwRead = new av_downlink_t;
+    av_downlink_unpacked* avdwRead = new av_downlink_unpacked;
     Packet packet = newdb->read_pkt(AV_DOWNLINK, 0);
     newdb->unprocess_pkt(packet, NULL, avdwRead, NULL);
     equal_avdw(avdw, avdwRead);
@@ -141,7 +141,7 @@ TEST(readWriteTest, severalAvupAtOnce) {
 TEST(readWriteTest, severalAvdwAtOnce) {
     int nbrPkt = 200;
     SqliteDB* db = get_db();
-    std::vector<av_downlink_t*> avdws;
+    std::vector<av_downlink_unpacked*> avdws;
     avdws.resize(nbrPkt);
     for (int i=0; i<nbrPkt; i++) {
         printf("i = %d\n", i);
@@ -154,10 +154,10 @@ TEST(readWriteTest, severalAvdwAtOnce) {
     std::vector<AV_downlink_pkt> avdwsRawRead;
     avdwsRawRead.resize(nbrPkt);
     avdwsRawRead = newdb->read_all_avdw();
-    std::vector<av_downlink_t*> avdwsRead;
+    std::vector<av_downlink_unpacked*> avdwsRead;
     avdwsRead.resize(nbrPkt);
     for (auto& ptr : avdwsRead) {
-        ptr = new av_downlink_t;
+        ptr = new av_downlink_unpacked;
     }
     for (int i=0; i<nbrPkt; i++) {
         Packet pkt = (Packet){.type=AV_DOWNLINK, NULL,.av_down_pkt=&avdwsRawRead[i],NULL};
@@ -212,7 +212,7 @@ int main(int argc, char *argv[]) {
     *avup1 = {.order_id=1, .order_value=2};
     av_uplink_t* avup2 = new av_uplink_t;
     *avup2 = {.order_id=3, .order_value=4};
-    av_downlink_t* avdw1 = new av_downlink_t;
+    av_downlink_unpacked* avdw1 = new av_downlink_unpacked;
     *avdw1 = {.packet_nbr=9, .gnss_lon=10,
         .gnss_lat=11, .gnss_alt=12, .gnss_vertical_speed=13,
         .N2_pressure=14, .fuel_pressure=15, .LOX_pressure=16,
@@ -220,7 +220,7 @@ int main(int argc, char *argv[]) {
         .LOX_inj_temp=21, .lpb_voltage=22, .hpb_voltage=23,
         .av_fc_temp=24, .ambient_temp=25, .engine_state=26,
         .av_state=27, .cam_rec=28};
-    av_downlink_t* avdw2 = new av_downlink_t;
+    av_downlink_unpacked* avdw2 = new av_downlink_unpacked;
     *avdw2 = {.packet_nbr=10, .gnss_lon=11,
         .gnss_lat=12, .gnss_alt=13, .gnss_vertical_speed=14,
         .N2_pressure=15, .fuel_pressure=16, .LOX_pressure=17,

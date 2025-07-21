@@ -45,37 +45,18 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
 
 int Server::setup_db() {
     sqlDatabase = new SqliteDB();
-    QString db_path = (QCoreApplication::applicationDirPath() + "/../data.db");
-    int exit = sqlite3_open(db_path.toStdString().c_str(), &database);
-    /*sqlite3* DB; */
-    /*int exit = 0; */
-    /*int res = sqlite3_open("example.db", &DB); */
-
-    if (exit) {
-        const char* db_errmsg = sqlite3_errmsg(database);
-        size_t m_length = 100 + strnlen(db_errmsg, 2000);
-        char* error_message = (char *)calloc(m_length, sizeof(char));
-        snprintf(error_message, m_length, "%s: %s", DB_ERROR_MESSAGE_PREFIX, db_errmsg);
-        _serverLogger.warn("Databse Opening", error_message);
-        free(error_message);
-        database = NULL;
-        return 0;
-    }
-    
-    QString success_message = QString::fromStdString("The Databse was opened succesfuly in the file ") + db_path;
-    _serverLogger.info("Databse Opening", success_message.toStdString());
     return 1;
 }
 
 
 Server::~Server() {
+    close();
     delete sqlDatabase;
-    if (database != NULL) {
-        sqlite3_close(database);
-    }
     if (serialPort->isOpen()) {
         serialPort->close();
     }
+    _serverLogger.info("Server Shutdown", "The server properly closed");
+
 }
 
 void Server::openSerialPort() {
