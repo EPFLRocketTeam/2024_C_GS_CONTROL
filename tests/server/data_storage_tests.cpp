@@ -13,6 +13,8 @@ av_uplink_t* get_avup() {
     *avup = {.order_id=1, .order_value=2};
     return avup;
 }
+
+#if RF_PROTOCOL_FIREHORN
 av_downlink_unpacked* get_avdw() {
     av_downlink_unpacked* avdw = new av_downlink_unpacked;
     *avdw = {.packet_nbr=9, .gnss_lon=10,
@@ -198,7 +200,7 @@ TEST(readWriteTest, severalGsdwAtOnce) {
     }
     delete newdb;
 }
-
+#endif
 /* MANUAL TESTS */
 /*
 int main(int argc, char *argv[]) {

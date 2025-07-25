@@ -40,8 +40,8 @@ using RightView = GSManagerView;
 // just set the version of the GUI you want to use to true and the other to false
 // /!\ if changing the version shown, you also need to make sure that in commons/CMakeLists.txt line 27 the 
 // definition RF_PROTOCOL_FIREHORN or RF_PROTOCOL_ICARUS is added
-#define ICARUS_GUI false
-#define FIREHORN_GUI true
+#define ICARUS_GUI true
+#define FIREHORN_GUI false
 // CHange the debug level to show the debug messages
 #define DEBUG_LOG true
 
@@ -105,6 +105,7 @@ namespace ui_elements {
         HOPPER_GIMBAL_Y,
         HOPPER_HV_VOLTAGE,
         HOPPER_AV_TEMP,
+        HOPPER_FIREUP_STATE,
     };
     inline QMap<QString, QList<GUI_FIELD>> data_sections = {
     {"GPS", gps},

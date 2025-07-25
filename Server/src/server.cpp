@@ -442,6 +442,28 @@ void Server::simulateJsonData() {
     handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
     #endif
 
+    #ifdef RF_PROTOCOL_ICARUS
+    AV_downlink_packet packet;
+    packet.packet_nbr = 110;
+    packet.gnss_lon = distCoord(gen);
+    packet.gnss_lat = distCoord(gen);
+    packet.baro = distAlt(gen);
+    packet.N2_solenoid = static_cast<int8_t>(distState(gen));
+    packet.N2O_main = distPressure(gen);
+    packet.N2O_vent = distPressure(gen);
+    packet.N2O_temp = distPressure(gen);
+    packet.N2O_pressure = distPressure(gen);
+    packet.ETH_main = distState(gen);
+    packet.ETH_vent = distState(gen);
+    packet.ETH_pressure = static_cast<int16_t>(distTemp(gen));
+    packet.acc_x = static_cast<int16_t>(distTemp(gen));
+    packet.acc_y = static_cast<int16_t>(distTemp(gen));
+    packet.acc_z = distVoltage(gen);
+    packet.HV_voltage = distVoltage(gen);
+    packet.Fire_up_state = 10;
+    handleSerialPacket(CAPSULE_ID::HOPPER_DOWNLINK, (uint8_t *)&packet, sizeof(packet));
+    #endif
+
     std::uniform_int_distribution<int> distBool(0, 1);
     PacketGSE_downlink gsePacket;
     gsePacket.tankPressure    = distPressure(gen);

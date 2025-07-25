@@ -1,6 +1,7 @@
 #include "RequestAdapter.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
+#include "Log.h"
 #include "ServerSetup.h"
 #include "packet_helper.h"
 #include <cstdint>
@@ -9,6 +10,8 @@
 #include <ostream>
 #include <qjsonobject.h>
 #include <stdexcept>
+
+static ModuleLog _logger = ModuleLog("RequestAdapter");
 
 int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value,
                                   av_uplink_t *p) {
@@ -141,82 +144,85 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   }
 #if RF_PROTOCOL_ICARUS
   case CAPSULE_ID::HOPPER_DOWNLINK: {
+
     // Make sure the incoming data is at least the size of the Hopper packet.
-    if (len < sizeof(PacketHopper_downlink)) {
+    if (len < AV_downlink_packet_size) {
       break;
     }
-    PacketHopper_downlink dataHopper;
+    AV_downlink_packet dataHopper;
     // Copy the incoming raw data into our Hopper packet structure.
-    memcpy(&dataHopper, data, sizeof(PacketHopper_downlink));
+    memcpy(&dataHopper, data, AV_downlink_packet_size);
 
     // Create a JSON object and fill it with the Hopper packet's fields.
-    QJsonObject jsonObj;
-    jsonObj[QString::number(GUI_FIELD::HOPPER_PACKET_NBR)] =
-        static_cast<int>(dataHopper.packet_nbr);
+    std::cout << dataHopper.packet_nbr << std::endl;
+    jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] =
+        QString::number(static_cast<uint32_t>(dataHopper.packet_nbr));
     jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] =
-        static_cast<int>(dataHopper.N2O_pressure);
+        QString::number(static_cast<int>(dataHopper.N2O_pressure));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_PRESSURE)] =
-        static_cast<int>(dataHopper.ETH_pressure);
+        QString::number(static_cast<int>(dataHopper.ETH_pressure));
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_TEMP)] =
-        static_cast<int>(dataHopper.N2O_temp);
+        QString::number(static_cast<int>(dataHopper.N2O_temp));
     // Vents are defined as nside a nested struct.
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_VENT)] =
-        static_cast<int>(dataHopper.vents.N2O_vent);
+        QString::number(static_cast<int>(dataHopper.N2O_vent));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_VENT)] =
-        static_cast<int>(dataHopper.vents.ETH_vent);
+        QString::number(static_cast<int>(dataHopper.ETH_vent));
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2_SOL)] =
-        static_cast<int>(dataHopper.vents.N2_sol);
+        QString::number(static_cast<int>(dataHopper.N2_solenoid));
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_MAIN)] =
-        static_cast<int>(dataHopper.N2O_main);
+        QString::number(static_cast<int>(dataHopper.N2O_main));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] =
-        static_cast<int>(dataHopper.ETH_main);
+        QString::number(static_cast<int>(dataHopper.ETH_main));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LON)] =
-        static_cast<double>(dataHopper.gnss_lon);
+        QString::number(static_cast<double>(dataHopper.gnss_lon));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LAT)] =
-        static_cast<double>(dataHopper.gnss_lat);
+        QString::number(static_cast<double>(dataHopper.gnss_lat));
     jsonObj[QString::number(GUI_FIELD::HOPPER_SAT_NBR)] =
-        static_cast<int>(dataHopper.sat_nbr);
+        QString::number(static_cast<int>(dataHopper.sat_nbr));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_X)] =
-        static_cast<int>(dataHopper.gyro_x);
+        QString::number(static_cast<int>(dataHopper.gyro_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Y)] =
-        static_cast<int>(dataHopper.gyro_y);
+        QString::number(static_cast<int>(dataHopper.gyro_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Z)] =
-        static_cast<int>(dataHopper.gyro_z);
+        QString::number(static_cast<int>(dataHopper.gyro_z));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_X)] =
-        static_cast<int>(dataHopper.acc_x);
+        QString::number(static_cast<int>(dataHopper.acc_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Y)] =
-        static_cast<int>(dataHopper.acc_y);
+        QString::number(static_cast<int>(dataHopper.acc_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Z)] =
-        static_cast<int>(dataHopper.acc_z);
+        QString::number(static_cast<int>(dataHopper.acc_z));
     jsonObj[QString::number(GUI_FIELD::HOPPER_BARO)] =
-        static_cast<int>(dataHopper.baro);
+        QString::number(static_cast<int>(dataHopper.baro));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_X)] =
-        static_cast<int>(dataHopper.kalman_pos_x);
+        QString::number(static_cast<int>(dataHopper.kalman_pos_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Y)] =
-        static_cast<int>(dataHopper.kalman_pos_y);
+        QString::number(static_cast<int>(dataHopper.kalman_pos_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Z)] =
-        static_cast<int>(dataHopper.kalman_pos_z);
+        QString::number(static_cast<int>(dataHopper.kalman_pos_z));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_YAW)] =
-        static_cast<int>(dataHopper.kalman_yaw);
+        QString::number(static_cast<int>(dataHopper.kalman_yaw));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_PITCH)] =
-        static_cast<int>(dataHopper.kalman_pitch);
+        QString::number(static_cast<int>(dataHopper.kalman_pitch));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_ROLL)] =
-        static_cast<int>(dataHopper.kalman_roll);
+        QString::number(static_cast<int>(dataHopper.kalman_roll));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)] =
-        static_cast<int>(dataHopper.gimbal_x);
+        QString::number(static_cast<int>(dataHopper.gimbal_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)] =
-        static_cast<int>(dataHopper.gimbal_y);
+        QString::number(static_cast<int>(dataHopper.gimbal_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_HV_VOLTAGE)] =
-        static_cast<int>(dataHopper.HV_voltage);
+        QString::number(static_cast<int>(dataHopper.HV_voltage));
     jsonObj[QString::number(GUI_FIELD::HOPPER_LV_VOLTAGE)] =
-        static_cast<int>(dataHopper.LV_voltage);
+        QString::number(static_cast<int>(dataHopper.LV_voltage));
     jsonObj[QString::number(GUI_FIELD::HOPPER_AV_TEMP)] =
-        static_cast<int>(dataHopper.AV_temp);
+        QString::number(static_cast<int>(dataHopper.AV_temp));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ID_CONFIG)] =
-        static_cast<int>(dataHopper.ID_config);
+        QString::number(static_cast<int>(dataHopper.ID_config));
     jsonObj[QString::number(GUI_FIELD::HOPPER_AV_STATE)] =
-        static_cast<int>(dataHopper.AV_state);
+        QString::number(static_cast<int>(dataHopper.AV_state));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_FIREUP_STATE)] =
+        QString::number(static_cast<uint8_t>(dataHopper.Fire_up_state));
 
     break;
   }

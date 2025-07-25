@@ -24,7 +24,7 @@ set(HEADERS_COMMONS
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC RF_PROTOCOL_FIREHORN)
+target_compile_definitions(${PROJECT_NAME} PUBLIC RF_PROTOCOL_ICARUS)
 target_include_directories(${PROJECT_NAME} 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include

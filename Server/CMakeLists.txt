@@ -90,6 +90,8 @@ target_include_directories(data_storage_lib
 target_link_libraries(data_storage_lib
     PRIVATE
         config_interface
+                Qt6::Core
+
 
 )
 
