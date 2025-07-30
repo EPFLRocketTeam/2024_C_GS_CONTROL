@@ -152,6 +152,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     av_downlink_t dataHopper;
     // Copy the incoming raw data into our Hopper packet structure.
     memcpy(&dataHopper, data, av_downlink_size);
+    db->write_pkt(db->process_pkt(NULL, &dataHopper, NULL));
 
     // Create a JSON object and fill it with the Hopper packet's fields.
     std::cout << dataHopper.packet_nbr << std::endl;
