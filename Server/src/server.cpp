@@ -323,6 +323,7 @@ void Server::handleCommand(const QJsonObject &command) {
     case GUI_FIELD::SERIAL_NAME_USE: {
         QJsonObject m_payload;
         m_payload[QString::number(GUI_FIELD::SERIAL_NAME_USE)] = serialPort->portName();
+        updateSubscriptions(m_payload);
         break;
         }
 

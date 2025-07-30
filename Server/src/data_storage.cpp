@@ -202,7 +202,12 @@ SqliteDB::~SqliteDB() {
   flushAvDown();
   flushGseDown();
   ensureArchiveDir(PROJECT_ROOT_PATH);
-  storage.make_backup_to(PROJECT_ROOT_PATH "/archives/archive-" +
+#if RF_PROTOCOL_FIREHORN
+  std::string proj_name = "Firehorn";
+#else 
+  std::string proj_name = "Icarus";
+#endif
+  storage.make_backup_to(PROJECT_ROOT_PATH "/archives/archive-" + proj_name + "-"  +
                          storage.current_timestamp() + ".db");
 }
 
@@ -647,14 +652,14 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
         .fillingPressure = pkt.gse_down_pkt->fillingPressure,
         .status = status,
         .disconnectActive = pkt.gse_down_pkt->disconnectActive,
-        #if RF_PROTOCOL_FIREHORN
+#if RF_PROTOCOL_FIREHORN
         .loadcell_raw = pkt.gse_down_pkt->loadcell_raw};
-        #else
+#else
         .loadcell1 = pkt.gse_down_pkt->loadcell1,
         .loadcell2 = pkt.gse_down_pkt->loadcell2,
         .loadcell3 = pkt.gse_down_pkt->loadcell3,
         .loadcell4 = pkt.gse_down_pkt->loadcell4};
-        #endif
+#endif
     break;
   }
   }
