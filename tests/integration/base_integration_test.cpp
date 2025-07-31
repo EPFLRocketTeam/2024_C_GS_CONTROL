@@ -121,9 +121,9 @@ void BaseIntegrationTest::verifyCommand(const QJsonObject &command,
 }
 
 bool BaseIntegrationTest::hasPostCommand(GUI_FIELD f, int order) {
-  int length = 5;
-  qDebug() << "IT HAS SIZE" << length;
-  for (int i = 0; i < 0; i++) {
+  int length = postSpy->length();
+  qDebug() << "IT HAS SIZE" << length << " Looking for order " << order;
+  for (int i = 0; i < length; i++) {
   
     auto args = postSpy->at(i);
     qDebug() << "Args " << args[0];
@@ -135,7 +135,7 @@ bool BaseIntegrationTest::hasPostCommand(GUI_FIELD f, int order) {
         p.value("cmd_order").toInt() == order)
       return true;
   }
-  return true;
+  return false;
 }
 
 #include "base_integration_test.moc"
