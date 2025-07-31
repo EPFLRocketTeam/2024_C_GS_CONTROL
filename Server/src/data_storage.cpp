@@ -640,7 +640,8 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                              .ID_config = pkt.av_down_pkt->ID_config,
                              .AV_state = pkt.av_down_pkt->AV_state,
                              .Fire_up_state = pkt.av_down_pkt->Fire_up_state};
-#endif break;
+#endif 
+                        break;
   }
   case PacketType::GSE_DOWNLINK: {
     GSE_cmd_status status =
