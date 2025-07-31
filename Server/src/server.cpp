@@ -444,7 +444,7 @@ void Server::simulateJsonData() {
     #endif
 
     #ifdef RF_PROTOCOL_ICARUS
-    AV_downlink_packet packet;
+    av_downlink_t packet;
     packet.packet_nbr = 110;
     packet.gnss_lon = distCoord(gen);
     packet.gnss_lat = distCoord(gen);
@@ -462,7 +462,7 @@ void Server::simulateJsonData() {
     packet.acc_z = distVoltage(gen);
     packet.HV_voltage = distVoltage(gen);
     packet.Fire_up_state = 10;
-    handleSerialPacket(CAPSULE_ID::HOPPER_DOWNLINK, (uint8_t *)&packet, sizeof(packet));
+    handleSerialPacket(CAPSULE_ID::HOPPER_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
     #endif
 
     std::uniform_int_distribution<int> distBool(0, 1);

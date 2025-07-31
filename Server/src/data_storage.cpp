@@ -429,7 +429,7 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
 #if RF_PROTOCOL_FIREHORN
                              av_downlink_unpacked *avdw,
 #else
-                             AV_downlink_packet *avdw,
+                             av_downlink_t *avdw,
 #endif
                              PacketGSE_downlink *gsdw) {
   printf("process_pkt called\n");
@@ -564,7 +564,7 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
 #if RF_PROTOCOL_FIREHORN
                              av_downlink_unpacked *avdw,
 #else
-                             AV_downlink_packet *avdw,
+                             av_downlink_t *avdw,
 #endif
                              PacketGSE_downlink *gsdw) {
   printf("unprocess_pkt called\n");
@@ -599,7 +599,7 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                                .av_state = pkt.av_down_pkt->av_state,
                                .cam_rec = pkt.av_down_pkt->cam_rec};
 #else
-        (AV_downlink_packet){.packet_nbr = pkt.av_down_pkt->packet_nbr,
+        (av_downlink_t){.packet_nbr = pkt.av_down_pkt->packet_nbr,
 
                              .N2O_pressure = pkt.av_down_pkt->N2O_pressure,
                              .ETH_pressure = pkt.av_down_pkt->ETH_pressure,

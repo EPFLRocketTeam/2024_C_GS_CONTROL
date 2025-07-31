@@ -143,15 +143,15 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     break;
   }
 #if RF_PROTOCOL_ICARUS
-  case CAPSULE_ID::HOPPER_DOWNLINK: {
+        case CAPSULE_ID::HOPPER_TELEMETRY: {
 
     // Make sure the incoming data is at least the size of the Hopper packet.
-    if (len < AV_downlink_packet_size) {
+    if (len < av_downlink_size) {
       break;
     }
-    AV_downlink_packet dataHopper;
+    av_downlink_t dataHopper;
     // Copy the incoming raw data into our Hopper packet structure.
-    memcpy(&dataHopper, data, AV_downlink_packet_size);
+    memcpy(&dataHopper, data, av_downlink_size);
 
     // Create a JSON object and fill it with the Hopper packet's fields.
     std::cout << dataHopper.packet_nbr << std::endl;
@@ -240,40 +240,40 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {CMD_ID::GSE_CMD_DISCONNECT, GSE_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_CALIBRATE:
-    return {CMD_ID::HOPPER_CMD_CALIBRATE, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_CALIBRATE, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_PRESSURIZE:
-    return {CMD_ID::HOPPER_CMD_PRESSURIZE, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_PRESSURIZE, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_LAUNCH:
-    return {CMD_ID::HOPPER_CMD_LAUNCH, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_LAUNCH, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_ARM:
-    return {CMD_ID::HOPPER_CMD_ARM, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_ARM, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_ABORT:
-    return {CMD_ID::HOPPER_CMD_ABORT, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_ABORT, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_N2O_VENT:
-    return {CMD_ID::HOPPER_CMD_VENT_N2O, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_VENT_N2O, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_ETH_VENT:
-    return {CMD_ID::HOPPER_CMD_VENT_FUEL, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_VENT_FUEL, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GIMBALL_X:
-    return {CMD_ID::HOPPER_CMD_GIMBALL_X, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_GIMBALL_X, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GIMBALL_Y:
-    return {CMD_ID::HOPPER_CMD_GIMBALL_Y, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_GIMBALL_Y, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_ETH_MAIN:
-    return {CMD_ID::HOPPER_CMD_SERVO_FUEL, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_SERVO_FUEL, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_N2O_MAIN:
-    return {CMD_ID::HOPPER_CMD_SERVO_N2O, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_SERVO_N2O, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_N2_SOL:
-    return {CMD_ID::HOPPER_CMD_N2_SOL, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_N2_SOL, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GSE_VENT:
     return {CMD_ID::GSE_CMD_VENT, GSE_TELEMETRY};
@@ -282,7 +282,7 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {CMD_ID::GSE_CMD_FILLING_N2O, GSE_TELEMETRY};
 
   case GUI_FIELD::HOPPER_ID_CONFIG:
-    return {CMD_ID::HOPPER_CMD_ID_CONFIG, HOPPER_DOWNLINK};
+    return {CMD_ID::HOPPER_CMD_ID_CONFIG, HOPPER_TELEMETRY};
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");

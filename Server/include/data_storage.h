@@ -152,12 +152,12 @@ public:
   /*process pkt before writing it
   this consist of adding id, adding timestamp, adding PacketType
   and returns the Packet ready to be written*/
-  Packet process_pkt(av_uplink_t *avup, AV_downlink_packet *avdw,
+  Packet process_pkt(av_uplink_t *avup, av_downlink_t *avdw,
                      PacketGSE_downlink *gsdw);
 
   /*unprocess (only usefull to verify integrity of data in the unit tests)
   takes pkt, unprocess and writes it at the right place (avup, avdw or gsdw)*/
-  void unprocess_pkt(Packet pkt, av_uplink_t *avup, AV_downlink_packet *avdw,
+  void unprocess_pkt(Packet pkt, av_uplink_t *avup, av_downlink_t *avdw,
                      PacketGSE_downlink *gsdw);
   #endif
 
