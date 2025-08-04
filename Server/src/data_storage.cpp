@@ -207,7 +207,7 @@ SqliteDB::~SqliteDB() {
 #else 
   std::string proj_name = "Icarus";
 #endif
-  storage.make_backup_to(PROJECT_ROOT_PATH "/archives/archive-" + proj_name + "-"  +
+  storage.backup_to(PROJECT_ROOT_PATH "/archives/archive-" + proj_name + "-"  +
                          storage.current_timestamp() + ".db");
 }
 
@@ -431,7 +431,7 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
 #else
                              av_downlink_t *avdw,
 #endif
-                             PacketGSE_downlink *gsdw) {
+                             gse_downlink_t *gsdw) {
   printf("process_pkt called\n");
   if (avup == NULL && avdw == NULL && gsdw == NULL) {
     return {.type = INVALID,
@@ -527,27 +527,27 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
                     .av_down_pkt = raw_avdw,
                     .gse_down_pkt = NULL};
   }
-  // process pkt if PacketGSE_downlink
+  // process pkt if gse_downlink_t
   if (avup == NULL && avdw == NULL) {
     uint32_t id = this->get_pkt_id(GSE_DOWNLINK);
     GSE_downlink_pkt *raw_gsdw =
         static_cast<GSE_downlink_pkt *>(malloc(sizeof(GSE_downlink_pkt)));
     *raw_gsdw = {.id = id,
                  .ts = ts,
-                 .tankPressure = gsdw->tankPressure,
-                 .tankTemperature = gsdw->tankTemperature,
-                 .fillingPressure = gsdw->fillingPressure,
-                 .fillingN2O = gsdw->status.fillingN2O,
-                 .vent = gsdw->status.vent,
-                 .disconnectActive = gsdw->disconnectActive,
-#if RF_PROTOCOL_FIREHORN
-                 .loadcell_raw = gsdw->loadcell_raw
-#else 
-                 .loadcell1 = gsdw->loadcell1,
-                 .loadcell2 = gsdw->loadcell2,
-                 .loadcell3 = gsdw->loadcell3,
-                 .loadcell4 = gsdw->loadcell4,
-#endif
+/*                 .tankPressure = gsdw->tankPressure,*/
+/*                 .tankTemperature = gsdw->tankTemperature,*/
+/*                 .fillingPressure = gsdw->fillingPressure,*/
+/*                 .fillingN2O = gsdw->status.fillingN2O,*/
+/*                 .vent = gsdw->status.vent,*/
+/*                 .disconnectActive = gsdw->disconnectActive,*/
+/*#if RF_PROTOCOL_FIREHORN*/
+/*                 .loadcell_raw = gsdw->loadcell_raw*/
+/*#else */
+/*                 .loadcell1 = gsdw->loadcell1,*/
+/*                 .loadcell2 = gsdw->loadcell2,*/
+/*                 .loadcell3 = gsdw->loadcell3,*/
+/*                 .loadcell4 = gsdw->loadcell4,*/
+/*#endif*/
     };
     return (Packet){.type = GSE_DOWNLINK,
                     .av_up_pkt = NULL,
@@ -566,7 +566,7 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
 #else
                              av_downlink_t *avdw,
 #endif
-                             PacketGSE_downlink *gsdw) {
+                             gse_downlink_t *gsdw) {
   printf("unprocess_pkt called\n");
   switch (pkt.type) {
   case PacketType::AV_UPLINK: {
@@ -644,23 +644,24 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                         break;
   }
   case PacketType::GSE_DOWNLINK: {
-    GSE_cmd_status status =
-        (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,
-                         .vent = pkt.gse_down_pkt->vent};
-    *gsdw = (PacketGSE_downlink){
-        .tankPressure = pkt.gse_down_pkt->tankPressure,
-        .tankTemperature = pkt.gse_down_pkt->tankTemperature,
-        .fillingPressure = pkt.gse_down_pkt->fillingPressure,
-        .status = status,
-        .disconnectActive = pkt.gse_down_pkt->disconnectActive,
-#if RF_PROTOCOL_FIREHORN
-        .loadcell_raw = pkt.gse_down_pkt->loadcell_raw};
-#else
-        .loadcell1 = pkt.gse_down_pkt->loadcell1,
-        .loadcell2 = pkt.gse_down_pkt->loadcell2,
-        .loadcell3 = pkt.gse_down_pkt->loadcell3,
-        .loadcell4 = pkt.gse_down_pkt->loadcell4};
-#endif
+    /*GSE_cmd_status status =*/
+    /*    (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,*/
+    /*                     .vent = pkt.gse_down_pkt->vent};*/
+    *gsdw = (gse_downlink_t){
+/*        .tankPressure = pkt.gse_down_pkt->tankPressure,*/
+/*        .tankTemperature = pkt.gse_down_pkt->tankTemperature,*/
+/*        .fillingPressure = pkt.gse_down_pkt->fillingPressure,*/
+/*        .status = status,*/
+/*        .disconnectActive = pkt.gse_down_pkt->disconnectActive,*/
+/*#if RF_PROTOCOL_FIREHORN*/
+/*        .loadcell_raw = pkt.gse_down_pkt->loadcell_raw*/
+/*#else*/
+/*        .loadcell1 = pkt.gse_down_pkt->loadcell1,*/
+/*        .loadcell2 = pkt.gse_down_pkt->loadcell2,*/
+/*        .loadcell3 = pkt.gse_down_pkt->loadcell3,*/
+/*        .loadcell4 = pkt.gse_down_pkt->loadcell4*/
+/*#endif*/
+};
     break;
   }
   }

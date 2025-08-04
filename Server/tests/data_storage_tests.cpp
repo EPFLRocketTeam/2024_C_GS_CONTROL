@@ -24,10 +24,10 @@ av_downlink_t* get_avdw() {
         .av_state=27, .cam_rec=28};
     return avdw;
 }
-PacketGSE_downlink* get_gsdw() {
+gse_downlink_t* get_gsdw() {
     GSE_cmd_status* status = new GSE_cmd_status;
     *status = {.fillingN2O=12, .vent=13};
-    PacketGSE_downlink* gsdw = new PacketGSE_downlink;
+    gse_downlink_t* gsdw = new gse_downlink_t;
     *gsdw = {.tankPressure=11.123456789, .tankTemperature=11.2,
         .fillingPressure=11.3, *status,
         .disconnectActive=true, .loadcell_raw=14};
@@ -63,7 +63,7 @@ void equal_avdw(av_downlink_t* avdw1, av_downlink_t* avdw2) {
     EXPECT_EQ(avdw1->N2_temp, avdw2->N2_temp);
     EXPECT_EQ(avdw1->packet_nbr, avdw2->packet_nbr);
 }
-void equal_gsdw(PacketGSE_downlink* gsdw1, PacketGSE_downlink* gsdw2) {
+void equal_gsdw(gse_downlink_t* gsdw1, gse_downlink_t* gsdw2) {
     printf("equal_gsdw called\n");
     EXPECT_EQ(gsdw1->disconnectActive, gsdw2->disconnectActive);
     EXPECT_EQ(gsdw1->fillingPressure, gsdw2->fillingPressure);
@@ -99,11 +99,11 @@ TEST(readWriteTest, singleAvdwByIndex) {
 }
 TEST(readWriteTest, singleGsdwByIndex) {
     SqliteDB* db = get_db();
-    PacketGSE_downlink* gsdw = get_gsdw();
+    gse_downlink_t* gsdw = get_gsdw();
     db->write_pkt(db->process_pkt(NULL,NULL,gsdw));
     delete db;
     SqliteDB* newdb = get_db();
-    PacketGSE_downlink* gsdwRead = new PacketGSE_downlink;
+    gse_downlink_t* gsdwRead = new gse_downlink_t;
     Packet packet = newdb->read_pkt(GSE_DOWNLINK, 0);
     newdb->unprocess_pkt(packet, NULL, NULL, gsdwRead);
     equal_gsdw(gsdw, gsdwRead);
@@ -171,7 +171,7 @@ TEST(readWriteTest, severalAvdwAtOnce) {
 TEST(readWriteTest, severalGsdwAtOnce) {
     int nbrPkt = 200;
     SqliteDB* db = get_db();
-    std::vector<PacketGSE_downlink*> gsdws;
+    std::vector<gse_downlink_t*> gsdws;
     gsdws.resize(nbrPkt);
     for (int i=0; i<nbrPkt; i++) {
         printf("i = %d\n", i);
@@ -184,10 +184,10 @@ TEST(readWriteTest, severalGsdwAtOnce) {
     std::vector<GSE_downlink_pkt> gsdwsRawRead;
     gsdwsRawRead.resize(nbrPkt);
     gsdwsRawRead = newdb->read_all_gsdw();
-    std::vector<PacketGSE_downlink*> gsdwsRead;
+    std::vector<gse_downlink_t*> gsdwsRead;
     gsdwsRead.resize(nbrPkt);
     for (auto& ptr : gsdwsRead) {
-        ptr = new PacketGSE_downlink;
+        ptr = new gse_downlink_t;
     }
     for (int i=0; i<nbrPkt; i++) {
         Packet pkt = (Packet){.type=GSE_DOWNLINK, NULL,NULL,.gse_down_pkt=&gsdwsRawRead[i]};
@@ -232,11 +232,11 @@ int main(int argc, char *argv[]) {
     *status1 = {.fillingN2O=12, .vent=13};
     GSE_cmd_status* status2 = new GSE_cmd_status;
     *status2 = {.fillingN2O=13, .vent=14};
-    PacketGSE_downlink* gsdw1 = new PacketGSE_downlink;
+    gse_downlink_t* gsdw1 = new gse_downlink_t;
     *gsdw1 = {.tankPressure=11.123456789, .tankTemperature=11.2,
         .fillingPressure=11.3, *status1,
         .disconnectActive=true, .loadcell_raw=14};
-    PacketGSE_downlink* gsdw2 = new PacketGSE_downlink;
+    gse_downlink_t* gsdw2 = new gse_downlink_t;
     *gsdw2 = {.tankPressure=12.1, .tankTemperature=12.2,
         .fillingPressure=12.3, *status2,
         .disconnectActive=false, .loadcell_raw=15};

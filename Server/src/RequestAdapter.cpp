@@ -1,4 +1,5 @@
 #include "RequestAdapter.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
 #include "Log.h"
@@ -99,46 +100,46 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   }
 #endif
   case CAPSULE_ID::GSE_TELEMETRY: {
-    PacketGSE_downlink *dataGse = new PacketGSE_downlink;
+    gse_downlink_t *dataGse = new gse_downlink_t;
 
     // Copy the incoming raw data into our packet structure.
-    memcpy(dataGse, data, sizeof(PacketGSE_downlink));
+    memcpy(dataGse, data, gse_downlink_size);
     db->write_pkt(db->process_pkt(NULL, NULL, dataGse));
 
     // Add primitive data members to JSON object
-    jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] =
-        QString::number(static_cast<double>(dataGse->tankPressure));
-    jsonObj[QString::number(GUI_FIELD::GSE_TIMER)] = QString("1");
-    jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] =
-        QString::number(static_cast<double>(dataGse->tankTemperature));
-    jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] =
-        QString::number(static_cast<double>(dataGse->fillingPressure));
-    jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] =
-        QString::number(dataGse->disconnectActive);
-#if RF_PROTOCOL_FIREHORN
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] =
-        QString::number(static_cast<int>(dataGse->loadcell_raw));
-#else
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] =
-        QString::number(static_cast<int>(dataGse->loadcell1));
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] =
-        QString::number(static_cast<int>(dataGse->loadcell2));
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] =
-        QString::number(static_cast<int>(dataGse->loadcell3));
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] =
-        QString::number(static_cast<int>(dataGse->loadcell4));
-#endif
+/*    jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] =*/
+/*        QString::number(static_cast<double>(dataGse->tankPressure));*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_TIMER)] = QString("1");*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] =*/
+/*        QString::number(static_cast<double>(dataGse->tankTemperature));*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] =*/
+/*        QString::number(static_cast<double>(dataGse->fillingPressure));*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] =*/
+/*        QString::number(dataGse->disconnectActive);*/
+/*#if RF_PROTOCOL_FIREHORN*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] =*/
+/*        QString::number(static_cast<int>(dataGse->loadcell_raw));*/
+/*#else*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] =*/
+/*        QString::number(static_cast<int>(dataGse->loadcell1));*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] =*/
+/*        QString::number(static_cast<int>(dataGse->loadcell2));*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] =*/
+/*        QString::number(static_cast<int>(dataGse->loadcell3));*/
+/*    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] =*/
+/*        QString::number(static_cast<int>(dataGse->loadcell4));*/
+/*#endif*/
     // Create a sub-object for status
-    QJsonObject statusObj;
-    statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] =
-        QString::number(static_cast<int>(dataGse->status.fillingN2O));
-    statusObj[QString::number(GUI_FIELD::GSE_VENT)] =
-        QString::number(static_cast<int>(dataGse->status.vent));
-
-    delete dataGse;
-
-    // Add the sub-object to the main JSON object
-    jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;
+    /*QJsonObject statusObj;*/
+    /*statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] =*/
+    /*    QString::number(static_cast<int>(dataGse->status.fillingN2O));*/
+    /*statusObj[QString::number(GUI_FIELD::GSE_VENT)] =*/
+    /*    QString::number(static_cast<int>(dataGse->status.vent));*/
+    /**/
+    /*delete dataGse;*/
+    /**/
+    /*// Add the sub-object to the main JSON object*/
+    /*jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;*/
 
     break;
   }
@@ -295,8 +296,6 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 #if RF_PROTOCOL_FIREHORN
 TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   switch (f) {
-  case GUI_CMD_DISCONNECT:
-    return {CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_CALIBRATE:
     return {AV_CMD_CALIBRATE, CAPSULE_ID::AV_TELEMETRY};
@@ -337,11 +336,6 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::IGNITER_LOX:
     return {AV_CMD_IGNITER_LOX, AV_TELEMETRY};
 
-  case GUI_FIELD::GSE_FILLING_N2O:
-    return {GSE_CMD_FILLING_LOX, GSE_TELEMETRY};
-
-  case GUI_FIELD::GSE_VENT:
-    return {CMD_ID::GSE_CMD_VENT, GSE_TELEMETRY};
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");

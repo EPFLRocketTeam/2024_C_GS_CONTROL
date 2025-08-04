@@ -140,12 +140,12 @@ public:
   this consist of adding id, adding timestamp, adding PacketType
   and returns the Packet ready to be written*/
   Packet process_pkt(av_uplink_t *avup, av_downlink_unpacked *avdw,
-                     PacketGSE_downlink *gsdw);
+                     gse_downlink_t *gsdw);
 
   /*unprocess (only usefull to verify integrity of data in the unit tests)
   takes pkt, unprocess and writes it at the right place (avup, avdw or gsdw)*/
   void unprocess_pkt(Packet pkt, av_uplink_t *avup, av_downlink_unpacked *avdw,
-                     PacketGSE_downlink *gsdw);
+                     gse_downlink_t *gsdw);
   #endif
 
   #if RF_PROTOCOL_ICARUS
@@ -153,12 +153,12 @@ public:
   this consist of adding id, adding timestamp, adding PacketType
   and returns the Packet ready to be written*/
   Packet process_pkt(av_uplink_t *avup, av_downlink_t *avdw,
-                     PacketGSE_downlink *gsdw);
+                     gse_downlink_t *gsdw);
 
   /*unprocess (only usefull to verify integrity of data in the unit tests)
   takes pkt, unprocess and writes it at the right place (avup, avdw or gsdw)*/
   void unprocess_pkt(Packet pkt, av_uplink_t *avup, av_downlink_t *avdw,
-                     PacketGSE_downlink *gsdw);
+                     gse_downlink_t *gsdw);
   #endif
 
 private:

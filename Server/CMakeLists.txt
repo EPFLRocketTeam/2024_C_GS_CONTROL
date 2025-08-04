@@ -9,6 +9,7 @@ set(CMAKE_AUTOMOC ON)
 # Find the required Qt6 components
 find_package(Qt6 COMPONENTS Widgets Core Network SerialPort REQUIRED)
 
+find_package(Qt6HttpServer)
 # Add CapsuleLib
 add_library(CapsuleLib Capsule/src/capsule.h)
 
@@ -47,6 +48,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         Qt6::Core
         Qt6::Network
         Qt6::SerialPort
+        Qt6HttpServer
         sqlite3
         CapsuleLib
         FirehornCommons

@@ -38,8 +38,43 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
     connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
     connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
     setup_db();
-
+    setupHttpServer();
     openSerialPort();
+}
+
+void Server::setupHttpServer() {
+    // Set up REST endpoints
+    
+    // GET endpoint example
+    httpServer.route("/api/status", QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
+        QJsonObject response;
+        response["status"] = "running";
+        response["uptime"] = 12345; // in seconds
+        
+        return QHttpServerResponse(QJsonDocument(response).toJson(), 
+                                  QHttpServerResponse::StatusCode::Ok);
+    });
+    
+    // POST endpoint example
+    httpServer.route("/api/command", QHttpServerRequest::Method::Post, [this](const QHttpServerRequest &request) {
+        QJsonParseError error;
+        QJsonDocument doc = QJsonDocument::fromJson(request.body(), &error);
+        
+        if (error.error != QJsonParseError::NoError) {
+            return QHttpServerResponse("Invalid JSON", 
+                                      QHttpServerResponse::StatusCode::BadRequest);
+        }
+        
+        QJsonObject command = doc.object();
+        // Process the command using your existing handleCommand method
+        handleCommand(command);
+        
+        return QHttpServerResponse("Command received", 
+                                  QHttpServerResponse::StatusCode::Accepted);
+    });
+    
+    // Start the HTTP server on a different port
+    httpServer.listen(QHostAddress::Any, 8080);
 }
 
 
@@ -466,14 +501,13 @@ void Server::simulateJsonData() {
     #endif
 
     std::uniform_int_distribution<int> distBool(0, 1);
-    PacketGSE_downlink gsePacket;
-    gsePacket.tankPressure    = distPressure(gen);
-    gsePacket.tankTemperature = distTemp(gen);
-    gsePacket.fillingPressure = distTemp(gen);
-    gsePacket.status= {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};
-    gsePacket.disconnectActive = static_cast<bool>(distBool(gen));
+    gse_downlink_t gsePacket;
+    gsePacket.GDO_NCC    = distPressure(gen);
+    gsePacket.GDO_NCC = distTemp(gen);
+    gsePacket.GDO_NCC = distTemp(gen);
+    gsePacket.GDO_NCC = static_cast<bool>(distBool(gen));
     #ifdef RF_PROTOCOL_FIREHORN
-    gsePacket.loadcell_raw = distTemp(gen);
+    gsePacket.GDO_NCC = distTemp(gen);
     #endif
     //sqlDatabase->write_pkt(sqlDatabase->process_pkt(NULL,NULL,gsePacket));
     handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
