@@ -23,19 +23,14 @@ void fakeDataHandling();
 
 int start_client(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    QString appDir = QCoreApplication::applicationDirPath();
     ModuleLog logger = ModuleLog("App Launcher", LOG_FILE_PATH);
     #if DEBUG_LOG
     MainLog::setDebugLevel(DEBUG);
     #endif
     Q_INIT_RESOURCE(resources);
-    /*QString resPath = QDir(appDir).absoluteFilePath("../GUI/res/resources.rcc");*/
-    /*if (QResource::registerResource(resPath))*/
-    /*    logger.info("Load Resources", "The resources were loaded");*/
-    /*else */
-    /*    logger.error("Load Resources", "Couldn't register the resources");*/
-    /**/
-    auth::loadKeyFromFile(appDir + "/../GUI/src/.key");
+
+    QString project_root_path = PROJECT_ROOT_PATH;
+    auth::loadKeyFromFile(project_root_path + "/GUI/src/.key");
     RequestBuilder::authorizationKey = auth::key;
     logger.info("Load Authentication Keys", "A Key was found");
 

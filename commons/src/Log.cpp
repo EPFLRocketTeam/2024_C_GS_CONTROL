@@ -74,7 +74,6 @@ MainLog::MainLog()
 {
     filename = filename_;
     create_file();
-    std::cout << "MainLog object created\n";
 }
 
 MainLog::MainLog(std::string _filename) : filename(_filename)
@@ -89,7 +88,6 @@ MainLog::MainLog(std::string _filename, DebugLevel level) : MainLog(_filename) {
 
 MainLog::~MainLog()
 {
-    std::cout << "MainLog object destroyed\n";
 }
 
 // PROTECTED METHODS -----------------------------------------------------------
@@ -176,15 +174,25 @@ void MainLog::append_to_file(std::string filename, std::string content)
         filePath.remove(0, 1);
     }
     QString full_path = appDir + "/" + filePath;
-    // Open the file in append mode
+    
+    // Create directory if it doesn't exist
+    QFileInfo fileInfo(full_path);
+    QDir dir = fileInfo.absoluteDir();
+    if (!dir.exists()) {
+        if (!dir.mkpath(dir.absolutePath())) {
+            std::cerr << "Error creating directory: " << dir.absolutePath().toStdString() << std::endl;
+            return;
+        }
+    }
+
+    // Open the file in append mode (creates file if it doesn't exist)
     std::ofstream file(full_path.toStdString(), std::ios::app);
 
     if (file.is_open()) {
         file << content << "\n";
         file.close();
-
     } else {
-        std::cerr << "Error opening file for appending " << full_path.toStdString() << std::endl;
+        std::cerr << "Error opening file for appending: " << full_path.toStdString() << std::endl;
     }
 }
 

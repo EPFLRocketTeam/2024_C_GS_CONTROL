@@ -19,13 +19,16 @@ set(SOURCES_SERVER
     src/server.cpp
     src/RequestAdapter.cpp
     src/network/RequestHandler.cpp
+    src/data_storage.cpp
 )
 
 set(HEADERS_SERVER
-    src/Setup.h
+    src/ServerSetup.h
     include/Server.h 
     include/RequestHandler.h
     include/RequestAdapter.h
+    include/sqlite_orm.h
+    include/data_storage.h
 )
 
 # Create the library
@@ -47,6 +50,8 @@ target_link_libraries(${PROJECT_NAME}_lib
         sqlite3
         CapsuleLib
         FirehornCommons
+        config_interface
+
 )
 
 # Create the executable
@@ -61,3 +66,47 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
+
+##### data_storage stuff #####
+
+find_package(SQLite3 REQUIRED)
+
+SET(HEADERS_STORAGE
+    include/data_storage.h
+    include/sqlite_orm.h
+)
+SET(SOURCES_STORAGE
+    src/data_storage.cpp
+)
+
+add_library(data_storage_lib STATIC ${SOURCES_STORAGE} ${HEADERS_STORAGE})
+
+# Set include directories for the library
+target_include_directories(data_storage_lib
+    PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(data_storage_lib
+    PRIVATE
+        config_interface
+                Qt6::Core
+
+
+)
+
+file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tests/*_tests.cpp")
+# foreach(_src IN LISTS TEST_SOURCES)
+#   get_filename_component(_name ${_src} NAME_WE)
+#
+#   add_executable(${_name} ${_src})
+#
+#   target_link_libraries(${_name} PRIVATE
+#     gtest_main
+#     data_storage_lib
+#     ${PROJECT_NAME}_lib
+#     SQLite::SQLite3
+#   )
+#
+#   add_test(NAME ${_name} COMMAND ${_name})
+# endforeach()

@@ -105,6 +105,7 @@ namespace ui_elements {
         HOPPER_GIMBAL_Y,
         HOPPER_HV_VOLTAGE,
         HOPPER_AV_TEMP,
+        HOPPER_FIREUP_STATE,
     };
     inline QMap<QString, QList<GUI_FIELD>> data_sections = {
     {"GPS", gps},
@@ -278,7 +279,8 @@ namespace auth {
     inline void loadKeyFromFile(const QString& filePath) {
         QFile file(filePath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            throw std::runtime_error("Failed to open the key file.");
+        std::string error_msg = "Failed to open the keys file at path: " + filePath.toStdString();
+            throw std::runtime_error(error_msg);
         }
 
         QTextStream in(&file);

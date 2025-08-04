@@ -19,6 +19,7 @@ class ToggleButton : public QWidget
 public:
     explicit ToggleButton(GUI_FIELD fieldSensitivity,QWidget *parent = nullptr);
 
+    int fieldSensitivity();
     QSize sizeHint() const override;
 
     bool isChecked() const;

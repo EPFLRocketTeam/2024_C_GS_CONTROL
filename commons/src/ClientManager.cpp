@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QtNetwork/QTcpSocket>
 #include <ostream>
+#include <qglobal.h>
 #include <qt6/QtCore/qtimer.h>
 #include <string>
 #include <unistd.h>
@@ -78,8 +79,8 @@ void ClientManager::readyRead() {
 }
 
 void ClientManager::subscribe(const GUI_FIELD field, CallbackFunction<QString> callback) {
-  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1)").
-                arg(fieldUtil::enumToFieldName(field)).toStdString());
+  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1, on server %2:%3)").
+                arg(fieldUtil::enumToFieldName(field)).arg(serverHost).arg(serverPort).toStdString());
   if (subscriptionsStrings[field].size() == 0)
     sendSubscribeRequest(field);
   // sendSubscribeRequest(field);
@@ -238,6 +239,7 @@ void ClientManager::notifyChildrenFields(const QJsonObject &localObject) {
 
 void ClientManager::send(const QString &data) {
   // send command "serialNameUsed", "serialStatus"
+
   if (socket->state() == QAbstractSocket::UnconnectedState) {
     if (!m_reconnectTimer->isActive()) {
       m_reconnectTimer->start();

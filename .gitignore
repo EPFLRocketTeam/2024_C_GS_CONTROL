@@ -46,6 +46,7 @@ build
 /.vscode
 /GUI/Log/
 
+archives
 Log
 auth_keys.json
 todo.txt

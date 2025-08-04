@@ -116,6 +116,7 @@ enum GUI_FIELD {
   HOPPER_AV_TEMP,      // 8 bits (AV temperature)
   HOPPER_ID_CONFIG,    // 8 bits (configuration ID: PID, flight mode, etc.)
   HOPPER_AV_STATE,     // 8 bits (AV state)
+  HOPPER_FIREUP_STATE,
   UNKNOWN
 };
 
@@ -366,6 +367,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case HOPPER_AV_STATE:
     name = "HOPPER AV STATE";
     break;
+  case HOPPER_FIREUP_STATE:
+    name = "HOPPER FIRE UP STATE";
+    break;
   case GUI_CMD_CALIBRATE:
     name = "CALIBRATE";
     break;
@@ -576,6 +580,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_ID_CONFIG;
   else if (fieldName == "HOPPER AV STATE")
     return HOPPER_AV_STATE;
+  else if (fieldName == "HOPPER FIRE UP STATE")
+    return HOPPER_FIREUP_STATE;
   else if (fieldName == "CALIBRATE")
     return GUI_CMD_CALIBRATE;
   else if (fieldName == "RECOVER")

@@ -9,9 +9,10 @@
 #include <sys/types.h>
 
 #include "ERT_RF_Protocol_Interface/Protocol.h"
+#include "data_storage.h"
 
 
 /*std::string to_string(const av_downlink_t &packet);*/
-std::optional<QJsonObject> parse_packet(uint8_t packetId, uint8_t* data, uint32_t len);
+std::optional<QJsonObject> process_packet (uint8_t packetId, uint8_t* data, uint32_t len, SqliteDB* db);
 
 #endif /* SERVER_H */

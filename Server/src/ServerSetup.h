@@ -1,7 +1,7 @@
 
 
-#ifndef SETUP_H
-#define SETUP_H
+#ifndef SERVERSETUP_H
+#define SERVERSETUP_H
 
 #include <QString>
 #include <vector>
@@ -18,7 +18,7 @@
 #define RF_PROTOCOL_FIREHORN 1
 
 // Generate packets every seconds with random data for part of the fields
-#define SIMULATE_PACKETS true
+#define SIMULATE_PACKETS false
 // Change the debug level to show the debug messages
 #define DEBUG_LOG true
 
@@ -29,7 +29,7 @@
 
 
 // <----------- DO NOT CHANGE ----------->
-namespace auth {
+namespace auth_server {
     typedef struct AuthKey_t {
         QString key;
         uint8_t accessRight; // Access [X X X X X X R W], bit 0 = Write, bit 1 = Read
@@ -41,7 +41,8 @@ namespace auth {
     inline void loadKeysFromFile(const QString& filePath) {
         QFile file(filePath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            throw std::runtime_error("Failed to open the keys file.");
+            std::string error_msg = "Failed to open the keys file at path: " + filePath.toStdString();
+            throw std::runtime_error(error_msg);
         }
 
         QByteArray fileData = file.readAll();
@@ -73,4 +74,4 @@ namespace auth {
     }
 }
 
-#endif
+#endif // END SERVERSETUP_H

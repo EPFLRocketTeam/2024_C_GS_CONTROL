@@ -22,9 +22,10 @@
 #include "../Capsule/src/capsule.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
-#include "Setup.h"
+#include "ServerSetup.h"
 #include "packet_helper.h"
 #include <RequestBuilder.h>
+#include <data_storage.h>
 
 #define DB_ERROR_MESSAGE_PREFIX "The Databse couldn't be open, and produce the following error message"
 
@@ -43,36 +44,19 @@ Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), seri
 
 
 int Server::setup_db() {
-    QString db_path = (QCoreApplication::applicationDirPath() + "/../data.db");
-    int exit = sqlite3_open(db_path.toStdString().c_str(), &database);
-    /*sqlite3* DB; */
-    /*int exit = 0; */
-    /*int res = sqlite3_open("example.db", &DB); */
-
-    if (exit) {
-        const char* db_errmsg = sqlite3_errmsg(database);
-        size_t m_length = 100 + strnlen(db_errmsg, 2000);
-        char* error_message = (char *)calloc(m_length, sizeof(char));
-        snprintf(error_message, m_length, "%s: %s", DB_ERROR_MESSAGE_PREFIX, db_errmsg);
-        _serverLogger.warn("Databse Opening", error_message);
-        free(error_message);
-        database = NULL;
-        return 0;
-    }
-    
-    QString success_message = QString::fromStdString("The Databse was opened succesfuly in the file ") + db_path;
-    _serverLogger.info("Databse Opening", success_message.toStdString());
+    sqlDatabase = new SqliteDB();
     return 1;
 }
 
 
 Server::~Server() {
-    if (database != NULL) {
-        sqlite3_close(database);
-    }
+    close();
+    delete sqlDatabase;
     if (serialPort->isOpen()) {
         serialPort->close();
     }
+    _serverLogger.info("Server Shutdown", "The server properly closed");
+
 }
 
 void Server::openSerialPort() {
@@ -161,7 +145,7 @@ void Server::receiveSubscribe(const QJsonObject &request,  QTcpSocket *senderSoc
     // Handle the subscribe request
     int field = request.value("payload").toObject().value("field").toInt();
 
-    _serverLogger.debug("Subscription", QString(R"(The client %1 is trying to subscribe to %2)")
+    _serverLogger.info("Subscription", QString(R"(The client %1 is trying to subscribe to %2)")
                            .arg((qintptr)senderSocket).arg(fieldUtil::enumToFieldName((GUI_FIELD)field)).toStdString());
 
     if (subscriptionMap[field].contains(senderSocket)) {
@@ -228,7 +212,8 @@ void Server::readyRead() {
                 jsonStr.append("}");
             }
             counter++;
-            
+            _serverLogger.debug("Server", "Here we are");
+            _serverLogger.debug("Server", jsonStr.toStdString());
             requestHandler.handleRequest(jsonStr, senderSocket);
             
         }
@@ -245,6 +230,7 @@ void Server::disconnected() {
         QList<QTcpSocket *> &socketList = subscriptionMap[key];
         socketList.removeOne(senderSocket);
     }
+    _serverLogger.info("ServerConnections", QString(R"(A Clien disconnect with socket %1)").arg(senderSocket->socketDescriptor()).toStdString());
     qDebug() << "Client disconnected: " << senderSocket->socketDescriptor();
     senderSocket->deleteLater();
 }
@@ -337,6 +323,7 @@ void Server::handleCommand(const QJsonObject &command) {
     case GUI_FIELD::SERIAL_NAME_USE: {
         QJsonObject m_payload;
         m_payload[QString::number(GUI_FIELD::SERIAL_NAME_USE)] = serialPort->portName();
+        updateSubscriptions(m_payload);
         break;
         }
 
@@ -344,9 +331,11 @@ void Server::handleCommand(const QJsonObject &command) {
         int order = command["payload"].toObject()["cmd_order"].toInt();
         _serverLogger.info("Received Command", QString(R"(Send command for %1 with value %2)")
                            .arg(fieldUtil::enumToFieldName((GUI_FIELD)f)).arg(order).toStdString());
-        av_uplink_t p;
-        int capsule_id = createUplinkPacketFromRequest((GUI_FIELD)f, order, &p);
-        sendSerialPacket(capsule_id, (uint8_t*) &p, av_uplink_size);
+        av_uplink_t* packet = new av_uplink_t;
+        int capsule_id = createUplinkPacketFromRequest((GUI_FIELD)f, order, packet);
+        sqlDatabase->write_pkt(sqlDatabase->process_pkt(packet,NULL,NULL));
+        sendSerialPacket(capsule_id, (uint8_t*) packet, av_uplink_size);
+        delete packet;
         break;
     }
 }
@@ -364,7 +353,7 @@ void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet, uint32_t size) 
 
 
 void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn, uint32_t len) {
-    std::optional<QJsonObject> result = parse_packet(packetId, dataIn, len);
+    std::optional<QJsonObject> result = process_packet(packetId, dataIn, len, sqlDatabase);
     if (result) {
         QJsonDocument doc(result.value());
         QByteArray jsonData = doc.toJson(QJsonDocument::Indented);
@@ -454,6 +443,28 @@ void Server::simulateJsonData() {
     handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
     #endif
 
+    #ifdef RF_PROTOCOL_ICARUS
+    av_downlink_t packet;
+    packet.packet_nbr = 110;
+    packet.gnss_lon = distCoord(gen);
+    packet.gnss_lat = distCoord(gen);
+    packet.baro = distAlt(gen);
+    packet.N2_solenoid = static_cast<int8_t>(distState(gen));
+    packet.N2O_main = distPressure(gen);
+    packet.N2O_vent = distPressure(gen);
+    packet.N2O_temp = distPressure(gen);
+    packet.N2O_pressure = distPressure(gen);
+    packet.ETH_main = distState(gen);
+    packet.ETH_vent = distState(gen);
+    packet.ETH_pressure = static_cast<int16_t>(distTemp(gen));
+    packet.acc_x = static_cast<int16_t>(distTemp(gen));
+    packet.acc_y = static_cast<int16_t>(distTemp(gen));
+    packet.acc_z = distVoltage(gen);
+    packet.HV_voltage = distVoltage(gen);
+    packet.Fire_up_state = 10;
+    handleSerialPacket(CAPSULE_ID::HOPPER_TELEMETRY, (uint8_t *)&packet, sizeof(packet));
+    #endif
+
     std::uniform_int_distribution<int> distBool(0, 1);
     PacketGSE_downlink gsePacket;
     gsePacket.tankPressure    = distPressure(gen);
@@ -464,5 +475,6 @@ void Server::simulateJsonData() {
     #ifdef RF_PROTOCOL_FIREHORN
     gsePacket.loadcell_raw = distTemp(gen);
     #endif
+    //sqlDatabase->write_pkt(sqlDatabase->process_pkt(NULL,NULL,gsePacket));
     handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket, sizeof(gsePacket));
 }

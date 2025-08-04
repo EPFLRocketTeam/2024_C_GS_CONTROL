@@ -12,12 +12,18 @@
 #include "RequestBuilder.h"
 #include "RequestHandler.h"
 #include "../Capsule/src/capsule.h"
+#include "data_storage.h"
 
 #include "Log.h"
 
 class Server : public QTcpServer {
     Q_OBJECT
 
+    friend class BaseIntegrationTest;
+    friend class DataLabelTest;
+    friend class FullIntegrationTest;
+    friend class ToggleButtonTest;
+    friend class CommandButtonTest;
 public:
     Server(QObject *parent = nullptr);
     void sendToAllClients(const QByteArray &data);
@@ -54,6 +60,8 @@ private:
     QMap<int, QList<QTcpSocket *>> subscriptionMap;
     QList<QTcpSocket *> clients;
     sqlite3 *database;
+    SqliteDB *sqlDatabase;
+    
     
     QSerialPort *serialPort;
     RequestHandler requestHandler;

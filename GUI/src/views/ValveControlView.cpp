@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QtSvg/QSvgRenderer>
+#include <qglobal.h>
 #include <qnamespace.h>
 #include <qsvgrenderer.h>
 

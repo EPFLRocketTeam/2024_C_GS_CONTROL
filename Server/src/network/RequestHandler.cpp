@@ -3,7 +3,7 @@
 #include "RequestHandler.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include "../Setup.h"
+#include "../ServerSetup.h"
 
 RequestHandler::RequestHandler(QObject *parent) : QObject(parent) {}
 
@@ -20,7 +20,7 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
     int found = 0;
     int readBit = 0;
     int writeBit = 0;
-    for (auth::AuthKey key : auth::validKeys) {
+    for (auth_server::AuthKey key : auth_server::validKeys) {
         if (key.key == json["Authorization"].toString()) {
             found = 1;
             readBit = (key.accessRight >> 1) & 0x1;

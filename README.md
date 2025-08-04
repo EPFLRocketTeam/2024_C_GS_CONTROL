@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="200" src="https://github.com/LaGSdeKarlHeinz/Control/actions/workflows/main.yml/badge.svg" alt="Test bage">
+    <img width="200" src="https://github.com/EPFLRocketTeam/2024_C_GS_CONTROL/actions/workflows/main.yml/badge.svg" alt="Test bage">
 </p>
 
 # Installation 
