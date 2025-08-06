@@ -111,7 +111,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     break;
   }
 #if RF_PROTOCOL_ICARUS
-        case CAPSULE_ID::HOPPER_TELEMETRY: {
+  case CAPSULE_ID::HOPPER_TELEMETRY: {
 
     // Make sure the incoming data is at least the size of the Hopper packet.
     if (len < av_downlink_size) {
@@ -204,35 +204,32 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
 
 #if RF_PROTOCOL_ICARUS
 void populateGseJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
-    // Add primitive data members to JSON object
-    jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] =
-        QString::number(static_cast<double>(dataGse->tankPressure));
-    jsonObj[QString::number(GUI_FIELD::GSE_TIMER)] = QString("1");
-    jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] =
-        QString::number(static_cast<double>(dataGse->tankTemperature));
-    jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] =
-        QString::number(static_cast<double>(dataGse->fillingPressure));
-    jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] =
-        QString::number(dataGse->disconnectActive);
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] =
-        QString::number(static_cast<int>(dataGse->loadcell1));
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] =
-        QString::number(static_cast<int>(dataGse->loadcell2));
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] =
-        QString::number(static_cast<int>(dataGse->loadcell3));
-    jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] =
-        QString::number(static_cast<int>(dataGse->loadcell4));
-    // Create a sub-object for status
-    QJsonObject statusObj;
-    statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] =
-        QString::number(static_cast<int>(dataGse->status.fillingN2O));
-    statusObj[QString::number(GUI_FIELD::GSE_VENT)] =
-        QString::number(static_cast<int>(dataGse->status.vent));
-    jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;
-
-
+  // Add primitive data members to JSON object
+  jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] =
+      QString::number(static_cast<double>(dataGse->tankPressure));
+  jsonObj[QString::number(GUI_FIELD::GSE_TIMER)] = QString("1");
+  jsonObj[QString::number(GUI_FIELD::GSE_TANK_TEMPERATURE)] =
+      QString::number(static_cast<double>(dataGse->tankTemperature));
+  jsonObj[QString::number(GUI_FIELD::GSE_FILLING_PRESSURE)] =
+      QString::number(static_cast<double>(dataGse->fillingPressure));
+  jsonObj[QString::number(GUI_FIELD::GSE_DISCONNECT_ACTIVE)] =
+      QString::number(dataGse->disconnectActive);
+  jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_1)] =
+      QString::number(static_cast<int>(dataGse->loadcell1));
+  jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_2)] =
+      QString::number(static_cast<int>(dataGse->loadcell2));
+  jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_3)] =
+      QString::number(static_cast<int>(dataGse->loadcell3));
+  jsonObj[QString::number(GUI_FIELD::GSE_LOADCELL_4)] =
+      QString::number(static_cast<int>(dataGse->loadcell4));
+  // Create a sub-object for status
+  QJsonObject statusObj;
+  statusObj[QString::number(GUI_FIELD::GSE_FILLING_N2O)] =
+      QString::number(static_cast<int>(dataGse->status.fillingN2O));
+  statusObj[QString::number(GUI_FIELD::GSE_VENT)] =
+      QString::number(static_cast<int>(dataGse->status.vent));
+  jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;
 }
-
 
 TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   switch (f) {
@@ -293,33 +290,44 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 
 #if RF_PROTOCOL_FIREHORN
 void populateGseJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
-    // uint8_t fields - cast to unsigned int
-    jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC1)] = QString::number(static_cast<unsigned int>(dataGse->GQN_NC1));
-    jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC2)] = QString::number(static_cast<unsigned int>(dataGse->GQN_NC2));
-    jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC3)] = QString::number(static_cast<unsigned int>(dataGse->GQN_NC3));
-    jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC4)] = QString::number(static_cast<unsigned int>(dataGse->GQN_NC4));
-    jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC5)] = QString::number(static_cast<unsigned int>(dataGse->GQN_NC5));
-    jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC1)] = QString::number(static_cast<unsigned int>(dataGse->GPN_NC1));
-    jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC2)] = QString::number(static_cast<unsigned int>(dataGse->GPN_NC2));
-    jsonObj[QString::number(GUI_FIELD::GSE_GVN_NC)]  = QString::number(static_cast<unsigned int>(dataGse->GVN_NC));
-    jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)]  = QString::number(static_cast<unsigned int>(dataGse->GFE_NC));
-    jsonObj[QString::number(GUI_FIELD::GSE_GFO_NCC)] = QString::number(static_cast<unsigned int>(dataGse->GFO_NCC));
-    jsonObj[QString::number(GUI_FIELD::GSE_GDO_NCC)] = QString::number(static_cast<unsigned int>(dataGse->GDO_NCC));
-    jsonObj[QString::number(GUI_FIELD::GSE_PC_OLC)]  = QString::number(static_cast<unsigned int>(dataGse->PC_OLC));
+  // uint8_t fields - cast to unsigned int
+  jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC1)] =
+      QString::number(static_cast<unsigned int>(dataGse->GQN_NC1));
+  jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC2)] =
+      QString::number(static_cast<unsigned int>(dataGse->GQN_NC2));
+  jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC3)] =
+      QString::number(static_cast<unsigned int>(dataGse->GQN_NC3));
+  jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC4)] =
+      QString::number(static_cast<unsigned int>(dataGse->GQN_NC4));
+  jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC5)] =
+      QString::number(static_cast<unsigned int>(dataGse->GQN_NC5));
+  jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC1)] =
+      QString::number(static_cast<unsigned int>(dataGse->GPN_NC1));
+  jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC2)] =
+      QString::number(static_cast<unsigned int>(dataGse->GPN_NC2));
+  jsonObj[QString::number(GUI_FIELD::GSE_GVN_NC)] =
+      QString::number(static_cast<unsigned int>(dataGse->GVN_NC));
+  jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)] =
+      QString::number(static_cast<unsigned int>(dataGse->GFE_NC));
+  jsonObj[QString::number(GUI_FIELD::GSE_GFO_NCC)] =
+      QString::number(static_cast<unsigned int>(dataGse->GFO_NCC));
+  jsonObj[QString::number(GUI_FIELD::GSE_GDO_NCC)] =
+      QString::number(static_cast<unsigned int>(dataGse->GDO_NCC));
+  jsonObj[QString::number(GUI_FIELD::GSE_PC_OLC)] =
+      QString::number(static_cast<unsigned int>(dataGse->PC_OLC));
 
-    // float fields - no cast needed, QString::number handles float directly
-    jsonObj[QString::number(GUI_FIELD::GSE_GP1)] = QString::number(dataGse->GP1);
-    jsonObj[QString::number(GUI_FIELD::GSE_GP2)] = QString::number(dataGse->GP2);
-    jsonObj[QString::number(GUI_FIELD::GSE_GP3)] = QString::number(dataGse->GP3);
-    jsonObj[QString::number(GUI_FIELD::GSE_GP4)] = QString::number(dataGse->GP4);
-    jsonObj[QString::number(GUI_FIELD::GSE_GP5)] = QString::number(dataGse->GP5);
+  // float fields - no cast needed, QString::number handles float directly
+  jsonObj[QString::number(GUI_FIELD::GSE_GP1)] = QString::number(dataGse->GP1);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP2)] = QString::number(dataGse->GP2);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP3)] = QString::number(dataGse->GP3);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP4)] = QString::number(dataGse->GP4);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP5)] = QString::number(dataGse->GP5);
 }
-
 
 TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   switch (f) {
-  /*case GUI_CMD_DISCONNECT:*/
-  /*  return {CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY};*/
+    /*case GUI_CMD_DISCONNECT:*/
+    /*  return {CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY};*/
 
   case GUI_FIELD::GUI_CMD_CALIBRATE:
     return {AV_CMD_CALIBRATE, CAPSULE_ID::AV_TELEMETRY};
@@ -360,11 +368,54 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::IGNITER_LOX:
     return {AV_CMD_IGNITER_LOX, AV_TELEMETRY};
 
-  /*case GUI_FIELD::GSE_FILLING_N2O:*/
-  /*  return {GSE_CMD_FILLING_LOX, GSE_TELEMETRY};*/
-  /**/
-  /*case GUI_FIELD::GSE_VENT:*/
-  /*  return {CMD_ID::GSE_CMD_VENT, GSE_TELEMETRY};*/
+  case GUI_FIELD::GUI_CMD_GSE_IDLE:
+    return {GSE_CMD_IDLE, GSE_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_CALIBRATE:
+    return {GSE_CMD_CALIBRATE, GSE_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_ARM:
+    return {GSE_CMD_ARM, GSE_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_PASSIVATE:
+
+    return {GSE_CMD_PASSIVATE, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC1:
+    return {GSE_CMD_TOGGLE_11, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC2:
+    return {GSE_CMD_TOGGLE_12, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC3:
+    return {GSE_CMD_TOGGLE_13, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC4:
+    return {GSE_CMD_TOGGLE_14, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC5:
+    return {GSE_CMD_TOGGLE_15, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GPN_NC1:
+    return {GSE_CMD_TOGGLE_16, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GPN_NC2:
+    return {GSE_CMD_TOGGLE_21, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GVN_NC:
+    return {GSE_CMD_TOGGLE_22, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GFE_NC:
+    return {GSE_CMD_TOGGLE_23, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GFO_NCC:
+    return {GSE_CMD_TOGGLE_24, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GDO_NCC:
+    return {GSE_CMD_TOGGLE_25, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_PC_OLC:
+    return {GSE_CMD_TOGGLE_27, GSE_TELEMETRY};
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");

@@ -11,7 +11,8 @@ class GSEWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit GSEWindow(QWidget *parent = nullptr);
+    GSEWindow(QWidget *parent = nullptr);
+    virtual ~GSEWindow() {};
 
 private:
     void setupUI();

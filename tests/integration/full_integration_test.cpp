@@ -20,7 +20,12 @@ class FullIntegrationTest : public BaseIntegrationTest {
 
 private slots:
   void test_mainWindow_creation() {
-    MainWindow window;
+
+    ui_elements::init_views();
+    MainWindow window(
+        nullptr, &ui_elements::controlMap, ui_elements::leftPlaceholder,
+        ui_elements::middlePlaceholder, ui_elements::rightPlaceholder);
+
     Q_INIT_RESOURCE(resources);
     window.show();
 
@@ -34,14 +39,14 @@ private slots:
 
   void test_mainWindow_buttonClickSendsCommand() {
     // 1) Create & show the main window
-    MainWindow window;
+    ui_elements::init_views();
+
+    MainWindow window(
+        nullptr, &ui_elements::controlMap, ui_elements::leftPlaceholder,
+        ui_elements::middlePlaceholder, ui_elements::rightPlaceholder);
     Q_INIT_RESOURCE(resources);
     window.show();
     int tmp = QTest::qWaitForWindowExposed(&window);
-
-    qDebug() << "Before wiat";
-    // Give some time for the window to fully initialize
-    qDebug() << "After wiat";
 
     // 2) Find all ValveControlButton children
     auto valves = window.findChildren<ValveControlButton *>();
@@ -70,17 +75,24 @@ private slots:
     // 4) Get the ToggleButton child
     auto *tb = targetVcb->findChild<ToggleButton *>();
     QVERIFY(tb);
+    QVERIFY(tb != nullptr);
+    QVERIFY(tb->isVisible());
+    QVERIFY(tb->isEnabled());
+    QVERIFY(tb->window()->isActiveWindow());
+    qDebug() << "ToggleButton parent:" << tb->parent();
+    qDebug() << "ToggleButton window:" << tb->window();
 
     // 5) Ensure widgets are properly set up
     targetVcb->ensurePolished();
     tb->ensurePolished();
+    QApplication::processEvents();
     QVERIFY(targetVcb->isVisible());
     QVERIFY(targetVcb->isEnabled());
     QVERIFY(tb->isVisible());
     QVERIFY(tb->isEnabled());
 
     // Debug info
-    qDebug() << "ToggleButton geometry:" << tb->geometry();
+    qDebug() << "ToggleButton geometry:" << tb->rect().center();
     qDebug() << "ValveControlButton geometry:" << targetVcb->geometry();
     qDebug() << "ToggleButton field sensitivity:" << tb->fieldSensitivity();
 
@@ -91,18 +103,26 @@ private slots:
 
     // 7) Click the ValveControlButton
     QTest::mouseClick(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center());
-
+    /*QTest::mousePress(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center());*/
+    /*QTest::mouseRelease(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center(), 100);*/
+    
+    
     // QTest::mousePress(tb, Qt::LeftButton, Qt::NoModifier,
     //                   tb->rect().center());
-    qDebug() << "AFTER";
+    qDebug() << "Clicked the button";
     // 8) Wait for the server's post signal
     QVERIFY2(waitForPost(2000), "No post signal received within timeout");
 
+    qDebug() << "Received a post ";
     // 9) Debug the spy contents
     // DumpSpySignal(postSpy);
 
     QVERIFY2(hasPostCommand(GUI_FIELD::MAIN_LOX, 1),
              "Expected MAIN_LOX toggle-on command not found");
+    QApplication::processEvents();
+    QTest::qWait(100);
+    return;
+
   }
 };
 

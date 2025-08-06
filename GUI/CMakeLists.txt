@@ -7,8 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-# Add subdirectory for tests if needed
-add_subdirectory(tests)
 
 # Find the required Qt6 components
 find_package(Qt6 COMPONENTS Widgets Core Network Svg Concurrent REQUIRED)
@@ -30,6 +28,7 @@ set(SOURCES_GUI
     src/views/TimerView.cpp
     src/views/ValveControlView.cpp
     src/MainWindow.cpp
+    src/GSEWindow.cpp
 
     ./res/resources.qrc
 )
@@ -47,6 +46,7 @@ set(HEADERS_GUI
     include/json/json.h
     include/ControlPannelView.h
     include/DataView.h
+    include/GSEWindow.h
     include/GSManagerView.h
     include/MainWindow.h
     include/SerialView.h

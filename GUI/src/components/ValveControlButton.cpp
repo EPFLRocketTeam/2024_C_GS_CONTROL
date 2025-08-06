@@ -92,7 +92,7 @@ ValveControlButton::ValveControlButton(GUI_FIELD valveField, QWidget *parent) : 
     
     
     toggleButton = new ToggleButton(valveField, this);
-    refreshLabel = new CLickableIcon(":/icons/refresh-icon.png", this);
+    /*refreshLabel = new CLickableIcon(":/icons/refresh-icon.png", this);*/
 
 
     // Set up layout
@@ -101,7 +101,7 @@ ValveControlButton::ValveControlButton(GUI_FIELD valveField, QWidget *parent) : 
     
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addWidget(toggleButton);
-    buttonsLayout->addWidget(refreshLabel);
+    /*buttonsLayout->addWidget(refreshLabel);*/
     
     mainLayout->addLayout(buttonsLayout);
     mainLayout->setAlignment(Qt::AlignTop);
@@ -110,8 +110,8 @@ ValveControlButton::ValveControlButton(GUI_FIELD valveField, QWidget *parent) : 
     setLayout(mainLayout);
 
     connect(toggleButton, &ToggleButton::toggled, this, &ValveControlButton::valveToggled);
-    connect(refreshLabel, &CLickableIcon::clicked, this, &ValveControlButton::refreshClicked);
-    refreshLabel->setCursor(Qt::PointingHandCursor); // Change cursor to hand cursor for hover effect
+    /*connect(refreshLabel, &CLickableIcon::clicked, this, &ValveControlButton::refreshClicked);*/
+    /*refreshLabel->setCursor(Qt::PointingHandCursor); // Change cursor to hand cursor for hover effect*/
 }
 
 QSize ValveControlButton::sizeHint() const

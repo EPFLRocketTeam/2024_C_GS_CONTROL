@@ -131,7 +131,6 @@ struct GSE_downlink_pkt {
 };
 #endif
 
-
 typedef struct {
   PacketType type;
   AV_uplink_pkt *av_up_pkt;
@@ -258,27 +257,27 @@ private:
           sqlite_orm::make_column("av_state", &AV_downlink_pkt::av_state),
           sqlite_orm::make_column("cam_rec", &AV_downlink_pkt::cam_rec)),
       sqlite_orm::make_table<GSE_downlink_pkt>(
-    "GSE_DOWNLINK",
-    sqlite_orm::make_column("id", &GSE_downlink_pkt::id,
-                            sqlite_orm::primary_key()),
-    sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
-    sqlite_orm::make_column("GQN_NC1", &GSE_downlink_pkt::GQN_NC1),
-    sqlite_orm::make_column("GQN_NC2", &GSE_downlink_pkt::GQN_NC2),
-    sqlite_orm::make_column("GQN_NC3", &GSE_downlink_pkt::GQN_NC3),
-    sqlite_orm::make_column("GQN_NC4", &GSE_downlink_pkt::GQN_NC4),
-    sqlite_orm::make_column("GQN_NC5", &GSE_downlink_pkt::GQN_NC5),
-    sqlite_orm::make_column("GPN_NC1", &GSE_downlink_pkt::GPN_NC1),
-    sqlite_orm::make_column("GPN_NC2", &GSE_downlink_pkt::GPN_NC2),
-    sqlite_orm::make_column("GVN_NC", &GSE_downlink_pkt::GVN_NC),
-    sqlite_orm::make_column("GFE_NC", &GSE_downlink_pkt::GFE_NC),
-    sqlite_orm::make_column("GFO_NCC", &GSE_downlink_pkt::GFO_NCC),
-    sqlite_orm::make_column("GDO_NCC", &GSE_downlink_pkt::GDO_NCC),
-    sqlite_orm::make_column("PC_OLC", &GSE_downlink_pkt::PC_OLC),
-    sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),
-    sqlite_orm::make_column("GP2", &GSE_downlink_pkt::GP2),
-    sqlite_orm::make_column("GP3", &GSE_downlink_pkt::GP3),
-    sqlite_orm::make_column("GP4", &GSE_downlink_pkt::GP4),
-    sqlite_orm::make_column("GP5", &GSE_downlink_pkt::GP5))));
+          "GSE_DOWNLINK",
+          sqlite_orm::make_column("id", &GSE_downlink_pkt::id,
+                                  sqlite_orm::primary_key()),
+          sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
+          sqlite_orm::make_column("GQN_NC1", &GSE_downlink_pkt::GQN_NC1),
+          sqlite_orm::make_column("GQN_NC2", &GSE_downlink_pkt::GQN_NC2),
+          sqlite_orm::make_column("GQN_NC3", &GSE_downlink_pkt::GQN_NC3),
+          sqlite_orm::make_column("GQN_NC4", &GSE_downlink_pkt::GQN_NC4),
+          sqlite_orm::make_column("GQN_NC5", &GSE_downlink_pkt::GQN_NC5),
+          sqlite_orm::make_column("GPN_NC1", &GSE_downlink_pkt::GPN_NC1),
+          sqlite_orm::make_column("GPN_NC2", &GSE_downlink_pkt::GPN_NC2),
+          sqlite_orm::make_column("GVN_NC", &GSE_downlink_pkt::GVN_NC),
+          sqlite_orm::make_column("GFE_NC", &GSE_downlink_pkt::GFE_NC),
+          sqlite_orm::make_column("GFO_NCC", &GSE_downlink_pkt::GFO_NCC),
+          sqlite_orm::make_column("GDO_NCC", &GSE_downlink_pkt::GDO_NCC),
+          sqlite_orm::make_column("PC_OLC", &GSE_downlink_pkt::PC_OLC),
+          sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),
+          sqlite_orm::make_column("GP2", &GSE_downlink_pkt::GP2),
+          sqlite_orm::make_column("GP3", &GSE_downlink_pkt::GP3),
+          sqlite_orm::make_column("GP4", &GSE_downlink_pkt::GP4),
+          sqlite_orm::make_column("GP5", &GSE_downlink_pkt::GP5))));
 #else
   using Storage = decltype(sqlite_orm::make_storage(
       PATH_TO_DB,
