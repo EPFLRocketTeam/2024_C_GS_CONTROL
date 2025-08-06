@@ -12,6 +12,7 @@
 #include <qabstractscrollarea.h>
 #include <QScrollBar>
 
+/*#include "GSEWindow.h"*/
 #include "Setup.h"
 #include "MainWindow.h"
 #include "ControlPannelView.h"
@@ -32,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     centralLayout->addLayout(sectionsLayout);
     _logger.debug("MainWindow", "Setup finished");
     
+    /*GSEWindow* gseWindow = new GSEWindow;*/
+    /*gseWindow->show();*/
 }
 
 

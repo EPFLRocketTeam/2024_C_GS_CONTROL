@@ -1,3 +1,4 @@
+#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "data_storage.h"
 #include <gtest/gtest.h>
 
@@ -26,13 +27,12 @@ av_downlink_unpacked* get_avdw() {
         .av_state=27, .cam_rec=28};
     return avdw;
 }
-PacketGSE_downlink* get_gsdw() {
-    GSE_cmd_status* status = new GSE_cmd_status;
-    *status = {.fillingN2O=12, .vent=13};
-    PacketGSE_downlink* gsdw = new PacketGSE_downlink;
-    *gsdw = {.tankPressure=11.123456789, .tankTemperature=11.2,
-        .fillingPressure=11.3, *status,
-        .disconnectActive=true, .loadcell_raw=14};
+gse_downlink_t* get_gsdw() {
+    gse_downlink_t* gsdw = new gse_downlink_t;
+    *gsdw = {.GQN_NC1=0, .GQN_NC2=0, .GQN_NC3=0, .GQN_NC4=0,
+             .GQN_NC5=0, .GPN_NC1=111, .GPN_NC2=98, .GVN_NC=0,
+             .GFE_NC=0, .GFO_NCC=0, .GDO_NCC=0, .PC_OLC=0,
+             .GP1=11.3f, .GP2=231.2654f, .GP3=0.0f, .GP4=0.0f, .GP5=0.0f};
     return gsdw;
 }
 
@@ -65,15 +65,29 @@ void equal_avdw(av_downlink_unpacked* avdw1, av_downlink_unpacked* avdw2) {
     EXPECT_EQ(avdw1->N2_temp, avdw2->N2_temp);
     EXPECT_EQ(avdw1->packet_nbr, avdw2->packet_nbr);
 }
-void equal_gsdw(PacketGSE_downlink* gsdw1, PacketGSE_downlink* gsdw2) {
+void equal_gsdw(gse_downlink_t* gsdw1, gse_downlink_t* gsdw2) {
     printf("equal_gsdw called\n");
-    EXPECT_EQ(gsdw1->disconnectActive, gsdw2->disconnectActive);
-    EXPECT_EQ(gsdw1->fillingPressure, gsdw2->fillingPressure);
-    EXPECT_EQ(gsdw1->loadcell_raw, gsdw2->loadcell_raw);
-    EXPECT_EQ(gsdw1->tankPressure, gsdw2->tankPressure);
-    EXPECT_EQ(gsdw1->tankTemperature, gsdw2->tankTemperature);
-    EXPECT_EQ(gsdw1->status.fillingN2O, gsdw2->status.fillingN2O);
-    EXPECT_EQ(gsdw1->status.vent, gsdw2->status.vent);
+    
+    // uint8_t fields
+    EXPECT_EQ(gsdw1->GQN_NC1, gsdw2->GQN_NC1);
+    EXPECT_EQ(gsdw1->GQN_NC2, gsdw2->GQN_NC2);
+    EXPECT_EQ(gsdw1->GQN_NC3, gsdw2->GQN_NC3);
+    EXPECT_EQ(gsdw1->GQN_NC4, gsdw2->GQN_NC4);
+    EXPECT_EQ(gsdw1->GQN_NC5, gsdw2->GQN_NC5);
+    EXPECT_EQ(gsdw1->GPN_NC1, gsdw2->GPN_NC1);
+    EXPECT_EQ(gsdw1->GPN_NC2, gsdw2->GPN_NC2);
+    EXPECT_EQ(gsdw1->GVN_NC, gsdw2->GVN_NC);
+    EXPECT_EQ(gsdw1->GFE_NC, gsdw2->GFE_NC);
+    EXPECT_EQ(gsdw1->GFO_NCC, gsdw2->GFO_NCC);
+    EXPECT_EQ(gsdw1->GDO_NCC, gsdw2->GDO_NCC);
+    EXPECT_EQ(gsdw1->PC_OLC, gsdw2->PC_OLC);
+    
+    // float fields
+    EXPECT_EQ(gsdw1->GP1, gsdw2->GP1);
+    EXPECT_EQ(gsdw1->GP2, gsdw2->GP2);
+    EXPECT_EQ(gsdw1->GP3, gsdw2->GP3);
+    EXPECT_EQ(gsdw1->GP4, gsdw2->GP4);
+    EXPECT_EQ(gsdw1->GP5, gsdw2->GP5);
 }
 
 /* UNIT TESTS (if the google tests don't run, comment the manual tests) */
@@ -101,11 +115,11 @@ TEST(readWriteTest, singleAvdwByIndex) {
 }
 TEST(readWriteTest, singleGsdwByIndex) {
     SqliteDB* db = get_db();
-    PacketGSE_downlink* gsdw = get_gsdw();
+    gse_downlink_t* gsdw = get_gsdw();
     db->write_pkt(db->process_pkt(NULL,NULL,gsdw));
     delete db;
     SqliteDB* newdb = get_db();
-    PacketGSE_downlink* gsdwRead = new PacketGSE_downlink;
+    gse_downlink_t* gsdwRead = new gse_downlink_t;
     Packet packet = newdb->read_pkt(GSE_DOWNLINK, 0);
     newdb->unprocess_pkt(packet, NULL, NULL, gsdwRead);
     equal_gsdw(gsdw, gsdwRead);
@@ -173,7 +187,7 @@ TEST(readWriteTest, severalAvdwAtOnce) {
 TEST(readWriteTest, severalGsdwAtOnce) {
     int nbrPkt = 200;
     SqliteDB* db = get_db();
-    std::vector<PacketGSE_downlink*> gsdws;
+    std::vector<gse_downlink_t*> gsdws;
     gsdws.resize(nbrPkt);
     for (int i=0; i<nbrPkt; i++) {
         printf("i = %d\n", i);
@@ -186,10 +200,10 @@ TEST(readWriteTest, severalGsdwAtOnce) {
     std::vector<GSE_downlink_pkt> gsdwsRawRead;
     gsdwsRawRead.resize(nbrPkt);
     gsdwsRawRead = newdb->read_all_gsdw();
-    std::vector<PacketGSE_downlink*> gsdwsRead;
+    std::vector<gse_downlink_t*> gsdwsRead;
     gsdwsRead.resize(nbrPkt);
     for (auto& ptr : gsdwsRead) {
-        ptr = new PacketGSE_downlink;
+        ptr = new gse_downlink_t;
     }
     for (int i=0; i<nbrPkt; i++) {
         Packet pkt = (Packet){.type=GSE_DOWNLINK, NULL,NULL,.gse_down_pkt=&gsdwsRawRead[i]};

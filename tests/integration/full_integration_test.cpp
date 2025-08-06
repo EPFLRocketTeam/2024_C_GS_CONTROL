@@ -37,7 +37,7 @@ private slots:
     MainWindow window;
     Q_INIT_RESOURCE(resources);
     window.show();
-    QTest::qWaitForWindowExposed(&window);
+    int tmp = QTest::qWaitForWindowExposed(&window);
 
     qDebug() << "Before wiat";
     // Give some time for the window to fully initialize

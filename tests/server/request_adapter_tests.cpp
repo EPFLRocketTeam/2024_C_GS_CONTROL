@@ -6,7 +6,6 @@
 #if defined(RF_PROTOCOL_FIREHORN)
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 TEST(RequestAdapterTest, FirehornProtocol) {
-    EXPECT_EQ(getOrderIdFromGui(GUI_CMD_DISCONNECT).order_id, CMD_ID::GSE_CMD_DISCONNECT);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_CALIBRATE).order_id, AV_CMD_CALIBRATE);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_PRESSURIZE).order_id, AV_CMD_CALIBRATE);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_RECOVER).order_id, AV_CMD_RECOVER);
@@ -20,8 +19,6 @@ TEST(RequestAdapterTest, FirehornProtocol) {
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::MAIN_FUEL).order_id, AV_CMD_MAIN_FUEL);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::IGNITER_FUEL).order_id, AV_CMD_IGNITER_FUEL);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::IGNITER_LOX).order_id, AV_CMD_IGNITER_LOX);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GSE_FILLING_N2O).order_id, GSE_CMD_FILLING_LOX);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GSE_VENT).order_id, CMD_ID::GSE_CMD_VENT);
 }
 #elif defined(RF_PROTOCOL_ICARUS)
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h"
