@@ -94,12 +94,11 @@ foreach(_src IN LISTS INTEGRATION_TEST_SOURCES)
     )
 endforeach()
 
-
 add_custom_target(check
   COMMENT "Building everything then running all tests…"
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   # 1) build any out-of-date targets
   COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}
   # 2) run ctest with verbose output on failure
-  COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+  COMMAND ctest --output-on-failure -j1
 )

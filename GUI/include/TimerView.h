@@ -15,7 +15,7 @@ public:
     
     TimerView(QString title, GUI_FIELD field, QWidget *parent = nullptr);
 
-    virtual ~TimerView() {}
+    ~TimerView() override = default;
 
 private slots:
     void updateTimer1();

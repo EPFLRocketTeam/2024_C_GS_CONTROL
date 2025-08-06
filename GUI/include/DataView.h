@@ -16,8 +16,7 @@ class DataView : public QFrame {
 
 public:
     DataView(std::unique_ptr<QWidget> parent = nullptr);
-    
-    virtual ~DataView() {};
+    ~DataView() override = default;
 
 private:
     std::unique_ptr<QLabel> displayText;
