@@ -55,6 +55,8 @@ private:
 
     int sendDataToSocket(QTcpSocket * socket, RequestBuilder request);
     void handleCommand(const QJsonObject &command);
+    void abort_loop();
+    int abort_initiated = 0;
     
 
     QMap<int, QList<QTcpSocket *>> subscriptionMap;

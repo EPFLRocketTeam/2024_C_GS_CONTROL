@@ -30,5 +30,6 @@
         <file>images/prop_firehorn_disconnect.svg</file>
 	<file>images/svgviewer-output.svg</file>
 	<file>images/fixed_prop_diagram_firehorn.svg</file>
+	<file>images/gse_plumbing.svg</file>
     </qresource>
 </RCC>

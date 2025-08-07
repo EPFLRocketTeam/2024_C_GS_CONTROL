@@ -292,8 +292,8 @@ inline void init_views() {
   middlePlaceholder = new ValveControlView(
       valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
   gseMiddlePlaceholder =
-      new ValveControlView(gseValves, gseLabels, connectedBackgroundImage,
-                           disconnectedBackgroundImage);
+      new ValveControlView(gseValves, gseLabels, ":/images/gse_plumbing.svg",
+                           ":/images/gse_plumbing.svg");
 
   leftPlaceholder = new TelemetryView(data_sections);
   QVBoxLayout *rightLayout = new QVBoxLayout;
