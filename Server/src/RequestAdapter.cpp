@@ -196,9 +196,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     break;
   }
 #endif
-  case CAPSULE_ID::ABORT_BOARD:
+  case CAPSULE_ID::ABORT_BOARD:{
     jsonObj["ABORT"] = "ABORT";
     break;
+    }
   default:
     return std::nullopt;
   }
