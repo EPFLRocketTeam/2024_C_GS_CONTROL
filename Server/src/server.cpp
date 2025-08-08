@@ -412,6 +412,7 @@ void Server::abort_loop() {
     sendSerialPacket(capsule_id, (uint8_t *)packet, av_uplink_size);
   });
   timer->start(1000);
+  _packetLogger.info("ABORT Received", "Abort loop initiated");
   abort_initiated = 1;
 }
 
