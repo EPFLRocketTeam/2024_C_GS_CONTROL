@@ -1,3 +1,4 @@
+#include "commons/ERT_RF_Protocol_Interface/Protocol.h"
 #include "MainWindow.h"
 #include "Server/src/ServerSetup.h"
 #include "Setup.h"

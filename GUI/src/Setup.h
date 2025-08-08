@@ -41,8 +41,8 @@ using RightView = GSManagerView;
 // /!\ if changing the version shown, you also need to make sure that in
 // commons/CMakeLists.txt line 27 the definition RF_PROTOCOL_FIREHORN or
 // RF_PROTOCOL_ICARUS is added
-#define ICARUS_GUI true
-#define FIREHORN_GUI false
+#define ICARUS_GUI false
+#define FIREHORN_GUI true
 // CHange the debug level to show the debug messages
 #define DEBUG_LOG true
 

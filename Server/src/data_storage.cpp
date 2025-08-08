@@ -417,7 +417,7 @@ uint32_t SqliteDB::get_pkt_id(PacketType type) {
     return this->pkt_id_gsdw += 1;
   }
   }
-  return NULL;
+  return 0;
 }
 
 std::string SqliteDB::get_current_ts() {
@@ -719,4 +719,4 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
 return;
 }
 
-int SqliteDB::delete_database() {}
+int SqliteDB::delete_database() { return 0; }
