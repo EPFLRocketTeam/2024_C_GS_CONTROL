@@ -20,7 +20,6 @@
 #include <string>
 
 #include "../Capsule/src/capsule.h"
-#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
@@ -537,18 +536,20 @@ void Server::simulateJsonData() {
                      sizeof(packet));
 #endif
 
+  
   std::uniform_int_distribution<int> distBool(0, 1);
   gse_downlink_t gsePacket;
-  gsePacket.PC_OLC = 1;
-  /*gsePacket.tankPressure    = distPressure(gen);*/
-  /*gsePacket.tankTemperature = distTemp(gen);*/
-  /*gsePacket.fillingPressure = distTemp(gen);*/
-  /*gsePacket.status= {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};*/
-  /*gsePacket.disconnectActive = static_cast<bool>(distBool(gen));*/
-  /*#ifdef RF_PROTOCOL_FIREHORN*/
-  /*gsePacket.loadcell_raw = distTemp(gen);*/
-  /*#endif*/
-  // sqlDatabase->write_pkt(sqlDatabase->process_pkt(NULL,NULL,gsePacket));
+#ifdef RF_PROTOCOL_FIREHORN
+    gsePacket.PC_OLC = 1;
+
+#else
+  gsePacket.tankPressure    = distPressure(gen);
+  gsePacket.tankTemperature = distTemp(gen);
+  gsePacket.fillingPressure = distTemp(gen);
+  gsePacket.status= {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};
+  gsePacket.disconnectActive = static_cast<bool>(distBool(gen));
+  #endif
+  sqlDatabase->write_pkt(sqlDatabase->process_pkt(NULL,NULL,&gsePacket));
   handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket,
                      sizeof(gsePacket));
 }

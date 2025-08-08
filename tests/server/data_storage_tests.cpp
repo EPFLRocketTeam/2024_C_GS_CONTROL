@@ -1,4 +1,4 @@
-#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
+#include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "data_storage.h"
 #include <gtest/gtest.h>
 

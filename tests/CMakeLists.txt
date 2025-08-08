@@ -65,6 +65,7 @@ target_compile_definitions(base_integration_test_lib PUBLIC
 
 target_link_libraries(base_integration_test_lib PUBLIC
     Qt6::Test
+    config_interface
     FirehornGUI_lib
     FirehornServer_lib
     FirehornCommons

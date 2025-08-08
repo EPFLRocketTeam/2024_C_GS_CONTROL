@@ -1,5 +1,4 @@
 #include "RequestAdapter.h"
-#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
 #include "Log.h"

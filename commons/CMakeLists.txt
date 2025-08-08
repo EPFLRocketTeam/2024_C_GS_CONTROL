@@ -20,11 +20,12 @@ set(HEADERS_COMMONS
     include/FieldUtil.h
     include/Log.h
     ERT_RF_Protocol_Interface/Protocol.h
-)
+    ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h
+    ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC RF_PROTOCOL_FIREHORN)
+target_compile_definitions(${PROJECT_NAME} PUBLIC RF_PROTOCOL_ICARUS)
 target_include_directories(${PROJECT_NAME} 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include

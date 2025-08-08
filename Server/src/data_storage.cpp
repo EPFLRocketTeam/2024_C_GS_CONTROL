@@ -578,7 +578,6 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
         .fillingN2O = gsdw->status.fillingN2O,
         .vent = gsdw->status.vent,
         .disconnectActive = gsdw->disconnectActive,
-        .loadcell_raw = gsdw->loadcell_raw.loadcell1 = gsdw->loadcell1,
         .loadcell2 = gsdw->loadcell2,
         .loadcell3 = gsdw->loadcell3,
         .loadcell4 = gsdw->loadcell4,
@@ -690,12 +689,10 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                          .fillingPressure = pkt.gse_down_pkt->fillingPressure,
                          .status = status,
                          .disconnectActive = pkt.gse_down_pkt->disconnectActive,
-                         .loadcell_raw = pkt.gse_down_pkt->loadcell_raw};
     .loadcell1 = pkt.gse_down_pkt->loadcell1,
     .loadcell2 = pkt.gse_down_pkt->loadcell2,
     .loadcell3 = pkt.gse_down_pkt->loadcell3,
-    .loadcell4 = pkt.gse_down_pkt->loadcell4
-  };
+    .loadcell4 = pkt.gse_down_pkt->loadcell4};
 #else
     *gsdw = (gse_downlink_t){.GQN_NC1 = pkt.gse_down_pkt->GQN_NC1,
                              .GQN_NC2 = pkt.gse_down_pkt->GQN_NC2,
