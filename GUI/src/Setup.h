@@ -234,10 +234,10 @@ inline std::vector<ValveInfo> gseValves = {
 
     // N2 quadrant
     {GUI_FIELD::GSE_GPN_NC1,
-     {0.238918, 0.595},
+     {0.15, 0.595},
      ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GPN_NC2, {0.157168, 0.715}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GPN_NC2, {0.7, 0.585 }, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GPN_NC2, {0.15, 0.715}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.585 }, ValveButton::Orientation::Horizontal},
     
     // Air valves
 
@@ -249,28 +249,6 @@ inline std::vector<ValveInfo> gseValves = {
     };
 
 inline std::vector<LabelInfo> gseLabels = {
-    {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
-    {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
-    {GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576},
-
-    {GUI_FIELD::N2_PRESSURE, 0.55, 0.19},
-    {GUI_FIELD::N2_TEMP, 0.8, 0.19},
-
-    {GUI_FIELD::LOX_PRESSURE, 0.447, 0.439},
-    {GUI_FIELD::LOX_TEMP, 0.447, 0.505},
-    {GUI_FIELD::LOX_LEVEL, 0.642, 0.502},
-
-    {GUI_FIELD::FUEL_PRESSURE, 0.893, 0.438},
-    {GUI_FIELD::FUEL_LEVEL, 0.761, 0.502},
-
-    {GUI_FIELD::IGNITER_PRESSURE, 0.883, 0.7},
-    {GUI_FIELD::FUEL_INJ_PRESSURE, 0.883, 0.781},
-
-    {GUI_FIELD::LOX_INJ_PRESSURE, 0.455, 0.78},
-    {GUI_FIELD::LOX_INJ_TEMP, 0.455, 0.86},
-
-    {GUI_FIELD::CHAMBER_PRESSURE, 0.883, 0.86},
-
 };
 
 inline QList<GUI_FIELD> gps = {
