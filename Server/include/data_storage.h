@@ -176,11 +176,7 @@ public:
   takes pkt, unprocess and writes it at the right place (avup, avdw or gsdw)*/
   void unprocess_pkt(Packet pkt, av_uplink_t *avup, av_downlink_unpacked *avdw,
                      gse_downlink_t *gsdw);
-<<<<<<< HEAD
-  #endif
-=======
 #endif
->>>>>>> main
 
 #if RF_PROTOCOL_ICARUS
   /*process pkt before writing it
@@ -193,11 +189,7 @@ public:
   takes pkt, unprocess and writes it at the right place (avup, avdw or gsdw)*/
   void unprocess_pkt(Packet pkt, av_uplink_t *avup, av_downlink_t *avdw,
                      gse_downlink_t *gsdw);
-<<<<<<< HEAD
-  #endif
-=======
 #endif
->>>>>>> main
 
 private:
   uint32_t pkt_id_avup;
