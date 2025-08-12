@@ -14,7 +14,7 @@ class GSManagerView : public QFrame {
 public:
     GSManagerView(std::unique_ptr<QWidget> parent = nullptr);
     
-    virtual ~GSManagerView() {};
+    ~GSManagerView() override = default;
 
 private:
     void setupUI(); 

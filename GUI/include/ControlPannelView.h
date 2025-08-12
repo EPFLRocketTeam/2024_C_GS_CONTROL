@@ -23,7 +23,7 @@ class ControlPannelView : public QFrame {
 public:
     ControlPannelView(QWidget *parent = nullptr, QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> *controls = nullptr);
     void resizeWidget();
-    virtual ~ControlPannelView() {};
+    virtual ~ControlPannelView() override = default;
 
 
 protected:

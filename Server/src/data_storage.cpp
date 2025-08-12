@@ -68,19 +68,32 @@ SqliteDB::SqliteDB()
                   sqlite_orm::make_column("id", &GSE_downlink_pkt::id,
                                           sqlite_orm::primary_key()),
                   sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
-                  sqlite_orm::make_column("tankPressure",
-                                          &GSE_downlink_pkt::tankPressure),
-                  sqlite_orm::make_column("tankTemperature",
-                                          &GSE_downlink_pkt::tankTemperature),
-                  sqlite_orm::make_column("fillingPressure",
-                                          &GSE_downlink_pkt::fillingPressure),
-                  sqlite_orm::make_column("fillingN2O",
-                                          &GSE_downlink_pkt::fillingN2O),
-                  sqlite_orm::make_column("vent", &GSE_downlink_pkt::vent),
-                  sqlite_orm::make_column("disconnectActive",
-                                          &GSE_downlink_pkt::disconnectActive),
-                  sqlite_orm::make_column("loadcell_raw",
-                                          &GSE_downlink_pkt::loadcell_raw)))
+                  sqlite_orm::make_column("GQN_NC1",
+                                          &GSE_downlink_pkt::GQN_NC1),
+                  sqlite_orm::make_column("GQN_NC2",
+                                          &GSE_downlink_pkt::GQN_NC2),
+                  sqlite_orm::make_column("GQN_NC3",
+                                          &GSE_downlink_pkt::GQN_NC3),
+                  sqlite_orm::make_column("GQN_NC4",
+                                          &GSE_downlink_pkt::GQN_NC4),
+                  sqlite_orm::make_column("GQN_NC5",
+                                          &GSE_downlink_pkt::GQN_NC5),
+                  sqlite_orm::make_column("GPN_NC1",
+                                          &GSE_downlink_pkt::GPN_NC1),
+                  sqlite_orm::make_column("GPN_NC2",
+                                          &GSE_downlink_pkt::GPN_NC2),
+                  sqlite_orm::make_column("GVN_NC", &GSE_downlink_pkt::GVN_NC),
+                  sqlite_orm::make_column("GFE_NC", &GSE_downlink_pkt::GFE_NC),
+                  sqlite_orm::make_column("GFO_NCC",
+                                          &GSE_downlink_pkt::GFO_NCC),
+                  sqlite_orm::make_column("GDO_NCC",
+                                          &GSE_downlink_pkt::GDO_NCC),
+                  sqlite_orm::make_column("PC_OLC", &GSE_downlink_pkt::PC_OLC),
+                  sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),
+                  sqlite_orm::make_column("GP2", &GSE_downlink_pkt::GP2),
+                  sqlite_orm::make_column("GP3", &GSE_downlink_pkt::GP3),
+                  sqlite_orm::make_column("GP4", &GSE_downlink_pkt::GP4),
+                  sqlite_orm::make_column("GP5", &GSE_downlink_pkt::GP5)))
 #else
           sqlite_orm::make_storage(
               PATH_TO_DB,
@@ -204,11 +217,11 @@ SqliteDB::~SqliteDB() {
   ensureArchiveDir(PROJECT_ROOT_PATH);
 #if RF_PROTOCOL_FIREHORN
   std::string proj_name = "Firehorn";
-#else 
+#else
   std::string proj_name = "Icarus";
 #endif
-  storage.backup_to(PROJECT_ROOT_PATH "/archives/archive-" + proj_name + "-"  +
-                         storage.current_timestamp() + ".db");
+  storage.make_backup_to(PROJECT_ROOT_PATH "/archives/archive-" + proj_name +
+                         "-" + storage.current_timestamp() + ".db");
 }
 
 int SqliteDB::write_pkt(const Packet pkt) {
@@ -404,7 +417,7 @@ uint32_t SqliteDB::get_pkt_id(PacketType type) {
     return this->pkt_id_gsdw += 1;
   }
   }
-  return NULL;
+  return 0;
 }
 
 std::string SqliteDB::get_current_ts() {
@@ -530,34 +543,55 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
   // process pkt if gse_downlink_t
   if (avup == NULL && avdw == NULL) {
     uint32_t id = this->get_pkt_id(GSE_DOWNLINK);
+#if RF_PROTOCOL_FIREHORN
     GSE_downlink_pkt *raw_gsdw =
         static_cast<GSE_downlink_pkt *>(malloc(sizeof(GSE_downlink_pkt)));
+
     *raw_gsdw = {.id = id,
                  .ts = ts,
-/*                 .tankPressure = gsdw->tankPressure,*/
-/*                 .tankTemperature = gsdw->tankTemperature,*/
-/*                 .fillingPressure = gsdw->fillingPressure,*/
-/*                 .fillingN2O = gsdw->status.fillingN2O,*/
-/*                 .vent = gsdw->status.vent,*/
-/*                 .disconnectActive = gsdw->disconnectActive,*/
-/*#if RF_PROTOCOL_FIREHORN*/
-/*                 .loadcell_raw = gsdw->loadcell_raw*/
-/*#else */
-/*                 .loadcell1 = gsdw->loadcell1,*/
-/*                 .loadcell2 = gsdw->loadcell2,*/
-/*                 .loadcell3 = gsdw->loadcell3,*/
-/*                 .loadcell4 = gsdw->loadcell4,*/
-/*#endif*/
-    };
-    return (Packet){.type = GSE_DOWNLINK,
-                    .av_up_pkt = NULL,
-                    .av_down_pkt = NULL,
-                    .gse_down_pkt = raw_gsdw};
-  }
-  return {.type = INVALID,
-          .av_up_pkt = NULL,
-          .av_down_pkt = NULL,
-          .gse_down_pkt = NULL};
+                 .GQN_NC1 = gsdw->GQN_NC1,
+                 .GQN_NC2 = gsdw->GQN_NC2,
+                 .GQN_NC3 = gsdw->GQN_NC3,
+                 .GQN_NC4 = gsdw->GQN_NC4,
+                 .GQN_NC5 = gsdw->GQN_NC5,
+                 .GPN_NC1 = gsdw->GPN_NC1,
+                 .GPN_NC2 = gsdw->GPN_NC2,
+                 .GVN_NC = gsdw->GVN_NC,
+                 .GFE_NC = gsdw->GFE_NC,
+                 .GFO_NCC = gsdw->GFO_NCC,
+                 .GDO_NCC = gsdw->GDO_NCC,
+                 .PC_OLC = gsdw->PC_OLC,
+                 .GP1 = gsdw->GP1,
+                 .GP2 = gsdw->GP2,
+                 .GP3 = gsdw->GP3,
+                 .GP4 = gsdw->GP4,
+                 .GP5 = gsdw->GP5
+#else
+    GSE_downlink_pkt *raw_gsdw =
+        static_cast<GSE_downlink_pkt *>(malloc(sizeof(GSE_downlink_pkt)));
+    *raw_gsdw = {
+        .id = id,
+        .ts = ts,
+        .tankPressure = gsdw->tankPressure,
+        .tankTemperature = gsdw->tankTemperature,
+        .fillingPressure = gsdw->fillingPressure,
+        .fillingN2O = gsdw->status.fillingN2O,
+        .vent = gsdw->status.vent,
+        .disconnectActive = gsdw->disconnectActive,
+        .loadcell2 = gsdw->loadcell2,
+        .loadcell3 = gsdw->loadcell3,
+        .loadcell4 = gsdw->loadcell4,
+#endif
+  };
+  return (Packet){.type = GSE_DOWNLINK,
+                  .av_up_pkt = NULL,
+                  .av_down_pkt = NULL,
+                  .gse_down_pkt = raw_gsdw};
+}
+return {.type = INVALID,
+        .av_up_pkt = NULL,
+        .av_down_pkt = NULL,
+        .gse_down_pkt = NULL};
 }
 
 void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
@@ -601,71 +635,88 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
 #else
         (av_downlink_t){.packet_nbr = pkt.av_down_pkt->packet_nbr,
 
-                             .N2O_pressure = pkt.av_down_pkt->N2O_pressure,
-                             .ETH_pressure = pkt.av_down_pkt->ETH_pressure,
-                             .N2O_temp = pkt.av_down_pkt->N2O_temp,
-                             .N2O_vent = pkt.av_down_pkt->N2O_vent,
-                             .ETH_vent = pkt.av_down_pkt->ETH_vent,
-                             .N2_solenoid = pkt.av_down_pkt->N2_solenoid,
-                             .N2O_main = pkt.av_down_pkt->N2O_main,
-                             .ETH_main = pkt.av_down_pkt->ETH_main,
+                        .N2O_pressure = pkt.av_down_pkt->N2O_pressure,
+                        .ETH_pressure = pkt.av_down_pkt->ETH_pressure,
+                        .N2O_temp = pkt.av_down_pkt->N2O_temp,
+                        .N2O_vent = pkt.av_down_pkt->N2O_vent,
+                        .ETH_vent = pkt.av_down_pkt->ETH_vent,
+                        .N2_solenoid = pkt.av_down_pkt->N2_solenoid,
+                        .N2O_main = pkt.av_down_pkt->N2O_main,
+                        .ETH_main = pkt.av_down_pkt->ETH_main,
 
-                             .gnss_lon = pkt.av_down_pkt->gnss_lon,
-                             .gnss_lat = pkt.av_down_pkt->gnss_lat,
-                             .sat_nbr = pkt.av_down_pkt->sat_nbr,
+                        .gnss_lon = pkt.av_down_pkt->gnss_lon,
+                        .gnss_lat = pkt.av_down_pkt->gnss_lat,
+                        .sat_nbr = pkt.av_down_pkt->sat_nbr,
 
-                             .gyro_x = pkt.av_down_pkt->gyro_x,
-                             .gyro_y = pkt.av_down_pkt->gyro_y,
-                             .gyro_z = pkt.av_down_pkt->gyro_z,
+                        .gyro_x = pkt.av_down_pkt->gyro_x,
+                        .gyro_y = pkt.av_down_pkt->gyro_y,
+                        .gyro_z = pkt.av_down_pkt->gyro_z,
 
-                             .acc_x = pkt.av_down_pkt->acc_x,
-                             .acc_y = pkt.av_down_pkt->acc_y,
-                             .acc_z = pkt.av_down_pkt->acc_z,
+                        .acc_x = pkt.av_down_pkt->acc_x,
+                        .acc_y = pkt.av_down_pkt->acc_y,
+                        .acc_z = pkt.av_down_pkt->acc_z,
 
-                             .baro = pkt.av_down_pkt->baro,
+                        .baro = pkt.av_down_pkt->baro,
 
-                             .kalman_pos_x = pkt.av_down_pkt->kalman_pos_x,
-                             .kalman_pos_y = pkt.av_down_pkt->kalman_pos_y,
-                             .kalman_pos_z = pkt.av_down_pkt->kalman_pos_z,
-                             .kalman_yaw = pkt.av_down_pkt->kalman_yaw,
-                             .kalman_pitch = pkt.av_down_pkt->kalman_pitch,
-                             .kalman_roll = pkt.av_down_pkt->kalman_roll,
+                        .kalman_pos_x = pkt.av_down_pkt->kalman_pos_x,
+                        .kalman_pos_y = pkt.av_down_pkt->kalman_pos_y,
+                        .kalman_pos_z = pkt.av_down_pkt->kalman_pos_z,
+                        .kalman_yaw = pkt.av_down_pkt->kalman_yaw,
+                        .kalman_pitch = pkt.av_down_pkt->kalman_pitch,
+                        .kalman_roll = pkt.av_down_pkt->kalman_roll,
 
-                             .gimbal_x = pkt.av_down_pkt->gimbal_x,
-                             .gimbal_y = pkt.av_down_pkt->gimbal_y,
+                        .gimbal_x = pkt.av_down_pkt->gimbal_x,
+                        .gimbal_y = pkt.av_down_pkt->gimbal_y,
 
-                             .HV_voltage = pkt.av_down_pkt->HV_voltage,
-                             .LV_voltage = pkt.av_down_pkt->LV_voltage,
-                             .AV_temp = pkt.av_down_pkt->AV_temp,
-                             .ID_config = pkt.av_down_pkt->ID_config,
-                             .AV_state = pkt.av_down_pkt->AV_state,
-                             .Fire_up_state = pkt.av_down_pkt->Fire_up_state};
-#endif 
-                        break;
-  }
-  case PacketType::GSE_DOWNLINK: {
-    /*GSE_cmd_status status =*/
-    /*    (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,*/
-    /*                     .vent = pkt.gse_down_pkt->vent};*/
-    *gsdw = (gse_downlink_t){
-/*        .tankPressure = pkt.gse_down_pkt->tankPressure,*/
-/*        .tankTemperature = pkt.gse_down_pkt->tankTemperature,*/
-/*        .fillingPressure = pkt.gse_down_pkt->fillingPressure,*/
-/*        .status = status,*/
-/*        .disconnectActive = pkt.gse_down_pkt->disconnectActive,*/
-/*#if RF_PROTOCOL_FIREHORN*/
-/*        .loadcell_raw = pkt.gse_down_pkt->loadcell_raw*/
-/*#else*/
-/*        .loadcell1 = pkt.gse_down_pkt->loadcell1,*/
-/*        .loadcell2 = pkt.gse_down_pkt->loadcell2,*/
-/*        .loadcell3 = pkt.gse_down_pkt->loadcell3,*/
-/*        .loadcell4 = pkt.gse_down_pkt->loadcell4*/
-/*#endif*/
-};
+                        .HV_voltage = pkt.av_down_pkt->HV_voltage,
+                        .LV_voltage = pkt.av_down_pkt->LV_voltage,
+                        .AV_temp = pkt.av_down_pkt->AV_temp,
+                        .ID_config = pkt.av_down_pkt->ID_config,
+                        .AV_state = pkt.av_down_pkt->AV_state,
+                        .Fire_up_state = pkt.av_down_pkt->Fire_up_state};
+#endif
     break;
   }
+  case PacketType::GSE_DOWNLINK: {
+#if RF_PROTOCOL_ICARUS
+
+    GSE_cmd_status status =
+        (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,
+                         .vent = pkt.gse_down_pkt->vent};
+    *gsdw =
+        (gse_downlink_t){.tankPressure = pkt.gse_down_pkt->tankPressure,
+                         .tankTemperature = pkt.gse_down_pkt->tankTemperature,
+                         .fillingPressure = pkt.gse_down_pkt->fillingPressure,
+                         .status = status,
+                         .disconnectActive = pkt.gse_down_pkt->disconnectActive,
+    .loadcell1 = pkt.gse_down_pkt->loadcell1,
+    .loadcell2 = pkt.gse_down_pkt->loadcell2,
+    .loadcell3 = pkt.gse_down_pkt->loadcell3,
+    .loadcell4 = pkt.gse_down_pkt->loadcell4};
+#else
+    *gsdw = (gse_downlink_t){.GQN_NC1 = pkt.gse_down_pkt->GQN_NC1,
+                             .GQN_NC2 = pkt.gse_down_pkt->GQN_NC2,
+                             .GQN_NC3 = pkt.gse_down_pkt->GQN_NC3,
+                             .GQN_NC4 = pkt.gse_down_pkt->GQN_NC4,
+                             .GQN_NC5 = pkt.gse_down_pkt->GQN_NC5,
+                             .GPN_NC1 = pkt.gse_down_pkt->GPN_NC1,
+                             .GPN_NC2 = pkt.gse_down_pkt->GPN_NC2,
+                             .GVN_NC = pkt.gse_down_pkt->GVN_NC,
+                             .GFE_NC = pkt.gse_down_pkt->GFE_NC,
+                             .GFO_NCC = pkt.gse_down_pkt->GFO_NCC,
+                             .GDO_NCC = pkt.gse_down_pkt->GDO_NCC,
+                             .PC_OLC = pkt.gse_down_pkt->PC_OLC,
+                             .GP1 = pkt.gse_down_pkt->GP1,
+                             .GP2 = pkt.gse_down_pkt->GP2,
+                             .GP3 = pkt.gse_down_pkt->GP3,
+                             .GP4 = pkt.gse_down_pkt->GP4,
+                             .GP5 = pkt.gse_down_pkt->GP5};
+
+#endif
+      break;
   }
-  return;
+}
+return;
 }
 
-int SqliteDB::delete_database() {}
+int SqliteDB::delete_database() { return 0; }

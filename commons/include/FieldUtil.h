@@ -44,6 +44,23 @@ enum GUI_FIELD {
   GNSS_CHOICE,
   GSE_FILLING_N2O,
   VENT_GSE,
+  GSE_GQN_NC1,
+  GSE_GQN_NC2,
+  GSE_GQN_NC3,
+  GSE_GQN_NC4,
+  GSE_GQN_NC5,
+  GSE_GPN_NC1,
+  GSE_GPN_NC2,
+  GSE_GVN_NC,
+  GSE_GFE_NC,
+  GSE_GFO_NCC,
+  GSE_GDO_NCC,
+  GSE_PC_OLC,
+  GSE_GP1,
+  GSE_GP2,
+  GSE_GP3,
+  GSE_GP4,
+  GSE_GP5,
   GSE_TANK_PRESSURE,
   GSE_TANK_TEMPERATURE,
   GSE_FILLING_PRESSURE,
@@ -65,8 +82,12 @@ enum GUI_FIELD {
   GUI_CMD_LAUNCH,
   GUI_CMD_SET_SERIAL_STATUS,
   GUI_CMD_CALIBRATE,
+  GUI_CMD_GSE_IDLE,
+  GUI_CMD_GSE_CALIBRATE,
   GUI_CMD_RECOVER,
   GUI_CMD_ARM,
+  GUI_CMD_GSE_ARM,
+  GUI_CMD_GSE_PASSIVATE,
   GUI_CMD_IGNITION,
   GUI_CMD_ABORT,
   GUI_CMD_MANUAL_DEPLOY,
@@ -83,6 +104,22 @@ enum GUI_FIELD {
   GUI_CMD_VENT_N2O,
   GUI_CMD_GIMBALL_X,
   GUI_CMD_GIMBALL_Y,
+  GUI_CMD_SERVO_1,
+  GUI_CMD_SERVO_2,
+  GUI_CMD_GSE_TOGGLE_11,
+  GUI_CMD_GSE_TOGGLE_12,
+  GUI_CMD_GSE_TOGGLE_13,
+  GUI_CMD_GSE_TOGGLE_14,
+  GUI_CMD_GSE_TOGGLE_15,
+  GUI_CMD_GSE_TOGGLE_16,
+  GUI_CMD_GSE_TOGGLE_21,
+  GUI_CMD_GSE_TOGGLE_22,
+  GUI_CMD_GSE_TOGGLE_23,
+  GUI_CMD_GSE_TOGGLE_24,
+  GUI_CMD_GSE_TOGGLE_25,
+  GUI_CMD_GSE_TOGGLE_26,
+  GUI_CMD_GSE_TOGGLE_27,
+  GUI_CMD_GSE_TOGGLE_28,
   GUI_CMD_DISCONNECT,
   HOPPER_PACKET_NBR,   // 32 bits: packet counter (10Hz update)
   HOPPER_N2O_PRESSURE, // 16 bits (12-bit ADC value)
@@ -382,6 +419,85 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_RECOVER:
     name = "RECOVER";
     break;
+  case GUI_CMD_GSE_IDLE:
+    name = "GSE IDLE";
+    break;
+  case GUI_CMD_GSE_CALIBRATE:
+    name = "GSE CALIBRATE";
+    break;
+  case GUI_CMD_GSE_ARM:
+    name = "GSE ARM";
+    break;
+
+  case GUI_CMD_GSE_PASSIVATE:
+    name = "GSE PASSIVATE";
+    break;
+
+
+  case GUI_CMD_SERVO_1:
+    name = "SERVO 1";
+    break;
+
+  case GUI_CMD_SERVO_2:
+    name = "SERVO 2";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_11:
+    name = "GSE TOGGLE 11";
+    break;
+  
+  case GUI_CMD_GSE_TOGGLE_12:
+    name = "GSE TOGGLE 12";
+    break;
+  
+  case GUI_CMD_GSE_TOGGLE_13:
+    name = "GSE TOGGLE 13";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_14:
+    name = "GSE TOGGLE 14";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_15:
+    name = "GSE TOGGLE 15";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_16:
+    name = "GSE TOGGLE 16";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_21:
+    name = "GSE TOGGLE 21";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_22:
+    name = "GSE TOGGLE 22";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_23:
+    name = "GSE TOGGLE 23";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_24:
+    name = "GSE TOGGLE 24";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_25:
+    name = "GSE TOGGLE 25";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_26:
+    name = "GSE TOGGLE 26";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_27:
+    name = "GSE TOGGLE 27";
+    break;
+
+  case GUI_CMD_GSE_TOGGLE_28:
+    name = "GSE TOGGLE 28";
+    break;
+
   case GUI_CMD_IGNITION:
     name = "IGNITION";
     break;
@@ -408,6 +524,72 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case GUI_CMD_FILLING_N2O:
     name = "FILLING N2O";
+    break;
+
+  case GSE_GQN_NC1:
+    name = "GSE GQN NC1";
+    break;
+
+  case GSE_GQN_NC2:
+    name = "GSE GQN NC2";
+    break;
+
+  case GSE_GQN_NC3:
+    name = "GSE GQN NC3";
+    break;
+  case GSE_GQN_NC4:
+    name = "GSE GQN NC4";
+    break;
+  case GSE_GQN_NC5:
+    name = "GSE GQN NC5";
+    break;
+
+  case GSE_GPN_NC1:
+    name = "GSE GPN NC1";
+    break;
+
+  case GSE_GPN_NC2:
+    name = "GSE GPN NC2";
+    break;
+
+  case GSE_GVN_NC:
+    name = "GSE GVN NC";
+    break;
+
+  case GSE_GFE_NC:
+    name = "GSE GFE NC";
+    break;
+
+  case GSE_GFO_NCC:
+    name = "GSE GFO NCC";
+    break;
+
+  case GSE_GDO_NCC:
+    name = "GSE GDO NCC";
+    break;
+
+  case GSE_PC_OLC:
+    name = "GSE PC OLC";
+    break;
+
+  case GSE_GP1:
+    name = "GSE GP1";
+    break;
+  
+  case GSE_GP2:
+    name = "GSE GP2";
+    break;
+
+  case GSE_GP3:
+    name = "GSE GP3";
+    break;
+
+  case GSE_GP4:
+    name = "GSE GP4";
+    break;
+
+  case GSE_GP5:
+    name = "GSE GP5";
     break;
 
   default:
@@ -582,6 +764,46 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_AV_STATE;
   else if (fieldName == "HOPPER FIRE UP STATE")
     return HOPPER_FIREUP_STATE;
+  else if (fieldName == "GSE IDLE")
+      return GUI_CMD_GSE_IDLE;
+  else if (fieldName == "GSE CALIBRATE")
+      return GUI_CMD_GSE_CALIBRATE;
+  else if (fieldName == "GSE ARM")
+      return GUI_CMD_GSE_ARM;
+  else if (fieldName == "GSE PASSIVATE")
+      return GUI_CMD_GSE_PASSIVATE;
+  else if (fieldName == "SERVO 1")
+      return GUI_CMD_SERVO_1;
+  else if (fieldName == "SERVO 2")
+    return GUI_CMD_SERVO_2;
+  else if (fieldName == "GSE TOGGLE 11")
+    return GUI_CMD_GSE_TOGGLE_11;
+  else if (fieldName == "GSE TOGGLE 12")
+    return GUI_CMD_GSE_TOGGLE_12;
+  else if (fieldName == "GSE TOGGLE 13")
+    return GUI_CMD_GSE_TOGGLE_13;
+  else if (fieldName == "GSE TOGGLE 14")
+    return GUI_CMD_GSE_TOGGLE_14;
+  else if (fieldName == "GSE TOGGLE 15")
+    return GUI_CMD_GSE_TOGGLE_15;
+  else if (fieldName == "GSE TOGGLE 16")
+    return GUI_CMD_GSE_TOGGLE_16;
+  else if (fieldName == "GSE TOGGLE 21")
+    return GUI_CMD_GSE_TOGGLE_21;
+  else if (fieldName == "GSE TOGGLE 22")
+    return GUI_CMD_GSE_TOGGLE_22;
+  else if (fieldName == "GSE TOGGLE 23")
+    return GUI_CMD_GSE_TOGGLE_23;
+  else if (fieldName == "GSE TOGGLE 24")
+    return GUI_CMD_GSE_TOGGLE_24;
+  else if (fieldName == "GSE TOGGLE 25")
+    return GUI_CMD_GSE_TOGGLE_25;
+  else if (fieldName == "GSE TOGGLE 26")
+    return GUI_CMD_GSE_TOGGLE_26;
+  else if (fieldName == "GSE TOGGLE 27")
+      return GUI_CMD_GSE_TOGGLE_27;
+  else if (fieldName == "GSE TOGGLE 28")
+      return GUI_CMD_GSE_TOGGLE_28;
   else if (fieldName == "CALIBRATE")
     return GUI_CMD_CALIBRATE;
   else if (fieldName == "RECOVER")
@@ -608,6 +830,40 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_FILLING_LOX;
   else if (fieldName == "FILLING N2O")
     return GUI_CMD_FILLING_N2O;
+  else if (fieldName == "GSE GQN NC1")
+    return GSE_GQN_NC1;
+  else if (fieldName == "GSE GQN NC2")
+    return GSE_GQN_NC2;
+  else if (fieldName == "GSE GQN NC3")
+    return GSE_GQN_NC3;
+  else if (fieldName == "GSE GQN NC4")
+    return GSE_GQN_NC4;
+  else if (fieldName == "GSE GQN NC5")
+    return GSE_GQN_NC5;
+  else if (fieldName == "GSE GPN NC1")
+    return GSE_GPN_NC1;
+  else if (fieldName == "GSE GPN NC2")
+      return GSE_GPN_NC2;
+  else if (fieldName == "GSE GVN NC")
+    return GSE_GVN_NC;
+  else if (fieldName == "GSE GFE NC")
+    return GSE_GFE_NC;
+  else if (fieldName == "GSE GFO NCC")
+    return GSE_GFO_NCC;
+  else if (fieldName == "GSE GDO NCC")
+    return GSE_GDO_NCC;
+  else if (fieldName == "GSE PC OLC")
+    return GSE_PC_OLC;
+  else if (fieldName == "GSE GP1")
+    return GSE_GP1;
+  else if (fieldName == "GSE GP2")
+    return GSE_GP2;
+  else if (fieldName == "GSE GP3")
+    return GSE_GP3;
+  else if (fieldName == "GSE GP4")
+    return GSE_GP4;
+  else if (fieldName == "GSE GP5")
+    return GSE_GP5;
   else
     return UNKNOWN;
 }

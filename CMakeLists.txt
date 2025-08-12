@@ -9,6 +9,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+add_compile_options("-Wno-packed-bitfield-compat")
+
 # Enable testing for the entire project
 enable_testing()
 

@@ -20,7 +20,8 @@ set(HEADERS_COMMONS
     include/FieldUtil.h
     include/Log.h
     ERT_RF_Protocol_Interface/Protocol.h
-)
+    ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h
+    ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})
 

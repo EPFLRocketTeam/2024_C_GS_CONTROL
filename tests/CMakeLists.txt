@@ -9,8 +9,11 @@ find_package(SQLite3 REQUIRED)
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip # v1.10.0
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
 )
+
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_library(test_helper_lib STATIC
@@ -62,6 +65,7 @@ target_compile_definitions(base_integration_test_lib PUBLIC
 
 target_link_libraries(base_integration_test_lib PUBLIC
     Qt6::Test
+    config_interface
     FirehornGUI_lib
     FirehornServer_lib
     FirehornCommons
@@ -91,12 +95,11 @@ foreach(_src IN LISTS INTEGRATION_TEST_SOURCES)
     )
 endforeach()
 
-
 add_custom_target(check
   COMMENT "Building everything then running all tests…"
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   # 1) build any out-of-date targets
   COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}
   # 2) run ctest with verbose output on failure
-  COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+  COMMAND ctest --output-on-failure -j1
 )

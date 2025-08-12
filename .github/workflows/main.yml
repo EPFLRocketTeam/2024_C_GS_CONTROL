@@ -9,49 +9,48 @@ jobs:
       # Give the default GITHUB_TOKEN write permission to commit and push the
       # added or changed files to the repository.
       contents: write
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y qt6-base-dev-tools libqt6serialport6-dev qt6-base-dev libqt6svg6-dev libqt5serialport5-dev libgtest-dev build-essential cmake libsqlite3-dev qt6-base-dev libgl1-mesa-dev libegl1-mesa-dev cmake
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qt6-base-dev-tools libqt6serialport6-dev qt6-base-dev libqt6svg6-dev libqt5serialport5-dev libgtest-dev build-essential cmake libsqlite3-dev qt6-base-dev libgl1-mesa-dev libegl1-mesa-dev cmake
 
-    - name: Initialize submodules
-      run: git submodule update --init --recursive
+      - name: Initialize submodules
+        run: git submodule update --init --recursive
 
-    # --- NEW STEP ADDED HERE ---
-    - name: Create Test Authentication Files
-      run: |
-        echo "Creating Server/src/auth_keys.json..."
-        cat << 'EOF' > Server/src/auth_keys.json
-        [
-            {
-                "key": "ClientSecretKey1",
-                "accessRight": 3
-            },
-            {
-                "key": "ClientSecretKey2",
-                "accessRight": 3
-            }
-        ]
-        EOF
+      # --- NEW STEP ADDED HERE ---
+      - name: Create Test Authentication Files
+        run: |
+          echo "Creating Server/src/auth_keys.json..."
+          cat << 'EOF' > Server/src/auth_keys.json
+          [
+              {
+                  "key": "ClientSecretKey1",
+                  "accessRight": 3
+              },
+              {
+                  "key": "ClientSecretKey2",
+                  "accessRight": 3
+              }
+          ]
+          EOF
 
-        echo "Creating GUI/src/.key..."
-        echo "ClientSecretKey1" > GUI/src/.key
+          echo "Creating GUI/src/.key..."
+          echo "ClientSecretKey1" > GUI/src/.key
 
-        echo "Authentication files created successfully."
+          echo "Authentication files created successfully."
 
-    - name: Configure and build project
-      run: |
-        mkdir build && cd build
-        cmake ..
-        cmake --build .
+      - name: Configure and build project
+        run: |
+          mkdir build && cd build
+          cmake ..
+          cmake --build .
 
-    - name: Run tests
-      run: |
-        cd build 
-        make check
- 
+      - name: Run tests
+        run: |
+          cd build 
+          ctest -j1 --output-on-failure

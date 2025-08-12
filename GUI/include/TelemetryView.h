@@ -20,7 +20,8 @@ class TelemetryView : public QFrame {
 public:
     TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidget* parent = nullptr);
     
-    virtual ~TelemetryView() {};
+    
+    virtual ~TelemetryView() override = default;
 
 private:
     void addField(GUI_FIELD f, QLayout* layout);

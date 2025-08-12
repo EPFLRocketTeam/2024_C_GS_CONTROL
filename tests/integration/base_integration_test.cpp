@@ -77,7 +77,6 @@ void BaseIntegrationTest::cleanupTestCase() {
   delete subscribeSpy;
 
   if (server) {
-    server->close();
     delete server;
   }
 
@@ -87,13 +86,11 @@ void BaseIntegrationTest::cleanupTestCase() {
 }
 
 bool BaseIntegrationTest::waitForPost(int timeoutMs) {
-  int tmp =  postSpy->wait(timeoutMs);
+  int tmp = postSpy->wait(timeoutMs);
   return tmp;
 }
 
 QJsonObject BaseIntegrationTest::getLastPostCommand() {
-  qDebug() << "Inside " << postSpy->isValid() << postSpy->signal();
-  qDebug() << "Inside 2" << postSpy->isEmpty();
   if (postSpy->isEmpty()) {
     return QJsonObject(); // Return empty object
   }
@@ -122,18 +119,19 @@ void BaseIntegrationTest::verifyCommand(const QJsonObject &command,
 
 bool BaseIntegrationTest::hasPostCommand(GUI_FIELD f, int order) {
   int length = postSpy->length();
-  qDebug() << "IT HAS SIZE" << length << " Looking for order " << order;
   for (int i = 0; i < length; i++) {
-  
+
     auto args = postSpy->at(i);
-    qDebug() << "Args " << args[0];
+    if (args.length() < 1)
+      continue;
     QJsonObject cmd = args[0].toJsonObject();
-      qDebug() << "IN THE MIDDLE" << i;
-    if (!cmd.contains("payload")) continue;
+    if (!cmd.contains("payload"))
+      continue;
     auto p = cmd["payload"].toObject();
-    if (p.value("cmd").toInt()   == static_cast<int>(f) &&
-        p.value("cmd_order").toInt() == order)
+    if (p.value("cmd").toInt() == static_cast<int>(f) &&
+        p.value("cmd_order").toInt() == order) {
       return true;
+    }
   }
   return false;
 }

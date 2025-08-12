@@ -1,3 +1,4 @@
+#include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "data_storage.h"
 #include <gtest/gtest.h>
 
@@ -27,14 +28,12 @@ av_downlink_unpacked* get_avdw() {
     return avdw;
 }
 gse_downlink_t* get_gsdw() {
-    /*GSE_cmd_status* status = new GSE_cmd_status;*/
-    /**status = {.fillingN2O=12, .vent=13};*/
-    /*gse_downlink_t* gsdw = new gse_downlink_t;*/
-    /**gsdw = {.tankPressure=11.123456789, .tankTemperature=11.2,*/
-    /*    .fillingPressure=11.3, *status,*/
-    /*    .disconnectActive=true, .loadcell_raw=14};*/
+
     gse_downlink_t* gsdw = new gse_downlink_t;
-    *gsdw = {.GDO_NCC = 1};
+    *gsdw = {.GQN_NC1=0, .GQN_NC2=0, .GQN_NC3=0, .GQN_NC4=0,
+             .GQN_NC5=0, .GPN_NC1=111, .GPN_NC2=98, .GVN_NC=0,
+             .GFE_NC=0, .GFO_NCC=0, .GDO_NCC=0, .PC_OLC=0,
+             .GP1=11.3f, .GP2=231.2654f, .GP3=0.0f, .GP4=0.0f, .GP5=0.0f};
     return gsdw;
 }
 
@@ -69,13 +68,28 @@ void equal_avdw(av_downlink_unpacked* avdw1, av_downlink_unpacked* avdw2) {
 }
 void equal_gsdw(gse_downlink_t* gsdw1, gse_downlink_t* gsdw2) {
     printf("equal_gsdw called\n");
-    /*EXPECT_EQ(gsdw1->disconnectActive, gsdw2->disconnectActive);*/
-    /*EXPECT_EQ(gsdw1->fillingPressure, gsdw2->fillingPressure);*/
-    /*EXPECT_EQ(gsdw1->loadcell_raw, gsdw2->loadcell_raw);*/
-    /*EXPECT_EQ(gsdw1->tankPressure, gsdw2->tankPressure);*/
-    /*EXPECT_EQ(gsdw1->tankTemperature, gsdw2->tankTemperature);*/
-    /*EXPECT_EQ(gsdw1->status.fillingN2O, gsdw2->status.fillingN2O);*/
-    /*EXPECT_EQ(gsdw1->status.vent, gsdw2->status.vent);*/
+
+    
+    // uint8_t fields
+    EXPECT_EQ(gsdw1->GQN_NC1, gsdw2->GQN_NC1);
+    EXPECT_EQ(gsdw1->GQN_NC2, gsdw2->GQN_NC2);
+    EXPECT_EQ(gsdw1->GQN_NC3, gsdw2->GQN_NC3);
+    EXPECT_EQ(gsdw1->GQN_NC4, gsdw2->GQN_NC4);
+    EXPECT_EQ(gsdw1->GQN_NC5, gsdw2->GQN_NC5);
+    EXPECT_EQ(gsdw1->GPN_NC1, gsdw2->GPN_NC1);
+    EXPECT_EQ(gsdw1->GPN_NC2, gsdw2->GPN_NC2);
+    EXPECT_EQ(gsdw1->GVN_NC, gsdw2->GVN_NC);
+    EXPECT_EQ(gsdw1->GFE_NC, gsdw2->GFE_NC);
+    EXPECT_EQ(gsdw1->GFO_NCC, gsdw2->GFO_NCC);
+    EXPECT_EQ(gsdw1->GDO_NCC, gsdw2->GDO_NCC);
+    EXPECT_EQ(gsdw1->PC_OLC, gsdw2->PC_OLC);
+    
+    // float fields
+    EXPECT_EQ(gsdw1->GP1, gsdw2->GP1);
+    EXPECT_EQ(gsdw1->GP2, gsdw2->GP2);
+    EXPECT_EQ(gsdw1->GP3, gsdw2->GP3);
+    EXPECT_EQ(gsdw1->GP4, gsdw2->GP4);
+    EXPECT_EQ(gsdw1->GP5, gsdw2->GP5);
 }
 
 /* UNIT TESTS (if the google tests don't run, comment the manual tests) */
