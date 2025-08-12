@@ -14,10 +14,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qt6-base-dev-tools libqt6serialport6-dev qt6-base-dev libqt6svg6-dev libqt5serialport5-dev libgtest-dev build-essential cmake libsqlite3-dev qt6-base-dev libgl1-mesa-dev libegl1-mesa-dev cmake
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt6-base-dev-tools libqt6serialport6-dev qt6-base-dev libqt6svg6-dev libqt5serialport5-dev libgtest-dev build-essential cmake libsqlite3-dev qt6-base-dev libgl1-mesa-dev libegl1-mesa-dev cmake qt6-httpserver-dev
 
       - name: Initialize submodules
         run: git submodule update --init --recursive
