@@ -17,6 +17,8 @@ protected:
 private:    
     QPoint offset;
     QWidget* parent;
+    int width;
+    int height;
 };
 
 #endif // DRAGGABLEBUTTON_H

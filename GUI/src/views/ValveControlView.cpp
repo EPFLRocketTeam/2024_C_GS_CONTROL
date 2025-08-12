@@ -12,6 +12,7 @@
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qsvgrenderer.h>
+#include <qwidget.h>
 
 #include "../Setup.h"
 #include "FieldUtil.h"
@@ -136,7 +137,31 @@ void ValveControlView::setSvgBackground(const QString &filePath) {
 
 void ValveControlView::addButtonIcon(GUI_FIELD field, float x, float y,
                                      ValveButton::Orientation orientation) {
-  ValveButton *button = new ValveButton(orientation, this);
+  /*ValveButton *button = new ValveButton(orientation, this);*/
+
+  // Create a container widget
+  QWidget *valveWithTitle = new QWidget(this);
+  QVBoxLayout *layout = new QVBoxLayout(valveWithTitle);
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->setSpacing(2); // small gap between title and button
+
+  // Create the title label
+  QLabel *titleLabel = new QLabel(fieldUtil::enumToFieldName(field));
+  titleLabel->setAlignment(Qt::AlignCenter);
+
+  // Create the valve button
+  ValveButton *button =
+      new ValveButton(ValveButton::Horizontal, valveWithTitle);
+  button->setAlignment(Qt::AlignCenter);
+  button->setStyleSheet(
+      QString("background: transparent; color: %1;").arg(col::primary));
+
+  // Add them to the layout
+  layout->addWidget(titleLabel, 0, Qt::AlignHCenter);
+  layout->addWidget(button, 0, Qt::AlignHCenter);
+  layout->setAlignment(Qt::AlignCenter);
+  valveWithTitle->setStyleSheet(
+      QString("background: transparent; color: %1;").arg(col::primary));
 
   MainWindow::clientManager->subscribe(field, [button](const QString &message) {
     if (message == "0") {
@@ -168,7 +193,7 @@ void ValveControlView::addButtonIcon(GUI_FIELD field, float x, float y,
             .arg(value)
             .toStdString());
   });
-  addComponent(button, x, y);
+  addComponent(valveWithTitle, x, y);
 
   // update(); // Trigger repaint to draw the new icon
 }
@@ -197,6 +222,13 @@ void ValveControlView::paintEvent(QPaintEvent *event) {
   int availableWidth = width() - marginLeft - marginRight;
   int availableHeight = height() - marginTop - marginBottom;
 
+  /*_logger.debug("ResizeEvent",*/
+  /*              QString(R"(%1,
+   * %2)").arg(width()).arg(height()).toStdString());*/
+  /*_logger.debug("ResizeEvent", QString(R"(mleft=%1, mtop=%2)")*/
+  /*                                 .arg(marginLeft)*/
+  /*                                 .arg(marginRight)*/
+  /*                                 .toStdString());*/
   // Get the intrinsic size of the SVG
   QSize svgSize = svgRenderer->defaultSize();
 

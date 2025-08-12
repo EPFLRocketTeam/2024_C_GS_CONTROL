@@ -527,69 +527,69 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
 
   case GSE_GQN_NC1:
-    name = "GSE GQN NC1";
+    name = "GQN NC1";
     break;
 
   case GSE_GQN_NC2:
-    name = "GSE GQN NC2";
+    name = "GQN NC2";
     break;
 
   case GSE_GQN_NC3:
-    name = "GSE GQN NC3";
+    name = "GQN NC3";
     break;
   case GSE_GQN_NC4:
-    name = "GSE GQN NC4";
+    name = "GQN NC4";
     break;
   case GSE_GQN_NC5:
-    name = "GSE GQN NC5";
+    name = "GQN NC5";
     break;
 
   case GSE_GPN_NC1:
-    name = "GSE GPN NC1";
+    name = "GPN NC1";
     break;
 
   case GSE_GPN_NC2:
-    name = "GSE GPN NC2";
+    name = "GPN NC2";
     break;
 
   case GSE_GVN_NC:
-    name = "GSE GVN NC";
+    name = "GVN NC";
     break;
 
   case GSE_GFE_NC:
-    name = "GSE GFE NC";
+    name = "GFE NC";
     break;
 
   case GSE_GFO_NCC:
-    name = "GSE GFO NCC";
+    name = "GFO NCC";
     break;
 
   case GSE_GDO_NCC:
-    name = "GSE GDO NCC";
+    name = "GDO NCC";
     break;
 
   case GSE_PC_OLC:
-    name = "GSE PC OLC";
+    name = "PC OLC";
     break;
 
   case GSE_GP1:
-    name = "GSE GP1";
+    name = "GP1";
     break;
   
   case GSE_GP2:
-    name = "GSE GP2";
+    name = "GP2";
     break;
 
   case GSE_GP3:
-    name = "GSE GP3";
+    name = "GP3";
     break;
 
   case GSE_GP4:
-    name = "GSE GP4";
+    name = "GP4";
     break;
 
   case GSE_GP5:
-    name = "GSE GP5";
+    name = "GP5";
     break;
 
   default:
