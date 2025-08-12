@@ -1,3 +1,4 @@
+#include "commons/ERT_RF_Protocol_Interface/Protocol.h"
 #include "MainWindow.h"
 #include "Server/src/ServerSetup.h"
 #include "Setup.h"
@@ -79,8 +80,6 @@ private slots:
     QVERIFY(tb->isVisible());
     QVERIFY(tb->isEnabled());
     QVERIFY(tb->window()->isActiveWindow());
-    qDebug() << "ToggleButton parent:" << tb->parent();
-    qDebug() << "ToggleButton window:" << tb->window();
 
     // 5) Ensure widgets are properly set up
     targetVcb->ensurePolished();
@@ -90,12 +89,6 @@ private slots:
     QVERIFY(targetVcb->isEnabled());
     QVERIFY(tb->isVisible());
     QVERIFY(tb->isEnabled());
-
-    // Debug info
-    qDebug() << "ToggleButton geometry:" << tb->rect().center();
-    qDebug() << "ValveControlButton geometry:" << targetVcb->geometry();
-    qDebug() << "ToggleButton field sensitivity:" << tb->fieldSensitivity();
-
     // 6) Clear any previous server signals
     postSpy->clear();
     QVERIFY(postSpy->isValid());
@@ -103,12 +96,7 @@ private slots:
 
     // 7) Click the ValveControlButton
     QTest::mouseClick(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center());
-    /*QTest::mousePress(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center());*/
-    /*QTest::mouseRelease(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center(), 100);*/
     
-    
-    // QTest::mousePress(tb, Qt::LeftButton, Qt::NoModifier,
-    //                   tb->rect().center());
     qDebug() << "Clicked the button";
     // 8) Wait for the server's post signal
     QVERIFY2(waitForPost(2000), "No post signal received within timeout");
@@ -119,8 +107,7 @@ private slots:
 
     QVERIFY2(hasPostCommand(GUI_FIELD::MAIN_LOX, 1),
              "Expected MAIN_LOX toggle-on command not found");
-    QApplication::processEvents();
-    QTest::qWait(100);
+    
     return;
 
   }

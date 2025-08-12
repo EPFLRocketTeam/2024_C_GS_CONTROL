@@ -23,7 +23,7 @@ protected:
     QSignalSpy* postSpy = nullptr;
     QSignalSpy* subscribeSpy = nullptr;
     
-    static constexpr int TEST_PORT = 12346; // Different from default to avoid conflicts
+    static constexpr int TEST_PORT = 12345; // Different from default to avoid conflicts
 
 protected slots:
     virtual void initTestCase();

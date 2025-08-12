@@ -47,9 +47,10 @@ int start_client(int argc, char *argv[]) {
   mainWindow.setWindowIcon(QIcon(":/icons/firehorn.ico"));
 
   mainWindow.show();
-
+  #if FIREHORN_GUI
   MainWindow gseWindow(nullptr, &ui_elements::gseControlMap, nullptr, ui_elements::gseMiddlePlaceholder, nullptr);
   gseWindow.show();
+  #endif
 
   return app.exec();
 }

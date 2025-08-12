@@ -24,7 +24,7 @@ public:
     // Remove the default argument from the constructor declaration
     SerialView(std::unique_ptr<QWidget> parent = nullptr); // No default argument here
 
-    virtual ~SerialView() {};
+    ~SerialView() override = default;
     
 
     
@@ -34,8 +34,11 @@ public:
 private:
     
 
-    std::function<void(const QString)> setSerialStatus = [this](const QString newText) { updateStatus(newText); };
-    std::function<void(const QString)> setSerialName = [this](const QString newText) { serialNameLabel->setText(QString("Serial port used : %1").arg(newText)); };
+    std::function<void(const QString)> setSerialStatus = [this](const QString newText) { /*updateStatus(newText);*/ };
+    std::function<void(const QString)> setSerialName = [this](const QString newText) { 
+        /*if (serialNameLabel)*/
+        /*    serialNameLabel->setText(QString("Serial port used : %1").arg(newText));*/
+    };
     void changeButtonStyle(bool targetStatus);
     void setupStyle();
     void buttonClicked();

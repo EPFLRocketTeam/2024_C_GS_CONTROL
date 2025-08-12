@@ -12,6 +12,7 @@
 #include "../../commons/ERT_RF_Protocol_Interface/Protocol.h"
 #include "sqlite_orm.h"
 
+
 typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK, INVALID } PacketType;
 
 struct AV_uplink_pkt {
@@ -157,6 +158,12 @@ public:
 
   /*sould not be called unless for the tests*/
   int delete_database();
+
+#if RF_PROTOCOL_FIREHORN
+#include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
+#elif RF_PROTOCOL_ICARUS
+#include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h"
+#endif
 
 #if RF_PROTOCOL_FIREHORN
   /*process pkt before writing it

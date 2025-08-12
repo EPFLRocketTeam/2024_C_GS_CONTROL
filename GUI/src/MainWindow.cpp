@@ -41,8 +41,7 @@ MainWindow::MainWindow(
   QHBoxLayout *sectionsLayout = createSectionsLayout();
   centralLayout->addLayout(sectionsLayout);
   _logger.debug("MainWindow", "Setup finished");
-
-  }
+}
 
 QHBoxLayout *MainWindow::createSectionsLayout() {
   QHBoxLayout *sectionsLayout = new QHBoxLayout();
@@ -51,7 +50,8 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
   replacePannelButton();
 
   if (leftSection) {
-    QScrollArea *scrollArea = new QScrollArea;
+    leftSection->setParent(this);
+    QScrollArea *scrollArea = new QScrollArea(this);
     scrollArea->setWidget(ui_elements::leftPlaceholder);
     scrollArea->setWidgetResizable(true);
     // Optionally hide the horizontal scroll bar if you only need vertical
@@ -87,12 +87,15 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
         "}");
     sectionsLayout->addWidget(scrollArea, (100 - mws::middleSectionWidth) / 2);
   }
-  if (middleSection)
-    sectionsLayout->addWidget(middleSection,
-                              mws::middleSectionWidth);
-  if (rightSection)
+  if (middleSection) {
+    /*middleSection->setParent(this);*/
+    sectionsLayout->addWidget(middleSection, mws::middleSectionWidth);
+  }
+  if (rightSection) {
+    /*rightSection->setParent(this);*/
     sectionsLayout->addWidget(rightSection,
                               (100 - mws::middleSectionWidth) / 2);
+  }
 
   return sectionsLayout;
 }

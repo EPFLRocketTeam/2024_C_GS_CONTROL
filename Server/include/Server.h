@@ -11,8 +11,8 @@
 
 #include "RequestBuilder.h"
 #include "RequestHandler.h"
-#include "../Capsule/src/capsule.h"
 #include "data_storage.h"
+#include "../Capsule/src/capsule.h"
 
 #include "Log.h"
 
@@ -55,6 +55,8 @@ private:
 
     int sendDataToSocket(QTcpSocket * socket, RequestBuilder request);
     void handleCommand(const QJsonObject &command);
+    void abort_loop();
+    int abort_initiated = 0;
     
 
     QMap<int, QList<QTcpSocket *>> subscriptionMap;

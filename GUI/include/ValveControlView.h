@@ -41,7 +41,8 @@ class ValveControlView : public QFrame {
 public:
     ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, 
                      QString connectedBg, QString disconnectedBg, QWidget *parent = nullptr);
-    virtual ~ValveControlView() {}
+    
+    virtual ~ValveControlView() override = default;
     
 protected:
     void paintEvent(QPaintEvent *event) override;

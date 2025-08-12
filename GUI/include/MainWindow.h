@@ -33,7 +33,9 @@ public:
                  *controlPannelMap = nullptr,
              QWidget *leftWidget = nullptr, QWidget *middleWidget = nullptr,
              QWidget *rightWidget = nullptr);
-  virtual ~MainWindow() {};
+  
+  ~MainWindow() override = default;
+
   inline static std::unique_ptr<ClientManager> clientManager;
 
 protected:
