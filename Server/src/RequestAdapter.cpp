@@ -29,13 +29,102 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
 #if RF_PROTOCOL_FIREHORN
   case CAPSULE_ID::AV_TELEMETRY: {
     av_downlink_t *packedData = new av_downlink_t;
+    // Assuming 'packedData' is a pointer to an av_downlink_t struct
+// e.g., av_downlink_t* packedData;
+
 
     // Copy the incoming raw data into our packet structure.
     memcpy(packedData, data, sizeof(*packedData));
+    _logger.info("PROCESSING PACKED RAW DATA", QString(R"(
+    packet_nbr: %1,
+    gnss_lon: %2,
+    gnss_lat: %3,
+    gnss_alt: %4,
+    gnss_vertical_speed: %5,
+    N2_pressure: %6,
+    fuel_pressure: %7,
+    LOX_pressure: %8,
+    fuel_level: %9,
+    LOX_level: %10,
+    N2_temp: %11,
+    LOX_temp: %12,
+    LOX_inj_temp: %13,
+    lpb_voltage: %14,
+    hpb_voltage: %15,
+    av_fc_temp: %16,
+    ambient_temp: %17,
+    engine_state: %18,
+    av_state: %19,
+    cam_rec: %20
+    )")
+    .arg(packedData->packet_nbr)
+    .arg(packedData->gnss_lon)
+    .arg(packedData->gnss_lat)
+    .arg(packedData->gnss_alt)
+    .arg(packedData->gnss_vertical_speed)
+    .arg(packedData->N2_pressure)
+    .arg(packedData->fuel_pressure)
+    .arg(packedData->LOX_pressure)
+    .arg(packedData->fuel_level)
+    .arg(packedData->LOX_level)
+    .arg(packedData->N2_temp)
+    .arg(packedData->LOX_temp)
+    .arg(packedData->LOX_inj_temp)
+    .arg(packedData->lpb_voltage)
+    .arg(packedData->hpb_voltage)
+    .arg(packedData->av_fc_temp)
+    .arg(packedData->ambient_temp)
+    .arg(packedData->engine_state)
+    .arg(packedData->av_state)
+    .arg(packedData->cam_rec)
+    .toStdString());
+
 
     av_downlink_unpacked dataAv = decode_downlink(*packedData);
     db->write_pkt(db->process_pkt(NULL, &dataAv, NULL));
-
+    _logger.info("PROCESSING UNPACKED", QString(R"(
+    packet_nbr: %1,
+    gnss_lon: %2,
+    gnss_lat: %3,
+    gnss_alt: %4,
+    gnss_vertical_speed: %5,
+    N2_pressure: %6,
+    fuel_pressure: %7,
+    LOX_pressure: %8,
+    fuel_level: %9,
+    LOX_level: %10,
+    N2_temp: %11,
+    LOX_temp: %12,
+    LOX_inj_temp: %13,
+    lpb_voltage: %14,
+    hpb_voltage: %15,
+    av_fc_temp: %16,
+    ambient_temp: %17,
+    engine_state: %18,
+    av_state: %19,
+    cam_rec: %20
+    )")
+    .arg(dataAv.packet_nbr)
+    .arg(dataAv.gnss_lon)
+    .arg(dataAv.gnss_lat)
+    .arg(dataAv.gnss_alt)
+    .arg(dataAv.gnss_vertical_speed)
+    .arg(dataAv.N2_pressure)
+    .arg(dataAv.fuel_pressure)
+    .arg(dataAv.LOX_pressure)
+    .arg(dataAv.fuel_level)
+    .arg(dataAv.LOX_level)
+    .arg(dataAv.N2_temp)
+    .arg(dataAv.LOX_temp)
+    .arg(dataAv.LOX_inj_temp)
+    .arg(dataAv.lpb_voltage)
+    .arg(dataAv.hpb_voltage)
+    .arg(dataAv.av_fc_temp)
+    .arg(dataAv.ambient_temp)
+    .arg(dataAv.engine_state)
+    .arg(dataAv.av_state)
+    .arg(dataAv.cam_rec)
+    .toStdString());
     delete packedData;
 
     jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] =
@@ -333,43 +422,43 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     /*  return {CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY};*/
 
   case GUI_FIELD::GUI_CMD_CALIBRATE:
-    return {AV_CMD_CALIBRATE, CAPSULE_ID::AV_TELEMETRY};
+    return {AV_CMD_CALIBRATE, CAPSULE_ID::GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_PRESSURIZE:
-    return {AV_CMD_CALIBRATE, AV_TELEMETRY};
+    return {AV_CMD_CALIBRATE, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_RECOVER:
-    return {AV_CMD_RECOVER, AV_TELEMETRY};
+    return {AV_CMD_RECOVER, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_MANUAL_DEPLOY:
-    return {AV_CMD_MANUAL_DEPLOY, AV_TELEMETRY};
+    return {AV_CMD_MANUAL_DEPLOY, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_IGNITION:
-    return {AV_CMD_IGNITION, AV_TELEMETRY};
+    return {AV_CMD_IGNITION, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_ARM:
-    return {AV_CMD_ARM, AV_TELEMETRY};
+    return {AV_CMD_ARM, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_ABORT:
-    return {AV_CMD_ABORT, AV_TELEMETRY};
+    return {AV_CMD_ABORT, GSC_CMD};
 
   case GUI_FIELD::VENT_LOX:
-    return {AV_CMD_VENT_LOX, AV_TELEMETRY};
+    return {AV_CMD_VENT_LOX, GSC_CMD};
 
   case GUI_FIELD::VENT_FUEL:
-    return {AV_CMD_VENT_FUEL, AV_TELEMETRY};
+    return {AV_CMD_VENT_FUEL, GSC_CMD};
 
   case GUI_FIELD::MAIN_LOX:
-    return {AV_CMD_MAIN_LOX, AV_TELEMETRY};
+    return {AV_CMD_MAIN_LOX, GSC_CMD};
 
   case GUI_FIELD::MAIN_FUEL:
-    return {AV_CMD_MAIN_FUEL, AV_TELEMETRY};
+    return {AV_CMD_MAIN_FUEL, GSC_CMD};
 
   case GUI_FIELD::IGNITER_FUEL:
-    return {AV_CMD_IGNITER_FUEL, AV_TELEMETRY};
+    return {AV_CMD_IGNITER_FUEL, GSC_CMD};
 
   case GUI_FIELD::IGNITER_LOX:
-    return {AV_CMD_IGNITER_LOX, AV_TELEMETRY};
+    return {AV_CMD_IGNITER_LOX, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_GSE_IDLE:
     return {GSE_CMD_IDLE, GSE_TELEMETRY};
