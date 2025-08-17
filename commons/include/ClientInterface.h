@@ -25,6 +25,7 @@ public:
     
     virtual void subscribe(const GUI_FIELD field, CallbackFunction<QString> callback) = 0;
     virtual void subscribe(const GUI_FIELD field, CallbackFunction<QJsonValue> callback) = 0;
+    virtual void unsubscribeAll(const GUI_FIELD field) = 0;
     virtual void handleReceivedData(const QString& data) = 0;
     virtual void send(const QString& data) = 0;
 };

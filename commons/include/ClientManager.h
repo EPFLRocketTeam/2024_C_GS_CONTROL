@@ -36,7 +36,7 @@ public:
   QString serverHost;
   int serverPort;
 
-  void unsubscribeAll(const GUI_FIELD field);
+  void unsubscribeAll(const GUI_FIELD field) override;
 
 private slots:
   void connected();
