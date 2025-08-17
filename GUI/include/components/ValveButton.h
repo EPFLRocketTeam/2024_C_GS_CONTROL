@@ -25,8 +25,6 @@ signals:
 private:
   State currentState;
 
-  void updateButtonIcon();
-
 protected:
   void paintEvent(QPaintEvent *) override;
   QSize sizeHint() const override { return QSize(52,52); }

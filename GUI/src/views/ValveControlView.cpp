@@ -151,7 +151,7 @@ void ValveControlView::addButtonIcon(GUI_FIELD field, float x, float y,
 
   // Create the valve button
   ValveButton *button =
-      new ValveButton(ValveButton::Horizontal, valveWithTitle);
+      new ValveButton(orientation, valveWithTitle);
   button->setAlignment(Qt::AlignCenter);
   button->setStyleSheet(
       QString("background: transparent; color: %1;").arg(col::primary));
