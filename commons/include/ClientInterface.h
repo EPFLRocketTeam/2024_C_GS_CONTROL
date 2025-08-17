@@ -20,7 +20,7 @@ public:
     virtual ~ClientInterface() = default;
 
     template<typename T>
-    using CallbackFunction= std::function<void(const T&)>;
+    using CallbackFunction = std::function<void(const T&)>;
     // using CallbackFunction = std::function<void(const QString)>;
     
     virtual void subscribe(const GUI_FIELD field, CallbackFunction<QString> callback) = 0;
