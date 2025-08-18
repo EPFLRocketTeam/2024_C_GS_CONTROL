@@ -17,8 +17,8 @@ TEST(RequestAdapterTest, FirehornProtocol) {
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::VENT_FUEL).order_id, AV_CMD_VENT_FUEL);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::MAIN_LOX).order_id, AV_CMD_MAIN_LOX);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::MAIN_FUEL).order_id, AV_CMD_MAIN_FUEL);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::IGNITER_FUEL).order_id, AV_CMD_IGNITER_FUEL);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::IGNITER_LOX).order_id, AV_CMD_IGNITER_LOX);
+    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::PRESSURE_VALVE_FUEL).order_id, AV_CMD_P_FUEL);
+    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::PRESSURE_VALVE_LOX).order_id, AV_CMD_P_LOX);
 }
 #elif defined(RF_PROTOCOL_ICARUS)
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h"

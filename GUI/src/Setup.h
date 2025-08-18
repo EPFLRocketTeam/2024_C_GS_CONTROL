@@ -189,12 +189,14 @@ inline std::vector<ValveInfo> valves = {
     {GUI_FIELD::MAIN_FUEL, {0.725, 0.68}, ValveButton::Orientation::Horizontal},
     {GUI_FIELD::VENT_FUEL,
      {0.785838, 0.338},
-     ValveButton::Orientation::Horizontal},
+     ValveButton::Orientation::Vertical},
     {GUI_FIELD::VENT_LOX, {0.51, 0.338}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::IGNITER_LOX, {0.6, 0.611}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::IGNITER_FUEL,
-     {0.69, 0.611},
-     ValveButton::Orientation::Vertical}};
+    {GUI_FIELD::PRESSURE_VALVE_FUEL,
+     {0.73, 0.29},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::PRESSURE_VALVE_LOX, {0.57, 0.29}, ValveButton::Orientation::Vertical},
+};
+
 
 inline std::vector<LabelInfo> labels = {
 
