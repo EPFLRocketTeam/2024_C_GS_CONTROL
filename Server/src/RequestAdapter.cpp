@@ -1,4 +1,5 @@
 #include "RequestAdapter.h"
+#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
 #include "Log.h"
@@ -164,10 +165,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataAv.ambient_temp));
 
     int engine_states = static_cast<int>(dataAv.engine_state);
-    jsonObj[QString::number(GUI_FIELD::IGNITER_LOX)] =
-        QString::number((engine_states & ENGINE_STATE_IGN_LOX) > 0 ? 1 : 0);
-    jsonObj[QString::number(GUI_FIELD::IGNITER_FUEL)] =
-        QString::number((engine_states & ENGINE_STATE_IGN_FUEL) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_LOX)] =
+        QString::number((engine_states & ENGINE_STATE_P_LOX) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_FUEL)] =
+        QString::number((engine_states & ENGINE_STATE_P_FUEL) > 0 ? 1 : 0);
     jsonObj[QString::number(GUI_FIELD::VENT_LOX)] =
         QString::number((engine_states & ENGINE_STATE_VENT_LOX) > 0 ? 1 : 0);
     jsonObj[QString::number(GUI_FIELD::VENT_FUEL)] =
