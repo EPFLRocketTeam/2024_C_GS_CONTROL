@@ -157,8 +157,9 @@ inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
          GUI_FIELD::MAIN_FUEL,
          GUI_FIELD::VENT_LOX,
          GUI_FIELD::VENT_FUEL,
-         GUI_FIELD::IGNITER_LOX,
-         GUI_FIELD::IGNITER_FUEL,
+         GUI_FIELD::VENT_N2,
+         GUI_FIELD::PRESSURE_VALVE_LOX,
+         GUI_FIELD::PRESSURE_VALVE_FUEL,
      }}};
 
 inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{
@@ -185,6 +186,7 @@ inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
 
 inline std::vector<ValveInfo> valves = {
     {GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::VENT_N2, {0.65, 0.2}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::MAIN_LOX, {0.567, 0.74}, ValveButton::Orientation::Horizontal},
     {GUI_FIELD::MAIN_FUEL, {0.725, 0.68}, ValveButton::Orientation::Horizontal},
     {GUI_FIELD::VENT_FUEL,

@@ -13,6 +13,7 @@ enum GUI_FIELD {
   MAIN_FUEL,
   VENT_LOX,
   VENT_FUEL,
+  VENT_N2,
   ORDER_ID,
   ORDER_VALUE,
   PACKET_NBR,
@@ -99,6 +100,7 @@ enum GUI_FIELD {
   GUI_CMD_MAIN_FUEL,
   GUI_CMD_VENT_LOX,
   GUI_CMD_VENT_FUEL,
+  GUI_CMD_VENT_N2,
   GUI_CMD_PRESSURIZE,
   GUI_CMD_FILLING_N2O,
   GUI_CMD_FILLING_LOX,
@@ -182,6 +184,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case VENT_FUEL:
     name = "VENT FUEL";
+    break;
+  case VENT_N2:
+    name = "VENT N2";
     break;
   case ORDER_ID:
     name = "ORDER ID";
@@ -614,6 +619,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return MAIN_FUEL;
   else if (fieldName == "VENT LOX")
     return VENT_LOX;
+  else if (fieldName == "VENT N2")
+    return VENT_N2;
   else if (fieldName == "VENT FUEL")
     return VENT_FUEL;
   else if (fieldName == "ORDER ID")
