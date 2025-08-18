@@ -32,6 +32,7 @@ ValveButton::ValveButton(Orientation orientation, QWidget *parent)
 
 void ValveButton::setState(State state) {
   currentState = state;
+  update();
 }
 
 void ValveButton::updateButtonIcon() {

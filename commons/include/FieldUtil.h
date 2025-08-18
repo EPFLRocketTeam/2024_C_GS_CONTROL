@@ -7,6 +7,8 @@
 enum GUI_FIELD {
   IGNITER_LOX = 42,
   IGNITER_FUEL,
+  PRESSURE_VALVE_LOX,
+  PRESSURE_VALVE_FUEL,
   MAIN_LOX,
   MAIN_FUEL,
   VENT_LOX,
@@ -106,6 +108,8 @@ enum GUI_FIELD {
   GUI_CMD_GIMBALL_Y,
   GUI_CMD_SERVO_1,
   GUI_CMD_SERVO_2,
+  GUI_CMD_P_LOX,
+  GUI_CMD_P_FUEL,
   GUI_CMD_GSE_TOGGLE_11,
   GUI_CMD_GSE_TOGGLE_12,
   GUI_CMD_GSE_TOGGLE_13,
@@ -161,11 +165,11 @@ namespace fieldUtil {
 inline QString enumToFieldName(GUI_FIELD field) {
   QString name;
   switch (field) {
-  case IGNITER_LOX:
-    name = "IGNITER LOX";
+  case PRESSURE_VALVE_FUEL:
+    name = "PRESSURE VALVE FUEL";
     break;
-  case IGNITER_FUEL:
-    name = "IGNITER FUEL";
+  case PRESSURE_VALVE_LOX:
+    name = "PRESSURE VALVE LOX";
     break;
   case MAIN_LOX:
     name = "MAIN LOX";
@@ -600,10 +604,10 @@ inline QString enumToFieldName(GUI_FIELD field) {
 }
 
 inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
-  if (fieldName == "IGNITER LOX")
-    return IGNITER_LOX;
-  else if (fieldName == "IGNITER FUEL")
-    return IGNITER_FUEL;
+  if (fieldName == "PRESSURE VALVE LOX")
+    return PRESSURE_VALVE_LOX;
+  else if (fieldName == "PRESSURE VALVE FUEL")
+    return PRESSURE_VALVE_FUEL;
   else if (fieldName == "MAIN LOX")
     return MAIN_LOX;
   else if (fieldName == "MAIN FUEL")
