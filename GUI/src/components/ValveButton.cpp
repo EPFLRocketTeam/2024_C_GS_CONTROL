@@ -26,13 +26,13 @@ ValveButton::ValveButton(Orientation orientation, QWidget *parent)
       new QSvgRenderer(QStringLiteral(":/images/GS-valve-close.svg"), this);
   m_rUnknown =
       new QSvgRenderer(QStringLiteral(":/images/GS-valve-unknown.svg"), this);
-
+  updateButtonIcon();
   setFixedSize(sizeHint());
 }
 
 void ValveButton::setState(State state) {
   currentState = state;
-  update();
+  updateButtonIcon();
 }
 
 void ValveButton::updateButtonIcon() {
@@ -96,41 +96,43 @@ void ValveButton::mousePressEvent(QMouseEvent *event) {
   QTimer::singleShot(100, [this]() { this->resetStyle(); });
 }
 
-void ValveButton::paintEvent(QPaintEvent *) {
-  QPainter p(this);
-  // 2) Guard painter activation
+// void ValveButton::paintEvent(QPaintEvent *) {
+//   QPainter p(this);
+//   // 2) Guard painter activation
 
-  p.setRenderHint(QPainter::Antialiasing);
+//   p.setRenderHint(QPainter::Antialiasing);
 
-  // pick the right renderer
-  QSvgRenderer *r = nullptr;
-  switch (currentState) {
-  case Open:
-    r = m_rOpen;
-    break;
-  case Close:
-    r = m_rClose;
-    break;
-  case Unknown:
-    r = m_rUnknown;
-    break;
-  }
+//   // pick the right renderer
+//   QSvgRenderer *r = nullptr;
+//   switch (currentState) {
+//   case Open:
+//     r = m_rOpen;
+//     break;
+//   case Close:
+//     r = m_rClose;
+//     break;
+//   case Unknown:
+//     r = m_rUnknown;
+//     break;
+//   }
 
-  // center + rotate if needed
-  p.save();
-  if (orientation == Horizontal) {
-    // rotate 90° about widget center
-    p.translate(width() / 2.0, height() / 2.0);
-    p.rotate(90);
-    p.translate(-height() / 2.0, -width() / 2.0);
-    // note: swapped width/height because of the rotate
-    r->render(&p, QRectF(0, 0, height(), width()));
-  } else {
-    // no rotation
-    r->render(&p, QRectF(0, 0, width(), height()));
-  }
-  p.restore();
-}
+//   // center + rotate if needed
+//   p.save();
+//   if (orientation == Horizontal) {
+//     // rotate 90° about widget center
+
+//       p.translate(width() / 2.0, height() / 2.0);
+//       p.rotate(90);
+//       p.translate(-height() / 2.0, -width() / 2.0);
+//     // note: swapped width/height because of the rotate
+//     r->render(&p, QRectF(0, 0, height(), width()));
+//   } else {
+//     // no rotation
+
+//     r->render(&p, QRectF(0, 0, width(), height()));
+//   }
+//   p.restore();
+// }
 
 void ValveButton::resetStyle() {
   setStyleSheet(QString(R"(

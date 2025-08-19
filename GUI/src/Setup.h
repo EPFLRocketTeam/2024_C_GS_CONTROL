@@ -185,13 +185,13 @@ inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
                   {"QPushButton", gsePushButtonMap}};
 
 inline std::vector<ValveInfo> valves = {
-    {GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Horizontal},
     {GUI_FIELD::VENT_N2, {0.65, 0.2}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::MAIN_LOX, {0.567, 0.74}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::MAIN_FUEL, {0.725, 0.68}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::MAIN_LOX, {0.567, 0.74}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::MAIN_FUEL, {0.725, 0.68}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::VENT_FUEL,
      {0.785838, 0.338},
-     ValveButton::Orientation::Vertical},
+     ValveButton::Orientation::Horizontal},
     {GUI_FIELD::VENT_LOX, {0.51, 0.338}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
      {0.73, 0.29},
