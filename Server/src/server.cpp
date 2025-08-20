@@ -20,8 +20,6 @@
 #include <string>
 
 #include "../Capsule/src/capsule.h"
-#include "ERT_RF_Protocol_Interface/DownlinkCompression_Firehorn.h"
-#include "ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 #include "ERT_RF_Protocol_Interface/Protocol.h"
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
