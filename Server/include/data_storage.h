@@ -12,7 +12,6 @@
 #include "../../commons/ERT_RF_Protocol_Interface/Protocol.h"
 #include "sqlite_orm.h"
 
-
 typedef enum { AV_UPLINK, AV_DOWNLINK, GSE_DOWNLINK, INVALID } PacketType;
 
 struct AV_uplink_pkt {
@@ -87,6 +86,9 @@ struct AV_downlink_pkt {
   uint8_t N2_solenoid;
   uint8_t N2O_main;
   uint8_t ETH_main;
+  uint8_t N2O_sol;
+  uint8_t ETH_sol;
+
   uint32_t gnss_lon; // Data with RTK correction
   uint32_t gnss_lat; // Data with RTK correction
   uint8_t sat_nbr;   // gnss : number of fixed satellite
@@ -112,8 +114,6 @@ struct AV_downlink_pkt {
   uint8_t
       AV_state; // AV Power-up / Idle / Initialisation / Pressurization / Armed
                 // / Motor Fire-up / Automatic Flight / Forced Landing / ABORT
-  uint8_t Fire_up_state; // Allumage Igniter / Check Igniter / Allumage Chambres
-                         // / Check Chambres / Ready to Fly
 };
 
 struct GSE_downlink_pkt {
@@ -311,6 +311,9 @@ private:
           sqlite_orm::make_column("N2_solenoid", &AV_downlink_pkt::N2_solenoid),
           sqlite_orm::make_column("N2O_main", &AV_downlink_pkt::N2O_main),
           sqlite_orm::make_column("ETH_main", &AV_downlink_pkt::ETH_main),
+          sqlite_orm::make_column("N2O_sol", &AV_downlink_pkt::N2O_sol),
+          sqlite_orm::make_column("ETH_sol", &AV_downlink_pkt::ETH_sol),
+
           sqlite_orm::make_column("gnss_lon", &AV_downlink_pkt::gnss_lon),
           sqlite_orm::make_column("gnss_lat", &AV_downlink_pkt::gnss_lat),
           sqlite_orm::make_column("sat_nbr", &AV_downlink_pkt::sat_nbr),
@@ -337,9 +340,7 @@ private:
           sqlite_orm::make_column("LV_voltage", &AV_downlink_pkt::LV_voltage),
           sqlite_orm::make_column("AV_temp", &AV_downlink_pkt::AV_temp),
           sqlite_orm::make_column("ID_config", &AV_downlink_pkt::ID_config),
-          sqlite_orm::make_column("AV_state", &AV_downlink_pkt::AV_state),
-          sqlite_orm::make_column("Fire_up_state",
-                                  &AV_downlink_pkt::Fire_up_state)),
+          sqlite_orm::make_column("AV_state", &AV_downlink_pkt::AV_state)),
       sqlite_orm::make_table<GSE_downlink_pkt>(
           "GSE_DOWNLINK",
           sqlite_orm::make_column("id", &GSE_downlink_pkt::id,

@@ -3,7 +3,6 @@
 #include <../ERT_RF_Protocol_Interface/Protocol.h>
 #include <QString>
 
-
 enum GUI_FIELD {
   IGNITER_LOX = 42,
   IGNITER_FUEL,
@@ -91,6 +90,9 @@ enum GUI_FIELD {
   GUI_CMD_ARM,
   GUI_CMD_GSE_ARM,
   GUI_CMD_GSE_PASSIVATE,
+  GUI_CMD_HOPPER_TARE,
+  GUI_CMD_HOPPER_HOMING_GIMBAL,
+  GUI_CMD_HOPPER_HOMING_MAIN_VALVES,
   GUI_CMD_IGNITION,
   GUI_CMD_ABORT,
   GUI_CMD_MANUAL_DEPLOY,
@@ -98,6 +100,7 @@ enum GUI_FIELD {
   GUI_CMD_IGNITER_FUEL,
   GUI_CMD_MAIN_LOX,
   GUI_CMD_MAIN_FUEL,
+  GUI_CMD_MAIN_N2O,
   GUI_CMD_VENT_LOX,
   GUI_CMD_VENT_FUEL,
   GUI_CMD_VENT_N2,
@@ -136,6 +139,8 @@ enum GUI_FIELD {
   HOPPER_N2_SOL,       // 1 bit
   HOPPER_N2O_MAIN,     // 8 bits
   HOPPER_ETH_MAIN,     // 8 bits
+  HOPPER_N2O_SOL,      // 8 bits
+  HOPPER_ETH_SOL,      // 8 bits
   HOPPER_GNSS_LON,     // 32 bits (float)
   HOPPER_GNSS_LAT,     // 32 bits (float)
   HOPPER_SAT_NBR,      // 8 bits (number of fixed satellites)
@@ -338,6 +343,12 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case HOPPER_N2_SOL:
     name = "HOPPER N2 SOLENOID";
     break;
+  case HOPPER_N2O_SOL:
+    name = "HOPPER N2O SOL";
+    break;
+  case HOPPER_ETH_SOL:
+    name = "HOPPER ETH SOL";
+    break;
   case HOPPER_N2O_MAIN:
     name = "HOPPER N2O MAIN";
     break;
@@ -441,7 +452,15 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_GSE_PASSIVATE:
     name = "GSE PASSIVATE";
     break;
-
+  case GUI_CMD_HOPPER_TARE:
+    name = "HOPPER TARE";
+    break;
+  case GUI_CMD_HOPPER_HOMING_GIMBAL:
+    name = "HOMING GIMBAL";
+    break;
+  case GUI_CMD_HOPPER_HOMING_MAIN_VALVES:
+    name = "HOMING VALVES";
+    break;
 
   case GUI_CMD_SERVO_1:
     name = "SERVO 1";
@@ -454,11 +473,11 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_GSE_TOGGLE_11:
     name = "GSE TOGGLE 11";
     break;
-  
+
   case GUI_CMD_GSE_TOGGLE_12:
     name = "GSE TOGGLE 12";
     break;
-  
+
   case GUI_CMD_GSE_TOGGLE_13:
     name = "GSE TOGGLE 13";
     break;
@@ -584,7 +603,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GSE_GP1:
     name = "GP1";
     break;
-  
+
   case GSE_GP2:
     name = "GP2";
     break;
@@ -725,8 +744,12 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_N2_SOL;
   else if (fieldName == "HOPPER N2O MAIN")
     return HOPPER_N2O_MAIN;
-  else if (fieldName == "HOPPER ETH MAIN")
+  else if (fieldName == "HOPPER N2O MAIN")
+    return HOPPER_N2O_SOL;
+  else if (fieldName == "HOPPER N2O SOL")
     return HOPPER_ETH_MAIN;
+  else if (fieldName == "HOPPER ETH SOL")
+    return HOPPER_ETH_SOL;
   else if (fieldName == "HOPPER GNSS LON")
     return HOPPER_GNSS_LON;
   else if (fieldName == "HOPPER GNSS LAT")
@@ -776,15 +799,22 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
   else if (fieldName == "HOPPER FIRE UP STATE")
     return HOPPER_FIREUP_STATE;
   else if (fieldName == "GSE IDLE")
-      return GUI_CMD_GSE_IDLE;
+    return GUI_CMD_GSE_IDLE;
   else if (fieldName == "GSE CALIBRATE")
-      return GUI_CMD_GSE_CALIBRATE;
+    return GUI_CMD_GSE_CALIBRATE;
   else if (fieldName == "GSE ARM")
-      return GUI_CMD_GSE_ARM;
+    return GUI_CMD_GSE_ARM;
   else if (fieldName == "GSE PASSIVATE")
-      return GUI_CMD_GSE_PASSIVATE;
+    return GUI_CMD_GSE_PASSIVATE;
   else if (fieldName == "SERVO 1")
-      return GUI_CMD_SERVO_1;
+    return GUI_CMD_SERVO_1;
+  else if (fieldName == "HOPPER TARE")
+    return GUI_CMD_HOPPER_TARE;
+  else if (fieldName == "HOMING VALVES")
+    return GUI_CMD_HOPPER_HOMING_MAIN_VALVES;
+  else if (fieldName == "HOMING GIMBAL")
+    return GUI_CMD_HOPPER_HOMING_GIMBAL;
+
   else if (fieldName == "SERVO 2")
     return GUI_CMD_SERVO_2;
   else if (fieldName == "GSE TOGGLE 11")
@@ -812,17 +842,17 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
   else if (fieldName == "GSE TOGGLE 26")
     return GUI_CMD_GSE_TOGGLE_26;
   else if (fieldName == "GSE TOGGLE 27")
-      return GUI_CMD_GSE_TOGGLE_27;
+    return GUI_CMD_GSE_TOGGLE_27;
   else if (fieldName == "GSE TOGGLE 28")
-      return GUI_CMD_GSE_TOGGLE_28;
+    return GUI_CMD_GSE_TOGGLE_28;
   else if (fieldName == "CALIBRATE")
     return GUI_CMD_CALIBRATE;
   else if (fieldName == "RECOVER")
     return GUI_CMD_RECOVER;
   else if (fieldName == "CMD GIMBAL X")
-      return GUI_CMD_GIMBALL_X;
+    return GUI_CMD_GIMBALL_X;
   else if (fieldName == "CMD GIMBAL Y")
-      return GUI_CMD_GIMBALL_Y;
+    return GUI_CMD_GIMBALL_Y;
   else if (fieldName == "IGNITION")
     return GUI_CMD_IGNITION;
   else if (fieldName == "MANUAL DEPLOY")
@@ -854,7 +884,7 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
   else if (fieldName == "GSE GPN NC1")
     return GSE_GPN_NC1;
   else if (fieldName == "GSE GPN NC2")
-      return GSE_GPN_NC2;
+    return GSE_GPN_NC2;
   else if (fieldName == "GSE GVN NC")
     return GSE_GVN_NC;
   else if (fieldName == "GSE GFE NC")

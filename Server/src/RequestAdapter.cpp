@@ -21,6 +21,14 @@ int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value,
   return tIDs.capsule_id;
 }
 
+float fixedxtractDoubleFromFixedPoint(uint16_t fixed) {
+  // Interpret the bits as a signed 16-bit integer
+  int16_t signed_val = (int16_t)fixed;
+
+  // Divide by 2^6 (64) to restore fractional scaling
+  return (float)signed_val / (1 << 6);
+}
+
 std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                                           uint32_t len, SqliteDB *db) {
   // Create a JSON object
@@ -30,8 +38,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   case CAPSULE_ID::AV_TELEMETRY: {
     av_downlink_t *packedData = new av_downlink_t;
     // Assuming 'packedData' is a pointer to an av_downlink_t struct
-// e.g., av_downlink_t* packedData;
-
+    // e.g., av_downlink_t* packedData;
 
     // Copy the incoming raw data into our packet structure.
     memcpy(packedData, data, sizeof(*packedData));
@@ -218,11 +225,15 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<uint32_t>(dataHopper.packet_nbr));
     jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] =
-        QString::number(static_cast<int>(dataHopper.N2O_pressure));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.N2O_pressure));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_PRESSURE)] =
-        QString::number(static_cast<int>(dataHopper.ETH_pressure));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.ETH_pressure));
+    _logger.error("EVENT",
+                  QString(R"(%1)")
+                      .arg(extractDoubleFromFixedPoint(dataHopper.N2O_temp))
+                      .toStdString());
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_TEMP)] =
-        QString::number(static_cast<int>(dataHopper.N2O_temp));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.N2O_temp));
     // Vents are defined as nside a nested struct.
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_VENT)] =
         QString::number(static_cast<int>(dataHopper.N2O_vent));
@@ -234,6 +245,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataHopper.N2O_main));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] =
         QString::number(static_cast<int>(dataHopper.ETH_main));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_SOL)] =
+        QString::number(static_cast<int>(dataHopper.ETH_sol));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_SOL)] =
+        QString::number(static_cast<int>(dataHopper.N2O_sol));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LON)] =
         QString::number(static_cast<double>(dataHopper.gnss_lon));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LAT)] =
@@ -241,31 +256,31 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::HOPPER_SAT_NBR)] =
         QString::number(static_cast<int>(dataHopper.sat_nbr));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_X)] =
-        QString::number(static_cast<int>(dataHopper.gyro_x));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.gyro_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Y)] =
-        QString::number(static_cast<int>(dataHopper.gyro_y));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.gyro_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GYRO_Z)] =
-        QString::number(static_cast<int>(dataHopper.gyro_z));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.gyro_z));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_X)] =
-        QString::number(static_cast<int>(dataHopper.acc_x));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.acc_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Y)] =
-        QString::number(static_cast<int>(dataHopper.acc_y));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.acc_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Z)] =
-        QString::number(static_cast<int>(dataHopper.acc_z));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.acc_z));
     jsonObj[QString::number(GUI_FIELD::HOPPER_BARO)] =
-        QString::number(static_cast<int>(dataHopper.baro));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.baro));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_X)] =
-        QString::number(static_cast<int>(dataHopper.kalman_pos_x));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_pos_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Y)] =
-        QString::number(static_cast<int>(dataHopper.kalman_pos_y));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_pos_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_Z)] =
-        QString::number(static_cast<int>(dataHopper.kalman_pos_z));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_pos_z));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_YAW)] =
-        QString::number(static_cast<int>(dataHopper.kalman_yaw));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_yaw));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_PITCH)] =
-        QString::number(static_cast<int>(dataHopper.kalman_pitch));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_pitch));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_ROLL)] =
-        QString::number(static_cast<int>(dataHopper.kalman_roll));
+        QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_roll));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)] =
         QString::number(static_cast<int>(dataHopper.gimbal_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)] =
@@ -280,8 +295,6 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataHopper.ID_config));
     jsonObj[QString::number(GUI_FIELD::HOPPER_AV_STATE)] =
         QString::number(static_cast<int>(dataHopper.AV_state));
-    jsonObj[QString::number(GUI_FIELD::HOPPER_FIREUP_STATE)] =
-        QString::number(static_cast<uint8_t>(dataHopper.Fire_up_state));
 
     break;
   }
@@ -358,13 +371,28 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {CMD_ID::HOPPER_CMD_GIMBALL_Y, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_ETH_MAIN:
-    return {CMD_ID::HOPPER_CMD_SERVO_FUEL, HOPPER_TELEMETRY};
+    return {CMD_ID::HOPPER_CMD_MAIN_FUEL, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_N2O_MAIN:
-    return {CMD_ID::HOPPER_CMD_SERVO_N2O, HOPPER_TELEMETRY};
+    return {CMD_ID::HOPPER_CMD_MAIN_N2O, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_N2_SOL:
     return {CMD_ID::HOPPER_CMD_N2_SOL, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::HOPPER_N2O_SOL:
+    return {CMD_ID::HOPPER_CMD_N2O_SOL, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::HOPPER_ETH_SOL:
+    return {CMD_ID::HOPPER_CMD_FUEL_SOL, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_TARE:
+    return {CMD_ID::HOPPER_CMD_TARE, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_HOMING_GIMBAL:
+    return {CMD_ID::HOPPER_CMD_HOMING_GIMBAL, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_HOMING_MAIN_VALVES:
+    return {CMD_ID::HOPPER_CMD_HOMING_MAIN_VALVES, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GSE_VENT:
     return {CMD_ID::GSE_CMD_VENT, GSE_TELEMETRY};

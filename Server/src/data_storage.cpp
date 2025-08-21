@@ -128,6 +128,11 @@ SqliteDB::SqliteDB()
                                           &AV_downlink_pkt::N2O_main),
                   sqlite_orm::make_column("ETH_main",
                                           &AV_downlink_pkt::ETH_main),
+                  sqlite_orm::make_column("N2O_sol",
+                                          &AV_downlink_pkt::N2O_sol),
+                  sqlite_orm::make_column("ETH_sol",
+                                          &AV_downlink_pkt::ETH_sol),
+
                   sqlite_orm::make_column("gnss_lon",
                                           &AV_downlink_pkt::gnss_lon),
                   sqlite_orm::make_column("gnss_lat",
@@ -164,9 +169,7 @@ SqliteDB::SqliteDB()
                   sqlite_orm::make_column("ID_config",
                                           &AV_downlink_pkt::ID_config),
                   sqlite_orm::make_column("AV_state",
-                                          &AV_downlink_pkt::AV_state),
-                  sqlite_orm::make_column("Fire_up_state",
-                                          &AV_downlink_pkt::Fire_up_state)),
+                                          &AV_downlink_pkt::AV_state)),
               sqlite_orm::make_table<GSE_downlink_pkt>(
                   "GSE_DOWNLINK",
                   sqlite_orm::make_column("id", &GSE_downlink_pkt::id,
@@ -498,41 +501,45 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
          .av_state = avdw->av_state,
          .cam_rec = avdw->cam_rec};
 #else
-        {.id = id,
-         .ts = ts,
-         .packet_nbr = avdw->packet_nbr,
-         .N2O_pressure = avdw->N2O_pressure,
-         .ETH_pressure = avdw->ETH_pressure,
-         .N2O_temp = avdw->N2O_temp,
-         .N2O_vent = avdw->N2O_vent,
-         .ETH_vent = avdw->ETH_vent,
-         .N2_solenoid = avdw->N2_solenoid,
-         .N2O_main = avdw->N2O_main,
-         .ETH_main = avdw->ETH_main,
-         .gnss_lon = avdw->gnss_lon,
-         .gnss_lat = avdw->gnss_lat,
-         .sat_nbr = avdw->sat_nbr,
-         .gyro_x = avdw->gyro_x,
-         .gyro_y = avdw->gyro_y,
-         .gyro_z = avdw->gyro_z,
-         .acc_x = avdw->acc_x,
-         .acc_y = avdw->acc_y,
-         .acc_z = avdw->acc_z,
-         .baro = avdw->baro,
-         .kalman_pos_x = avdw->kalman_pos_x,
-         .kalman_pos_y = avdw->kalman_pos_y,
-         .kalman_pos_z = avdw->kalman_pos_z,
-         .kalman_yaw = avdw->kalman_yaw,
-         .kalman_pitch = avdw->kalman_pitch,
-         .kalman_roll = avdw->kalman_roll,
-         .gimbal_x = avdw->gimbal_x,
-         .gimbal_y = avdw->gimbal_y,
-         .HV_voltage = avdw->HV_voltage,
-         .LV_voltage = avdw->LV_voltage,
-         .AV_temp = avdw->AV_temp,
-         .ID_config = avdw->ID_config,
-         .AV_state = avdw->AV_state,
-         .Fire_up_state = avdw->Fire_up_state};
+        {
+            .id = id,
+            .ts = ts,
+            .packet_nbr = avdw->packet_nbr,
+            .N2O_pressure = avdw->N2O_pressure,
+            .ETH_pressure = avdw->ETH_pressure,
+            .N2O_temp = avdw->N2O_temp,
+            .N2O_vent = avdw->N2O_vent,
+            .ETH_vent = avdw->ETH_vent,
+            .N2_solenoid = avdw->N2_solenoid,
+            .N2O_main = avdw->N2O_main,
+            .ETH_main = avdw->ETH_main,
+            .N2O_sol = avdw->N2O_sol,
+            .ETH_sol = avdw->ETH_sol,
+
+            .gnss_lon = avdw->gnss_lon,
+            .gnss_lat = avdw->gnss_lat,
+            .sat_nbr = avdw->sat_nbr,
+            .gyro_x = avdw->gyro_x,
+            .gyro_y = avdw->gyro_y,
+            .gyro_z = avdw->gyro_z,
+            .acc_x = avdw->acc_x,
+            .acc_y = avdw->acc_y,
+            .acc_z = avdw->acc_z,
+            .baro = avdw->baro,
+            .kalman_pos_x = avdw->kalman_pos_x,
+            .kalman_pos_y = avdw->kalman_pos_y,
+            .kalman_pos_z = avdw->kalman_pos_z,
+            .kalman_yaw = avdw->kalman_yaw,
+            .kalman_pitch = avdw->kalman_pitch,
+            .kalman_roll = avdw->kalman_roll,
+            .gimbal_x = avdw->gimbal_x,
+            .gimbal_y = avdw->gimbal_y,
+            .HV_voltage = avdw->HV_voltage,
+            .LV_voltage = avdw->LV_voltage,
+            .AV_temp = avdw->AV_temp,
+            .ID_config = avdw->ID_config,
+            .AV_state = avdw->AV_state,
+        };
 #endif
 
     return (Packet){.type = AV_DOWNLINK,
@@ -547,25 +554,26 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
     GSE_downlink_pkt *raw_gsdw =
         static_cast<GSE_downlink_pkt *>(malloc(sizeof(GSE_downlink_pkt)));
 
-    *raw_gsdw = {.id = id,
-                 .ts = ts,
-                 .GQN_NC1 = gsdw->GQN_NC1,
-                 .GQN_NC2 = gsdw->GQN_NC2,
-                 .GQN_NC3 = gsdw->GQN_NC3,
-                 .GQN_NC4 = gsdw->GQN_NC4,
-                 .GQN_NC5 = gsdw->GQN_NC5,
-                 .GPN_NC1 = gsdw->GPN_NC1,
-                 .GPN_NC2 = gsdw->GPN_NC2,
-                 .GVN_NC = gsdw->GVN_NC,
-                 .GFE_NC = gsdw->GFE_NC,
-                 .GFO_NCC = gsdw->GFO_NCC,
-                 .GDO_NCC = gsdw->GDO_NCC,
-                 .PC_OLC = gsdw->PC_OLC,
-                 .GP1 = gsdw->GP1,
-                 .GP2 = gsdw->GP2,
-                 .GP3 = gsdw->GP3,
-                 .GP4 = gsdw->GP4,
-                 .GP5 = gsdw->GP5
+    *raw_gsdw = {
+      .id = id,
+      .ts = ts,
+      .GQN_NC1 = gsdw->GQN_NC1,
+      .GQN_NC2 = gsdw->GQN_NC2,
+      .GQN_NC3 = gsdw->GQN_NC3,
+      .GQN_NC4 = gsdw->GQN_NC4,
+      .GQN_NC5 = gsdw->GQN_NC5,
+      .GPN_NC1 = gsdw->GPN_NC1,
+      .GPN_NC2 = gsdw->GPN_NC2,
+      .GVN_NC = gsdw->GVN_NC,
+      .GFE_NC = gsdw->GFE_NC,
+      .GFO_NCC = gsdw->GFO_NCC,
+      .GDO_NCC = gsdw->GDO_NCC,
+      .PC_OLC = gsdw->PC_OLC,
+      .GP1 = gsdw->GP1,
+      .GP2 = gsdw->GP2,
+      .GP3 = gsdw->GP3,
+      .GP4 = gsdw->GP4,
+      .GP5 = gsdw->GP5
 #else
     GSE_downlink_pkt *raw_gsdw =
         static_cast<GSE_downlink_pkt *>(malloc(sizeof(GSE_downlink_pkt)));
@@ -582,16 +590,16 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
         .loadcell3 = gsdw->loadcell3,
         .loadcell4 = gsdw->loadcell4,
 #endif
-  };
-  return (Packet){.type = GSE_DOWNLINK,
-                  .av_up_pkt = NULL,
-                  .av_down_pkt = NULL,
-                  .gse_down_pkt = raw_gsdw};
-}
-return {.type = INVALID,
-        .av_up_pkt = NULL,
-        .av_down_pkt = NULL,
-        .gse_down_pkt = NULL};
+    };
+    return (Packet){.type = GSE_DOWNLINK,
+                    .av_up_pkt = NULL,
+                    .av_down_pkt = NULL,
+                    .gse_down_pkt = raw_gsdw};
+  }
+  return {.type = INVALID,
+          .av_up_pkt = NULL,
+          .av_down_pkt = NULL,
+          .gse_down_pkt = NULL};
 }
 
 void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
@@ -643,6 +651,9 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                         .N2_solenoid = pkt.av_down_pkt->N2_solenoid,
                         .N2O_main = pkt.av_down_pkt->N2O_main,
                         .ETH_main = pkt.av_down_pkt->ETH_main,
+                        .N2O_sol = pkt.av_down_pkt->N2O_sol,
+                        .ETH_sol = pkt.av_down_pkt->ETH_sol,
+
 
                         .gnss_lon = pkt.av_down_pkt->gnss_lon,
                         .gnss_lat = pkt.av_down_pkt->gnss_lat,
@@ -673,7 +684,7 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                         .AV_temp = pkt.av_down_pkt->AV_temp,
                         .ID_config = pkt.av_down_pkt->ID_config,
                         .AV_state = pkt.av_down_pkt->AV_state,
-                        .Fire_up_state = pkt.av_down_pkt->Fire_up_state};
+                        };
 #endif
     break;
   }
@@ -689,10 +700,10 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                          .fillingPressure = pkt.gse_down_pkt->fillingPressure,
                          .status = status,
                          .disconnectActive = pkt.gse_down_pkt->disconnectActive,
-    .loadcell1 = pkt.gse_down_pkt->loadcell1,
-    .loadcell2 = pkt.gse_down_pkt->loadcell2,
-    .loadcell3 = pkt.gse_down_pkt->loadcell3,
-    .loadcell4 = pkt.gse_down_pkt->loadcell4};
+                         .loadcell1 = pkt.gse_down_pkt->loadcell1,
+                         .loadcell2 = pkt.gse_down_pkt->loadcell2,
+                         .loadcell3 = pkt.gse_down_pkt->loadcell3,
+                         .loadcell4 = pkt.gse_down_pkt->loadcell4};
 #else
     *gsdw = (gse_downlink_t){.GQN_NC1 = pkt.gse_down_pkt->GQN_NC1,
                              .GQN_NC2 = pkt.gse_down_pkt->GQN_NC2,
@@ -713,10 +724,10 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                              .GP5 = pkt.gse_down_pkt->GP5};
 
 #endif
-      break;
+    break;
   }
-}
-return;
+  }
+  return;
 }
 
 int SqliteDB::delete_database() { return 0; }

@@ -534,7 +534,7 @@ void Server::simulateJsonData() {
   packet.acc_y = static_cast<int16_t>(distTemp(gen));
   packet.acc_z = distVoltage(gen);
   packet.HV_voltage = distVoltage(gen);
-  packet.Fire_up_state = 10;
+  packet.AV_state = 10;
   handleSerialPacket(CAPSULE_ID::HOPPER_TELEMETRY, (uint8_t *)&packet,
                      sizeof(packet));
 #endif

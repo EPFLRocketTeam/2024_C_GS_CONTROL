@@ -59,7 +59,7 @@ inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
 inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{
     {"Command",
      {GUI_CMD_CALIBRATE, GUI_CMD_PRESSURIZE, GUI_CMD_ARM, GUI_CMD_LAUNCH,
-      GUI_CMD_ABORT}},
+      GUI_CMD_ABORT, GUI_CMD_HOPPER_TARE, GUI_CMD_HOPPER_HOMING_GIMBAL, GUI_CMD_HOPPER_HOMING_MAIN_VALVES}},
     {"GSE Command", {GUI_CMD_DISCONNECT}}};
 inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{
     {"ValveControlButton", valvesMap}, {"QPushButton", pushButtonMap}};
@@ -75,10 +75,10 @@ inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
                                         {GUI_FIELD::HOPPER_N2_SOL,
                                          {0.645736, 0.144315},
                                          ValveButton::Orientation::Horizontal},
-                                        {GUI_FIELD::HOPPER_N2O_MAIN,
+                                        {GUI_FIELD::HOPPER_N2O_SOL,
                                          {0.585838, 0.638},
                                          ValveButton::Orientation::Vertical},
-                                        {GUI_FIELD::HOPPER_ETH_MAIN,
+                                        {GUI_FIELD::HOPPER_ETH_SOL,
                                          {0.703604, 0.638},
                                          ValveButton::Orientation::Vertical}};
 
