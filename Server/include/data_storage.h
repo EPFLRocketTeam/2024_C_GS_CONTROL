@@ -88,6 +88,10 @@ struct AV_downlink_pkt {
   uint8_t ETH_main;
   uint8_t N2O_sol;
   uint8_t ETH_sol;
+  uint8_t ETH_igniter;
+  uint8_t N2O_igniter;
+  uint8_t igniter;
+  uint16_t chamber_pressure;
 
   uint32_t gnss_lon; // Data with RTK correction
   uint32_t gnss_lat; // Data with RTK correction
@@ -313,6 +317,11 @@ private:
           sqlite_orm::make_column("ETH_main", &AV_downlink_pkt::ETH_main),
           sqlite_orm::make_column("N2O_sol", &AV_downlink_pkt::N2O_sol),
           sqlite_orm::make_column("ETH_sol", &AV_downlink_pkt::ETH_sol),
+          sqlite_orm::make_column("N2O_igniter", &AV_downlink_pkt::N2O_igniter),
+          sqlite_orm::make_column("ETH_igniter", &AV_downlink_pkt::ETH_igniter),
+          sqlite_orm::make_column("igniter", &AV_downlink_pkt::igniter),
+          sqlite_orm::make_column("chamber_pressure", &AV_downlink_pkt::chamber_pressure),
+
 
           sqlite_orm::make_column("gnss_lon", &AV_downlink_pkt::gnss_lon),
           sqlite_orm::make_column("gnss_lat", &AV_downlink_pkt::gnss_lat),
