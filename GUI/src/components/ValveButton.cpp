@@ -1,3 +1,4 @@
+#include "FieldUtil.h"
 #include "QGuiApplication"
 #include <QIcon>
 #include <QLabel>
@@ -6,13 +7,14 @@
 #include <QTimer>
 #include <QTransform>
 #include <QtSvg/QSvgRenderer>
+#include "MainWindow.h"
 #include <iostream>
 #include <unistd.h>
 
 #include "components/ValveButton.h"
 
-ValveButton::ValveButton(Orientation orientation, QWidget *parent)
-    : QLabel(parent), currentState(Unknown), iconSize(52, 52) {
+ValveButton::ValveButton(GUI_FIELD field, Orientation orientation, QWidget *parent)
+    : QLabel(parent), currentState(Unknown), iconSize(52, 52), m_field(field) {
   // Set initial state and update button icon
   // Change this to set the initial state as needed
   this->orientation = orientation;
@@ -27,7 +29,46 @@ ValveButton::ValveButton(Orientation orientation, QWidget *parent)
   m_rUnknown =
       new QSvgRenderer(QStringLiteral(":/images/GS-valve-unknown.svg"), this);
   updateButtonIcon();
+
+
+  MainWindow::clientManager->subscribe(field, [this](const QString &message) {
+    if (message == "0") {
+      setState(ValveButton::State::Close);
+    } else if (message == "unknown") {
+      setState(ValveButton::State::Unknown);
+    } else {
+      setState(ValveButton::State::Open);
+    }
+  });
+
+  connect(this, &ValveButton::clicked, [this]() {
+    RequestBuilder b;
+
+    b.setHeader(RequestType::POST);
+    b.addField("cmd", m_field);
+    int value = getState() == ValveButton::State::Close ? 1 : 0;
+    b.addField("cmd_order", value);
+    MainWindow::clientManager->send(b.toString());
+    b.clear();
+    b.setHeader(RequestType::INTERNAL);
+    b.addField(QString::number(m_field), "unknown");
+    MainWindow::clientManager->send(b.toString());
+    _logger.info(
+        "Sent Valve Update",
+        QString(
+            R"(The valve of field %1 was clicked and the new %2 value was sent to server)")
+            .arg(fieldUtil::enumToFieldName(m_field))
+            .arg(value)
+            .toStdString());
+  });
+
+
   setFixedSize(sizeHint());
+}
+
+
+ValveButton::~ValveButton() {
+  MainWindow::clientManager->unsubscribeAll(m_field);
 }
 
 void ValveButton::setState(State state) {
@@ -95,44 +136,6 @@ void ValveButton::mousePressEvent(QMouseEvent *event) {
 
   QTimer::singleShot(100, [this]() { this->resetStyle(); });
 }
-
-// void ValveButton::paintEvent(QPaintEvent *) {
-//   QPainter p(this);
-//   // 2) Guard painter activation
-
-//   p.setRenderHint(QPainter::Antialiasing);
-
-//   // pick the right renderer
-//   QSvgRenderer *r = nullptr;
-//   switch (currentState) {
-//   case Open:
-//     r = m_rOpen;
-//     break;
-//   case Close:
-//     r = m_rClose;
-//     break;
-//   case Unknown:
-//     r = m_rUnknown;
-//     break;
-//   }
-
-//   // center + rotate if needed
-//   p.save();
-//   if (orientation == Horizontal) {
-//     // rotate 90° about widget center
-
-//       p.translate(width() / 2.0, height() / 2.0);
-//       p.rotate(90);
-//       p.translate(-height() / 2.0, -width() / 2.0);
-//     // note: swapped width/height because of the rotate
-//     r->render(&p, QRectF(0, 0, height(), width()));
-//   } else {
-//     // no rotation
-
-//     r->render(&p, QRectF(0, 0, width(), height()));
-//   }
-//   p.restore();
-// }
 
 void ValveButton::resetStyle() {
   setStyleSheet(QString(R"(

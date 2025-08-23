@@ -19,21 +19,38 @@ set(HEADERS_COMMONS
     include/RequestBuilder.h 
     include/FieldUtil.h
     include/Log.h
+    )
+
+
+set(ERT_PROTOCOL_INTERFACE_FILES
     ERT_RF_Protocol_Interface/Protocol.h
     ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h
-    ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h)
+    ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h
+)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})
+function(add_commons_library lib_name definition)
+    add_library(${lib_name} STATIC ${ERT_PROTOCOL_INTERFACE_FILES})
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC RF_PROTOCOL_FIREHORN)
-target_include_directories(${PROJECT_NAME} 
+    target_compile_definitions(${lib_name} PUBLIC ${definition})
+    target_include_directories(${lib_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ERT_RF_Protocol_Interface)
+endfunction()
+
+add_library(CommonsLib STATIC ${SOURCES_COMMONS} ${HEADERS_COMMONS})
+
+target_include_directories(CommonsLib
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(CommonsLib
     PUBLIC 
         Qt6::Core
         Qt6::Network
 )
+
+# Create FirehornCommons
+add_commons_library(FirehornProtocol RF_PROTOCOL_FIREHORN)
+
+# Create IcarusCommons
+add_commons_library(IcarusProtocol RF_PROTOCOL_ICARUS)

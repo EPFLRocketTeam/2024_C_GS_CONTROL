@@ -1,7 +1,7 @@
 #ifndef REQUESTADAPTER_H
 #define REQUESTADAPTER_H
 
-#include "ERT_RF_Protocol_Interface/Protocol.h"
+#include "Protocol.h"
 #include "FieldUtil.h"
 #include "QJsonObject"
 

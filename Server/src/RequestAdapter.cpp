@@ -1,5 +1,5 @@
 #include "RequestAdapter.h"
-#include "ERT_RF_Protocol_Interface/Protocol.h"
+#include "Protocol.h"
 #include "FieldUtil.h"
 #include "Log.h"
 #include "ServerSetup.h"
@@ -21,7 +21,7 @@ int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value,
   return tIDs.capsule_id;
 }
 
-float fixedxtractDoubleFromFixedPoint(uint16_t fixed) {
+float extractDoubleFromFixedPoint(uint16_t fixed) {
   // Interpret the bits as a signed 16-bit integer
   int16_t signed_val = (int16_t)fixed;
 
@@ -207,6 +207,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     delete dataGse;
     break;
   }
+
 #if RF_PROTOCOL_ICARUS
   case CAPSULE_ID::HOPPER_TELEMETRY: {
 
@@ -343,7 +344,7 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_CMD_DISCONNECT:
     return {CMD_ID::GSE_CMD_DISCONNECT, GSE_TELEMETRY};
 
-  case GUI_FIELD::GUI_CMD_CALIBRATE:
+  case GUI_FIELD::GUI_CMD_HOPPER_TARE_ORIENTATION:
     return {CMD_ID::HOPPER_CMD_CALIBRATE, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_PRESSURIZE:

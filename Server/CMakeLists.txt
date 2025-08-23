@@ -12,9 +12,6 @@ find_package(Qt6 COMPONENTS Widgets Core Network SerialPort REQUIRED)
 # Add CapsuleLib
 add_library(CapsuleLib Capsule/src/capsule.h)
 
-# Add FirehornCommons
-# add_subdirectory(../commons FirehornCommons)
-
 set(SOURCES_SERVER
     src/server.cpp
     src/RequestAdapter.cpp
@@ -31,42 +28,49 @@ set(HEADERS_SERVER
     include/data_storage.h
 )
 
-# Create the library
-add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_SERVER} ${HEADERS_SERVER})
+function(add_server_exec exec_name protocol_name definition)
+    
+    # Create the library
+    add_library(${exec_name}_lib STATIC ${SOURCES_SERVER} ${HEADERS_SERVER})
+    target_compile_definitions(${exec_name}_lib PRIVATE ${definition}=1)
 
-# Set include directories for the library
-target_include_directories(${PROJECT_NAME}_lib 
-    PUBLIC 
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+    # Set include directories for the library
+    target_include_directories(${exec_name}_lib 
+        PUBLIC 
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
 
-# Link against the Qt6 modules and CapsuleLib for the library
-target_link_libraries(${PROJECT_NAME}_lib 
-    PUBLIC 
-        Qt6::Widgets 
-        Qt6::Core
-        Qt6::Network
-        Qt6::SerialPort
-        sqlite3
-        CapsuleLib
-        FirehornCommons
-        config_interface
+    # Link against the Qt6 modules and CapsuleLib for the library
+    target_link_libraries(${exec_name}_lib 
+        PUBLIC 
+            Qt6::Widgets 
+            Qt6::Core
+            Qt6::Network
+            Qt6::SerialPort
+            sqlite3
+            CapsuleLib
+            CommonsLib
+            ${protocol_name}
+            config_interface
 
-)
+    )
 
-# Create the executable
-add_executable(${PROJECT_NAME} src/main.cpp)
+    # Create the executable
+    add_executable(${exec_name} src/main.cpp)
+    # Link the executable with the library
+    target_link_libraries(${exec_name} 
+        PRIVATE 
+            ${exec_name}_lib
+    )
 
-# Link the executable with the library
-target_link_libraries(${PROJECT_NAME} 
-    PRIVATE 
-        ${PROJECT_NAME}_lib
-)
+    set_target_properties(${exec_name} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+endfunction()
 
+add_server_exec(FirehornServer FirehornProtocol RF_PROTOCOL_FIREHORN)
+add_server_exec(IcarusServer IcarusProtocol RF_PROTOCOL_ICARUS)
 ##### data_storage stuff #####
 
 find_package(SQLite3 REQUIRED)
@@ -87,6 +91,8 @@ target_include_directories(data_storage_lib
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+target_compile_definitions(data_storage_lib PRIVATE RF_PROTOCOL_FIREHORN=1)
+
 target_link_libraries(data_storage_lib
     PRIVATE
         config_interface
@@ -94,19 +100,3 @@ target_link_libraries(data_storage_lib
 
 
 )
-
-file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/tests/*_tests.cpp")
-# foreach(_src IN LISTS TEST_SOURCES)
-#   get_filename_component(_name ${_src} NAME_WE)
-#
-#   add_executable(${_name} ${_src})
-#
-#   target_link_libraries(${_name} PRIVATE
-#     gtest_main
-#     data_storage_lib
-#     ${PROJECT_NAME}_lib
-#     SQLite::SQLite3
-#   )
-#
-#   add_test(NAME ${_name} COMMAND ${_name})
-# endforeach()

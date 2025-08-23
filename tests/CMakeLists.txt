@@ -68,7 +68,7 @@ target_link_libraries(base_integration_test_lib PUBLIC
     config_interface
     FirehornGUI_lib
     FirehornServer_lib
-    FirehornCommons
+    CommonsLib
     test_helper_lib
 )
 

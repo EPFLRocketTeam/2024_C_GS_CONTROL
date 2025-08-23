@@ -20,7 +20,9 @@
 #include <string>
 
 #include "../Capsule/src/capsule.h"
-#include "ERT_RF_Protocol_Interface/Protocol.h"
+#include "Protocol.h"
+
+/*#include "ERT_RF_Protocol_Interface/Protocol.h"*/
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
 #include "ServerSetup.h"
@@ -390,6 +392,7 @@ void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet,
   uint8_t *packetToSend = capsule.encode(packetId, packet, size);
   if (serialPort->isOpen()) {
     serialPort->write((char *)packetToSend, capsule.getCodedLen(size));
+    delete packetToSend;
     _packetLogger.info(
         "Serial Send",
         QString(R"(A packet with packet id %1 was sent to radio board)")

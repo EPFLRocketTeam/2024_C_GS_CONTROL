@@ -36,18 +36,11 @@ using LeftView = TelemetryView;
 using MiddleView = ValveControlView;
 using RightView = GSManagerView;
 
-// just set the version of the GUI you want to use to true and the other to
-// false
-// /!\ if changing the version shown, you also need to make sure that in
-// commons/CMakeLists.txt line 27 the definition RF_PROTOCOL_FIREHORN or
-// RF_PROTOCOL_ICARUS is added
-#define ICARUS_GUI false
-#define FIREHORN_GUI true
 // CHange the debug level to show the debug messages
 #define DEBUG_LOG true
 
 // <---------- DO NOT CHANGE ---------->
-#if ICARUS_GUI
+#ifdef ICARUS_GUI
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
 inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
@@ -58,14 +51,21 @@ inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
 
 inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{
     {"Command",
-     {GUI_CMD_CALIBRATE, GUI_CMD_PRESSURIZE, GUI_CMD_ARM, GUI_CMD_LAUNCH,
-      GUI_CMD_ABORT, GUI_CMD_HOPPER_TARE, GUI_CMD_HOPPER_HOMING_GIMBAL, GUI_CMD_HOPPER_HOMING_MAIN_VALVES}},
+     {GUI_CMD_HOPPER_TARE_ORIENTATION, GUI_CMD_ARM, GUI_CMD_LAUNCH,
+      GUI_CMD_ABORT, GUI_CMD_HOPPER_TARE, GUI_CMD_HOPPER_HOMING_GIMBAL,
+      GUI_CMD_HOPPER_HOMING_MAIN_VALVES}},
     {"GSE Command", {GUI_CMD_DISCONNECT}}};
 inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{
     {"ValveControlButton", valvesMap}, {"QPushButton", pushButtonMap}};
+
 inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
                                          {0.234569, 0.668},
                                          ValveButton::Orientation::Vertical},
+                                        {GUI_FIELD::GSE_FILLING_N2O,
+                                         {0.35, 0.5},
+                                         ValveButton::Orientation::Horizontal
+                                        },
+
                                         {GUI_FIELD::HOPPER_N2O_VENT,
                                          {0.50665, 0.338},
                                          ValveButton::Orientation::Horizontal},
@@ -82,6 +82,20 @@ inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
                                          {0.703604, 0.638},
                                          ValveButton::Orientation::Vertical}};
 
+inline QMap<std::string, std::vector<GUI_FIELD>> gseValvesMap{
+    {"GSE Valves",
+     {GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC1,
+      GSE_GPN_NC2, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC,
+      GSE_PC_OLC}}};
+
+inline QMap<std::string, std::vector<GUI_FIELD>> gsePushButtonMap{
+    {"GSE Command",
+     {GUI_CMD_GSE_IDLE, GUI_CMD_GSE_ARM, GUI_CMD_GSE_ARM,
+      GUI_CMD_GSE_PASSIVATE}}};
+inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
+    gseControlMap{{"ValveControlButton", gseValvesMap},
+                  {"QPushButton", gsePushButtonMap}};
+
 inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
     {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
@@ -90,6 +104,50 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439},
     {GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502},
     {GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438}};
+
+inline std::vector<ValveInfo> gseValves = {
+    // LOX quadrant
+    {GUI_FIELD::GSE_GFO_NCC,
+     {0.186, 0.37},
+     ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GDO_NCC,
+     {0.186, 0.267},
+     ValveButton::Orientation::Horizontal},
+
+    // Ethanol quadrant
+    {GUI_FIELD::GSE_GFE_NC,
+     {0.65, 0.395},
+     ValveButton::Orientation::Horizontal},
+
+    // N2 quadrant
+    {GUI_FIELD::GSE_GPN_NC1,
+     {0.15, 0.595},
+     ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GPN_NC2,
+     {0.15, 0.715},
+     ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.585}, ValveButton::Orientation::Horizontal},
+
+    // Air valves
+
+    {GUI_FIELD::GSE_GQN_NC1,
+     {0.50, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC2,
+     {0.60, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC3,
+     {0.70, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC4,
+     {0.80, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC5,
+     {0.90, 0.0543093},
+     ValveButton::Orientation::Vertical},
+};
+
+inline std::vector<LabelInfo> gseLabels = {};
 
 inline QList<GUI_FIELD> gps = {
     HOPPER_GNSS_LON,
@@ -123,6 +181,7 @@ inline QMap<QString, QList<GUI_FIELD>> gse_sections = {{"GSE", gseDataFields}};
 
 inline QFrame *middlePlaceholder;
 inline QFrame *leftPlaceholder;
+inline QFrame *gseMiddlePlaceholder;
 inline QFrame *rightPlaceholder;
 
 inline QString connectedBackgroundImage = ":/images/prop_icarus_connect.svg";
@@ -132,6 +191,10 @@ inline QString disconnectedBackgroundImage =
 inline void init_views() {
   middlePlaceholder = new ValveControlView(
       valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
+  gseMiddlePlaceholder =
+      new ValveControlView(gseValves, gseLabels, ":/images/gse_plumbing.svg",
+                           ":/images/gse_plumbing.svg");
+
   leftPlaceholder = new TelemetryView(data_sections);
   QVBoxLayout *rightLayout = new QVBoxLayout;
   rightLayout->setAlignment(Qt::AlignLeft);
@@ -147,7 +210,7 @@ inline void init_views() {
 } // namespace ui_elements
 #endif
 
-#if FIREHORN_GUI
+#ifdef FIREHORN_GUI
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
 inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
@@ -196,9 +259,10 @@ inline std::vector<ValveInfo> valves = {
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
      {0.73, 0.29},
      ValveButton::Orientation::Vertical},
-    {GUI_FIELD::PRESSURE_VALVE_LOX, {0.57, 0.29}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::PRESSURE_VALVE_LOX,
+     {0.57, 0.29},
+     ValveButton::Orientation::Vertical},
 };
-
 
 inline std::vector<LabelInfo> labels = {
 
@@ -225,33 +289,46 @@ inline std::vector<LabelInfo> labels = {
 inline std::vector<ValveInfo> gseValves = {
     // LOX quadrant
     {GUI_FIELD::GSE_GFO_NCC,
-     {0.186, 0.37 },
+     {0.186, 0.37},
      ValveButton::Orientation::Horizontal},
     {GUI_FIELD::GSE_GDO_NCC,
-     {0.186, 0.267 },
+     {0.186, 0.267},
      ValveButton::Orientation::Horizontal},
 
     // Ethanol quadrant
-    {GUI_FIELD::GSE_GFE_NC, {0.65, 0.395}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GFE_NC,
+     {0.65, 0.395},
+     ValveButton::Orientation::Horizontal},
 
     // N2 quadrant
     {GUI_FIELD::GSE_GPN_NC1,
      {0.15, 0.595},
      ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GPN_NC2, {0.15, 0.715}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.585 }, ValveButton::Orientation::Horizontal},
-    
+    {GUI_FIELD::GSE_GPN_NC2,
+     {0.15, 0.715},
+     ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.585}, ValveButton::Orientation::Horizontal},
+
     // Air valves
 
-    {GUI_FIELD::GSE_GQN_NC1, {0.50, 0.0543093 }, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC2, {0.60, 0.0543093 }, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC3, {0.70, 0.0543093 }, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC4, {0.80, 0.0543093 }, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC5, {0.90, 0.0543093 }, ValveButton::Orientation::Vertical},
-    };
-
-inline std::vector<LabelInfo> gseLabels = {
+    {GUI_FIELD::GSE_GQN_NC1,
+     {0.50, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC2,
+     {0.60, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC3,
+     {0.70, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC4,
+     {0.80, 0.0543093},
+     ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC5,
+     {0.90, 0.0543093},
+     ValveButton::Orientation::Vertical},
 };
+
+inline std::vector<LabelInfo> gseLabels = {};
 
 inline QList<GUI_FIELD> gps = {
     GNSS_LON,
@@ -267,11 +344,7 @@ inline QMap<QString, QList<GUI_FIELD>> data_sections = {{"GPS", gps},
                                                         {"TBD", tbd}};
 
 inline QList<GUI_FIELD> gseDataFields = {
-    GSE_GP1,
-    GSE_GP2,
-    GSE_GP3,
-    GSE_GP4,
-    GSE_GP5,
+    GSE_GP1, GSE_GP2, GSE_GP3, GSE_GP4, GSE_GP5,
 };
 inline QMap<QString, QList<GUI_FIELD>> gse_sections = {{"GSE", gseDataFields}};
 

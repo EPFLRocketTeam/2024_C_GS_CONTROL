@@ -91,6 +91,7 @@ enum GUI_FIELD {
   GUI_CMD_GSE_ARM,
   GUI_CMD_GSE_PASSIVATE,
   GUI_CMD_HOPPER_TARE,
+  GUI_CMD_HOPPER_TARE_ORIENTATION,
   GUI_CMD_HOPPER_HOMING_GIMBAL,
   GUI_CMD_HOPPER_HOMING_MAIN_VALVES,
   GUI_CMD_IGNITION,
@@ -453,7 +454,10 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "GSE PASSIVATE";
     break;
   case GUI_CMD_HOPPER_TARE:
-    name = "HOPPER TARE";
+    name = "HOPPER TARE PRESSURE";
+    break;
+  case GUI_CMD_HOPPER_TARE_ORIENTATION:
+    name = "HOPPER TARE ORIENTATION";
     break;
   case GUI_CMD_HOPPER_HOMING_GIMBAL:
     name = "HOMING GIMBAL";
@@ -808,6 +812,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GSE_PASSIVATE;
   else if (fieldName == "SERVO 1")
     return GUI_CMD_SERVO_1;
+  else if (fieldName == "HOPPER TARE ORIENTATION")
+    return GUI_CMD_HOPPER_TARE_ORIENTATION;
   else if (fieldName == "HOPPER TARE")
     return GUI_CMD_HOPPER_TARE;
   else if (fieldName == "HOMING VALVES")
