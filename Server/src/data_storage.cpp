@@ -5,7 +5,6 @@
 
 namespace fs = std::filesystem;
 
-
 SqliteDB::SqliteDB()
     : storage(
 #if RF_PROTOCOL_FIREHORN
@@ -134,10 +133,11 @@ SqliteDB::SqliteDB()
 
                   sqlite_orm::make_column("N2O_igniter",
                                           &AV_downlink_pkt::N2O_igniter),
-                  sqlite_orm::make_column("ETH_igniter",
-                                          &AV_downlink_pkt::ETH_igniter),
+                  sqlite_orm::make_column("FUEL_igniter",
+                                          &AV_downlink_pkt::FUEL_igniter),
                   sqlite_orm::make_column("igniter", &AV_downlink_pkt::igniter),
-                  sqlite_orm::make_column("chamber_pressure", &AV_downlink_pkt::chamber_pressure),
+                  sqlite_orm::make_column("chamber_pressure",
+                                          &AV_downlink_pkt::chamber_pressure),
 
                   sqlite_orm::make_column("gnss_lon",
                                           &AV_downlink_pkt::gnss_lon),
@@ -522,7 +522,7 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
             .N2O_sol = avdw->N2O_sol,
             .ETH_sol = avdw->ETH_sol,
             .N2O_igniter = avdw->N2O_igniter,
-            .ETH_igniter = avdw->ETH_igniter,
+            /*.FUEL_igniter = avdw->ETH_igniter,*/
             .igniter = avdw->igniter,
             .chamber_pressure = avdw->chamber_pressure,
 
@@ -550,6 +550,7 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
             .ID_config = avdw->ID_config,
             .AV_state = avdw->AV_state,
         };
+    raw_avdw->FUEL_igniter = avdw->ETH_igniter;
 #endif
 
     return (Packet){.type = AV_DOWNLINK,
@@ -627,79 +628,78 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
     break;
   }
   case PacketType::AV_DOWNLINK: {
-    *avdw =
 #if RF_PROTOCOL_FIREHORN
-        (av_downlink_unpacked){.packet_nbr = pkt.av_down_pkt->packet_nbr,
-                               .gnss_lon = pkt.av_down_pkt->gnss_lon,
-                               .gnss_lat = pkt.av_down_pkt->gnss_lat,
-                               .gnss_alt = pkt.av_down_pkt->gnss_alt,
-                               .gnss_vertical_speed =
-                                   pkt.av_down_pkt->gnss_vertical_speed,
-                               .N2_pressure = pkt.av_down_pkt->N2_pressure,
-                               .fuel_pressure = pkt.av_down_pkt->fuel_pressure,
-                               .LOX_pressure = pkt.av_down_pkt->LOX_pressure,
-                               .fuel_level = pkt.av_down_pkt->fuel_level,
-                               .LOX_level = pkt.av_down_pkt->LOX_level,
-                               .N2_temp = pkt.av_down_pkt->N2_temp,
-                               .LOX_temp = pkt.av_down_pkt->LOX_temp,
-                               .LOX_inj_temp = pkt.av_down_pkt->LOX_inj_temp,
-                               .lpb_voltage = pkt.av_down_pkt->lpb_voltage,
-                               .hpb_voltage = pkt.av_down_pkt->hpb_voltage,
-                               .av_fc_temp = pkt.av_down_pkt->av_fc_temp,
-                               .ambient_temp = pkt.av_down_pkt->ambient_temp,
-                               .engine_state = pkt.av_down_pkt->engine_state,
-                               .av_state = pkt.av_down_pkt->av_state,
-                               .cam_rec = pkt.av_down_pkt->cam_rec};
+    *avdw = (av_downlink_unpacked){
+        .packet_nbr = pkt.av_down_pkt->packet_nbr,
+        .gnss_lon = pkt.av_down_pkt->gnss_lon,
+        .gnss_lat = pkt.av_down_pkt->gnss_lat,
+        .gnss_alt = pkt.av_down_pkt->gnss_alt,
+        .gnss_vertical_speed = pkt.av_down_pkt->gnss_vertical_speed,
+        .N2_pressure = pkt.av_down_pkt->N2_pressure,
+        .fuel_pressure = pkt.av_down_pkt->fuel_pressure,
+        .LOX_pressure = pkt.av_down_pkt->LOX_pressure,
+        .fuel_level = pkt.av_down_pkt->fuel_level,
+        .LOX_level = pkt.av_down_pkt->LOX_level,
+        .N2_temp = pkt.av_down_pkt->N2_temp,
+        .LOX_temp = pkt.av_down_pkt->LOX_temp,
+        .LOX_inj_temp = pkt.av_down_pkt->LOX_inj_temp,
+        .lpb_voltage = pkt.av_down_pkt->lpb_voltage,
+        .hpb_voltage = pkt.av_down_pkt->hpb_voltage,
+        .av_fc_temp = pkt.av_down_pkt->av_fc_temp,
+        .ambient_temp = pkt.av_down_pkt->ambient_temp,
+        .engine_state = pkt.av_down_pkt->engine_state,
+        .av_state = pkt.av_down_pkt->av_state,
+        .cam_rec = pkt.av_down_pkt->cam_rec};
 #else
-        (av_downlink_t){
-            .packet_nbr = pkt.av_down_pkt->packet_nbr,
+    *avdw = (av_downlink_t){
+        .packet_nbr = pkt.av_down_pkt->packet_nbr,
 
-            .N2O_pressure = pkt.av_down_pkt->N2O_pressure,
-            .ETH_pressure = pkt.av_down_pkt->ETH_pressure,
-            .N2O_temp = pkt.av_down_pkt->N2O_temp,
-            .N2O_vent = pkt.av_down_pkt->N2O_vent,
-            .ETH_vent = pkt.av_down_pkt->ETH_vent,
-            .N2_solenoid = pkt.av_down_pkt->N2_solenoid,
-            .N2O_main = pkt.av_down_pkt->N2O_main,
-            .ETH_main = pkt.av_down_pkt->ETH_main,
-            .N2O_sol = pkt.av_down_pkt->N2O_sol,
-            .ETH_sol = pkt.av_down_pkt->ETH_sol,
-            .N2O_igniter = pkt.av_down_pkt->N2O_igniter,
-            .ETH_igniter = pkt.av_down_pkt->ETH_igniter,
-            .igniter = pkt.av_down_pkt->igniter,
-            .chamber_pressure = pkt.av_down_pkt->chamber_pressure,
+        .N2O_pressure = pkt.av_down_pkt->N2O_pressure,
+        .ETH_pressure = pkt.av_down_pkt->ETH_pressure,
+        .N2O_temp = pkt.av_down_pkt->N2O_temp,
+        .N2O_vent = pkt.av_down_pkt->N2O_vent,
+        .ETH_vent = pkt.av_down_pkt->ETH_vent,
+        .N2_solenoid = pkt.av_down_pkt->N2_solenoid,
+        .N2O_main = pkt.av_down_pkt->N2O_main,
+        .ETH_main = pkt.av_down_pkt->ETH_main,
+        .N2O_sol = pkt.av_down_pkt->N2O_sol,
+        .ETH_sol = pkt.av_down_pkt->ETH_sol,
+        .N2O_igniter = pkt.av_down_pkt->N2O_igniter,
+        /*.ETH_igniter = pkt.av_down_pkt->FUEL_igniter,*/
+        .igniter = pkt.av_down_pkt->igniter,
+        .chamber_pressure = pkt.av_down_pkt->chamber_pressure,
 
+        .gnss_lon = pkt.av_down_pkt->gnss_lon,
+        .gnss_lat = pkt.av_down_pkt->gnss_lat,
+        .sat_nbr = pkt.av_down_pkt->sat_nbr,
 
-            .gnss_lon = pkt.av_down_pkt->gnss_lon,
-            .gnss_lat = pkt.av_down_pkt->gnss_lat,
-            .sat_nbr = pkt.av_down_pkt->sat_nbr,
+        .gyro_x = pkt.av_down_pkt->gyro_x,
+        .gyro_y = pkt.av_down_pkt->gyro_y,
+        .gyro_z = pkt.av_down_pkt->gyro_z,
 
-            .gyro_x = pkt.av_down_pkt->gyro_x,
-            .gyro_y = pkt.av_down_pkt->gyro_y,
-            .gyro_z = pkt.av_down_pkt->gyro_z,
+        .acc_x = pkt.av_down_pkt->acc_x,
+        .acc_y = pkt.av_down_pkt->acc_y,
+        .acc_z = pkt.av_down_pkt->acc_z,
 
-            .acc_x = pkt.av_down_pkt->acc_x,
-            .acc_y = pkt.av_down_pkt->acc_y,
-            .acc_z = pkt.av_down_pkt->acc_z,
+        .baro = pkt.av_down_pkt->baro,
 
-            .baro = pkt.av_down_pkt->baro,
+        .kalman_pos_x = pkt.av_down_pkt->kalman_pos_x,
+        .kalman_pos_y = pkt.av_down_pkt->kalman_pos_y,
+        .kalman_pos_z = pkt.av_down_pkt->kalman_pos_z,
+        .kalman_yaw = pkt.av_down_pkt->kalman_yaw,
+        .kalman_pitch = pkt.av_down_pkt->kalman_pitch,
+        .kalman_roll = pkt.av_down_pkt->kalman_roll,
 
-            .kalman_pos_x = pkt.av_down_pkt->kalman_pos_x,
-            .kalman_pos_y = pkt.av_down_pkt->kalman_pos_y,
-            .kalman_pos_z = pkt.av_down_pkt->kalman_pos_z,
-            .kalman_yaw = pkt.av_down_pkt->kalman_yaw,
-            .kalman_pitch = pkt.av_down_pkt->kalman_pitch,
-            .kalman_roll = pkt.av_down_pkt->kalman_roll,
+        .gimbal_x = pkt.av_down_pkt->gimbal_x,
+        .gimbal_y = pkt.av_down_pkt->gimbal_y,
 
-            .gimbal_x = pkt.av_down_pkt->gimbal_x,
-            .gimbal_y = pkt.av_down_pkt->gimbal_y,
-
-            .HV_voltage = pkt.av_down_pkt->HV_voltage,
-            .LV_voltage = pkt.av_down_pkt->LV_voltage,
-            .AV_temp = pkt.av_down_pkt->AV_temp,
-            .ID_config = pkt.av_down_pkt->ID_config,
-            .AV_state = pkt.av_down_pkt->AV_state,
-        };
+        .HV_voltage = pkt.av_down_pkt->HV_voltage,
+        .LV_voltage = pkt.av_down_pkt->LV_voltage,
+        .AV_temp = pkt.av_down_pkt->AV_temp,
+        .ID_config = pkt.av_down_pkt->ID_config,
+        .AV_state = pkt.av_down_pkt->AV_state,
+    };
+    avdw->ETH_igniter = pkt.av_down_pkt->FUEL_igniter;
 #endif
     break;
   }

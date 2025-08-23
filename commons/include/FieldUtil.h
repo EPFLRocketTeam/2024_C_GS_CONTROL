@@ -91,6 +91,7 @@ enum GUI_FIELD {
   GUI_CMD_GSE_ARM,
   GUI_CMD_GSE_PASSIVATE,
   GUI_CMD_HOPPER_TARE,
+  GUI_CMD_HOPPER_IDLE,
   GUI_CMD_HOPPER_TARE_ORIENTATION,
   GUI_CMD_HOPPER_HOMING_GIMBAL,
   GUI_CMD_HOPPER_HOMING_MAIN_VALVES,
@@ -142,6 +143,8 @@ enum GUI_FIELD {
   HOPPER_ETH_MAIN,     // 8 bits
   HOPPER_N2O_SOL,      // 8 bits
   HOPPER_ETH_SOL,      // 8 bits
+  HOPPER_IGNITER,      
+  HOPPER_CHAMBER_PRESSURE,      
   HOPPER_GNSS_LON,     // 32 bits (float)
   HOPPER_GNSS_LAT,     // 32 bits (float)
   HOPPER_SAT_NBR,      // 8 bits (number of fixed satellites)
@@ -329,6 +332,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case HOPPER_N2O_PRESSURE:
     name = "HOPPER N2O PRESSURE";
     break;
+  case HOPPER_IGNITER:
+    name = "HOPPER IGNITER";
+    break;
   case HOPPER_ETH_PRESSURE:
     name = "HOPPER ETH PRESSURE";
     break;
@@ -455,6 +461,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case GUI_CMD_HOPPER_TARE:
     name = "HOPPER TARE PRESSURE";
+    break;
+  case GUI_CMD_HOPPER_IDLE:
+    name = "HOPPER IDLE";
     break;
   case GUI_CMD_HOPPER_TARE_ORIENTATION:
     name = "HOPPER TARE ORIENTATION";
@@ -736,6 +745,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_PACKET_NBR;
   else if (fieldName == "HOPPER N2O PRESSURE")
     return HOPPER_N2O_PRESSURE;
+  else if (fieldName == "HOPPER IGNITER")
+    return HOPPER_IGNITER;
   else if (fieldName == "HOPPER ETH PRESSURE")
     return HOPPER_ETH_PRESSURE;
   else if (fieldName == "HOPPER N2O TEMP")
@@ -816,6 +827,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_HOPPER_TARE_ORIENTATION;
   else if (fieldName == "HOPPER TARE")
     return GUI_CMD_HOPPER_TARE;
+  else if (fieldName == "HOPPER IDLE")
+    return GUI_CMD_HOPPER_IDLE;
   else if (fieldName == "HOMING VALVES")
     return GUI_CMD_HOPPER_HOMING_MAIN_VALVES;
   else if (fieldName == "HOMING GIMBAL")

@@ -88,7 +88,7 @@ struct AV_downlink_pkt {
   uint8_t ETH_main;
   uint8_t N2O_sol;
   uint8_t ETH_sol;
-  uint8_t ETH_igniter;
+  uint8_t FUEL_igniter;
   uint8_t N2O_igniter;
   uint8_t igniter;
   uint16_t chamber_pressure;
@@ -169,7 +169,7 @@ public:
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h"
 #endif
 
-#if RF_PROTOCOL_FIREHORN
+#ifdef RF_PROTOCOL_FIREHORN
   /*process pkt before writing it
   this consist of adding id, adding timestamp, adding PacketType
   and returns the Packet ready to be written*/
@@ -182,7 +182,7 @@ public:
                      gse_downlink_t *gsdw);
 #endif
 
-#if RF_PROTOCOL_ICARUS
+#ifdef RF_PROTOCOL_ICARUS
   /*process pkt before writing it
   this consist of adding id, adding timestamp, adding PacketType
   and returns the Packet ready to be written*/
@@ -318,7 +318,7 @@ private:
           sqlite_orm::make_column("N2O_sol", &AV_downlink_pkt::N2O_sol),
           sqlite_orm::make_column("ETH_sol", &AV_downlink_pkt::ETH_sol),
           sqlite_orm::make_column("N2O_igniter", &AV_downlink_pkt::N2O_igniter),
-          sqlite_orm::make_column("ETH_igniter", &AV_downlink_pkt::ETH_igniter),
+          sqlite_orm::make_column("FUEL_igniter", &AV_downlink_pkt::FUEL_igniter),
           sqlite_orm::make_column("igniter", &AV_downlink_pkt::igniter),
           sqlite_orm::make_column("chamber_pressure", &AV_downlink_pkt::chamber_pressure),
 

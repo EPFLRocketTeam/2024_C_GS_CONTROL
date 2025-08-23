@@ -51,7 +51,7 @@ inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
 
 inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{
     {"Command",
-     {GUI_CMD_HOPPER_TARE_ORIENTATION, GUI_CMD_ARM, GUI_CMD_LAUNCH,
+     {GUI_CMD_HOPPER_IDLE, GUI_CMD_HOPPER_TARE_ORIENTATION, GUI_CMD_ARM, GUI_CMD_LAUNCH,
       GUI_CMD_ABORT, GUI_CMD_HOPPER_TARE, GUI_CMD_HOPPER_HOMING_GIMBAL,
       GUI_CMD_HOPPER_HOMING_MAIN_VALVES}},
     {"GSE Command", {GUI_CMD_DISCONNECT}}};
@@ -80,7 +80,11 @@ inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
                                          ValveButton::Orientation::Vertical},
                                         {GUI_FIELD::HOPPER_ETH_SOL,
                                          {0.703604, 0.638},
-                                         ValveButton::Orientation::Vertical}};
+                                         ValveButton::Orientation::Vertical},
+                                        {GUI_FIELD::HOPPER_IGNITER,
+                                         {0.55, 0.75},
+                                         ValveButton::Orientation::Vertical}
+                                        };
 
 inline QMap<std::string, std::vector<GUI_FIELD>> gseValvesMap{
     {"GSE Valves",
@@ -100,7 +104,7 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25},
     {GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315},
     {GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576},
-    {GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905},
+    {GUI_FIELD::HOPPER_CHAMBER_PRESSURE, 0.809595, 0.78905},
     {GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439},
     {GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502},
     {GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438}};

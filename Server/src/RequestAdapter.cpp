@@ -1,7 +1,7 @@
 #include "RequestAdapter.h"
-#include "Protocol.h"
 #include "FieldUtil.h"
 #include "Log.h"
+#include "Protocol.h"
 #include "ServerSetup.h"
 #include "packet_helper.h"
 #include <cstdint>
@@ -227,6 +227,9 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_PRESSURE)] =
         QString::number(extractDoubleFromFixedPoint(dataHopper.N2O_pressure));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_CHAMBER_PRESSURE)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.chamber_pressure));
+
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_PRESSURE)] =
         QString::number(extractDoubleFromFixedPoint(dataHopper.ETH_pressure));
     _logger.error("EVENT",
@@ -250,6 +253,8 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataHopper.ETH_sol));
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_SOL)] =
         QString::number(static_cast<int>(dataHopper.N2O_sol));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_IGNITER)] =
+        QString::number(static_cast<int>(dataHopper.igniter));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LON)] =
         QString::number(static_cast<double>(dataHopper.gnss_lon));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GNSS_LAT)] =
@@ -346,7 +351,7 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 
   case GUI_FIELD::GUI_CMD_HOPPER_TARE_ORIENTATION:
     return {CMD_ID::HOPPER_CMD_CALIBRATE, HOPPER_TELEMETRY};
- 
+
   case GUI_FIELD::GUI_CMD_LAUNCH:
     return {CMD_ID::HOPPER_CMD_LAUNCH, HOPPER_TELEMETRY};
 
@@ -355,6 +360,9 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 
   case GUI_FIELD::GUI_CMD_ABORT:
     return {CMD_ID::HOPPER_CMD_ABORT, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_IDLE:
+    return {CMD_ID::HOPPER_CMD_IDLE, HOPPER_TELEMETRY};
 
   case GUI_FIELD::HOPPER_N2O_VENT:
     return {CMD_ID::HOPPER_CMD_VENT_N2O, HOPPER_TELEMETRY};
@@ -400,6 +408,55 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 
   case GUI_FIELD::HOPPER_ID_CONFIG:
     return {CMD_ID::HOPPER_CMD_ID_CONFIG, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_IDLE:
+    return {GSE_CMD_IDLE, GSE_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_CALIBRATE:
+    return {GSE_CMD_CALIBRATE, GSE_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_ARM:
+    return {GSE_CMD_ARM, GSE_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_PASSIVATE:
+
+    return {GSE_CMD_PASSIVATE, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC1:
+    return {GSE_CMD_TOGGLE_11, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC2:
+    return {GSE_CMD_TOGGLE_12, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC3:
+    return {GSE_CMD_TOGGLE_13, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC4:
+    return {GSE_CMD_TOGGLE_14, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GQN_NC5:
+    return {GSE_CMD_TOGGLE_15, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GPN_NC1:
+    return {GSE_CMD_TOGGLE_16, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GPN_NC2:
+    return {GSE_CMD_TOGGLE_21, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GVN_NC:
+    return {GSE_CMD_TOGGLE_22, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GFE_NC:
+    return {GSE_CMD_TOGGLE_23, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GFO_NCC:
+    return {GSE_CMD_TOGGLE_24, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GDO_NCC:
+    return {GSE_CMD_TOGGLE_25, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_PC_OLC:
+    return {GSE_CMD_TOGGLE_27, GSE_TELEMETRY};
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");
