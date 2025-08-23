@@ -13,6 +13,8 @@
 
 static ModuleLog _logger = ModuleLog("RequestAdapter");
 
+
+
 int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value,
                                   av_uplink_t *p) {
   TranmissionsIDs tIDs = getOrderIdFromGui(field);
@@ -87,7 +89,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     /*.toStdString());*/
     /**/
 
-    av_downlink_unpacked dataAv = decode_downlink(*packedData);
+    av_downlink_unpacked_t dataAv = decode_downlink(*packedData);
     db->write_pkt(db->process_pkt(NULL, &dataAv, NULL));
     /*_logger.info("PROCESSING UNPACKED", QString(R"(*/
     /*packet_nbr: %1,*/
@@ -151,10 +153,12 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<double>(dataAv.fuel_pressure));
     jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] =
         QString::number(static_cast<double>(dataAv.LOX_pressure));
-    jsonObj[QString::number(GUI_FIELD::FUEL_LEVEL)] =
-        QString::number(static_cast<double>(dataAv.fuel_level));
-    jsonObj[QString::number(GUI_FIELD::LOX_LEVEL)] =
-        QString::number(static_cast<double>(dataAv.LOX_level));
+    jsonObj[QString::number(GUI_FIELD::LOX_INJ_PRESSURE)] =
+        QString::number(static_cast<double>(dataAv.LOX_inj_pressure));
+    jsonObj[QString::number(GUI_FIELD::FUEL_INJ_PRESSURE)] =
+        QString::number(static_cast<double>(dataAv.fuel_inj_pressure));
+    jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] =
+        QString::number(static_cast<double>(dataAv.chamber_pressure));
     jsonObj[QString::number(GUI_FIELD::N2_TEMP)] =
         QString::number(static_cast<int>(dataAv.N2_temp));
     jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
@@ -165,6 +169,11 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<double>(dataAv.lpb_voltage));
     jsonObj[QString::number(GUI_FIELD::HPB_VOLTAGE)] =
         QString::number(static_cast<double>(dataAv.hpb_voltage));
+    jsonObj[QString::number(GUI_FIELD::LPB_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.lpb_current));
+    jsonObj[QString::number(GUI_FIELD::HPB_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.hpb_current));
+
     jsonObj[QString::number(GUI_FIELD::AV_FC_TEMP)] =
         QString::number(static_cast<int>(dataAv.av_fc_temp));
     jsonObj[QString::number(GUI_FIELD::AMBIENT_TEMP)] =
@@ -197,14 +206,22 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   }
 #endif
   case CAPSULE_ID::GSE_TELEMETRY: {
+    
+    #ifdef RF_PROTOCOL_FIREHORN
     gse_downlink_t *dataGse = new gse_downlink_t;
 
     // Copy the incoming raw data into our packet structure.
     memcpy(dataGse, data, gse_downlink_size);
     db->write_pkt(db->process_pkt(NULL, NULL, dataGse));
 
-    populateGseJson(jsonObj, dataGse);
+    populatePFSJson(jsonObj, dataGse);
     delete dataGse;
+    #endif
+
+    #if RF_PROTOCOL_ICARUS
+    populateGseJson(jsonObj, data, len);
+    #endif
+
     break;
   }
 
@@ -316,7 +333,8 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
 }
 
 #if RF_PROTOCOL_ICARUS
-void populateGseJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
+
+void populateFSJson(QJsonObject &jsonObj, fs_downlink_t* dataGse) {
   // Add primitive data members to JSON object
   jsonObj[QString::number(GUI_FIELD::GSE_TANK_PRESSURE)] =
       QString::number(static_cast<double>(dataGse->tankPressure));
@@ -343,6 +361,33 @@ void populateGseJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
       QString::number(static_cast<int>(dataGse->status.vent));
   jsonObj[QString::number(GUI_FIELD::GSE_CMD_STATUS)] = statusObj;
 }
+
+
+
+void populateGseJson(QJsonObject &jsonObj, uint8_t *data, int len) {
+    if (len == fs_downlink_size) {
+        fs_downlink_t *dataGse = new fs_downlink_t;
+
+        // Copy the incoming raw data into our packet structure.
+        memcpy(dataGse, data, fs_downlink_size);
+        /*db->write_pkt(db->process_pkt(NULL, NULL, dataGse));*/
+
+        populateFSJson(jsonObj, dataGse);
+        delete dataGse;
+
+        return;
+    } 
+    gse_downlink_t *dataGse = new gse_downlink_t;
+
+    // Copy the incoming raw data into our packet structure.
+    memcpy(dataGse, data, gse_downlink_size);
+    /*db->write_pkt(db->process_pkt(NULL, NULL, dataGse));*/
+
+    populatePFSJson(jsonObj, dataGse);
+    delete dataGse;
+}
+
+
 
 TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   switch (f) {
@@ -465,8 +510,9 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 }
 #endif
 
-#if RF_PROTOCOL_FIREHORN
-void populateGseJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
+
+
+void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
   // uint8_t fields - cast to unsigned int
   jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC1)] =
       QString::number(static_cast<unsigned int>(dataGse->GQN_NC1));
@@ -501,6 +547,9 @@ void populateGseJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
   jsonObj[QString::number(GUI_FIELD::GSE_GP5)] = QString::number(dataGse->GP5);
 }
 
+
+
+#if RF_PROTOCOL_FIREHORN
 TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   switch (f) {
     /*case GUI_CMD_DISCONNECT:*/

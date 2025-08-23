@@ -38,6 +38,8 @@ enum GUI_FIELD {
   CHAMBER_PRESSURE,
   LPB_VOLTAGE,
   HPB_VOLTAGE,
+  LPB_CURRENT,
+  HPB_CURRENT,
   AV_FC_TEMP,
   AMBIENT_TEMP,
   CAM_REC,
@@ -271,6 +273,12 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case HPB_VOLTAGE:
     name = "HPB VOLTAGE";
+    break;
+  case LPB_CURRENT:
+    name = "LPB CURRENT";
+    break;
+  case HPB_CURRENT:
+    name = "HPB CURRENT";
     break;
   case AV_FC_TEMP:
     name = "AV FC TEMPERATURE";
@@ -705,6 +713,10 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return LPB_VOLTAGE;
   else if (fieldName == "HPB VOLTAGE")
     return HPB_VOLTAGE;
+  else if (fieldName == "LPB CURRENT")
+    return LPB_CURRENT;
+  else if (fieldName == "HPB CURRENT")
+    return HPB_CURRENT;
   else if (fieldName == "AV FC TEMPERATURE")
     return AV_FC_TEMP;
   else if (fieldName == "AMBIENT TEMPERATURE")

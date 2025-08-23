@@ -342,7 +342,7 @@ inline QList<GUI_FIELD> gps = {
 };
 
 inline QList<GUI_FIELD> tbd = {
-    AV_STATE, LPB_VOLTAGE, HPB_VOLTAGE, AV_FC_TEMP, AMBIENT_TEMP, CAM_REC,
+    AV_STATE, LPB_VOLTAGE, LPB_CURRENT, HPB_VOLTAGE, HPB_CURRENT, AV_FC_TEMP, AMBIENT_TEMP, CAM_REC,
 };
 inline QMap<QString, QList<GUI_FIELD>> data_sections = {{"GPS", gps},
                                                         {"TBD", tbd}};

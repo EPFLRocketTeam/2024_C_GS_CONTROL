@@ -492,7 +492,7 @@ void Server::simulateJsonData() {
   std::uniform_int_distribution<int> distState(0, 255);
 
 #ifdef RF_PROTOCOL_FIREHORN
-  av_downlink_unpacked packet;
+  av_downlink_unpacked_t packet;
   packet.packet_nbr = distPacketNbr(gen);
   packet.gnss_lon = distCoord(gen);
   packet.gnss_lat = distCoord(gen);
@@ -501,8 +501,9 @@ void Server::simulateJsonData() {
   packet.N2_pressure = distPressure(gen);
   packet.fuel_pressure = distPressure(gen);
   packet.LOX_pressure = distPressure(gen);
-  packet.fuel_level = distLevel(gen);
-  packet.LOX_level = distLevel(gen);
+  packet.fuel_inj_pressure = distPressure(gen);
+  packet.chamber_pressure = distPressure(gen);
+  packet.LOX_inj_pressure = distPressure(gen);
   packet.N2_temp = static_cast<int16_t>(distTemp(gen));
   packet.LOX_temp = static_cast<int16_t>(distTemp(gen));
   packet.LOX_inj_temp = static_cast<int16_t>(distTemp(gen));
@@ -544,11 +545,13 @@ void Server::simulateJsonData() {
 #endif
 
   std::uniform_int_distribution<int> distBool(0, 1);
-  gse_downlink_t gsePacket;
 #ifdef RF_PROTOCOL_FIREHORN
+
+  gse_downlink_t gsePacket;
   gsePacket.PC_OLC = 1;
 
 #else
+  fs_downlink_t gsePacket;
   gsePacket.tankPressure = distPressure(gen);
   gsePacket.tankTemperature = distTemp(gen);
   gsePacket.fillingPressure = distTemp(gen);

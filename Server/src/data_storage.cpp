@@ -40,10 +40,12 @@ SqliteDB::SqliteDB()
                                           &AV_downlink_pkt::fuel_pressure),
                   sqlite_orm::make_column("LOX_pressure",
                                           &AV_downlink_pkt::LOX_pressure),
-                  sqlite_orm::make_column("fuel_level",
-                                          &AV_downlink_pkt::fuel_level),
-                  sqlite_orm::make_column("LOX_level",
-                                          &AV_downlink_pkt::LOX_level),
+                  sqlite_orm::make_column("fuel_inj_pressure",
+                                          &AV_downlink_pkt::fuel_inj_pressure),
+                  sqlite_orm::make_column("chamber_pressure",
+                                          &AV_downlink_pkt::chamber_pressure),
+                  sqlite_orm::make_column("lox_inj_pressure",
+                                          &AV_downlink_pkt::LOX_inj_pressure),
                   sqlite_orm::make_column("N2_temp", &AV_downlink_pkt::N2_temp),
                   sqlite_orm::make_column("LOX_temp",
                                           &AV_downlink_pkt::LOX_temp),
@@ -176,30 +178,62 @@ SqliteDB::SqliteDB()
                                           &AV_downlink_pkt::ID_config),
                   sqlite_orm::make_column("AV_state",
                                           &AV_downlink_pkt::AV_state)),
+              /*sqlite_orm::make_table<GSE_downlink_pkt>(*/
+              /*    "GSE_DOWNLINK",*/
+              /*    sqlite_orm::make_column("id", &GSE_downlink_pkt::id,*/
+              /*                            sqlite_orm::primary_key()),*/
+              /*    sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),*/
+              /*    sqlite_orm::make_column("tankPressure",*/
+              /*                            &GSE_downlink_pkt::tankPressure),*/
+              /*    sqlite_orm::make_column("tankTemperature",*/
+              /*                            &GSE_downlink_pkt::tankTemperature),*/
+              /*    sqlite_orm::make_column("fillingPressure",*/
+              /*                            &GSE_downlink_pkt::fillingPressure),*/
+              /*    sqlite_orm::make_column("fillingN2O",*/
+              /*                            &GSE_downlink_pkt::fillingN2O),*/
+              /*    sqlite_orm::make_column("vent", &GSE_downlink_pkt::vent),*/
+              /*    sqlite_orm::make_column("disconnectActive",*/
+              /*                            &GSE_downlink_pkt::disconnectActive),*/
+              /*    sqlite_orm::make_column("loadcell1",*/
+              /*                            &GSE_downlink_pkt::loadcell1),*/
+              /*    sqlite_orm::make_column("loadcell2",*/
+              /*                            &GSE_downlink_pkt::loadcell2),*/
+              /*    sqlite_orm::make_column("loadcell3",*/
+              /*                            &GSE_downlink_pkt::loadcell3),*/
+              /*    sqlite_orm::make_column("loadcell4",*/
+              /*                            &GSE_downlink_pkt::loadcell4)))*/
               sqlite_orm::make_table<GSE_downlink_pkt>(
                   "GSE_DOWNLINK",
                   sqlite_orm::make_column("id", &GSE_downlink_pkt::id,
                                           sqlite_orm::primary_key()),
                   sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
-                  sqlite_orm::make_column("tankPressure",
-                                          &GSE_downlink_pkt::tankPressure),
-                  sqlite_orm::make_column("tankTemperature",
-                                          &GSE_downlink_pkt::tankTemperature),
-                  sqlite_orm::make_column("fillingPressure",
-                                          &GSE_downlink_pkt::fillingPressure),
-                  sqlite_orm::make_column("fillingN2O",
-                                          &GSE_downlink_pkt::fillingN2O),
-                  sqlite_orm::make_column("vent", &GSE_downlink_pkt::vent),
-                  sqlite_orm::make_column("disconnectActive",
-                                          &GSE_downlink_pkt::disconnectActive),
-                  sqlite_orm::make_column("loadcell1",
-                                          &GSE_downlink_pkt::loadcell1),
-                  sqlite_orm::make_column("loadcell2",
-                                          &GSE_downlink_pkt::loadcell2),
-                  sqlite_orm::make_column("loadcell3",
-                                          &GSE_downlink_pkt::loadcell3),
-                  sqlite_orm::make_column("loadcell4",
-                                          &GSE_downlink_pkt::loadcell4)))
+                  sqlite_orm::make_column("GQN_NC1",
+                                          &GSE_downlink_pkt::GQN_NC1),
+                  sqlite_orm::make_column("GQN_NC2",
+                                          &GSE_downlink_pkt::GQN_NC2),
+                  sqlite_orm::make_column("GQN_NC3",
+                                          &GSE_downlink_pkt::GQN_NC3),
+                  sqlite_orm::make_column("GQN_NC4",
+                                          &GSE_downlink_pkt::GQN_NC4),
+                  sqlite_orm::make_column("GQN_NC5",
+                                          &GSE_downlink_pkt::GQN_NC5),
+                  sqlite_orm::make_column("GPN_NC1",
+                                          &GSE_downlink_pkt::GPN_NC1),
+                  sqlite_orm::make_column("GPN_NC2",
+                                          &GSE_downlink_pkt::GPN_NC2),
+                  sqlite_orm::make_column("GVN_NC", &GSE_downlink_pkt::GVN_NC),
+                  sqlite_orm::make_column("GFE_NC", &GSE_downlink_pkt::GFE_NC),
+                  sqlite_orm::make_column("GFO_NCC",
+                                          &GSE_downlink_pkt::GFO_NCC),
+                  sqlite_orm::make_column("GDO_NCC",
+                                          &GSE_downlink_pkt::GDO_NCC),
+                  sqlite_orm::make_column("PC_OLC", &GSE_downlink_pkt::PC_OLC),
+                  sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),
+                  sqlite_orm::make_column("GP2", &GSE_downlink_pkt::GP2),
+                  sqlite_orm::make_column("GP3", &GSE_downlink_pkt::GP3),
+                  sqlite_orm::make_column("GP4", &GSE_downlink_pkt::GP4),
+                  sqlite_orm::make_column("GP5", &GSE_downlink_pkt::GP5)))
+
 #endif
       ) {
   printf("creating db\n");
@@ -449,7 +483,7 @@ std::string SqliteDB::get_current_ts() {
 
 Packet SqliteDB::process_pkt(av_uplink_t *avup,
 #if RF_PROTOCOL_FIREHORN
-                             av_downlink_unpacked *avdw,
+                             av_downlink_unpacked_t *avdw,
 #else
                              av_downlink_t *avdw,
 #endif
@@ -479,77 +513,77 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
   // process pkt if av_downlink_unpacked
   if (avup == NULL && gsdw == NULL) {
     uint32_t id = this->get_pkt_id(AV_DOWNLINK);
-    AV_downlink_pkt *raw_avdw =
-        static_cast<AV_downlink_pkt *>(malloc(sizeof(AV_downlink_pkt)));
-
-    *raw_avdw =
 #if RF_PROTOCOL_FIREHORN
-        {.id = id,
-         .ts = ts,
-         .packet_nbr = avdw->packet_nbr,
-         .gnss_lon = avdw->gnss_lon,
-         .gnss_lat = avdw->gnss_lat,
-         .gnss_alt = avdw->gnss_alt,
-         .gnss_vertical_speed = avdw->gnss_vertical_speed,
-         .N2_pressure = avdw->N2_pressure,
-         .fuel_pressure = avdw->fuel_pressure,
-         .LOX_pressure = avdw->LOX_pressure,
-         .fuel_level = avdw->fuel_level,
-         .LOX_level = avdw->LOX_level,
-         .N2_temp = avdw->N2_temp,
-         .LOX_temp = avdw->LOX_temp,
-         .LOX_inj_temp = avdw->LOX_inj_temp,
-         .lpb_voltage = avdw->lpb_voltage,
-         .hpb_voltage = avdw->hpb_voltage,
-         .av_fc_temp = avdw->av_fc_temp,
-         .ambient_temp = avdw->ambient_temp,
-         .engine_state = avdw->engine_state,
-         .av_state = avdw->av_state,
-         .cam_rec = avdw->cam_rec};
+    AV_downlink_pkt *raw_avdw =
+        new AV_downlink_pkt{.id = id,
+                            .ts = ts,
+                            .packet_nbr = avdw->packet_nbr,
+                            .gnss_lon = avdw->gnss_lon,
+                            .gnss_lat = avdw->gnss_lat,
+                            .gnss_alt = avdw->gnss_alt,
+                            .gnss_vertical_speed = avdw->gnss_vertical_speed,
+                            .N2_pressure = avdw->N2_pressure,
+                            .N2_temp = avdw->N2_temp,
+                            .fuel_pressure = avdw->fuel_pressure,
+                            .LOX_pressure = avdw->LOX_pressure,
+                            .LOX_temp = avdw->LOX_temp,
+                            .LOX_inj_pressure = avdw->LOX_inj_pressure,
+                            .LOX_inj_temp = avdw->LOX_inj_temp,
+                            .fuel_inj_pressure = avdw->fuel_inj_pressure,
+                            .chamber_pressure = avdw->chamber_pressure,
+                            .engine_state = avdw->engine_state,
+                            .lpb_voltage = avdw->lpb_voltage,
+                            .lpb_current = avdw->lpb_current,
+                            .hpb_voltage = avdw->hpb_voltage,
+                            .hpb_current = avdw->hpb_current,
+                            .av_fc_temp = avdw->av_fc_temp,
+                            .ambient_temp = avdw->ambient_temp,
+                            .av_state = avdw->av_state,
+                            .cam_rec = avdw->cam_rec};
 #else
-        {
-            .id = id,
-            .ts = ts,
-            .packet_nbr = avdw->packet_nbr,
-            .N2O_pressure = avdw->N2O_pressure,
-            .ETH_pressure = avdw->ETH_pressure,
-            .N2O_temp = avdw->N2O_temp,
-            .N2O_vent = avdw->N2O_vent,
-            .ETH_vent = avdw->ETH_vent,
-            .N2_solenoid = avdw->N2_solenoid,
-            .N2O_main = avdw->N2O_main,
-            .ETH_main = avdw->ETH_main,
-            .N2O_sol = avdw->N2O_sol,
-            .ETH_sol = avdw->ETH_sol,
-            .N2O_igniter = avdw->N2O_igniter,
-            /*.FUEL_igniter = avdw->ETH_igniter,*/
-            .igniter = avdw->igniter,
-            .chamber_pressure = avdw->chamber_pressure,
+    AV_downlink_pkt *raw_avdw = new AV_downlink_pkt {
+        .id = id,
+        .ts = ts,
+        .packet_nbr = avdw->packet_nbr,
+        .N2O_pressure = avdw->N2O_pressure,
+        .ETH_pressure = avdw->ETH_pressure,
+        .N2O_temp = avdw->N2O_temp,
+        .N2O_vent = avdw->N2O_vent,
+        .ETH_vent = avdw->ETH_vent,
+        .N2_solenoid = avdw->N2_solenoid,
+        .N2O_main = avdw->N2O_main,
+        .ETH_main = avdw->ETH_main,
+        .N2O_sol = avdw->N2O_sol,
+        .ETH_sol = avdw->ETH_sol,
+        .N2O_igniter = avdw->N2O_igniter,
+        /*.FUEL_igniter = avdw->ETH_igniter,*/
+        .igniter = avdw->igniter,
+        .chamber_pressure = avdw->chamber_pressure,
 
-            .gnss_lon = avdw->gnss_lon,
-            .gnss_lat = avdw->gnss_lat,
-            .sat_nbr = avdw->sat_nbr,
-            .gyro_x = avdw->gyro_x,
-            .gyro_y = avdw->gyro_y,
-            .gyro_z = avdw->gyro_z,
-            .acc_x = avdw->acc_x,
-            .acc_y = avdw->acc_y,
-            .acc_z = avdw->acc_z,
-            .baro = avdw->baro,
-            .kalman_pos_x = avdw->kalman_pos_x,
-            .kalman_pos_y = avdw->kalman_pos_y,
-            .kalman_pos_z = avdw->kalman_pos_z,
-            .kalman_yaw = avdw->kalman_yaw,
-            .kalman_pitch = avdw->kalman_pitch,
-            .kalman_roll = avdw->kalman_roll,
-            .gimbal_x = avdw->gimbal_x,
-            .gimbal_y = avdw->gimbal_y,
-            .HV_voltage = avdw->HV_voltage,
-            .LV_voltage = avdw->LV_voltage,
-            .AV_temp = avdw->AV_temp,
-            .ID_config = avdw->ID_config,
-            .AV_state = avdw->AV_state,
-        };
+        .gnss_lon = avdw->gnss_lon,
+        .gnss_lat = avdw->gnss_lat,
+        .sat_nbr = avdw->sat_nbr,
+        .gyro_x = avdw->gyro_x,
+        .gyro_y = avdw->gyro_y,
+        .gyro_z = avdw->gyro_z,
+        .acc_x = avdw->acc_x,
+        .acc_y = avdw->acc_y,
+        .acc_z = avdw->acc_z,
+        .baro = avdw->baro,
+        .kalman_pos_x = avdw->kalman_pos_x,
+        .kalman_pos_y = avdw->kalman_pos_y,
+        .kalman_pos_z = avdw->kalman_pos_z,
+        .kalman_yaw = avdw->kalman_yaw,
+        .kalman_pitch = avdw->kalman_pitch,
+        .kalman_roll = avdw->kalman_roll,
+        .gimbal_x = avdw->gimbal_x,
+        .gimbal_y = avdw->gimbal_y,
+        .HV_voltage = avdw->HV_voltage,
+        .LV_voltage = avdw->LV_voltage,
+        .AV_temp = avdw->AV_temp,
+        .ID_config = avdw->ID_config,
+        .AV_state = avdw->AV_state,
+    };
     raw_avdw->FUEL_igniter = avdw->ETH_igniter;
 #endif
 
@@ -561,47 +595,42 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
   // process pkt if PacketGSE_downlink
   if (avup == NULL && avdw == NULL) {
     uint32_t id = this->get_pkt_id(GSE_DOWNLINK);
-#if RF_PROTOCOL_FIREHORN
-    GSE_downlink_pkt *raw_gsdw =
-        static_cast<GSE_downlink_pkt *>(malloc(sizeof(GSE_downlink_pkt)));
-
-    *raw_gsdw = {
-      .id = id,
-      .ts = ts,
-      .GQN_NC1 = gsdw->GQN_NC1,
-      .GQN_NC2 = gsdw->GQN_NC2,
-      .GQN_NC3 = gsdw->GQN_NC3,
-      .GQN_NC4 = gsdw->GQN_NC4,
-      .GQN_NC5 = gsdw->GQN_NC5,
-      .GPN_NC1 = gsdw->GPN_NC1,
-      .GPN_NC2 = gsdw->GPN_NC2,
-      .GVN_NC = gsdw->GVN_NC,
-      .GFE_NC = gsdw->GFE_NC,
-      .GFO_NCC = gsdw->GFO_NCC,
-      .GDO_NCC = gsdw->GDO_NCC,
-      .PC_OLC = gsdw->PC_OLC,
-      .GP1 = gsdw->GP1,
-      .GP2 = gsdw->GP2,
-      .GP3 = gsdw->GP3,
-      .GP4 = gsdw->GP4,
-      .GP5 = gsdw->GP5
-#else
-    GSE_downlink_pkt *raw_gsdw =
-        static_cast<GSE_downlink_pkt *>(malloc(sizeof(GSE_downlink_pkt)));
-    *raw_gsdw = {
-        .id = id,
-        .ts = ts,
-        .tankPressure = gsdw->tankPressure,
-        .tankTemperature = gsdw->tankTemperature,
-        .fillingPressure = gsdw->fillingPressure,
-        .fillingN2O = gsdw->status.fillingN2O,
-        .vent = gsdw->status.vent,
-        .disconnectActive = gsdw->disconnectActive,
-        .loadcell2 = gsdw->loadcell2,
-        .loadcell3 = gsdw->loadcell3,
-        .loadcell4 = gsdw->loadcell4,
-#endif
-    };
+    /*#if RF_PROTOCOL_FIREHORN*/
+    GSE_downlink_pkt *raw_gsdw = new GSE_downlink_pkt{.id = id,
+                                                      .ts = ts,
+                                                      .GQN_NC1 = gsdw->GQN_NC1,
+                                                      .GQN_NC2 = gsdw->GQN_NC2,
+                                                      .GQN_NC3 = gsdw->GQN_NC3,
+                                                      .GQN_NC4 = gsdw->GQN_NC4,
+                                                      .GQN_NC5 = gsdw->GQN_NC5,
+                                                      .GPN_NC1 = gsdw->GPN_NC1,
+                                                      .GPN_NC2 = gsdw->GPN_NC2,
+                                                      .GVN_NC = gsdw->GVN_NC,
+                                                      .GFE_NC = gsdw->GFE_NC,
+                                                      .GFO_NCC = gsdw->GFO_NCC,
+                                                      .GDO_NCC = gsdw->GDO_NCC,
+                                                      .PC_OLC = gsdw->PC_OLC,
+                                                      .GP1 = gsdw->GP1,
+                                                      .GP2 = gsdw->GP2,
+                                                      .GP3 = gsdw->GP3,
+                                                      .GP4 = gsdw->GP4,
+                                                      .GP5 = gsdw->GP5};
+    /*#else*/
+    /*    GSE_downlink_pkt *raw_gsdw =*/
+    /*        static_cast<fs_downlink_t *>(malloc(sizeof(fs_downlink_t)));*/
+    /*    *raw_gsdw = {*/
+    /*        .id = id,*/
+    /*        .ts = ts,*/
+    /*        .tankPressure = gsdw->tankPressure,*/
+    /*        .tankTemperature = gsdw->tankTemperature,*/
+    /*        .fillingPressure = gsdw->fillingPressure,*/
+    /*        .fillingN2O = gsdw->status.fillingN2O,*/
+    /*        .vent = gsdw->status.vent,*/
+    /*        .disconnectActive = gsdw->disconnectActive,*/
+    /*        .loadcell2 = gsdw->loadcell2,*/
+    /*        .loadcell3 = gsdw->loadcell3,*/
+    /*        .loadcell4 = gsdw->loadcell4,*/
+    /*#endif*/
     return (Packet){.type = GSE_DOWNLINK,
                     .av_up_pkt = NULL,
                     .av_down_pkt = NULL,
@@ -615,7 +644,7 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
 
 void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
 #if RF_PROTOCOL_FIREHORN
-                             av_downlink_unpacked *avdw,
+                             av_downlink_unpacked_t *avdw,
 #else
                              av_downlink_t *avdw,
 #endif
@@ -629,27 +658,31 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
   }
   case PacketType::AV_DOWNLINK: {
 #if RF_PROTOCOL_FIREHORN
-    *avdw = (av_downlink_unpacked){
+    *avdw = (av_downlink_unpacked_t){
         .packet_nbr = pkt.av_down_pkt->packet_nbr,
         .gnss_lon = pkt.av_down_pkt->gnss_lon,
         .gnss_lat = pkt.av_down_pkt->gnss_lat,
         .gnss_alt = pkt.av_down_pkt->gnss_alt,
         .gnss_vertical_speed = pkt.av_down_pkt->gnss_vertical_speed,
         .N2_pressure = pkt.av_down_pkt->N2_pressure,
+        .N2_temp = pkt.av_down_pkt->N2_temp,
         .fuel_pressure = pkt.av_down_pkt->fuel_pressure,
         .LOX_pressure = pkt.av_down_pkt->LOX_pressure,
-        .fuel_level = pkt.av_down_pkt->fuel_level,
-        .LOX_level = pkt.av_down_pkt->LOX_level,
-        .N2_temp = pkt.av_down_pkt->N2_temp,
         .LOX_temp = pkt.av_down_pkt->LOX_temp,
+        .LOX_inj_pressure = pkt.av_down_pkt->LOX_inj_pressure,
         .LOX_inj_temp = pkt.av_down_pkt->LOX_inj_temp,
+        .fuel_inj_pressure = pkt.av_down_pkt->fuel_inj_pressure,
+        .chamber_pressure = pkt.av_down_pkt->chamber_pressure,
+        .engine_state = pkt.av_down_pkt->engine_state,
         .lpb_voltage = pkt.av_down_pkt->lpb_voltage,
+        .lpb_current = pkt.av_down_pkt->lpb_current,
         .hpb_voltage = pkt.av_down_pkt->hpb_voltage,
+        .hpb_current = pkt.av_down_pkt->hpb_current,
         .av_fc_temp = pkt.av_down_pkt->av_fc_temp,
         .ambient_temp = pkt.av_down_pkt->ambient_temp,
-        .engine_state = pkt.av_down_pkt->engine_state,
         .av_state = pkt.av_down_pkt->av_state,
         .cam_rec = pkt.av_down_pkt->cam_rec};
+
 #else
     *avdw = (av_downlink_t){
         .packet_nbr = pkt.av_down_pkt->packet_nbr,
@@ -704,22 +737,22 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
     break;
   }
   case PacketType::GSE_DOWNLINK: {
-#if RF_PROTOCOL_ICARUS
-
-    GSE_cmd_status status =
-        (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,
-                         .vent = pkt.gse_down_pkt->vent};
-    *gsdw =
-        (gse_downlink_t){.tankPressure = pkt.gse_down_pkt->tankPressure,
-                         .tankTemperature = pkt.gse_down_pkt->tankTemperature,
-                         .fillingPressure = pkt.gse_down_pkt->fillingPressure,
-                         .status = status,
-                         .disconnectActive = pkt.gse_down_pkt->disconnectActive,
-                         .loadcell1 = pkt.gse_down_pkt->loadcell1,
-                         .loadcell2 = pkt.gse_down_pkt->loadcell2,
-                         .loadcell3 = pkt.gse_down_pkt->loadcell3,
-                         .loadcell4 = pkt.gse_down_pkt->loadcell4};
-#else
+/*#if RF_PROTOCOL_ICARUS*/
+/**/
+/*    GSE_cmd_status status =*/
+/*        (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,*/
+/*                         .vent = pkt.gse_down_pkt->vent};*/
+/*    *gsdw =*/
+/*        (gse_downlink_t){.tankPressure = pkt.gse_down_pkt->tankPressure,*/
+/*                         .tankTemperature = pkt.gse_down_pkt->tankTemperature,*/
+/*                         .fillingPressure = pkt.gse_down_pkt->fillingPressure,*/
+/*                         .status = status,*/
+/*                         .disconnectActive = pkt.gse_down_pkt->disconnectActive,*/
+/*                         .loadcell1 = pkt.gse_down_pkt->loadcell1,*/
+/*                         .loadcell2 = pkt.gse_down_pkt->loadcell2,*/
+/*                         .loadcell3 = pkt.gse_down_pkt->loadcell3,*/
+/*                         .loadcell4 = pkt.gse_down_pkt->loadcell4};*/
+/*#else*/
     *gsdw = (gse_downlink_t){.GQN_NC1 = pkt.gse_down_pkt->GQN_NC1,
                              .GQN_NC2 = pkt.gse_down_pkt->GQN_NC2,
                              .GQN_NC3 = pkt.gse_down_pkt->GQN_NC3,
@@ -738,7 +771,7 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                              .GP4 = pkt.gse_down_pkt->GP4,
                              .GP5 = pkt.gse_down_pkt->GP5};
 
-#endif
+/*#endif*/
     break;
   }
   }
