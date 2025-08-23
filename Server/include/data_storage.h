@@ -233,7 +233,7 @@ private:
 
   const size_t BATCH_SIZE = 6; // value to be reconsidered
 
-  const char *PATH_TO_DB = "test.db";
+  const char *PATH_TO_DB = "../flightDB.db";
 
   std::vector<AV_uplink_pkt *> buffer_av_up;
 
