@@ -53,8 +53,12 @@ SqliteDB::SqliteDB()
                                           &AV_downlink_pkt::LOX_inj_temp),
                   sqlite_orm::make_column("lpb_voltage",
                                           &AV_downlink_pkt::lpb_voltage),
+                  sqlite_orm::make_column("lpb_current",
+                                          &AV_downlink_pkt::lpb_current),
                   sqlite_orm::make_column("hpb_voltage",
                                           &AV_downlink_pkt::hpb_voltage),
+                  sqlite_orm::make_column("hpb_current",
+                                          &AV_downlink_pkt::hpb_current),
                   sqlite_orm::make_column("av_fc_temp",
                                           &AV_downlink_pkt::av_fc_temp),
                   sqlite_orm::make_column("ambient_temp",
@@ -541,7 +545,7 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
                             .av_state = avdw->av_state,
                             .cam_rec = avdw->cam_rec};
 #else
-    AV_downlink_pkt *raw_avdw = new AV_downlink_pkt {
+    AV_downlink_pkt *raw_avdw = new AV_downlink_pkt{
         .id = id,
         .ts = ts,
         .packet_nbr = avdw->packet_nbr,
@@ -737,22 +741,25 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
     break;
   }
   case PacketType::GSE_DOWNLINK: {
-/*#if RF_PROTOCOL_ICARUS*/
-/**/
-/*    GSE_cmd_status status =*/
-/*        (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,*/
-/*                         .vent = pkt.gse_down_pkt->vent};*/
-/*    *gsdw =*/
-/*        (gse_downlink_t){.tankPressure = pkt.gse_down_pkt->tankPressure,*/
-/*                         .tankTemperature = pkt.gse_down_pkt->tankTemperature,*/
-/*                         .fillingPressure = pkt.gse_down_pkt->fillingPressure,*/
-/*                         .status = status,*/
-/*                         .disconnectActive = pkt.gse_down_pkt->disconnectActive,*/
-/*                         .loadcell1 = pkt.gse_down_pkt->loadcell1,*/
-/*                         .loadcell2 = pkt.gse_down_pkt->loadcell2,*/
-/*                         .loadcell3 = pkt.gse_down_pkt->loadcell3,*/
-/*                         .loadcell4 = pkt.gse_down_pkt->loadcell4};*/
-/*#else*/
+    /*#if RF_PROTOCOL_ICARUS*/
+    /**/
+    /*    GSE_cmd_status status =*/
+    /*        (GSE_cmd_status){.fillingN2O = pkt.gse_down_pkt->fillingN2O,*/
+    /*                         .vent = pkt.gse_down_pkt->vent};*/
+    /*    *gsdw =*/
+    /*        (gse_downlink_t){.tankPressure = pkt.gse_down_pkt->tankPressure,*/
+    /*                         .tankTemperature =
+     * pkt.gse_down_pkt->tankTemperature,*/
+    /*                         .fillingPressure =
+     * pkt.gse_down_pkt->fillingPressure,*/
+    /*                         .status = status,*/
+    /*                         .disconnectActive =
+     * pkt.gse_down_pkt->disconnectActive,*/
+    /*                         .loadcell1 = pkt.gse_down_pkt->loadcell1,*/
+    /*                         .loadcell2 = pkt.gse_down_pkt->loadcell2,*/
+    /*                         .loadcell3 = pkt.gse_down_pkt->loadcell3,*/
+    /*                         .loadcell4 = pkt.gse_down_pkt->loadcell4};*/
+    /*#else*/
     *gsdw = (gse_downlink_t){.GQN_NC1 = pkt.gse_down_pkt->GQN_NC1,
                              .GQN_NC2 = pkt.gse_down_pkt->GQN_NC2,
                              .GQN_NC3 = pkt.gse_down_pkt->GQN_NC3,
@@ -771,7 +778,7 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                              .GP4 = pkt.gse_down_pkt->GP4,
                              .GP5 = pkt.gse_down_pkt->GP5};
 
-/*#endif*/
+    /*#endif*/
     break;
   }
   }
