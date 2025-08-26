@@ -306,34 +306,34 @@ inline std::vector<ValveInfo> gseValves = {
 
     // Ethanol quadrant
     {GUI_FIELD::GSE_GFE_NC,
-     {0.7, 0.372},
+     {0.7, 0.382},
      ValveButton::Orientation::Horizontal},
 
     // N2 quadrant
     {GUI_FIELD::GSE_GPN_NC1,
-     {0.15, 0.575},
+     {0.15, 0.58},
      ValveButton::Orientation::Horizontal},
     {GUI_FIELD::GSE_GPN_NC2,
-     {0.15, 0.695},
+     {0.15, 0.7},
      ValveButton::Orientation::Horizontal},
     {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal},
 
     // Air valves
 
     {GUI_FIELD::GSE_GQN_NC1,
-     {0.515, 0.0543093},
+     {0.515, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC2,
-     {0.585, 0.0543093},
+     {0.585, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC3,
-     {0.655, 0.0543093},
+     {0.655, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC4,
-     {0.725, 0.0543093},
+     {0.725, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC5,
-     {0.78, 0.0543093},
+     {0.78, 0.08},
      ValveButton::Orientation::Vertical},
 };
 
