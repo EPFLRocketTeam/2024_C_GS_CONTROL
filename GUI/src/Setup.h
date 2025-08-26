@@ -235,7 +235,7 @@ inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{
       GUI_CMD_IGNITION, GUI_CMD_ABORT, GUI_CMD_MANUAL_DEPLOY}},
 };
 inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{
-    {"ValveControlButton", valvesMap}, {"QPushButton", pushButtonMap}};
+    /*{"ValveControlButton", valvesMap},*/ {"QPushButton", pushButtonMap}};
 
 inline QMap<std::string, std::vector<GUI_FIELD>> gseValvesMap{
     {"GSE Valves",
@@ -254,7 +254,7 @@ inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
 inline std::vector<ValveInfo> valves = {
     /*{GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Horizontal},*/
     {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::MAIN_LOX, {0.487, 0.78}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::MAIN_LOX, {0.487, 0.73}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::VENT_FUEL,
      {0.386, 0.249},
@@ -276,10 +276,10 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::LOX_PRESSURE, 0.69, 0.58},
     {GUI_FIELD::LOX_TEMP, 0.69, 0.66},
 
-    {GUI_FIELD::LOX_INJ_PRESSURE, 0.69, 0.74},
-    {GUI_FIELD::LOX_INJ_TEMP, 0.69, 0.82},
+    {GUI_FIELD::LOX_INJ_PRESSURE, 0.69, 0.785},
+    {GUI_FIELD::LOX_INJ_TEMP, 0.69, 0.86},
 
-    {GUI_FIELD::CHAMBER_PRESSURE, 0.69, 0.9},
+    {GUI_FIELD::CHAMBER_PRESSURE, 0.69, 0.95},
 
 
     {GUI_FIELD::FUEL_PRESSURE, 0.35, 0.36},
@@ -359,9 +359,9 @@ inline QFrame *gseMiddlePlaceholder;
 /*inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";*/
 /*inline QString disconnectedBackgroundImage =*/
 /*    ":/images/prop_firehorn_disconnect.svg";*/
-inline QString connectedBackgroundImage = ":/images/prop_firehorn_V2.svg";
+inline QString connectedBackgroundImage = ":/images/prop_firehorn_V3.svg";
 inline QString disconnectedBackgroundImage =
-    ":/images/prop_firehorn_V2.svg";
+    ":/images/prop_firehorn_V3.svg";
 
 
 inline void init_views() {

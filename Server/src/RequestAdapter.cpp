@@ -13,6 +13,8 @@
 
 static ModuleLog _logger = ModuleLog("RequestAdapter");
 
+/*#define RF_PROTOCOL_ICARUS 1*/
+/*#define RF_PROTOCOL_FIREHORN 0*/
 
 
 int createUplinkPacketFromRequest(GUI_FIELD field, uint8_t order_value,
