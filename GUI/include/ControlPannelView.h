@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QMessageBox>
 
 #include "FieldUtil.h"
 #include "Log.h"
@@ -38,6 +39,9 @@ private:
     void createValveControlButtons(QGridLayout *gridLayout, const std::vector<GUI_FIELD> &strings, int maxColumns);
     void createValveLayouts(QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *valves);
     void createPushButtonLayouts(QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *buttons);
+    QMessageBox::StandardButton showConfirmDialog(QWidget *parent, 
+                                              const QString &title, 
+                                              const QString &text);
     
     ModuleLog _logger = ModuleLog("ControlPannelView", LOG_FILE_PATH);
     QPixmap buttonPixMap;

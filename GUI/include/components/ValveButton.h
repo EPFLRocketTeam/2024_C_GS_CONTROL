@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <qsvgrenderer.h>
+#include <QMessageBox>
 
 class ValveButton : public QLabel {
   Q_OBJECT
@@ -40,6 +41,9 @@ private:
   QSize iconSize;
   GUI_FIELD m_field;
   ModuleLog _logger = ModuleLog("ValveButton", LOG_FILE_PATH);
+  QMessageBox::StandardButton showConfirmDialog(QWidget *parent, 
+                                              const QString &title, 
+                                              const QString &text);
 
   QSvgRenderer *m_rOpen, *m_rClose, *m_rUnknown;
 };

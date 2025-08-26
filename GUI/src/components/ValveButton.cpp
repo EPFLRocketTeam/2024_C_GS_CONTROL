@@ -1,6 +1,8 @@
 #include "FieldUtil.h"
 #include "MainWindow.h"
+#include <Setup.h>
 #include "QGuiApplication"
+#include <QStyleFactory>
 #include <QIcon>
 #include <QLabel>
 #include <QMessageBox>
@@ -9,6 +11,7 @@
 #include <QTimer>
 #include <QTransform>
 #include <QtSvg/QSvgRenderer>
+#include <QMessageBox>
 #include <iostream>
 #include <unistd.h>
 
@@ -43,15 +46,11 @@ ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
   });
 
   connect(this, &ValveButton::clicked, [this]() {
-    // Ask for confirmation
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(
+    
+    if (showConfirmDialog(
         this, "Confirm Valve Action",
         QString("Are you sure you want to toggle the valve '%1'?")
-            .arg(fieldUtil::enumToFieldName(m_field)),
-        QMessageBox::Yes | QMessageBox::No);
-
-    if (reply == QMessageBox::Yes) {
+            .arg(fieldUtil::enumToFieldName(m_field))) == QMessageBox::Yes) {
       // Proceed with request
       RequestBuilder b;
       b.setHeader(RequestType::POST);
@@ -81,6 +80,56 @@ ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
   });
 
   setFixedSize(sizeHint());
+}
+
+QMessageBox::StandardButton ValveButton::showConfirmDialog(QWidget *parent, 
+                                              const QString &title, 
+                                              const QString &text) {
+    QMessageBox msgBox(parent);
+    msgBox.setWindowTitle(title);
+    msgBox.setText(text);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+
+    // Force Fusion style (consistent across platforms)
+    msgBox.setStyle(QStyleFactory::create("Fusion"));
+
+    // Apply custom stylesheet
+    msgBox.setStyleSheet(QString(R"(
+        QMessageBox {
+            background-color: white;
+            color: black;
+        }
+        QLabel {
+            color: black;
+            font-size: 14px;
+        }
+        QPushButton {
+            min-width: 80px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            background-color: #eeeeee;
+            border: 1px solid black;
+        }
+        QPushButton:hover {
+            background-color: grey;
+        }
+    )")
+    .arg(col::primary)              // Yes button background
+    .arg(col::complementary)        // Yes button hover
+    .arg(col::backgroundColorCode)  // No button background
+    .arg(col::complementaryLighter) // No button hover
+    );
+
+    // Give object names so stylesheet can target them
+    /*QAbstractButton *yesBtn = msgBox.button(QMessageBox::Yes);*/
+    /*if (yesBtn) yesBtn->setObjectName("yesButton");*/
+    /**/
+    /*QAbstractButton *noBtn = msgBox.button(QMessageBox::No);*/
+    /*if (noBtn) noBtn->setObjectName("noButton");*/
+
+    return static_cast<QMessageBox::StandardButton>(msgBox.exec());
 }
 
 ValveButton::~ValveButton() {

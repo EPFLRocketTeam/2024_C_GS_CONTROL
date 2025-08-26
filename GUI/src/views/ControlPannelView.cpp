@@ -92,6 +92,56 @@ void ControlPannelView::createValveLayouts(
   }
 }
 
+QMessageBox::StandardButton ControlPannelView::showConfirmDialog(QWidget *parent, 
+                                              const QString &title, 
+                                              const QString &text) {
+    QMessageBox msgBox(parent);
+    msgBox.setWindowTitle(title);
+    msgBox.setText(text);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+
+    // Force Fusion style (consistent across platforms)
+    msgBox.setStyle(QStyleFactory::create("Fusion"));
+
+    // Apply custom stylesheet
+    msgBox.setStyleSheet(QString(R"(
+        QMessageBox {
+            background-color: white;
+            color: black;
+        }
+        QLabel {
+            color: black;
+            font-size: 14px;
+        }
+        QPushButton {
+            min-width: 80px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            background-color: #eeeeee;
+            border: 1px solid black;
+        }
+        QPushButton:hover {
+            background-color: grey;
+        }
+    )")
+    .arg(col::primary)              // Yes button background
+    .arg(col::complementary)        // Yes button hover
+    .arg(col::backgroundColorCode)  // No button background
+    .arg(col::complementaryLighter) // No button hover
+    );
+
+    // Give object names so stylesheet can target them
+    /*QAbstractButton *yesBtn = msgBox.button(QMessageBox::Yes);*/
+    /*if (yesBtn) yesBtn->setObjectName("yesButton");*/
+    /**/
+    /*QAbstractButton *noBtn = msgBox.button(QMessageBox::No);*/
+    /*if (noBtn) noBtn->setObjectName("noButton");*/
+
+    return static_cast<QMessageBox::StandardButton>(msgBox.exec());
+}
+
 void ControlPannelView::createPushButtonLayouts(
     QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *buttons) {
 
@@ -153,38 +203,40 @@ void ControlPannelView::createPushButtonLayouts(
 
       QObject::connect(button, &QPushButton::clicked, [button, this]() {
         // Show confirmation dialog
-        QMessageBox msgBox(this);
-        msgBox.setWindowTitle("Confirm Action");
-        msgBox.setText(QString("Are you sure you want to execute '%1'?")
-                           .arg(button->text()));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::No);
-
-        // Force light theme (Fusion + palette or stylesheet)
-        msgBox.setStyle(QStyleFactory::create("Fusion"));
-        msgBox.setStyleSheet(R"(
-    QMessageBox {
-        background-color: white;
-        color: black;
-    }
-    QLabel {
-        color: black;
-    }
-    QPushButton {
-        background-color: #f0f0f0;
-        color: black;
-        border: 1px solid gray;
-        padding: 5px 10px;
-        border-radius: 4px;
-    }
-    QPushButton:hover {
-        background-color: #e0e0e0;
-    }
-)");
-
-        QMessageBox::StandardButton reply =
-            static_cast<QMessageBox::StandardButton>(msgBox.exec());
-        if (reply == QMessageBox::Yes) {
+/*        QMessageBox msgBox(this);*/
+/*        msgBox.setWindowTitle("Confirm Action");*/
+/*        msgBox.setText(QString("Are you sure you want to execute '%1'?")*/
+/*                           .arg(button->text()));*/
+/*        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);*/
+/*        msgBox.setDefaultButton(QMessageBox::No);*/
+/**/
+/*        // Force light theme (Fusion + palette or stylesheet)*/
+/*        msgBox.setStyle(QStyleFactory::create("Fusion"));*/
+/*        msgBox.setStyleSheet(R"(*/
+/*    QMessageBox {*/
+/*        background-color: white;*/
+/*        color: black;*/
+/*    }*/
+/*    QLabel {*/
+/*        color: black;*/
+/*    }*/
+/*    QPushButton {*/
+/*        background-color: #f0f0f0;*/
+/*        color: black;*/
+/*        border: 1px solid gray;*/
+/*        padding: 5px 10px;*/
+/*        border-radius: 4px;*/
+/*    }*/
+/*    QPushButton:hover {*/
+/*        background-color: #e0e0e0;*/
+/*    }*/
+/*)");*/
+/**/
+        /*QMessageBox::StandardButton reply =*/
+        /*    static_cast<QMessageBox::StandardButton>(msgBox.exec());*/
+        if (showConfirmDialog(this, "Confirm Action",
+        QString("Are you sure you want to execute '%1'?").arg(button->text())) 
+        == QMessageBox::Yes) {
           // Proceed with request
           RequestBuilder b;
           b.setHeader(RequestType::POST);
