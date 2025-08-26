@@ -86,6 +86,7 @@ enum GUI_FIELD {
   GUI_CMD_LAUNCH,
   GUI_CMD_SET_SERIAL_STATUS,
   GUI_CMD_CALIBRATE,
+  GUI_CMD_BYPASS_DPR,
   GUI_CMD_GSE_IDLE,
   GUI_CMD_GSE_CALIBRATE,
   GUI_CMD_RECOVER,
@@ -444,6 +445,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case GUI_CMD_CALIBRATE:
     name = "CALIBRATE";
+    break;
+  case GUI_CMD_BYPASS_DPR:
+    name = "BYPASS DPR";
     break;
   case GUI_CMD_GIMBALL_X:
     name = "CMD GIMBAL X";
@@ -829,6 +833,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GSE_IDLE;
   else if (fieldName == "GSE CALIBRATE")
     return GUI_CMD_GSE_CALIBRATE;
+  else if (fieldName == "BYPASS DPR")
+    return GUI_CMD_BYPASS_DPR;
   else if (fieldName == "GSE ARM")
     return GUI_CMD_GSE_ARM;
   else if (fieldName == "GSE PASSIVATE")
@@ -845,7 +851,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_HOPPER_HOMING_MAIN_VALVES;
   else if (fieldName == "HOMING GIMBAL")
     return GUI_CMD_HOPPER_HOMING_GIMBAL;
-
   else if (fieldName == "SERVO 2")
     return GUI_CMD_SERVO_2;
   else if (fieldName == "GSE TOGGLE 11")

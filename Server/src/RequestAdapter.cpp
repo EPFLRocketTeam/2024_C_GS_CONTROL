@@ -567,6 +567,9 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GUI_CMD_PRESSURIZE:
     return {AV_CMD_CALIBRATE, GSC_CMD};
 
+  case GUI_FIELD::GUI_CMD_BYPASS_DPR:
+    return {AV_CMD_BYPASS_DPR_CHECK, GSC_CMD};
+
   case GUI_FIELD::GUI_CMD_RECOVER:
     return {AV_CMD_RECOVER, GSC_CMD};
 

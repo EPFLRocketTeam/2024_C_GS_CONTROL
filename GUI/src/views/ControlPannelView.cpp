@@ -24,7 +24,7 @@
 #include <Setup.h>
 #include "FieldUtil.h"
 
-ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> *controls) : QFrame(parent) {
+ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QList<std::vector<GUI_FIELD>>> *controls) : QFrame(parent) {
     
     setStyleSheet("background:transparent;");
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -43,9 +43,9 @@ ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std:
     layout->setContentsMargins(0, 0, 0, 0);
     
     QHBoxLayout *containerLayout = new QHBoxLayout(controlContainerWidget);
-    QMap<std::string, std::vector<GUI_FIELD>> valveControls = controls->value("ValveControlButton");
+    QList<std::vector<GUI_FIELD>> valveControls = controls->value("ValveControlButton");
     createValveLayouts(containerLayout, &valveControls);
-    QMap<std::string, std::vector<GUI_FIELD>> pushButtonControls = controls->value("QPushButton");
+    QList<std::vector<GUI_FIELD>> pushButtonControls = controls->value("QPushButton");
     createPushButtonLayouts(containerLayout, &pushButtonControls);
     
     containerLayout->setContentsMargins(20, 10, 20, 10);
@@ -61,22 +61,22 @@ ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QMap<std:
     
 }
 
-void ControlPannelView::createValveLayouts(QHBoxLayout *mainLayout, QMap<std::string, std::vector<GUI_FIELD>> *valves)
+void ControlPannelView::createValveLayouts(QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *valves)
 {
 
-    for (auto it = valves->constBegin(); it != valves->constEnd(); ++it) {
-        const QString &title = QString::fromStdString(it.key());
-        int maxColumns = std::ceil(it.value().size() / 2.0);
-        const std::vector<GUI_FIELD> &valveNames = it.value();
+    for (auto it : *valves) {
+        /*const QString &title = QString::fromStdString(it.key());*/
+        int maxColumns = std::ceil(it.size() / 2.0);
+        const std::vector<GUI_FIELD> &valveNames = it;
 
         QVBoxLayout *controlLayout = new QVBoxLayout;
-        QLabel *titleLabel = new QLabel(title);
-        QFont font = titleLabel->font();
-        font.setPointSize(12);
-        font.setBold(true);
-        titleLabel->setFont(font);
-        titleLabel->setStyleSheet(QString("color:%1").arg(col::primary));
-        controlLayout->addWidget(titleLabel, 1, Qt::AlignLeft);
+        /*QLabel *titleLabel = new QLabel(title);*/
+        /*QFont font = titleLabel->font();*/
+        /*font.setPointSize(12);*/
+        /*font.setBold(true);*/
+        /*titleLabel->setFont(font);*/
+        /*titleLabel->setStyleSheet(QString("color:%1").arg(col::primary));*/
+        /*controlLayout->addWidget(titleLabel, 1, Qt::AlignLeft);*/
 
         QGridLayout *gridLayout = new QGridLayout;
         createValveControlButtons(gridLayout, valveNames, maxColumns);
@@ -86,24 +86,24 @@ void ControlPannelView::createValveLayouts(QHBoxLayout *mainLayout, QMap<std::st
     }
 }
 
-void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QMap<std::string, std::vector<GUI_FIELD>> *buttons)
+void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>>*buttons)
 {
     
-    for (auto it = buttons->constBegin(); it != buttons->constEnd(); ++it) {
+    for (auto it : *buttons) {
     
-        const QString &title = QString::fromStdString(it.key());
-        const std::vector<GUI_FIELD> &buttonField = it.value();
+        /*const QString &title = QString::fromStdString(it.key());*/
+        const std::vector<GUI_FIELD> &buttonField = it;
         
         QVBoxLayout *controlLayout = new QVBoxLayout;
-        QLabel *titleLabel = new QLabel(title);
+        /*QLabel *titleLabel = new QLabel(title);*/
        
-        titleLabel->setFixedHeight(37);
-        titleLabel->setStyleSheet(QString("color:%1;").arg(col::primary));
-        QFont font = titleLabel->font();
-        font.setPointSize(13);
-        font.setBold(true);
-        titleLabel->setFont(font);
-        controlLayout->addWidget(titleLabel, 1, Qt::AlignLeft);
+        /*titleLabel->setFixedHeight(37);*/
+        /*titleLabel->setStyleSheet(QString("color:%1;").arg(col::primary));*/
+        /*QFont font = titleLabel->font();*/
+        /*font.setPointSize(13);*/
+        /*font.setBold(true);*/
+        /*titleLabel->setFont(font);*/
+        /*controlLayout->addWidget(titleLabel, 1, Qt::AlignLeft);*/
         controlLayout->setSpacing(15);
         QGridLayout *gridLayout = new QGridLayout;
 

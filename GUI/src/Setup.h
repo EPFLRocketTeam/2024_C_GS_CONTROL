@@ -43,19 +43,19 @@ using RightView = GSManagerView;
 #ifdef ICARUS_GUI
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
-inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
-    {"Engine Valves",
-     {GUI_FIELD::HOPPER_N2O_VENT, GUI_FIELD::HOPPER_ETH_VENT,
-      GUI_FIELD::HOPPER_N2O_MAIN, GUI_FIELD::HOPPER_ETH_MAIN}},
-    {"GSE Valves", {GUI_FIELD::GSE_VENT, GUI_FIELD::GSE_FILLING_N2O}}};
+inline QList<std::vector<GUI_FIELD>> valvesMap{
+    {
+     GUI_FIELD::HOPPER_N2O_VENT, GUI_FIELD::HOPPER_ETH_VENT,
+      GUI_FIELD::HOPPER_N2O_MAIN, GUI_FIELD::HOPPER_ETH_MAIN},
+    {GUI_FIELD::GSE_VENT, GUI_FIELD::GSE_FILLING_N2O}};
 
-inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{
-    {"Command",
-     {GUI_CMD_HOPPER_IDLE, GUI_CMD_HOPPER_TARE_ORIENTATION, GUI_CMD_ARM, GUI_CMD_LAUNCH,
+inline QList<std::vector<GUI_FIELD>> pushButtonMap{
+    {
+     GUI_CMD_HOPPER_IDLE, GUI_CMD_HOPPER_TARE_ORIENTATION, GUI_CMD_ARM, GUI_CMD_LAUNCH,
       GUI_CMD_ABORT, GUI_CMD_HOPPER_TARE, GUI_CMD_HOPPER_HOMING_GIMBAL,
-      GUI_CMD_HOPPER_HOMING_MAIN_VALVES}},
-    {"GSE Command", {GUI_CMD_DISCONNECT}}};
-inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{
+      GUI_CMD_HOPPER_HOMING_MAIN_VALVES},
+    {GUI_CMD_DISCONNECT}};
+inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     {"ValveControlButton", valvesMap}, {"QPushButton", pushButtonMap}};
 
 inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
@@ -86,17 +86,17 @@ inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
                                          ValveButton::Orientation::Vertical}
                                         };
 
-inline QMap<std::string, std::vector<GUI_FIELD>> gseValvesMap{
-    {"GSE Valves",
-     {GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC1,
+inline QList<std::vector<GUI_FIELD>> gseValvesMap{
+    {
+     GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC1,
       GSE_GPN_NC2, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC,
-      GSE_PC_OLC}}};
+      GSE_PC_OLC}};
 
-inline QMap<std::string, std::vector<GUI_FIELD>> gsePushButtonMap{
-    {"GSE Command",
-     {GUI_CMD_GSE_IDLE, GUI_CMD_GSE_ARM, GUI_CMD_GSE_ARM,
-      GUI_CMD_GSE_PASSIVATE}}};
-inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
+inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
+    {
+     GUI_CMD_GSE_IDLE, GUI_CMD_GSE_ARM, GUI_CMD_GSE_ARM,
+      GUI_CMD_GSE_PASSIVATE}};
+inline QMap<std::string, QList<std::vector<GUI_FIELD>>>
     gseControlMap{{"ValveControlButton", gseValvesMap},
                   {"QPushButton", gsePushButtonMap}};
 
@@ -169,7 +169,7 @@ inline QList<GUI_FIELD> position = {
 };
 inline QList<GUI_FIELD> tbd = {
     HOPPER_GIMBAL_X, HOPPER_GIMBAL_Y,     HOPPER_HV_VOLTAGE,
-    HOPPER_AV_TEMP,  HOPPER_FIREUP_STATE,
+    HOPPER_AV_TEMP,  HOPPER_FIREUP_STATE, HOPPER_AV_STATE
 };
 inline QMap<QString, QList<GUI_FIELD>> data_sections = {
     {"GPS", gps},
@@ -217,9 +217,9 @@ inline void init_views() {
 #ifdef FIREHORN_GUI
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
-inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
-    {"Engine Valves",
-     {
+inline QList<std::vector<GUI_FIELD>> valvesMap{
+    {
+     
          GUI_FIELD::MAIN_LOX,
          GUI_FIELD::MAIN_FUEL,
          GUI_FIELD::VENT_LOX,
@@ -227,34 +227,41 @@ inline QMap<std::string, std::vector<GUI_FIELD>> valvesMap{
          GUI_FIELD::VENT_N2,
          GUI_FIELD::PRESSURE_VALVE_LOX,
          GUI_FIELD::PRESSURE_VALVE_FUEL,
-     }}};
+     }};
 
-inline QMap<std::string, std::vector<GUI_FIELD>> pushButtonMap{
-    {"Command",
-     {GUI_CMD_CALIBRATE, GUI_CMD_RECOVER, GUI_CMD_PRESSURIZE, GUI_CMD_ARM,
-      GUI_CMD_IGNITION, GUI_CMD_ABORT, GUI_CMD_MANUAL_DEPLOY}},
+inline QList<std::vector<GUI_FIELD>> pushButtonMap{
+    {
+     GUI_CMD_CALIBRATE, GUI_CMD_RECOVER},
+    {
+     GUI_CMD_ARM},
+    {
+     GUI_CMD_PRESSURIZE, GUI_CMD_BYPASS_DPR},
+    {
+     GUI_CMD_IGNITION},
+    {
+     GUI_CMD_ABORT, GUI_CMD_MANUAL_DEPLOY},
 };
-inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>> controlMap{
+inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     /*{"ValveControlButton", valvesMap},*/ {"QPushButton", pushButtonMap}};
 
-inline QMap<std::string, std::vector<GUI_FIELD>> gseValvesMap{
-    {"GSE Valves",
-     {GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC1,
+inline QList<std::vector<GUI_FIELD>> gseValvesMap{
+    {
+     GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC1,
       GSE_GPN_NC2, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC,
-      GSE_PC_OLC}}};
+      GSE_PC_OLC}};
 
-inline QMap<std::string, std::vector<GUI_FIELD>> gsePushButtonMap{
-    {"GSE Command",
-     {GUI_CMD_GSE_IDLE, GUI_CMD_GSE_ARM, GUI_CMD_GSE_ARM,
-      GUI_CMD_GSE_PASSIVATE}}};
-inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
-    gseControlMap{{"ValveControlButton", gseValvesMap},
+inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
+    {
+     GUI_CMD_GSE_IDLE, GUI_CMD_GSE_ARM, GUI_CMD_GSE_ARM,
+      GUI_CMD_GSE_PASSIVATE}};
+inline QMap<std::string, QList<std::vector<GUI_FIELD>>>
+    gseControlMap{/*{"ValveControlButton", gseValvesMap},*/
                   {"QPushButton", gsePushButtonMap}};
 
 inline std::vector<ValveInfo> valves = {
     /*{GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Horizontal},*/
     {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::MAIN_LOX, {0.487, 0.73}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::MAIN_LOX, {0.487, 0.75}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::VENT_FUEL,
      {0.386, 0.249},
@@ -340,7 +347,7 @@ inline QList<GUI_FIELD> gps = {
 };
 
 inline QList<GUI_FIELD> tbd = {
-    AV_STATE, LPB_VOLTAGE, LPB_CURRENT, HPB_VOLTAGE, HPB_CURRENT, AV_FC_TEMP, AMBIENT_TEMP, CAM_REC,
+    PACKET_NBR, AV_STATE, LPB_VOLTAGE, LPB_CURRENT, HPB_VOLTAGE, HPB_CURRENT, AV_FC_TEMP, AMBIENT_TEMP, CAM_REC,
 };
 inline QMap<QString, QList<GUI_FIELD>> data_sections = {{"GPS", gps},
                                                         {"TBD", tbd}};

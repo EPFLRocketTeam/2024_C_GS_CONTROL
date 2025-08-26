@@ -21,7 +21,7 @@
 
 MainWindow::MainWindow(
     QWidget *parent,
-    QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
+    QMap<std::string, QList<std::vector<GUI_FIELD>>>
         *controlPannelMap,
     QWidget *leftWidget, QWidget *middleWidget, QWidget *rightWidget)
     : QMainWindow(parent) {

@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow {
 
 public:
   MainWindow(QWidget *parent = nullptr,
-             QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
+             QMap<std::string, QList<std::vector<GUI_FIELD>>>
                  *controlPannelMap = nullptr,
              QWidget *leftWidget = nullptr, QWidget *middleWidget = nullptr,
              QWidget *rightWidget = nullptr);

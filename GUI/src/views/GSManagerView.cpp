@@ -75,27 +75,27 @@ void GSManagerView::setupInfoSection() {
     setInfoChildrenStyle(downRange, 27, false);
 
     
-    packetNumber = new QLabel("--");
-    setInfoChildrenStyle(packetNumber, 27, false);
+    altitude = new QLabel("--");
+    setInfoChildrenStyle(altitude, 27, false);
 
     QLabel *downRangeLabel = new QLabel("Downrange");
     setInfoChildrenStyle(downRangeLabel, 15, true);
     
-    QLabel *packetNumberLabel = new QLabel("Packet Number");
-    setInfoChildrenStyle(packetNumberLabel, 15, true);
+    QLabel *altitudeLabel = new QLabel("Altitude");
+    setInfoChildrenStyle(altitudeLabel, 15, true);
     
-    setupInfoLayout(downRangeLabel, packetNumberLabel, line);    
+    setupInfoLayout(downRangeLabel, altitudeLabel, line);    
 
 }
 
-void GSManagerView::setupInfoLayout(QLabel *downRangeLabel, QLabel *packetNumberLabel, QWidget *line) {
+void GSManagerView::setupInfoLayout(QLabel *downRangeLabel, QLabel *altitudeLabel, QWidget *line) {
     QVBoxLayout *infoLayout = new QVBoxLayout(infoSection);
-    infoLayout->addWidget(downRangeLabel, 1);
+    infoLayout->addWidget(altitudeLabel, 1);
     infoLayout->addWidget(downRange, 2);
     infoLayout->addStretch(1);
     infoLayout->addWidget(line);
-    infoLayout->addWidget(packetNumberLabel, 1);
-    infoLayout->addWidget(packetNumber, 2);
+    infoLayout->addWidget(downRangeLabel, 1);
+    infoLayout->addWidget(altitude, 2);
     infoLayout->addStretch(1);
 
     QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect;
@@ -153,7 +153,7 @@ timersLayout->setSpacing(0);
 
 void GSManagerView::setupConnections() {
     MainWindow::clientManager->subscribe(GUI_FIELD::DOWNRANGE, setDownRange);
-    MainWindow::clientManager->subscribe(GUI_FIELD::PACKET_NBR, setPacketNumber);
+    MainWindow::clientManager->subscribe(GUI_FIELD::GNSS_ALT, setAltitude);
     
 }
 
