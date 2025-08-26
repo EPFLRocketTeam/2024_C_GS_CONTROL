@@ -16,6 +16,7 @@
 #include <QPixmap>
 #include <QMatrix2x2>
 #include <QGridLayout>
+#include "QMessageBox"
 
 #include "ControlPannelView.h"
 #include "components/ValveControlButton.h"
@@ -51,7 +52,7 @@ ControlPannelView::ControlPannelView(QWidget *parent,QMap<std::string, QList<std
     containerLayout->setContentsMargins(20, 10, 20, 10);
     containerLayout->setSpacing(15);
 
-    controlContainerWidget->setFixedHeight(240);    
+    controlContainerWidget->setFixedHeight(140);    
     
     connect(expandButton, &QPushButton::clicked, this, &ControlPannelView::expandClicked);
     
@@ -141,14 +142,30 @@ void ControlPannelView::createPushButtonLayouts(QHBoxLayout *mainLayout, QList<s
                 .arg(QString::fromStdString(trimmedName));
 
             QObject::connect(button, &QPushButton::clicked, [button, this]() {
-                
-                RequestBuilder b;
-                b.setHeader(RequestType::POST);
-                b.addField("cmd", fieldUtil::fieldNameToEnum(button->text())); 
-                b.addField("cmd_order", 1);
-                _logger.debug(QString(R"(Clicked %1 Button)").arg(button->text()).toStdString(), b.toString().toStdString());
-                MainWindow::clientManager->send(b.toString());
-            });
+    // Show confirmation dialog
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(
+        this,
+        "Confirm Action",
+        QString("Are you sure you want to execute '%1'?").arg(button->text()),
+        QMessageBox::Yes | QMessageBox::No
+    );
+
+    if (reply == QMessageBox::Yes) {
+        // Proceed with request
+        RequestBuilder b;
+        b.setHeader(RequestType::POST);
+        b.addField("cmd", fieldUtil::fieldNameToEnum(button->text())); 
+        b.addField("cmd_order", 1);
+        _logger.debug(
+            QString(R"(Confirmed %1 Button)").arg(button->text()).toStdString(),
+            b.toString().toStdString()
+        );
+        MainWindow::clientManager->send(b.toString());
+    } else {
+        _logger.debug("ControlPannelView", QString("Cancelled action for %1").arg(button->text()).toStdString());
+    }
+});
 
             
             _logger.debug("ControlPannelView", QString(R"(Created Button %1)").arg(button->text()).toStdString());
