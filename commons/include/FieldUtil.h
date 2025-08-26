@@ -179,25 +179,25 @@ inline QString enumToFieldName(GUI_FIELD field) {
   QString name;
   switch (field) {
   case PRESSURE_VALVE_FUEL:
-    name = "PRESSURE VALVE FUEL";
+    name = "PE-nc";
     break;
   case PRESSURE_VALVE_LOX:
-    name = "PRESSURE VALVE LOX";
+    name = "PO-nc";
     break;
   case MAIN_LOX:
-    name = "MAIN LOX";
+    name = "MO";
     break;
   case MAIN_FUEL:
-    name = "MAIN FUEL";
+    name = "ME";
     break;
   case VENT_LOX:
-    name = "VENT LOX";
+    name = "VO-noC";
     break;
   case VENT_FUEL:
-    name = "VENT FUEL";
+    name = "VE-no";
     break;
   case VENT_N2:
-    name = "VENT N2";
+    name = "DN-nc";
     break;
   case ORDER_ID:
     name = "ORDER ID";
@@ -649,19 +649,19 @@ inline QString enumToFieldName(GUI_FIELD field) {
 }
 
 inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
-  if (fieldName == "PRESSURE VALVE LOX")
+  if (fieldName == "PO-nc")
     return PRESSURE_VALVE_LOX;
-  else if (fieldName == "PRESSURE VALVE FUEL")
+  else if (fieldName == "PE-nc")
     return PRESSURE_VALVE_FUEL;
-  else if (fieldName == "MAIN LOX")
+  else if (fieldName == "MO")
     return MAIN_LOX;
-  else if (fieldName == "MAIN FUEL")
+  else if (fieldName == "ME")
     return MAIN_FUEL;
-  else if (fieldName == "VENT LOX")
+  else if (fieldName == "VO-noC")
     return VENT_LOX;
-  else if (fieldName == "VENT N2")
+  else if (fieldName == "DN-nc")
     return VENT_N2;
-  else if (fieldName == "VENT FUEL")
+  else if (fieldName == "VE-no")
     return VENT_FUEL;
   else if (fieldName == "ORDER ID")
     return ORDER_ID;

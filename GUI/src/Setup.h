@@ -252,42 +252,40 @@ inline QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
                   {"QPushButton", gsePushButtonMap}};
 
 inline std::vector<ValveInfo> valves = {
-    {GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::VENT_N2, {0.65, 0.2}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::MAIN_LOX, {0.567, 0.74}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::MAIN_FUEL, {0.725, 0.68}, ValveButton::Orientation::Vertical},
+    /*{GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Horizontal},*/
+    {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::MAIN_LOX, {0.487, 0.78}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::VENT_FUEL,
-     {0.785838, 0.338},
+     {0.386, 0.249},
      ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::VENT_LOX, {0.51, 0.338}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
-     {0.73, 0.29},
+     {0.513, 0.225},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::PRESSURE_VALVE_LOX,
-     {0.57, 0.29},
+     {0.572, 0.33},
      ValveButton::Orientation::Vertical},
 };
 
 inline std::vector<LabelInfo> labels = {
 
-    {GUI_FIELD::N2_PRESSURE, 0.55, 0.19},
-    {GUI_FIELD::N2_TEMP, 0.8, 0.19},
+    {GUI_FIELD::N2_PRESSURE, 0.68, 0.08},
+    {GUI_FIELD::N2_TEMP, 0.68, 0.15},
 
-    {GUI_FIELD::LOX_PRESSURE, 0.447, 0.439},
-    {GUI_FIELD::LOX_TEMP, 0.447, 0.505},
-    {GUI_FIELD::LOX_LEVEL, 0.642, 0.502},
+    {GUI_FIELD::LOX_PRESSURE, 0.69, 0.58},
+    {GUI_FIELD::LOX_TEMP, 0.69, 0.66},
 
-    {GUI_FIELD::FUEL_PRESSURE, 0.893, 0.438},
-    {GUI_FIELD::FUEL_LEVEL, 0.761, 0.502},
+    {GUI_FIELD::LOX_INJ_PRESSURE, 0.69, 0.74},
+    {GUI_FIELD::LOX_INJ_TEMP, 0.69, 0.82},
 
-    {GUI_FIELD::IGNITER_PRESSURE, 0.883, 0.7},
-    {GUI_FIELD::FUEL_INJ_PRESSURE, 0.883, 0.781},
+    {GUI_FIELD::CHAMBER_PRESSURE, 0.69, 0.9},
 
-    {GUI_FIELD::LOX_INJ_PRESSURE, 0.455, 0.78},
-    {GUI_FIELD::LOX_INJ_TEMP, 0.455, 0.86},
 
-    {GUI_FIELD::CHAMBER_PRESSURE, 0.883, 0.86},
+    {GUI_FIELD::FUEL_PRESSURE, 0.35, 0.36},
 
+    {GUI_FIELD::FUEL_INJ_PRESSURE, 0.3, 0.89},
+ 
 };
 
 inline std::vector<ValveInfo> gseValves = {
@@ -358,9 +356,13 @@ inline QFrame *rightPlaceholder;
 
 inline QFrame *gseMiddlePlaceholder;
 
-inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";
+/*inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";*/
+/*inline QString disconnectedBackgroundImage =*/
+/*    ":/images/prop_firehorn_disconnect.svg";*/
+inline QString connectedBackgroundImage = ":/images/prop_firehorn_V2.svg";
 inline QString disconnectedBackgroundImage =
-    ":/images/prop_firehorn_disconnect.svg";
+    ":/images/prop_firehorn_V2.svg";
+
 
 inline void init_views() {
   middlePlaceholder = new ValveControlView(
