@@ -13,6 +13,7 @@
 #include "RequestBuilder.h"
 #include "Setup.h"
 #include <QDir>
+#include <QStyleFactory>
 #include <QJsonDocument>
 #include <QTimer>
 #include <QtNetwork/QTcpSocket>
@@ -24,6 +25,7 @@ void fakeDataHandling();
 
 int start_client(int argc, char *argv[]) {
   QApplication app(argc, argv);
+  QApplication::setStyle(QStyleFactory::create("Fusion"));
   ModuleLog logger = ModuleLog("App Launcher", LOG_FILE_PATH);
 #if DEBUG_LOG
   MainLog::setDebugLevel(DEBUG);
