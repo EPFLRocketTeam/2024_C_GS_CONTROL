@@ -580,45 +580,45 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
 
   case GSE_GQN_NC1:
-    name = "GQN NC1";
+    name = "GQN 1";
     break;
 
   case GSE_GQN_NC2:
-    name = "GQN NC2";
+    name = "GQN 2";
     break;
 
   case GSE_GQN_NC3:
-    name = "GQN NC3";
+    name = "GQN 3";
     break;
   case GSE_GQN_NC4:
-    name = "GQN NC4";
+    name = "GQN 4";
     break;
   case GSE_GQN_NC5:
-    name = "GQN NC5";
+    name = "GQN 5";
     break;
 
   case GSE_GPN_NC1:
-    name = "GPN NC1";
+    name = "GPN 1";
     break;
 
   case GSE_GPN_NC2:
-    name = "GPN NC2";
+    name = "GPN 2";
     break;
 
   case GSE_GVN_NC:
-    name = "GVN NC";
+    name = "GVN";
     break;
 
   case GSE_GFE_NC:
-    name = "GFE NC";
+    name = "GFE";
     break;
 
   case GSE_GFO_NCC:
-    name = "GFO NCC";
+    name = "GFO";
     break;
 
   case GSE_GDO_NCC:
-    name = "GDO NCC";
+    name = "GDO";
     break;
 
   case GSE_PC_OLC:
@@ -907,27 +907,27 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_FILLING_LOX;
   else if (fieldName == "FILLING N2O")
     return GUI_CMD_FILLING_N2O;
-  else if (fieldName == "GSE GQN NC1")
+  else if (fieldName == "GSE GQN 1")
     return GSE_GQN_NC1;
-  else if (fieldName == "GSE GQN NC2")
+  else if (fieldName == "GSE GQN 2")
     return GSE_GQN_NC2;
-  else if (fieldName == "GSE GQN NC3")
+  else if (fieldName == "GSE GQN 3")
     return GSE_GQN_NC3;
-  else if (fieldName == "GSE GQN NC4")
+  else if (fieldName == "GSE GQN 4")
     return GSE_GQN_NC4;
-  else if (fieldName == "GSE GQN NC5")
+  else if (fieldName == "GSE GQN 5")
     return GSE_GQN_NC5;
-  else if (fieldName == "GSE GPN NC1")
+  else if (fieldName == "GSE GPN 1")
     return GSE_GPN_NC1;
-  else if (fieldName == "GSE GPN NC2")
+  else if (fieldName == "GSE GPN 2")
     return GSE_GPN_NC2;
-  else if (fieldName == "GSE GVN NC")
+  else if (fieldName == "GSE GVN")
     return GSE_GVN_NC;
-  else if (fieldName == "GSE GFE NC")
+  else if (fieldName == "GSE GFE")
     return GSE_GFE_NC;
-  else if (fieldName == "GSE GFO NCC")
+  else if (fieldName == "GSE GFO")
     return GSE_GFO_NCC;
-  else if (fieldName == "GSE GDO NCC")
+  else if (fieldName == "GSE GDO")
     return GSE_GDO_NCC;
   else if (fieldName == "GSE PC OLC")
     return GSE_PC_OLC;
