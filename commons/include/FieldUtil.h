@@ -297,7 +297,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "GNSS CHOICE";
     break;
   case GSE_FILLING_N2O:
-    name = "GSE FILLING N2O";
+    name = "HOPPER FO-nc";
     break;
   case VENT_GSE:
     name = "VENT GSE";
@@ -330,7 +330,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "ENGINE STATE";
     break;
   case GSE_VENT:
-    name = "GSE VENT";
+    name = "HOPPER DO-nc";
     break;
   case GSE_CMD_STATUS:
     name = "GSE CMD STATUS";
@@ -351,19 +351,19 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "HOPPER N2O TEMP";
     break;
   case HOPPER_N2O_VENT:
-    name = "HOPPER N2O VENT";
+    name = "HOPPER VO-no";
     break;
   case HOPPER_ETH_VENT:
-    name = "HOPPER ETH VENT";
+    name = "HOPPER VE-no";
     break;
   case HOPPER_N2_SOL:
-    name = "HOPPER N2 SOLENOID";
+    name = "HOPPER PN-nc";
     break;
   case HOPPER_N2O_SOL:
-    name = "HOPPER N2O SOL";
+    name = "HOPPER MSO-nc";
     break;
   case HOPPER_ETH_SOL:
-    name = "HOPPER ETH SOL";
+    name = "HOPPER MSE-nc";
     break;
   case HOPPER_N2O_MAIN:
     name = "HOPPER N2O MAIN";
@@ -731,7 +731,7 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return CAM_REC;
   else if (fieldName == "GNSS CHOICE")
     return GNSS_CHOICE;
-  else if (fieldName == "GSE FILLING N2O")
+  else if (fieldName == "HOPPER FO-nc")
     return GSE_FILLING_N2O;
   else if (fieldName == "VENT GSE")
     return VENT_GSE;
@@ -753,7 +753,7 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GSE_LOADCELL_4;
   else if (fieldName == "ENGINE STATE")
     return ENGINE_STATE;
-  else if (fieldName == "GSE VENT")
+  else if (fieldName == "HOPPER DO-nc")
     return GSE_VENT;
   else if (fieldName == "GSE CMD STATUS")
     return GSE_CMD_STATUS;
@@ -767,19 +767,19 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_ETH_PRESSURE;
   else if (fieldName == "HOPPER N2O TEMP")
     return HOPPER_N2O_TEMP;
-  else if (fieldName == "HOPPER N2O VENT")
+  else if (fieldName == "HOPPER VO-no")
     return HOPPER_N2O_VENT;
-  else if (fieldName == "HOPPER ETH VENT")
+  else if (fieldName == "HOPPER VE-no")
     return HOPPER_ETH_VENT;
-  else if (fieldName == "HOPPER N2 SOLENOID")
+  else if (fieldName == "HOPPER PN-nc")
     return HOPPER_N2_SOL;
   else if (fieldName == "HOPPER N2O MAIN")
     return HOPPER_N2O_MAIN;
   else if (fieldName == "HOPPER N2O MAIN")
     return HOPPER_N2O_SOL;
-  else if (fieldName == "HOPPER N2O SOL")
+  else if (fieldName == "HOPPER MSO-nc")
     return HOPPER_ETH_MAIN;
-  else if (fieldName == "HOPPER ETH SOL")
+  else if (fieldName == "HOPPER MSE-nc")
     return HOPPER_ETH_SOL;
   else if (fieldName == "HOPPER GNSS LON")
     return HOPPER_GNSS_LON;

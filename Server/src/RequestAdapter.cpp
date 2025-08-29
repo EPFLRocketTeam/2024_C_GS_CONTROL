@@ -573,8 +573,8 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GUI_CMD_RECOVER:
     return {AV_CMD_RECOVER, GSC_CMD};
 
-  case GUI_FIELD::GUI_CMD_MANUAL_DEPLOY:
-    return {AV_CMD_MANUAL_DEPLOY, GSC_CMD};
+  /*case GUI_FIELD::GUI_CMD_MANUAL_DEPLOY:
+    return {AV_CMD_MANUAL_DEPLOY, GSC_CMD};*/
 
   case GUI_FIELD::GUI_CMD_IGNITION:
     return {AV_CMD_IGNITION, GSC_CMD};
