@@ -94,7 +94,7 @@ inline QList<std::vector<GUI_FIELD>> gseValvesMap{
 
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
     {
-     GUI_CMD_GSE_IDLE, GUI_CMD_GSE_ARM, GUI_CMD_GSE_ARM,
+     GUI_CMD_GSE_IDLE, GUI_CMD_GSE_CALIBRATE, GUI_CMD_GSE_ARM,
       GUI_CMD_GSE_PASSIVATE}};
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>>
     gseControlMap{{"ValveControlButton", gseValvesMap},
@@ -112,43 +112,47 @@ inline std::vector<LabelInfo> labels = {
 inline std::vector<ValveInfo> gseValves = {
     // LOX quadrant
     {GUI_FIELD::GSE_GFO_NCC,
-     {0.186, 0.37},
+     {0.186, 0.35},
      ValveButton::Orientation::Horizontal},
     {GUI_FIELD::GSE_GDO_NCC,
-     {0.186, 0.267},
+     {0.186, 0.247},
      ValveButton::Orientation::Horizontal},
 
     // Ethanol quadrant
     {GUI_FIELD::GSE_GFE_NC,
-     {0.65, 0.395},
+     {0.7, 0.382},
      ValveButton::Orientation::Horizontal},
 
     // N2 quadrant
     {GUI_FIELD::GSE_GPN_NC1,
-     {0.15, 0.595},
+     {0.15, 0.58},
      ValveButton::Orientation::Horizontal},
     {GUI_FIELD::GSE_GPN_NC2,
-     {0.15, 0.715},
+     {0.15, 0.7},
      ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.585}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal},
 
     // Air valves
 
     {GUI_FIELD::GSE_GQN_NC1,
-     {0.50, 0.0543093},
+     {0.515, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC2,
-     {0.60, 0.0543093},
+     {0.585, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC3,
-     {0.70, 0.0543093},
+     {0.655, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC4,
-     {0.80, 0.0543093},
+     {0.725, 0.08},
      ValveButton::Orientation::Vertical},
     {GUI_FIELD::GSE_GQN_NC5,
-     {0.90, 0.0543093},
+     {0.78, 0.08},
      ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC5,
+     {0.78, 0.08},
+     ValveButton::Orientation::Vertical},
+
 };
 
 inline std::vector<LabelInfo> gseLabels = {};
@@ -335,6 +339,10 @@ inline std::vector<ValveInfo> gseValves = {
     {GUI_FIELD::GSE_GQN_NC5,
      {0.78, 0.08},
      ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC5,
+     {0.78, 0.08},
+     ValveButton::Orientation::Vertical},
+
 };
 
 inline std::vector<LabelInfo> gseLabels = {};

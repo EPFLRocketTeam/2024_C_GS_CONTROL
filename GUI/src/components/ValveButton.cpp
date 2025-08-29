@@ -82,6 +82,8 @@ ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
   setFixedSize(sizeHint());
 }
 
+GUI_FIELD ValveButton::fieldSensivity() { return m_field;}
+
 QMessageBox::StandardButton ValveButton::showConfirmDialog(QWidget *parent, 
                                               const QString &title, 
                                               const QString &text) {
@@ -116,10 +118,6 @@ QMessageBox::StandardButton ValveButton::showConfirmDialog(QWidget *parent,
             background-color: grey;
         }
     )")
-    .arg(col::primary)              // Yes button background
-    .arg(col::complementary)        // Yes button hover
-    .arg(col::backgroundColorCode)  // No button background
-    .arg(col::complementaryLighter) // No button hover
     );
 
     // Give object names so stylesheet can target them

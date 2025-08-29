@@ -23,6 +23,7 @@ public:
   void resetStyle();
   State getState();
   void setState(State state);
+  GUI_FIELD fieldSensivity();
 
 signals:
   void clicked();
