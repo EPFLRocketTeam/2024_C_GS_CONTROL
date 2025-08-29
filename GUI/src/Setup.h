@@ -243,7 +243,7 @@ inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {
      GUI_CMD_IGNITION},
     {
-     GUI_CMD_ABORT, GUI_CMD_MANUAL_DEPLOY},
+     GUI_CMD_ABORT},
 };
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     /*{"ValveControlButton", valvesMap},*/ {"QPushButton", pushButtonMap}};
