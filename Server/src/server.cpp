@@ -493,7 +493,7 @@ void Server::simulateJsonData() {
 
 #ifdef RF_PROTOCOL_FIREHORN
   av_downlink_unpacked_t packet;
-  packet.packet_nbr = distPacketNbr(gen);
+  packet.packet_nbr = 1212;
   packet.gnss_lon = distCoord(gen);
   packet.gnss_lat = distCoord(gen);
   packet.gnss_alt = distAlt(gen);
