@@ -100,7 +100,6 @@ enum GUI_FIELD {
   GUI_CMD_HOPPER_HOMING_MAIN_VALVES,
   GUI_CMD_IGNITION,
   GUI_CMD_ABORT,
-  GUI_CMD_MANUAL_DEPLOY,
   GUI_CMD_IGNITER_LOX,
   GUI_CMD_IGNITER_FUEL,
   GUI_CMD_MAIN_LOX,
@@ -554,9 +553,6 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_IGNITION:
     name = "IGNITION";
     break;
-  case GUI_CMD_MANUAL_DEPLOY:
-    name = "MANUAL DEPLOY";
-    break;
   case GUI_CMD_PRESSURIZE:
     name = "PRESSURIZE";
     break;
@@ -891,8 +887,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GIMBALL_Y;
   else if (fieldName == "IGNITION")
     return GUI_CMD_IGNITION;
-  else if (fieldName == "MANUAL DEPLOY")
-    return GUI_CMD_MANUAL_DEPLOY;
   else if (fieldName == "PRESSURIZE")
     return GUI_CMD_PRESSURIZE;
   else if (fieldName == "ARM")
