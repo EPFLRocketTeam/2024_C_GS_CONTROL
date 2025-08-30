@@ -264,13 +264,13 @@ inline QMap<std::string, QList<std::vector<GUI_FIELD>>>
 
 inline std::vector<ValveInfo> valves = {
     /*{GUI_FIELD::GSE_VENT, {0.24, 0.668}, ValveButton::Orientation::Horizontal},*/
-    {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Horizontal},
     {GUI_FIELD::MAIN_LOX, {0.487, 0.75}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical},
     {GUI_FIELD::VENT_FUEL,
      {0.386, 0.249},
      ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Horizontal},
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
      {0.513, 0.225},
      ValveButton::Orientation::Vertical},
