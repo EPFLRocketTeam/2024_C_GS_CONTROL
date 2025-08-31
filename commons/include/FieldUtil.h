@@ -83,10 +83,9 @@ enum GUI_FIELD {
   CMD_1,
   CMD_2,
   CMD_3,
-  GUI_CMD_LAUNCH,
   GUI_CMD_SET_SERIAL_STATUS,
   GUI_CMD_CALIBRATE,
-  GUI_CMD_BYPASS_DPR,
+  GUI_CMD_LAUNCH_OVERRIDE,
   GUI_CMD_GSE_IDLE,
   GUI_CMD_GSE_CALIBRATE,
   GUI_CMD_RECOVER,
@@ -98,7 +97,6 @@ enum GUI_FIELD {
   GUI_CMD_HOPPER_TARE_ORIENTATION,
   GUI_CMD_HOPPER_HOMING_GIMBAL,
   GUI_CMD_HOPPER_HOMING_MAIN_VALVES,
-  GUI_CMD_IGNITION,
   GUI_CMD_ABORT,
   GUI_CMD_IGNITER_LOX,
   GUI_CMD_IGNITER_FUEL,
@@ -108,7 +106,7 @@ enum GUI_FIELD {
   GUI_CMD_VENT_LOX,
   GUI_CMD_VENT_FUEL,
   GUI_CMD_VENT_N2,
-  GUI_CMD_PRESSURIZE,
+  GUI_CMD_LAUNCH,
   GUI_CMD_FILLING_N2O,
   GUI_CMD_FILLING_LOX,
   GUI_CMD_VENT,
@@ -445,8 +443,8 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_CALIBRATE:
     name = "CALIBRATE";
     break;
-  case GUI_CMD_BYPASS_DPR:
-    name = "BYPASS DPR";
+  case GUI_CMD_LAUNCH_OVERRIDE:
+    name = "OVERRIDE";
     break;
   case GUI_CMD_GIMBALL_X:
     name = "CMD GIMBAL X";
@@ -548,13 +546,6 @@ inline QString enumToFieldName(GUI_FIELD field) {
 
   case GUI_CMD_GSE_TOGGLE_28:
     name = "GSE TOGGLE 28";
-    break;
-
-  case GUI_CMD_IGNITION:
-    name = "IGNITION";
-    break;
-  case GUI_CMD_PRESSURIZE:
-    name = "PRESSURIZE";
     break;
   case GUI_CMD_ARM:
     name = "ARM";
@@ -829,8 +820,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GSE_IDLE;
   else if (fieldName == "GSE CALIBRATE")
     return GUI_CMD_GSE_CALIBRATE;
-  else if (fieldName == "BYPASS DPR")
-    return GUI_CMD_BYPASS_DPR;
+  else if (fieldName == "OVERRIDE")
+    return GUI_CMD_LAUNCH_OVERRIDE;
   else if (fieldName == "GSE ARM")
     return GUI_CMD_GSE_ARM;
   else if (fieldName == "GSE PASSIVATE")
@@ -885,10 +876,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GIMBALL_X;
   else if (fieldName == "CMD GIMBAL Y")
     return GUI_CMD_GIMBALL_Y;
-  else if (fieldName == "IGNITION")
-    return GUI_CMD_IGNITION;
-  else if (fieldName == "PRESSURIZE")
-    return GUI_CMD_PRESSURIZE;
   else if (fieldName == "ARM")
     return GUI_CMD_ARM;
   else if (fieldName == "LAUNCH")

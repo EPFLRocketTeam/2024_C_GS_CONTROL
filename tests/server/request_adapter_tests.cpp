@@ -7,9 +7,9 @@
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 TEST(RequestAdapterTest, FirehornProtocol) {
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_CALIBRATE).order_id, AV_CMD_CALIBRATE);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_PRESSURIZE).order_id, AV_CMD_CALIBRATE);
+    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_LAUNCH).order_id, AV_CMD_LAUNCH);
+    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_LAUNCH_OVERRIDE).order_id, AV_CMD_LAUNCH_OVERRIDE);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_RECOVER).order_id, AV_CMD_RECOVER);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_IGNITION).order_id, AV_CMD_IGNITION);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_ARM).order_id, AV_CMD_ARM);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_ABORT).order_id, AV_CMD_ABORT);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::VENT_LOX).order_id, AV_CMD_VENT_LOX);
@@ -24,7 +24,7 @@ TEST(RequestAdapterTest, FirehornProtocol) {
 TEST(RequestAdapterTest, IcarusProtocol) {
     EXPECT_EQ(getOrderIdFromGui(GUI_CMD_DISCONNECT).order_id, CMD_ID::GSE_CMD_DISCONNECT);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_CALIBRATE).order_id, CMD_ID::HOPPER_CMD_CALIBRATE);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_PRESSURIZE).order_id, CMD_ID::HOPPER_CMD_PRESSURIZE);
+    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_LAUNCH).order_id, CMD_ID::HOPPER_CMD_PRESSURIZE);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_LAUNCH).order_id, CMD_ID::HOPPER_CMD_LAUNCH);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_ARM).order_id, CMD_ID::HOPPER_CMD_ARM);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_ABORT).order_id, CMD_ID::HOPPER_CMD_ABORT);

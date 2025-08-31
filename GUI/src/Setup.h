@@ -239,9 +239,7 @@ inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {
      GUI_CMD_ARM},
     {
-     GUI_CMD_PRESSURIZE, GUI_CMD_BYPASS_DPR},
-    {
-     GUI_CMD_IGNITION},
+     GUI_CMD_LAUNCH, GUI_CMD_LAUNCH_OVERRIDE},
     {
      GUI_CMD_ABORT},
 };
