@@ -85,7 +85,6 @@ enum GUI_FIELD {
   CMD_3,
   GUI_CMD_SET_SERIAL_STATUS,
   GUI_CMD_CALIBRATE,
-  GUI_CMD_LAUNCH_OVERRIDE,
   GUI_CMD_GSE_IDLE,
   GUI_CMD_GSE_CALIBRATE,
   GUI_CMD_RECOVER,
@@ -442,9 +441,6 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case GUI_CMD_CALIBRATE:
     name = "CALIBRATE";
-    break;
-  case GUI_CMD_LAUNCH_OVERRIDE:
-    name = "OVERRIDE";
     break;
   case GUI_CMD_GIMBALL_X:
     name = "CMD GIMBAL X";
@@ -820,8 +816,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GSE_IDLE;
   else if (fieldName == "GSE CALIBRATE")
     return GUI_CMD_GSE_CALIBRATE;
-  else if (fieldName == "OVERRIDE")
-    return GUI_CMD_LAUNCH_OVERRIDE;
   else if (fieldName == "GSE ARM")
     return GUI_CMD_GSE_ARM;
   else if (fieldName == "GSE PASSIVATE")

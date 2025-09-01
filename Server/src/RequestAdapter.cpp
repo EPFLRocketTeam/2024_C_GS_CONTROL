@@ -535,9 +535,6 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GUI_CMD_LAUNCH:
     return {AV_CMD_LAUNCH, GSC_CMD};
 
-  case GUI_FIELD::GUI_CMD_LAUNCH_OVERRIDE:
-    return {AV_CMD_LAUNCH_OVERRIDE, GSC_CMD};
-
   case GUI_FIELD::GUI_CMD_RECOVER:
     return {AV_CMD_RECOVER, GSC_CMD};
 

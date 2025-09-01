@@ -239,7 +239,7 @@ inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {
      GUI_CMD_ARM},
     {
-     GUI_CMD_LAUNCH, GUI_CMD_LAUNCH_OVERRIDE},
+     GUI_CMD_LAUNCH},
     {
      GUI_CMD_ABORT},
 };
@@ -372,9 +372,9 @@ inline QFrame *gseMiddlePlaceholder;
 /*inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";*/
 /*inline QString disconnectedBackgroundImage =*/
 /*    ":/images/prop_firehorn_disconnect.svg";*/
-inline QString connectedBackgroundImage = ":/images/prop_firehorn_V3.svg";
+inline QString connectedBackgroundImage = ":/images/prop_firehorn_V4.svg";
 inline QString disconnectedBackgroundImage =
-    ":/images/prop_firehorn_V3.svg";
+    ":/images/prop_firehorn_V4.svg";
 
 
 inline void init_views() {
