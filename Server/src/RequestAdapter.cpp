@@ -296,9 +296,27 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj["ABORT"] = "ABORT";
     break;
   }
+  case CAPSULE_ID::GSC_INTERNAL_UPLINK:
+	case CAPSULE_ID::GSC_INTERNAL_VEHICLE_DOWNLINK:
+	case CAPSULE_ID::GSC_INTERNAL_GSE_DOWNLINK: {
+    gsc_internal_t internalData;
+    memcpy(&internalData, data, gsc_internal_size);
+    _logger.info("PROCESSING INTERNAL", QString(R"(
+      Capsule ID: %1,
+      RSSI: %2,
+      SNR: %3,
+    )")
+    .arg(packetId)
+    .arg(internalData.rssi)
+    .arg(internalData.snr)
+    .toStdString());
+    return std::nullopt;
+  }
+
   default:
     return std::nullopt;
   }
+
   return jsonObj;
 }
 
@@ -483,8 +501,6 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   }
 }
 #endif
-
-
 
 void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
   // uint8_t fields - cast to unsigned int

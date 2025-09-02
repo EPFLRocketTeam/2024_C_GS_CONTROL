@@ -44,8 +44,7 @@ Server::Server(QObject *parent)
           &Server::receiveUnsubscribe);
   connect(&requestHandler, &RequestHandler::get, this, &Server::receiveGet);
   connect(&requestHandler, &RequestHandler::post, this, &Server::receivePost);
-  connect(serialPort, &QSerialPort::readyRead, this,
-          &Server::receiveSerialData);
+  connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
   connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
   setup_db();
 
@@ -423,6 +422,7 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn,
                                 uint32_t len) {
   std::optional<QJsonObject> result =
       process_packet(packetId, dataIn, len, sqlDatabase);
+
   if (result && result->contains("ABORT")) {
     abort_loop();
   } else if (result) {
