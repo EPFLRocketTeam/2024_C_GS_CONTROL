@@ -33,5 +33,7 @@
 	<file>images/gse_plumbing.svg</file>
 	<file>images/prop_firehorn_V2.svg</file>
 	<file>images/prop_firehorn_V3.svg</file>
+    <file>images/prop_firehorn_V4.svg</file>
+
     </qresource>
 </RCC>
