@@ -166,8 +166,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number((engine_states & ENGINE_STATE_MAIN_FUEL) > 0 ? 1 : 0);
 
     jsonObj[QString::number(GUI_FIELD::AV_STATE)] =
-        QString::number(static_cast<int>(dataAv.av_state));
-        //QString(R"%1").arg()toStdString();
+        fieldUtil::avStateToName(dataAv.av_state);
     jsonObj[QString::number(GUI_FIELD::CAM_REC)] =
         QString::number(static_cast<int>(dataAv.cam_rec));
     QJsonObject engineStateObj;
