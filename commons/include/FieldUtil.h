@@ -920,6 +920,55 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return UNKNOWN;
 }
 
+inline QString avStateToName(const uint8_t state){
+  QString name;
+
+    switch (state)
+    {
+    case 0:
+      name = "INIT";
+      break;
+    case 1:
+      name = "CALIBRATION";
+      break;
+    case 2:
+      name = "FILLING";
+      break;
+    case 3:
+      name = "ARM";
+      break; 
+    case 4:
+      name = "PRESSURIZATION";
+      break;
+    case 5:
+      name = "AoG";
+      break;
+    case 6:
+      name = "IGNITION";
+      break;
+    case 7:
+      name = "BURN";
+      break;
+    case 8:
+      name = "ASCENT";
+      break;
+    case 9:
+      name = "LANDED";
+      break;
+    case 10:
+      name = "DESCENT";
+      break;
+    case 11:
+      name = "AiF";
+      break;         
+    default:
+      name = "Unknown"; 
+      break;
+    }
+
+  return name;
+}
+
 } // namespace fieldUtil
 
 #endif /* ENUM_GUI_FIELD_UTIL */

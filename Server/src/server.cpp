@@ -489,7 +489,7 @@ void Server::simulateJsonData() {
   std::uniform_real_distribution<float> distLevel(0.0f, 100.0f);
   std::uniform_int_distribution<int> distTemp(-50, 150);
   std::uniform_real_distribution<float> distVoltage(0.0f, 50.0f);
-  std::uniform_int_distribution<int> distState(0, 255);
+  std::uniform_int_distribution<int> distState(0, 12);
 
 #ifdef RF_PROTOCOL_FIREHORN
   av_downlink_unpacked_t packet;
