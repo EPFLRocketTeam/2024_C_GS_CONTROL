@@ -126,6 +126,7 @@ void Server::openSerialPort() {
 #endif
 
   if (foundPort) {
+    serialPort->clearError();
     _serverLogger.info(
         "SerialActions",
         QString("Serial port open on %1").arg(serial_port_name).toStdString());
@@ -144,6 +145,11 @@ void Server::receiveSerialData() {
 
 void Server::serialError() {
   _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
+
+  if (serialPort->error() == QSerialPort::UnknownError) {
+      serialPort->close();
+    _serverLogger.error("Serial Unkown Error", "Serial port closed due to error.");
+  }
 }
 
 void Server::incomingConnection(qintptr socketDescriptor) {

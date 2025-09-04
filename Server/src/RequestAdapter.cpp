@@ -312,6 +312,25 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     .toStdString());
     return std::nullopt;
   }
+  case CAPSULE_ID::GSC_INTERNAL_ERR_UPLINK:
+	case CAPSULE_ID::GSC_INTERNAL_ERR_VEHICLE_DOWNLINK:
+	case CAPSULE_ID::GSC_INTERNAL_ERR_GSE_DOWNLINK: {
+    gsc_internal_error_t errorData;
+    memcpy(&errorData, data, gsc_internal_error_size);
+    _logger.info("PROCESSING INTERNAL ERROR", QString(R"(
+      Capsule ID: %1,
+      [ERROR] Tx Failed: %2,
+      [ERROR] Rx Not a downlink packet: %2,
+      [ERROR] Rx Buffer overflow: %3,
+    )")
+    .arg(packetId)
+    .arg((errorData.error & (1 << 0)) > 0)
+    .arg((errorData.error & (1 << 1)) > 0)
+    .arg((errorData.error & (1 << 2)) > 0)
+
+    .toStdString());
+    return std::nullopt;
+  }
 
   default:
     return std::nullopt;
