@@ -438,7 +438,7 @@ const int serverPort = 12345;
 } // namespace network
 // ----------------------------- Colour ----------------------------------------
 namespace col {
-inline QString backgroundColorCode = "#161A36";
+inline QString backgroundColorCode = "#1d1e29";
 inline QString primary = "#FFFFFF";
 inline QString secondary = "#BDB979";
 inline QString accent = "#F5251A";
@@ -454,10 +454,10 @@ inline QString defaultCardStyle(QString id) {
         background: qradialgradient(cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 %1, stop:0.95 %2);
         border-radius: 10%;
         border-width: 2px;
-        border-color: #B8C196;
+        border-color: #FFFFFF;
         }
         #child {
-            color: #B8C196;
+            color: #FFFFFF;
             background: transparent;
         }
         )")
