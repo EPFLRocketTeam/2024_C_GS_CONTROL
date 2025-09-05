@@ -439,7 +439,7 @@ const int serverPort = 12345;
 // ----------------------------- Colour ----------------------------------------
 namespace col {
 inline QString backgroundColorCode = "#161A36";
-inline QString primary = "#B8C196";
+inline QString primary = "#FFFFFF";
 inline QString secondary = "#BDB979";
 inline QString accent = "#F5251A";
 inline QString complementary = "#457069";

@@ -110,44 +110,45 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataAv.packet_nbr));
     jsonObj[QString::number(GUI_FIELD::AV_TIMER)] = QString("1");
     jsonObj[QString::number(GUI_FIELD::GNSS_LON)] =
-        QString::number(static_cast<double>(dataAv.gnss_lon));
+        QString::number(static_cast<double>(dataAv.gnss_lon)) + " [°]";
     jsonObj[QString::number(GUI_FIELD::GNSS_LAT)] =
-        QString::number(static_cast<double>(dataAv.gnss_lat));
+        QString::number(static_cast<double>(dataAv.gnss_lat)) + " [°]";
     jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] =
-        QString::number(static_cast<double>(dataAv.gnss_alt));
+        QString::number(static_cast<double>(dataAv.gnss_alt)) + " [m]";
     jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] =
-        QString::number(static_cast<int>(dataAv.gnss_vertical_speed));
+        QString::number(static_cast<int>(dataAv.gnss_vertical_speed)) + " [m/s]";
     jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] =
-        QString::number(static_cast<double>(dataAv.N2_pressure));
+        QString::number(static_cast<double>(dataAv.N2_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] =
-        QString::number(static_cast<double>(dataAv.fuel_pressure));
+        QString::number(static_cast<double>(dataAv.fuel_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] =
-        QString::number(static_cast<double>(dataAv.LOX_pressure));
+        QString::number(static_cast<double>(dataAv.LOX_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::LOX_INJ_PRESSURE)] =
-        QString::number(static_cast<double>(dataAv.LOX_inj_pressure));
+        QString::number(static_cast<double>(dataAv.LOX_inj_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::FUEL_INJ_PRESSURE)] =
-        QString::number(static_cast<double>(dataAv.fuel_inj_pressure));
+        QString::number(static_cast<double>(dataAv.fuel_inj_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] =
-        QString::number(static_cast<double>(dataAv.chamber_pressure));
+        QString::number(static_cast<double>(dataAv.chamber_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::N2_TEMP)] =
-        QString::number(static_cast<int>(dataAv.N2_temp));
+        QString::number(static_cast<int>(dataAv.N2_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
-        QString::number(static_cast<int>(dataAv.LOX_temp));
+        QString::number(static_cast<int>(dataAv.LOX_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_INJ_TEMP)] =
-        QString::number(static_cast<int>(dataAv.LOX_inj_temp));
+        QString::number(static_cast<int>(dataAv.LOX_inj_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] =
-        QString::number(static_cast<double>(dataAv.lpb_voltage));
+        QString::number(static_cast<double>(dataAv.lpb_voltage)) + " [V]";
     jsonObj[QString::number(GUI_FIELD::HPB_VOLTAGE)] =
-        QString::number(static_cast<double>(dataAv.hpb_voltage));
+        QString::number(static_cast<double>(dataAv.hpb_voltage)) + " [V]";
     jsonObj[QString::number(GUI_FIELD::LPB_CURRENT)] =
-        QString::number(static_cast<double>(dataAv.lpb_current));
+        QString::number(static_cast<double>(dataAv.lpb_current)) + " [A]";
     jsonObj[QString::number(GUI_FIELD::HPB_CURRENT)] =
-        QString::number(static_cast<double>(dataAv.hpb_current));
+        QString::number(static_cast<double>(dataAv.hpb_current)) + " [A]";
 
     jsonObj[QString::number(GUI_FIELD::AV_FC_TEMP)] =
-        QString::number(static_cast<int>(dataAv.av_fc_temp));
+        QString::number(static_cast<int>(dataAv.av_fc_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::AMBIENT_TEMP)] =
-        QString::number(static_cast<int>(dataAv.ambient_temp));
+        QString::number(static_cast<int>(dataAv.ambient_temp)) + " [°C]";
+
 
     int engine_states = static_cast<int>(dataAv.engine_state);
     jsonObj[QString::number(GUI_FIELD::VENT_N2)] =
