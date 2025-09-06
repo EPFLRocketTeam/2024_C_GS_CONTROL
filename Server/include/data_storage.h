@@ -32,13 +32,13 @@ struct AV_downlink_pkt {
   int16_t gnss_vertical_speed;
   uint16_t N2_pressure;
   uint8_t N2_temp;
-  uint8_t fuel_pressure;
-  uint8_t LOX_pressure;
+  float fuel_pressure;
+  float LOX_pressure;
   int16_t LOX_temp;
-  uint8_t LOX_inj_pressure;
+  float LOX_inj_pressure;
   int32_t LOX_inj_temp;
-  uint8_t fuel_inj_pressure;
-  uint16_t chamber_pressure;
+  float fuel_inj_pressure;
+  float chamber_pressure;
   uint8_t engine_state;
   float lpb_voltage;
   float lpb_current;
