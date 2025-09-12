@@ -34,6 +34,18 @@ MainWindow::MainWindow(
 
   QVBoxLayout *centralLayout = new QVBoxLayout(centralWidget);
 
+  // Initialize launch timer
+  launchTimerLabel = new QLabel("", this);
+  launchTimerLabel->setAlignment(Qt::AlignCenter);
+  launchTimerLabel->setStyleSheet("QLabel { font-size: 24px; font-weight: bold; color: red; background: transparent; }");
+  launchTimerLabel->setVisible(false); // Initially hidden
+  launchTimer = new QTimer(this);
+  launchTimerValue = 0.0;
+  connect(launchTimer, &QTimer::timeout, this, &MainWindow::updateLaunchTimer);
+
+  // Add launch timer to top of layout
+  centralLayout->addWidget(launchTimerLabel, 0, Qt::AlignCenter);
+
   pannelSection = new ControlPannelView(this, controlPannelMap);
   leftSection = leftWidget;
   middleSection = middleWidget;
@@ -146,4 +158,20 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 void MainWindow::replacePannelButton() {
   // QPoint p = QWidget::mapTo(this, QPoint(width()/2-pannelButton->width()/2,
   // height()-pannelButton->height())); pannelButton->move(p);
+}
+
+void MainWindow::startLaunchTimer() {
+  launchTimerValue = LAUNCH_DELAY; // Start at -20.0
+  launchTimerLabel->setVisible(true);
+  updateLaunchTimer(); // Update display immediately
+  launchTimer->start(100); // Update every 100ms (0.1 seconds)
+}
+
+void MainWindow::updateLaunchTimer() {
+  // Format the timer value with one decimal place
+  QString timeText = QString::number(launchTimerValue, 'f', 1);
+  launchTimerLabel->setText(QString("T: %1 %2s").arg(launchTimerValue >= 0 ? "+" : "").arg(timeText));
+  
+  // Increment by 0.1 seconds
+  launchTimerValue += 0.1;
 }

@@ -12,8 +12,10 @@
 
 #include <QFrame>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -38,8 +40,13 @@ public:
 
   inline static std::unique_ptr<ClientManager> clientManager;
 
+  void startLaunchTimer();
+
 protected:
   void resizeEvent(QResizeEvent *event) override;
+
+private slots:
+  void updateLaunchTimer();
 
 private:
   void replacePannelButton();
@@ -53,6 +60,11 @@ private:
   DraggableButton *pannelButton;
   ControlPannelView *pannelSection;
   QHBoxLayout *createSectionsLayout();
+
+  // Launch timer components
+  QLabel *launchTimerLabel;
+  QTimer *launchTimer;
+  double launchTimerValue;
 };
 
 #endif /* MAINWINDOW_H */

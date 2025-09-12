@@ -39,6 +39,9 @@ using RightView = GSManagerView;
 // CHange the debug level to show the debug messages
 #define DEBUG_LOG true
 
+// Launch timer configuration
+constexpr double LAUNCH_DELAY = -20.0; // seconds
+
 // <---------- DO NOT CHANGE ---------->
 #ifdef ICARUS_GUI
 namespace ui_elements {

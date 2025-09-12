@@ -237,6 +237,18 @@ void ControlPannelView::createPushButtonLayouts(
         if (showConfirmDialog(this, "Confirm Action",
         QString("Are you sure you want to execute '%1'?").arg(button->text())) 
         == QMessageBox::Yes) {
+          // Check if this is the LAUNCH command and start the timer
+          if (button->text() == "LAUNCH") {
+            // Get the main window and start the launch timer
+            QWidget *mainWindow = this;
+            while (mainWindow->parentWidget()) {
+              mainWindow = mainWindow->parentWidget();
+            }
+            if (MainWindow *mw = qobject_cast<MainWindow*>(mainWindow)) {
+              mw->startLaunchTimer();
+            }
+          }
+          
           // Proceed with request
           RequestBuilder b;
           b.setHeader(RequestType::POST);
