@@ -15,6 +15,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QTime>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -47,6 +48,7 @@ protected:
 
 private slots:
   void updateLaunchTimer();
+  void updateGscTimer();
 
 private:
   void replacePannelButton();
@@ -65,6 +67,11 @@ private:
   QLabel *launchTimerLabel;
   QTimer *launchTimer;
   double launchTimerValue;
+
+  // GSC timer components
+  QLabel *gscTimerLabel;
+  QTimer *gscTimer;
+  QTime gscStartTime;
 };
 
 #endif /* MAINWINDOW_H */

@@ -43,8 +43,23 @@ MainWindow::MainWindow(
   launchTimerValue = 0.0;
   connect(launchTimer, &QTimer::timeout, this, &MainWindow::updateLaunchTimer);
 
-  // Add launch timer to top of layout
-  centralLayout->addWidget(launchTimerLabel, 0, Qt::AlignCenter);
+  // Initialize GSC timer
+  gscTimerLabel = new QLabel("GSC: 00:00:00", this);
+  gscTimerLabel->setAlignment(Qt::AlignLeft);
+  gscTimerLabel->setStyleSheet("QLabel { font-size: 14px; font-weight: normal; color: #FFFFFF; background: transparent; }");
+  gscTimer = new QTimer(this);
+  gscStartTime = QTime::currentTime();
+  connect(gscTimer, &QTimer::timeout, this, &MainWindow::updateGscTimer);
+  gscTimer->start(1000); // Update every second
+
+  // Create top layout with GSC timer on left and launch timer in center
+  QHBoxLayout *topLayout = new QHBoxLayout();
+  topLayout->addWidget(gscTimerLabel, 0, Qt::AlignLeft);
+  topLayout->addStretch(1);
+  topLayout->addWidget(launchTimerLabel, 0, Qt::AlignCenter);
+  topLayout->addStretch(1);
+  
+  centralLayout->addLayout(topLayout);
 
   pannelSection = new ControlPannelView(this, controlPannelMap);
   leftSection = leftWidget;
@@ -170,8 +185,27 @@ void MainWindow::startLaunchTimer() {
 void MainWindow::updateLaunchTimer() {
   // Format the timer value with one decimal place
   QString timeText = QString::number(launchTimerValue, 'f', 1);
-  launchTimerLabel->setText(QString("T: %1 %2s").arg(launchTimerValue >= 0 ? "+" : "").arg(timeText));
+  launchTimerLabel->setText(QString("T  %1 %2s").arg(launchTimerValue >= 0 ? "+" : " ").arg(timeText));
   
   // Increment by 0.1 seconds
   launchTimerValue += 0.1;
+}
+
+void MainWindow::updateGscTimer() {
+  // Calculate elapsed time since GSC start
+  QTime currentTime = QTime::currentTime();
+  int elapsedSeconds = gscStartTime.secsTo(currentTime);
+  
+  // Convert to hours:minutes:seconds
+  int hours = elapsedSeconds / 3600;
+  int minutes = (elapsedSeconds % 3600) / 60;
+  int seconds = elapsedSeconds % 60;
+  
+  // Format as hh:mm:ss
+  QString timeText = QString("GSC: %1:%2:%3")
+                     .arg(hours, 2, 10, QChar('0'))
+                     .arg(minutes, 2, 10, QChar('0'))
+                     .arg(seconds, 2, 10, QChar('0'));
+  
+  gscTimerLabel->setText(timeText);
 }
