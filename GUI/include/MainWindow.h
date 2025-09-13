@@ -70,6 +70,7 @@ private:
   QTimer *launchTimer;
   double launchTimerValue;
   int launchInitiated;
+  int launchTimerStarted;
 
   // GSC timer components
   QLabel *gscTimerLabel;

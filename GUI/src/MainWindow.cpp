@@ -185,7 +185,7 @@ void MainWindow::replacePannelButton() {
 
 void MainWindow::UpdateLaunchTimerState(const QString &av_state) {
   if (av_state == "PRESSURIZATION"){
-    if (launchInitiated) {
+    if (launchInitiated && !launchTimer->isActive()) {
         startLaunchTimer();
       }
   } else if (av_state == "AoG") {
@@ -194,7 +194,6 @@ void MainWindow::UpdateLaunchTimerState(const QString &av_state) {
   } else if (av_state == "INIT") {
     launchTimer->stop();
     launchTimerLabel->setVisible(false);
-    launchInitiated = false;
   }
 }
 
