@@ -41,7 +41,7 @@ public:
 
   inline static std::unique_ptr<ClientManager> clientManager;
 
-  void startLaunchTimer();
+  void initiateLaunchTimer();
 
 protected:
   void resizeEvent(QResizeEvent *event) override;
@@ -53,6 +53,8 @@ private slots:
 private:
   void replacePannelButton();
   void buttonGrabbed(QEvent *event);
+  void UpdateLaunchTimerState(const QString& av_state);
+  void startLaunchTimer();
 
   QWidget *leftSection;
   QWidget *middleSection;
@@ -67,6 +69,7 @@ private:
   QLabel *launchTimerLabel;
   QTimer *launchTimer;
   double launchTimerValue;
+  int launchInitiated;
 
   // GSC timer components
   QLabel *gscTimerLabel;
