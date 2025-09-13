@@ -245,7 +245,7 @@ void ControlPannelView::createPushButtonLayouts(
               mainWindow = mainWindow->parentWidget();
             }
             if (MainWindow *mw = qobject_cast<MainWindow*>(mainWindow)) {
-              mw->startLaunchTimer();
+              mw->initiateLaunchTimer();
             }
           }
           
@@ -365,7 +365,6 @@ void ControlPannelView::resizeWidget() {
       QWidget::mapTo(this, QPoint(width() / 2 - expandButton->width() / 2, 0));
 
   controlContainerWidget->setFixedWidth(newWidth);
-  _logger.debug("ControlPannelView", "Resize event detected");
   // controlContainerWidget->move(0, expandButton->height());
 }
 
