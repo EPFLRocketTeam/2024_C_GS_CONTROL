@@ -321,8 +321,8 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     _logger.info("PROCESSING INTERNAL ERROR", QString(R"(
       Capsule ID: %1,
       [ERROR] Tx Failed: %2,
-      [ERROR] Rx Not a downlink packet: %2,
-      [ERROR] Rx Buffer overflow: %3,
+      [ERROR] Rx Not a downlink packet: %3,
+      [ERROR] Rx Buffer overflow: %4,
     )")
     .arg(packetId)
     .arg((errorData.error & (1 << 0)) > 0)

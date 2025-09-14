@@ -194,7 +194,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "VE-no";
     break;
   case VENT_N2:
-    name = "DN-nc";
+    name = "VN-NC";
     break;
   case ORDER_ID:
     name = "ORDER ID";
@@ -646,7 +646,7 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return MAIN_FUEL;
   else if (fieldName == "VO-noC")
     return VENT_LOX;
-  else if (fieldName == "DN-nc")
+  else if (fieldName == "VN-NC")
     return VENT_N2;
   else if (fieldName == "VE-no")
     return VENT_FUEL;

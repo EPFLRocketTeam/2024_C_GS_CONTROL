@@ -83,7 +83,7 @@ struct AV_downlink_pkt {
   uint32_t packet_nbr;
   uint16_t N2O_pressure;
   uint16_t ETH_pressure;
-  uint8_t N2O_temp;
+  uint16_t N2O_temp;
   uint8_t N2O_vent;
   uint8_t ETH_vent;
   uint8_t N2_solenoid;

@@ -286,17 +286,17 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::N2_TEMP, 0.66, 0.155},
 
     {GUI_FIELD::LOX_PRESSURE, 0.67, 0.584},
-    {GUI_FIELD::LOX_TEMP, 0.67, 0.665},
+    {GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.665}, //LOX_TEMP donne la température inutile du capteur sensata au dessus du tank. La température utile pour le tank de LOX est enfaite LOX_INJ_TEMP
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.67, 0.79},
-    {GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865},
+    //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865}, 
 
-    {GUI_FIELD::CHAMBER_PRESSURE, 0.67, 0.95},
+    {GUI_FIELD::CHAMBER_PRESSURE, 0.67, 0.897},
 
 
     {GUI_FIELD::FUEL_PRESSURE, 0.325, 0.365},
 
-    {GUI_FIELD::FUEL_INJ_PRESSURE, 0.28, 0.89},
+    {GUI_FIELD::FUEL_INJ_PRESSURE, 0.28, 0.89}, //SVG V5
  
 };
 
@@ -375,9 +375,9 @@ inline QFrame *gseMiddlePlaceholder;
 /*inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";*/
 /*inline QString disconnectedBackgroundImage =*/
 /*    ":/images/prop_firehorn_disconnect.svg";*/
-inline QString connectedBackgroundImage = ":/images/prop_firehorn_V4.svg";
+inline QString connectedBackgroundImage = ":/images/prop_firehorn_V5.svg";
 inline QString disconnectedBackgroundImage =
-    ":/images/prop_firehorn_V4.svg";
+    ":/images/prop_firehorn_V5.svg";
 
 
 inline void init_views() {
