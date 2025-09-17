@@ -89,6 +89,7 @@ enum GUI_FIELD {
   GUI_CMD_GSE_CALIBRATE,
   GUI_CMD_RECOVER,
   GUI_CMD_ARM,
+  GUI_CMD_PRESSURIZE,
   GUI_CMD_GSE_ARM,
   GUI_CMD_GSE_PASSIVATE,
   GUI_CMD_HOPPER_TARE,
@@ -546,6 +547,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_ARM:
     name = "ARM";
     break;
+  case GUI_CMD_PRESSURIZE:
+    name = "PRESSURIZE";
+    break;
   case GUI_CMD_LAUNCH:
     name = "LAUNCH";
     break;
@@ -872,6 +876,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GIMBALL_Y;
   else if (fieldName == "ARM")
     return GUI_CMD_ARM;
+  else if (fieldName == "PRESSURIZE")
+    return GUI_CMD_PRESSURIZE;
   else if (fieldName == "LAUNCH")
     return GUI_CMD_LAUNCH;
   else if (fieldName == "ABORT")

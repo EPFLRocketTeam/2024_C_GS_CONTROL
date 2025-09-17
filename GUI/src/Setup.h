@@ -240,7 +240,7 @@ inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {
      GUI_CMD_CALIBRATE, GUI_CMD_RECOVER},
     {
-     GUI_CMD_ARM},
+     GUI_CMD_ARM, GUI_CMD_PRESSURIZE},
     {
      GUI_CMD_LAUNCH},
     {
