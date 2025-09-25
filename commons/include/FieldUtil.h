@@ -53,13 +53,14 @@ enum GUI_FIELD {
   GSE_GQN_NC3,
   GSE_GQN_NC4,
   GSE_GQN_NC5,
-  GSE_GPN_NC1,
-  GSE_GPN_NC2,
+  GSE_GPN_NC,
+  GSE_GPA_NC,
   GSE_GVN_NC,
   GSE_GFE_NC,
   GSE_GFO_NCC,
   GSE_GDO_NCC,
   GSE_PC_OLC,
+  GSE_PUMP,
   GSE_GP1,
   GSE_GP2,
   GSE_GP3,
@@ -584,12 +585,12 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "GQN 5";
     break;
 
-  case GSE_GPN_NC1:
-    name = "GPN 1";
+  case GSE_GPN_NC:
+    name = "GPN";
     break;
 
-  case GSE_GPN_NC2:
-    name = "GPN 2";
+  case GSE_GPA_NC:
+    name = "GPA";
     break;
 
   case GSE_GVN_NC:
@@ -610,6 +611,10 @@ inline QString enumToFieldName(GUI_FIELD field) {
 
   case GSE_PC_OLC:
     name = "PC OLC";
+    break;
+
+  case GSE_PUMP:
+    name = "GSE PUMP";
     break;
 
   case GSE_GP1:
@@ -898,10 +903,10 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GSE_GQN_NC4;
   else if (fieldName == "GSE GQN 5")
     return GSE_GQN_NC5;
-  else if (fieldName == "GSE GPN 1")
-    return GSE_GPN_NC1;
-  else if (fieldName == "GSE GPN 2")
-    return GSE_GPN_NC2;
+  else if (fieldName == "GSE GPN")
+    return GSE_GPN_NC;
+  else if (fieldName == "GSE GPN")
+    return GSE_GPA_NC;
   else if (fieldName == "GSE GVN")
     return GSE_GVN_NC;
   else if (fieldName == "GSE GFE")
@@ -912,6 +917,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GSE_GDO_NCC;
   else if (fieldName == "GSE PC OLC")
     return GSE_PC_OLC;
+  else if (fieldName == "GSE PUMP")
+    return GSE_PUMP;
   else if (fieldName == "GSE GP1")
     return GSE_GP1;
   else if (fieldName == "GSE GP2")

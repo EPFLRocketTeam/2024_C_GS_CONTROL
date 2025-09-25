@@ -91,8 +91,8 @@ inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
 
 inline QList<std::vector<GUI_FIELD>> gseValvesMap{
     {
-     GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC1,
-      GSE_GPN_NC2, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC,
+     GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC,
+      GSE_GPA_NC, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC,
       GSE_PC_OLC}};
 
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
@@ -125,12 +125,16 @@ inline std::vector<ValveInfo> gseValves = {
     {GUI_FIELD::GSE_GFE_NC,
      {0.7, 0.382},
      ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_PUMP,
+     {0.575, 0.382},
+     ValveButton::Orientation::Horizontal},
+
 
     // N2 quadrant
-    {GUI_FIELD::GSE_GPN_NC1,
+    {GUI_FIELD::GSE_GPN_NC,
      {0.15, 0.58},
      ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GPN_NC2,
+    {GUI_FIELD::GSE_GPA_NC,
      {0.15, 0.7},
      ValveButton::Orientation::Horizontal},
     {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal},
@@ -251,8 +255,8 @@ inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
 
 inline QList<std::vector<GUI_FIELD>> gseValvesMap{
     {
-     GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC1,
-      GSE_GPN_NC2, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC,
+     GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC,
+      GSE_GPA_NC, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC,
       GSE_PC_OLC}};
 
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
@@ -313,12 +317,16 @@ inline std::vector<ValveInfo> gseValves = {
     {GUI_FIELD::GSE_GFE_NC,
      {0.7, 0.382},
      ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_PUMP,
+     {0.575, 0.382},
+     ValveButton::Orientation::Horizontal},
+
 
     // N2 quadrant
-    {GUI_FIELD::GSE_GPN_NC1,
+    {GUI_FIELD::GSE_GPN_NC,
      {0.15, 0.58},
      ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GPN_NC2,
+    {GUI_FIELD::GSE_GPA_NC,
      {0.15, 0.7},
      ValveButton::Orientation::Horizontal},
     {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal},

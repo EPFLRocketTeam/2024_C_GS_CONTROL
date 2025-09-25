@@ -1,7 +1,6 @@
 #include "RequestAdapter.h"
 #include "FieldUtil.h"
 #include "Log.h"
-#include "Protocol.h"
 #include "ServerSetup.h"
 #include "packet_helper.h"
 #include <cstdint>
@@ -10,6 +9,18 @@
 #include <ostream>
 #include <qjsonobject.h>
 #include <stdexcept>
+#ifdef RF_PROTOCOL_FIREHORN
+#include "PacketDefinition_Firehorn.h"
+#include "ParameterDefinition_Firehorn.h"
+#include "DownlinkCompression_Firehorn.h"
+#endif /* RF_PROTOCOL_FIREHORN */
+
+#ifdef RF_PROTOCOL_ICARUS
+#include "PacketDefinition_Icarus.h"
+#include "ParameterDefinition_Icarus.h"
+#endif /* RF_PROTOCOL_ICARUS */
+
+
 
 static ModuleLog _logger = ModuleLog("RequestAdapter");
 
@@ -467,53 +478,57 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {CMD_ID::HOPPER_CMD_ID_CONFIG, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GSE_IDLE:
-    return {GSE_CMD_IDLE, GSE_TELEMETRY};
+    return {CMD_ID::GSE_CMD_IDLE, GSE_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GSE_CALIBRATE:
-    return {GSE_CMD_CALIBRATE, GSE_TELEMETRY};
+    return {CMD_ID::GSE_CMD_CALIBRATE, GSE_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GSE_ARM:
-    return {GSE_CMD_ARM, GSE_TELEMETRY};
+    return {CMD_ID::GSE_CMD_ARM, GSE_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GSE_PASSIVATE:
-
     return {GSE_CMD_PASSIVATE, GSE_TELEMETRY};
 
+
+
   case GUI_FIELD::GSE_GQN_NC1:
-    return {GSE_CMD_TOGGLE_11, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN1, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC2:
-    return {GSE_CMD_TOGGLE_12, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN2, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC3:
-    return {GSE_CMD_TOGGLE_13, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN3, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC4:
-    return {GSE_CMD_TOGGLE_14, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN4, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC5:
-    return {GSE_CMD_TOGGLE_15, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN5, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GPN_NC1:
-    return {GSE_CMD_TOGGLE_16, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GPN_NC:
+    return {GSE_CMD_TOGGLE_GPN, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GPN_NC2:
-    return {GSE_CMD_TOGGLE_21, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GPA_NC:
+    return {GSE_CMD_TOGGLE_GPA, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GVN_NC:
-    return {GSE_CMD_TOGGLE_22, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GVN, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GFE_NC:
-    return {GSE_CMD_TOGGLE_23, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GFE, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GFO_NCC:
-    return {GSE_CMD_TOGGLE_24, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GFO, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GDO_NCC:
-    return {GSE_CMD_TOGGLE_25, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GDO, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_PC_OLC:
-    return {GSE_CMD_TOGGLE_27, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_PUMP:
+    return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");
@@ -534,9 +549,9 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
       QString::number(static_cast<unsigned int>(dataGse->GQN_NC4));
   jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC5)] =
       QString::number(static_cast<unsigned int>(dataGse->GQN_NC5));
-  jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC1)] =
+  jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC)] =
       QString::number(static_cast<unsigned int>(dataGse->GPN_NC1));
-  jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC2)] =
+  jsonObj[QString::number(GUI_FIELD::GSE_GPA_NC)] =
       QString::number(static_cast<unsigned int>(dataGse->GPN_NC2));
   jsonObj[QString::number(GUI_FIELD::GSE_GVN_NC)] =
       QString::number(static_cast<unsigned int>(dataGse->GVN_NC));
@@ -617,40 +632,44 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {GSE_CMD_PASSIVATE, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC1:
-    return {GSE_CMD_TOGGLE_11, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN1, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC2:
-    return {GSE_CMD_TOGGLE_12, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN2, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC3:
-    return {GSE_CMD_TOGGLE_13, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN3, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC4:
-    return {GSE_CMD_TOGGLE_14, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN4, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQN_NC5:
-    return {GSE_CMD_TOGGLE_15, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQN5, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GPN_NC1:
-    return {GSE_CMD_TOGGLE_16, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GPN_NC:
+    return {GSE_CMD_TOGGLE_GPN, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GPN_NC2:
-    return {GSE_CMD_TOGGLE_21, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GPA_NC:
+    return {GSE_CMD_TOGGLE_GPA, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GVN_NC:
-    return {GSE_CMD_TOGGLE_22, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GVN, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GFE_NC:
-    return {GSE_CMD_TOGGLE_23, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GFE, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GFO_NCC:
-    return {GSE_CMD_TOGGLE_24, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GFO, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GDO_NCC:
-    return {GSE_CMD_TOGGLE_25, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GDO, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_PC_OLC:
-    return {GSE_CMD_TOGGLE_27, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_PUMP:
+    return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
+
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");

@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <qsvgrenderer.h>
 #include <QMessageBox>
+#include <qtmetamacros.h>
 
 class ValveButton : public QLabel {
   Q_OBJECT
@@ -47,6 +48,15 @@ private:
                                               const QString &text);
 
   QSvgRenderer *m_rOpen, *m_rClose, *m_rUnknown;
+};
+
+
+class PumpButton : public ValveButton {
+    Q_OBJECT
+
+public:
+    explicit PumpButton(GUI_FIELD field, Orientation orientation = Horizontal,
+                       QWidget *parent = nullptr);
 };
 
 #endif // VALVEBUTTON_H
