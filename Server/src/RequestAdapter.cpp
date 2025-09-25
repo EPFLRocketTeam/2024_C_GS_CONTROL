@@ -670,6 +670,13 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GSE_PUMP:
     return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
 
+  case GUI_FIELD::GUI_CMD_GSE_SERVO1:
+    return {GSE_CMD_SERVO_1, GSE_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_GSE_SERVO2:
+    return {GSE_CMD_SERVO_2, GSE_TELEMETRY};
+
+
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");

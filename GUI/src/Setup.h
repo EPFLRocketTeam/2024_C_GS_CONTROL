@@ -98,7 +98,7 @@ inline QList<std::vector<GUI_FIELD>> gseValvesMap{
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
     {
      GUI_CMD_GSE_IDLE, GUI_CMD_GSE_CALIBRATE, GUI_CMD_GSE_ARM,
-      GUI_CMD_GSE_PASSIVATE}};
+      GUI_CMD_GSE_PASSIVATE, GUI_CMD_GSE_SERVO1, GUI_CMD_GSE_SERVO2}};
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>>
     gseControlMap{{"ValveControlButton", gseValvesMap},
                   {"QPushButton", gsePushButtonMap}};
@@ -262,7 +262,7 @@ inline QList<std::vector<GUI_FIELD>> gseValvesMap{
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
     {
      GUI_CMD_GSE_IDLE, GUI_CMD_GSE_CALIBRATE, GUI_CMD_GSE_ARM,
-      GUI_CMD_GSE_PASSIVATE}};
+      GUI_CMD_GSE_PASSIVATE, GUI_CMD_GSE_SERVO1, GUI_CMD_GSE_SERVO2}};
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>>
     gseControlMap{/*{"ValveControlButton", gseValvesMap},*/
                   {"QPushButton", gsePushButtonMap}};

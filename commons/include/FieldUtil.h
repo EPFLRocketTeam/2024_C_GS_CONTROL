@@ -116,6 +116,8 @@ enum GUI_FIELD {
   GUI_CMD_GIMBALL_Y,
   GUI_CMD_SERVO_1,
   GUI_CMD_SERVO_2,
+  GUI_CMD_GSE_SERVO1,
+  GUI_CMD_GSE_SERVO2,
   GUI_CMD_P_LOX,
   GUI_CMD_P_FUEL,
   GUI_CMD_GSE_TOGGLE_11,
@@ -490,6 +492,14 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "SERVO 2";
     break;
 
+  case GUI_CMD_GSE_SERVO1:
+    name = "GSE SERVO 1";
+    break;
+
+  case GUI_CMD_GSE_SERVO2:
+    name = "GSE SERVO 2";
+    break;
+
   case GUI_CMD_GSE_TOGGLE_11:
     name = "GSE TOGGLE 11";
     break;
@@ -843,6 +853,10 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_HOPPER_HOMING_GIMBAL;
   else if (fieldName == "SERVO 2")
     return GUI_CMD_SERVO_2;
+  else if (fieldName == "GSE SERVO 1")
+    return GUI_CMD_GSE_SERVO1;
+  else if (fieldName == "GSE SERVO 2")
+    return GUI_CMD_GSE_SERVO2;
   else if (fieldName == "GSE TOGGLE 11")
     return GUI_CMD_GSE_TOGGLE_11;
   else if (fieldName == "GSE TOGGLE 12")
