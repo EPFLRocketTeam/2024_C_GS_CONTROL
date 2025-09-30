@@ -18,7 +18,7 @@
 /*#define RF_PROTOCOL_FIREHORN 1*/
 
 // Generate packets every seconds with random data for part of the fields
-#define SIMULATE_PACKETS true
+#define SIMULATE_PACKETS false
 // Change the debug level to show the debug messages
 #define DEBUG_LOG false
 

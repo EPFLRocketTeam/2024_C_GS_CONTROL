@@ -44,52 +44,57 @@ Server::Server(QObject *parent)
           &Server::receiveUnsubscribe);
   connect(&requestHandler, &RequestHandler::get, this, &Server::receiveGet);
   connect(&requestHandler, &RequestHandler::post, this, &Server::receivePost);
-  connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
+  connect(serialPort, &QSerialPort::readyRead, this,
+          &Server::receiveSerialData);
   connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
   setup_db();
-      setupHttpServer();
-
+  setupHttpServer();
 
   openSerialPort();
 }
 
 void Server::setupHttpServer() {
-    // Set up REST endpoints
-    
-    // GET endpoint example
-    httpServer.route("/api/status", QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
+  // Set up REST endpoints
+
+#ifdef RF_PROTOCOL_FIREHORN
+  // GET endpoint example
+  httpServer.route(
+      "/api/location", QHttpServerRequest::Method::Get,
+      [this](const QHttpServerRequest &request) {
         QJsonObject response;
-        response["status"] = "running";
-        response["uptime"] = 12345; // in seconds
-        
-        return QHttpServerResponse(QJsonDocument(response).toJson(), 
-                                  QHttpServerResponse::StatusCode::Ok);
-    });
-    
-    // POST endpoint example
-    httpServer.route("/api/command", QHttpServerRequest::Method::Post, [this](const QHttpServerRequest &request) {
-        QJsonParseError error;
-        QJsonDocument doc = QJsonDocument::fromJson(request.body(), &error);
-        
-        if (error.error != QJsonParseError::NoError) {
-            return QHttpServerResponse("Invalid JSON", 
-                                      QHttpServerResponse::StatusCode::BadRequest);
+        Packet pkt = sqlDatabase->read_last_av();
+        if (!pkt.av_down_pkt) {
+          return QHttpServerResponse("",
+                                     QHttpServerResponse::StatusCode::NotFound);
         }
-        
-        QJsonObject command = doc.object();
-        // Process the command using your existing handleCommand method
-        handleCommand(command);
-        
-        return QHttpServerResponse("Command received", 
-                                  QHttpServerResponse::StatusCode::Accepted);
-    });
-    
-    // Start the HTTP server on a different port
-    httpServer.listen(QHostAddress::Any, 8080);
+        response["latitude"] = pkt.av_down_pkt->gnss_lon;
+        response["longitude"] = pkt.av_down_pkt->gnss_lat;
+        free(pkt.av_down_pkt);
+        return QHttpServerResponse(QJsonDocument(response).toJson(),
+                                   QHttpServerResponse::StatusCode::Ok);
+      });
+
+  // POST endpoint example
+  httpServer.route(
+      "/api/speed", QHttpServerRequest::Method::Get,
+      [this](const QHttpServerRequest &request) {
+        QJsonObject response;
+        Packet pkt = sqlDatabase->read_last_av();
+        if (!pkt.av_down_pkt) {
+          return QHttpServerResponse("",
+                                     QHttpServerResponse::StatusCode::NotFound);
+        }
+
+        response["vspeed"] = pkt.av_down_pkt->gnss_vertical_speed;
+        free(pkt.av_down_pkt);
+        return QHttpServerResponse(QJsonDocument(response).toJson(),
+                                   QHttpServerResponse::StatusCode::Ok);
+      });
+
+  // Start the HTTP server on a different port
+  httpServer.listen(QHostAddress::Any, 8080);
+#endif
 }
-
-
-
 
 int Server::setup_db() {
   sqlDatabase = new SqliteDB();
@@ -187,8 +192,9 @@ void Server::serialError() {
   _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
 
   if (serialPort->error() == QSerialPort::UnknownError) {
-      serialPort->close();
-    _serverLogger.error("Serial Unkown Error", "Serial port closed due to error.");
+    serialPort->close();
+    _serverLogger.error("Serial Unkown Error",
+                        "Serial port closed due to error.");
   }
 }
 

@@ -2,6 +2,7 @@
 #define SQLITEDB_H
 
 #include "../src/ServerSetup.h"
+#include <cstdint>
 #include <sqlite3.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -184,6 +185,7 @@ public:
   int write_pkt(const Packet pkt);
 
   Packet read_pkt(PacketType type, uint32_t pkt_id);
+  Packet read_last_av();
 
   std::vector<AV_uplink_pkt> read_all_avup();
   std::vector<AV_downlink_pkt> read_all_avdw();
@@ -230,6 +232,7 @@ private:
   uint32_t pkt_id_avdw;
 
   uint32_t pkt_id_gsdw;
+  AV_downlink_pkt last_valid_avdw_pkt;
 
   const size_t BATCH_SIZE = 6; // value to be reconsidered
 

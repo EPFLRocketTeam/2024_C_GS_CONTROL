@@ -1,5 +1,6 @@
 #include "../include/data_storage.h"
 #include <chrono>
+#include <cstdint>
 #include <filesystem>
 #include <iostream>
 
@@ -295,6 +296,7 @@ int SqliteDB::write_pkt(const Packet pkt) {
     }
     printf("    place av down pkt in buffer\n");
     buffer_av_down.emplace_back(avDownPkt);
+    last_valid_avdw_pkt = *avDownPkt;
     if (buffer_av_down.size() >= BATCH_SIZE) {
       printf("    av down buffer is full\n");
       flushAvDown();
@@ -318,6 +320,29 @@ int SqliteDB::write_pkt(const Packet pkt) {
   }
   }
   return 0;
+}
+
+Packet SqliteDB::read_last_av() {
+  Packet pkt;
+#ifdef RF_PROTOCOL_FIREHORN
+
+  
+  try {
+    AV_downlink_pkt *content = new AV_downlink_pkt;
+    uint32_t pktId = pkt_id_avdw;
+
+    *content = last_valid_avdw_pkt;
+
+    pkt = Packet{.type = AV_UPLINK,
+                 .av_up_pkt = NULL,
+                 .av_down_pkt = content,
+                 .gse_down_pkt = NULL};
+  } catch (const std::runtime_error &e) {
+    std::cerr << "      trying to read at invalid pkt_id\n"
+              << e.what() << std::endl;
+  }
+#endif
+  return pkt;
 }
 
 Packet SqliteDB::read_pkt(PacketType type, uint32_t pkt_id) {

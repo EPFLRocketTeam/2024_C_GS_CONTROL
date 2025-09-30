@@ -96,32 +96,7 @@ void equal_avdw(av_downlink_unpacked_t *avdw1, av_downlink_unpacked_t *avdw2) {
   EXPECT_EQ(avdw1->N2_temp, avdw2->N2_temp);
   EXPECT_EQ(avdw1->packet_nbr, avdw2->packet_nbr);
 }
-<<<<<<< HEAD
-void equal_gsdw(gse_downlink_t* gsdw1, gse_downlink_t* gsdw2) {
-    printf("equal_gsdw called\n");
 
-    
-    // uint8_t fields
-    EXPECT_EQ(gsdw1->GQN_NC1, gsdw2->GQN_NC1);
-    EXPECT_EQ(gsdw1->GQN_NC2, gsdw2->GQN_NC2);
-    EXPECT_EQ(gsdw1->GQN_NC3, gsdw2->GQN_NC3);
-    EXPECT_EQ(gsdw1->GQN_NC4, gsdw2->GQN_NC4);
-    EXPECT_EQ(gsdw1->GQN_NC5, gsdw2->GQN_NC5);
-    EXPECT_EQ(gsdw1->GPN_NC1, gsdw2->GPN_NC1);
-    EXPECT_EQ(gsdw1->GPN_NC2, gsdw2->GPN_NC2);
-    EXPECT_EQ(gsdw1->GVN_NC, gsdw2->GVN_NC);
-    EXPECT_EQ(gsdw1->GFE_NC, gsdw2->GFE_NC);
-    EXPECT_EQ(gsdw1->GFO_NCC, gsdw2->GFO_NCC);
-    EXPECT_EQ(gsdw1->GDO_NCC, gsdw2->GDO_NCC);
-    EXPECT_EQ(gsdw1->PC_OLC, gsdw2->PC_OLC);
-    
-    // float fields
-    EXPECT_EQ(gsdw1->GP1, gsdw2->GP1);
-    EXPECT_EQ(gsdw1->GP2, gsdw2->GP2);
-    EXPECT_EQ(gsdw1->GP3, gsdw2->GP3);
-    EXPECT_EQ(gsdw1->GP4, gsdw2->GP4);
-    EXPECT_EQ(gsdw1->GP5, gsdw2->GP5);
-=======
 void equal_gsdw(gse_downlink_t *gsdw1, gse_downlink_t *gsdw2) {
   printf("equal_gsdw called\n");
 
@@ -145,7 +120,6 @@ void equal_gsdw(gse_downlink_t *gsdw1, gse_downlink_t *gsdw2) {
   EXPECT_EQ(gsdw1->GP3, gsdw2->GP3);
   EXPECT_EQ(gsdw1->GP4, gsdw2->GP4);
   EXPECT_EQ(gsdw1->GP5, gsdw2->GP5);
->>>>>>> main
 }
 
 /* UNIT TESTS (if the google tests don't run, comment the manual tests) */
