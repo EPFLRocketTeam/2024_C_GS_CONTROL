@@ -203,7 +203,7 @@ void MainWindow::initiateLaunchTimer() {
 
 void MainWindow::startLaunchTimer() {
   launchTimerValue = LAUNCH_DELAY; // Start at -20.0
-  launchTimerLabel->setVisible(true);
+  /*launchTimerLabel->setVisible(true);*/
   updateLaunchTimer();     // Update display immediately
   launchTimer->start(100); // Update every 100ms (0.1 seconds)
 }
