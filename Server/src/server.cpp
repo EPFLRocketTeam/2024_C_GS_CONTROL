@@ -20,7 +20,9 @@
 #include <string>
 
 #include "../Capsule/src/capsule.h"
-#include "ERT_RF_Protocol_Interface/Protocol.h"
+#include "Protocol.h"
+
+/*#include "ERT_RF_Protocol_Interface/Protocol.h"*/
 #include "FieldUtil.h"
 #include "RequestAdapter.h"
 #include "ServerSetup.h"
@@ -31,17 +33,24 @@
 #define DB_ERROR_MESSAGE_PREFIX                                                \
   "The Databse couldn't be open, and produce the following error message"
 
-Server::Server(QObject *parent) : QTcpServer(parent), requestHandler(this), serialPort(new QSerialPort(this)), capsule(&Server::handleSerialPacket, this) {
-    
-    connect(&requestHandler, &RequestHandler::subscribe, this, &Server::receiveSubscribe);
-    connect(&requestHandler, &RequestHandler::unsubscribe, this, &Server::receiveUnsubscribe);
-    connect(&requestHandler, &RequestHandler::get, this, &Server::receiveGet);
-    connect(&requestHandler, &RequestHandler::post, this, &Server::receivePost);
-    connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
-    connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
-    setup_db();
-    setupHttpServer();
-    openSerialPort();
+Server::Server(QObject *parent)
+    : QTcpServer(parent), requestHandler(this),
+      serialPort(new QSerialPort(this)),
+      capsule(&Server::handleSerialPacket, this) {
+
+  connect(&requestHandler, &RequestHandler::subscribe, this,
+          &Server::receiveSubscribe);
+  connect(&requestHandler, &RequestHandler::unsubscribe, this,
+          &Server::receiveUnsubscribe);
+  connect(&requestHandler, &RequestHandler::get, this, &Server::receiveGet);
+  connect(&requestHandler, &RequestHandler::post, this, &Server::receivePost);
+  connect(serialPort, &QSerialPort::readyRead, this, &Server::receiveSerialData);
+  connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
+  setup_db();
+      setupHttpServer();
+
+
+  openSerialPort();
 }
 
 void Server::setupHttpServer() {
@@ -78,6 +87,8 @@ void Server::setupHttpServer() {
     // Start the HTTP server on a different port
     httpServer.listen(QHostAddress::Any, 8080);
 }
+
+
 
 
 int Server::setup_db() {
@@ -155,6 +166,7 @@ void Server::openSerialPort() {
 #endif
 
   if (foundPort) {
+    serialPort->clearError();
     _serverLogger.info(
         "SerialActions",
         QString("Serial port open on %1").arg(serial_port_name).toStdString());
@@ -173,6 +185,11 @@ void Server::receiveSerialData() {
 
 void Server::serialError() {
   _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
+
+  if (serialPort->error() == QSerialPort::UnknownError) {
+      serialPort->close();
+    _serverLogger.error("Serial Unkown Error", "Serial port closed due to error.");
+  }
 }
 
 void Server::incomingConnection(qintptr socketDescriptor) {
@@ -420,6 +437,7 @@ void Server::sendSerialPacket(uint8_t packetId, uint8_t *packet,
   uint8_t *packetToSend = capsule.encode(packetId, packet, size);
   if (serialPort->isOpen()) {
     serialPort->write((char *)packetToSend, capsule.getCodedLen(size));
+    delete packetToSend;
     _packetLogger.info(
         "Serial Send",
         QString(R"(A packet with packet id %1 was sent to radio board)")
@@ -450,6 +468,7 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn,
                                 uint32_t len) {
   std::optional<QJsonObject> result =
       process_packet(packetId, dataIn, len, sqlDatabase);
+
   if (result && result->contains("ABORT")) {
     abort_loop();
   } else if (result) {
@@ -516,11 +535,11 @@ void Server::simulateJsonData() {
   std::uniform_real_distribution<float> distLevel(0.0f, 100.0f);
   std::uniform_int_distribution<int> distTemp(-50, 150);
   std::uniform_real_distribution<float> distVoltage(0.0f, 50.0f);
-  std::uniform_int_distribution<int> distState(0, 255);
+  std::uniform_int_distribution<int> distState(0, 12);
 
 #ifdef RF_PROTOCOL_FIREHORN
-  av_downlink_unpacked packet;
-  packet.packet_nbr = distPacketNbr(gen);
+  av_downlink_unpacked_t packet;
+  packet.packet_nbr = 1212;
   packet.gnss_lon = distCoord(gen);
   packet.gnss_lat = distCoord(gen);
   packet.gnss_alt = distAlt(gen);
@@ -528,8 +547,9 @@ void Server::simulateJsonData() {
   packet.N2_pressure = distPressure(gen);
   packet.fuel_pressure = distPressure(gen);
   packet.LOX_pressure = distPressure(gen);
-  packet.fuel_level = distLevel(gen);
-  packet.LOX_level = distLevel(gen);
+  packet.fuel_inj_pressure = distPressure(gen);
+  packet.chamber_pressure = distPressure(gen);
+  packet.LOX_inj_pressure = distPressure(gen);
   packet.N2_temp = static_cast<int16_t>(distTemp(gen));
   packet.LOX_temp = static_cast<int16_t>(distTemp(gen));
   packet.LOX_inj_temp = static_cast<int16_t>(distTemp(gen));
@@ -537,11 +557,13 @@ void Server::simulateJsonData() {
   packet.hpb_voltage = distVoltage(gen);
   packet.av_fc_temp = static_cast<int16_t>(distTemp(gen));
   packet.ambient_temp = static_cast<int16_t>(distTemp(gen));
-  packet.engine_state = static_cast<uint8_t>(distState(gen));
+  packet.engine_state = static_cast<uint8_t>(0);
+  packet.engine_state = 255;
   packet.av_state = static_cast<uint8_t>(distState(gen));
   packet.cam_rec = static_cast<uint8_t>(distState(gen));
-  handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&packet,
-                     sizeof(packet));
+  av_downlink_t p = encode_downlink(packet);
+  handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&p,
+                     sizeof(av_downlink_t));
 #endif
 
 #ifdef RF_PROTOCOL_ICARUS
@@ -562,26 +584,26 @@ void Server::simulateJsonData() {
   packet.acc_y = static_cast<int16_t>(distTemp(gen));
   packet.acc_z = distVoltage(gen);
   packet.HV_voltage = distVoltage(gen);
-  packet.Fire_up_state = 10;
+  packet.chamber_pressure = 1.0;
+  packet.AV_state = 10;
   handleSerialPacket(CAPSULE_ID::HOPPER_TELEMETRY, (uint8_t *)&packet,
                      sizeof(packet));
 #endif
 
-  
   std::uniform_int_distribution<int> distBool(0, 1);
-  gse_downlink_t gsePacket;
 #ifdef RF_PROTOCOL_FIREHORN
-    gsePacket.PC_OLC = 1;
+
+  gse_downlink_t gsePacket;
+  gsePacket.PC_OLC = 1;
 
 #else
-  gsePacket.tankPressure    = distPressure(gen);
+  fs_downlink_t gsePacket;
+  gsePacket.tankPressure = distPressure(gen);
   gsePacket.tankTemperature = distTemp(gen);
   gsePacket.fillingPressure = distTemp(gen);
-  gsePacket.status= {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};
+  gsePacket.status = {(uint8_t)distBool(gen), (uint8_t)distBool(gen)};
   gsePacket.disconnectActive = static_cast<bool>(distBool(gen));
-  #endif
-  sqlDatabase->write_pkt(sqlDatabase->process_pkt(NULL,NULL,&gsePacket));
+#endif
   handleSerialPacket(CAPSULE_ID::GSE_TELEMETRY, (uint8_t *)&gsePacket,
                      sizeof(gsePacket));
-
 }

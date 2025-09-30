@@ -16,10 +16,9 @@
 #include <QVector>
 #include <QtNetwork/QTcpSocket>
 
-#include "FieldUtil.h"
 #include "ClientInterface.h"
+#include "FieldUtil.h"
 #include "Log.h"
-
 
 class ClientManager : public ClientInterface {
   Q_OBJECT
@@ -37,14 +36,17 @@ public:
   QString serverHost;
   int serverPort;
 
+  void unsubscribeAll(const GUI_FIELD field) override;
+
 private slots:
-  void connected(); 
+  void connected();
 
   void readyRead();
 
   void disconnected();
 
   void sendSubscribeRequest(const GUI_FIELD field);
+  void sendUnsubscribeRequest(const GUI_FIELD field);
 
 private:
   QMap<GUI_FIELD, QVector<CallbackFunction<QString>>> subscriptionsStrings;

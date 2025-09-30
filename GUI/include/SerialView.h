@@ -14,6 +14,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include "ClientInterface.h"
 
 #include "../src/Setup.h"
 
@@ -22,10 +23,9 @@ class SerialView : public QFrame {
 
 public:
     // Remove the default argument from the constructor declaration
-    SerialView(std::unique_ptr<QWidget> parent = nullptr); // No default argument here
+    SerialView(QWidget* parent = nullptr); // No default argument here
 
-    ~SerialView() override = default;
-    
+    ~SerialView() override;
 
     
 
@@ -34,10 +34,10 @@ public:
 private:
     
 
-    std::function<void(const QString)> setSerialStatus = [this](const QString newText) { /*updateStatus(newText);*/ };
+    std::function<void(const QString)> setSerialStatus = [this](const QString newText) { updateStatus(newText); };
     std::function<void(const QString)> setSerialName = [this](const QString newText) { 
-        /*if (serialNameLabel)*/
-        /*    serialNameLabel->setText(QString("Serial port used : %1").arg(newText));*/
+        if (serialNameLabel)
+            serialNameLabel->setText(QString("Serial port used : %1").arg(newText));
     };
     void changeButtonStyle(bool targetStatus);
     void setupStyle();

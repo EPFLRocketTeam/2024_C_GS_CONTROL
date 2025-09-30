@@ -12,8 +12,11 @@
 
 #include <QFrame>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QTime>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -29,7 +32,7 @@ class MainWindow : public QMainWindow {
 
 public:
   MainWindow(QWidget *parent = nullptr,
-             QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
+             QMap<std::string, QList<std::vector<GUI_FIELD>>>
                  *controlPannelMap = nullptr,
              QWidget *leftWidget = nullptr, QWidget *middleWidget = nullptr,
              QWidget *rightWidget = nullptr);
@@ -38,12 +41,20 @@ public:
 
   inline static std::unique_ptr<ClientManager> clientManager;
 
+  void initiateLaunchTimer();
+
 protected:
   void resizeEvent(QResizeEvent *event) override;
+
+private slots:
+  void updateLaunchTimer();
+  void updateGscTimer();
 
 private:
   void replacePannelButton();
   void buttonGrabbed(QEvent *event);
+  void UpdateLaunchTimerState(const QString& av_state);
+  void startLaunchTimer();
 
   QWidget *leftSection;
   QWidget *middleSection;
@@ -53,6 +64,18 @@ private:
   DraggableButton *pannelButton;
   ControlPannelView *pannelSection;
   QHBoxLayout *createSectionsLayout();
+
+  // Launch timer components
+  QLabel *launchTimerLabel;
+  QTimer *launchTimer;
+  double launchTimerValue;
+  int launchInitiated;
+  int launchTimerStarted;
+
+  // GSC timer components
+  QLabel *gscTimerLabel;
+  QTimer *gscTimer;
+  QTime gscStartTime;
 };
 
 #endif /* MAINWINDOW_H */

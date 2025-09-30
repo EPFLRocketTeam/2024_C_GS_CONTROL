@@ -1,9 +1,14 @@
 #ifndef VALVEBUTTON_H
 #define VALVEBUTTON_H
 
+#include "FieldUtil.h"
+#include "FileLocation.h"
+#include "Log.h"
 #include <QLabel>
 #include <QPushButton>
 #include <qsvgrenderer.h>
+#include <QMessageBox>
+#include <qtmetamacros.h>
 
 class ValveButton : public QLabel {
   Q_OBJECT
@@ -13,11 +18,13 @@ public:
 
   enum Orientation { Horizontal = 0, Vertical };
 
-  explicit ValveButton(Orientation orientation = Horizontal,
+  explicit ValveButton(GUI_FIELD field, Orientation orientation = Horizontal,
                        QWidget *parent = nullptr);
+  ~ValveButton() override;
   void resetStyle();
   State getState();
   void setState(State state);
+  GUI_FIELD fieldSensivity();
 
 signals:
   void clicked();
@@ -26,17 +33,30 @@ private:
   State currentState;
 
   void updateButtonIcon();
-
 protected:
-  void paintEvent(QPaintEvent *) override;
   QSize sizeHint() const override { return QSize(52,52); }
   void mousePressEvent(QMouseEvent *event) override;
+  
 
 private:
   Orientation orientation;
   QSize iconSize;
+  GUI_FIELD m_field;
+  ModuleLog _logger = ModuleLog("ValveButton", LOG_FILE_PATH);
+  QMessageBox::StandardButton showConfirmDialog(QWidget *parent, 
+                                              const QString &title, 
+                                              const QString &text);
 
   QSvgRenderer *m_rOpen, *m_rClose, *m_rUnknown;
+};
+
+
+class PumpButton : public ValveButton {
+    Q_OBJECT
+
+public:
+    explicit PumpButton(GUI_FIELD field, Orientation orientation = Horizontal,
+                       QWidget *parent = nullptr);
 };
 
 #endif // VALVEBUTTON_H

@@ -12,6 +12,7 @@
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qsvgrenderer.h>
+#include <qwidget.h>
 
 #include "../Setup.h"
 #include "FieldUtil.h"
@@ -63,28 +64,6 @@ void ValveControlView::placeDataLabels() {
   for (auto labelInfo : _labels) {
     addDataLabel(labelInfo.f, labelInfo.p.x, labelInfo.p.y);
   }
-  /*//GSE top*/
-  /*addDataLabel(GUI_FIELD::GSE_TANK_PRESSURE, 0.09, 0.25);*/
-  /*addDataLabel(GUI_FIELD::GSE_TANK_TEMPERATURE, 0.09, 0.315);*/
-  /*//GSE bottom*/
-  /*addDataLabel(GUI_FIELD::GSE_FILLING_PRESSURE, 0.138, 0.576);*/
-  /**/
-  /*//N2O top pressure   */
-  /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.609595, 0.178905);*/
-  /**/
-  /*//Engine tank pressure*/
-  /*addDataLabel(GUI_FIELD::HOPPER_N2O_PRESSURE, 0.447, 0.439);*/
-  /*addDataLabel(GUI_FIELD::HOPPER_N2O_TEMP, 0.447, 0.502);*/
-  /*addDataLabel(GUI_FIELD::HOPPER_ETH_PRESSURE, 0.893, 0.438);*/
-  /**/
-  /*// Engine left pressure */
-  /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE,  0.540116, 0.785047);*/
-  /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.540116, 0.867824);*/
-  /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.540116, 0.94526);*/
-  /**/
-  /*// Engine right pressure*/
-  /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE, 0.924731, 0.783712);*/
-  /*addDataLabel(GUI_FIELD::CHAMBER_PRESSURE,0.924731, 0.87984);*/
 }
 
 void ValveControlView::placeCommandButtons() {
@@ -136,39 +115,61 @@ void ValveControlView::setSvgBackground(const QString &filePath) {
 
 void ValveControlView::addButtonIcon(GUI_FIELD field, float x, float y,
                                      ValveButton::Orientation orientation) {
-  ValveButton *button = new ValveButton(orientation, this);
+  /*ValveButton *button = new ValveButton(orientation, this);*/
 
-  MainWindow::clientManager->subscribe(field, [button](const QString &message) {
-    if (message == "0") {
-      button->setState(ValveButton::State::Close);
-    } else if (message == "unknown") {
-      button->setState(ValveButton::State::Unknown);
-    } else {
-      button->setState(ValveButton::State::Open);
-    }
-  });
+  // Create a container widget
+  QWidget *valveWithTitle = new QWidget(this);
+  QVBoxLayout *layout = new QVBoxLayout(valveWithTitle);
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->setSpacing(2); // small gap between title and button
 
-  connect(button, &ValveButton::clicked, [button, field, this]() {
-    RequestBuilder b;
+  // Create the title label
+  QLabel *titleLabel = new QLabel(fieldUtil::enumToFieldName(field));
+  titleLabel->setAlignment(Qt::AlignCenter);
 
-    b.setHeader(RequestType::POST);
-    b.addField("cmd", field);
-    int value = button->getState() == ValveButton::State::Close ? 1 : 0;
-    b.addField("cmd_order", value);
-    MainWindow::clientManager->send(b.toString());
-    b.clear();
-    b.setHeader(RequestType::INTERNAL);
-    b.addField(QString::number(field), "unknown");
-    MainWindow::clientManager->send(b.toString());
-    _logger.info(
-        "Sent Valve Update",
-        QString(
-            R"(The valve of field %1 was clicked and the new %2 value was sent to server)")
-            .arg(fieldUtil::enumToFieldName(field))
-            .arg(value)
-            .toStdString());
-  });
-  addComponent(button, x, y);
+  // Create the valve button
+  ValveButton *button =
+      new ValveButton(field, orientation, valveWithTitle);
+  button->setAlignment(Qt::AlignCenter);
+  
+  // Add them to the layout
+  layout->addWidget(titleLabel, 0, Qt::AlignHCenter);
+  layout->addWidget(button, 0, Qt::AlignHCenter);
+  layout->setAlignment(Qt::AlignCenter);
+  valveWithTitle->setStyleSheet(
+      QString("background: transparent; color: %1;").arg(col::primary));
+
+  /*MainWindow::clientManager->subscribe(field, [button](const QString &message) {*/
+  /*  if (message == "0") {*/
+  /*    button->setState(ValveButton::State::Close);*/
+  /*  } else if (message == "unknown") {*/
+  /*    button->setState(ValveButton::State::Unknown);*/
+  /*  } else {*/
+  /*    button->setState(ValveButton::State::Open);*/
+  /*  }*/
+  /*});*/
+
+  /*connect(button, &ValveButton::clicked, [button, field, this]() {*/
+  /*  RequestBuilder b;*/
+  /**/
+  /*  b.setHeader(RequestType::POST);*/
+  /*  b.addField("cmd", field);*/
+  /*  int value = button->getState() == ValveButton::State::Close ? 1 : 0;*/
+  /*  b.addField("cmd_order", value);*/
+  /*  MainWindow::clientManager->send(b.toString());*/
+  /*  b.clear();*/
+  /*  b.setHeader(RequestType::INTERNAL);*/
+  /*  b.addField(QString::number(field), "unknown");*/
+  /*  MainWindow::clientManager->send(b.toString());*/
+  /*  _logger.info(*/
+  /*      "Sent Valve Update",*/
+  /*      QString(*/
+  /*          R"(The valve of field %1 was clicked and the new %2 value was sent to server)")*/
+  /*          .arg(fieldUtil::enumToFieldName(field))*/
+  /*          .arg(value)*/
+  /*          .toStdString());*/
+  /*});*/
+  addComponent(valveWithTitle, x, y);
 
   // update(); // Trigger repaint to draw the new icon
 }
@@ -197,6 +198,13 @@ void ValveControlView::paintEvent(QPaintEvent *event) {
   int availableWidth = width() - marginLeft - marginRight;
   int availableHeight = height() - marginTop - marginBottom;
 
+  /*_logger.debug("ResizeEvent",*/
+  /*              QString(R"(%1,
+   * %2)").arg(width()).arg(height()).toStdString());*/
+  /*_logger.debug("ResizeEvent", QString(R"(mleft=%1, mtop=%2)")*/
+  /*                                 .arg(marginLeft)*/
+  /*                                 .arg(marginRight)*/
+  /*                                 .toStdString());*/
   // Get the intrinsic size of the SVG
   QSize svgSize = svgRenderer->defaultSize();
 

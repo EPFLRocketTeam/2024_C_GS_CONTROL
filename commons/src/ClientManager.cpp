@@ -108,6 +108,21 @@ void ClientManager::sendSubscribeRequest(const QString &field) {
   socket->flush();
 }
 
+
+void ClientManager::unsubscribeAll(const GUI_FIELD field) {
+    _logger.debug("Unsubscription", QString(R"(All UI elements unsubscribed from %1)")
+                  .arg(fieldUtil::enumToFieldName(field)).toStdString());
+    
+    // Clear all callbacks for this field
+    subscriptionsJson[field].clear();
+    subscriptionsStrings[field].clear();
+    
+    // Send unsubscribe request to server
+    sendUnsubscribeRequest(field);
+}
+
+
+
 void ClientManager::subscribe(const GUI_FIELD field,
                               CallbackFunction<QJsonValue> callback) {
   _logger.debug("Subscription", QString(R"(An UI element subscribed to %1)").
@@ -134,6 +149,27 @@ void ClientManager::sendSubscribeRequest(const GUI_FIELD field) {
   _logger.debug("Subscription", "subscribed to " + std::to_string(field));
     /*std::cout << "Try to subscribe " << socket->isValid() << socket->state() << std::endl;*/
 
+  socket->waitForBytesWritten();
+  socket->flush();
+}
+
+
+void ClientManager::sendUnsubscribeRequest(const GUI_FIELD field) {
+  if (socket->state() == QAbstractSocket::UnconnectedState) {
+    if (!m_reconnectTimer->isActive()) {
+      m_reconnectTimer->start();
+      QString error_msg = QString::fromStdString("The connection with the server failed with the following error: ") + socket->errorString();
+      _logger.error("ConnectionFailed", error_msg.toStdString());
+    }
+    return;
+  }
+  RequestBuilder builder;
+  builder.setHeader(RequestType::UNSUBSCRIBE);  // Changed from SUBSCRIBE to UNSUBSCRIBE
+  builder.addField("field", field);
+  socket->write(builder.toString().toUtf8());
+  
+  _logger.debug("Unsubscription", "unsubscribed from " + std::to_string(field)); // Changed log message
+  
   socket->waitForBytesWritten();
   socket->flush();
 }

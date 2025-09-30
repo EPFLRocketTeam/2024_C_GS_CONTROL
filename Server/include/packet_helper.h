@@ -8,7 +8,7 @@
 #include <QJsonObject>
 #include <sys/types.h>
 
-#include "ERT_RF_Protocol_Interface/Protocol.h"
+#include "Protocol.h"
 #include "data_storage.h"
 
 

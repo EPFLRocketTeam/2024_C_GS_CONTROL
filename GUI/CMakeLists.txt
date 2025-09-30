@@ -55,39 +55,50 @@ set(HEADERS_GUI
     include/ValveControlView.h
 )
 
-# Create the library
-add_library(${PROJECT_NAME}_lib STATIC ${SOURCES_GUI} ${HEADERS_GUI})
 
-# add_subdirectory(../commons FirehornCommons)
 
-# Set include directories for the library
-target_include_directories(${PROJECT_NAME}_lib 
-    PUBLIC 
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
+function(make_gui name flag)
+    # Create the library
+    add_library(${name}_lib STATIC ${SOURCES_GUI} ${HEADERS_GUI})
 
-# Link against the Qt6 modules for the library
-target_link_libraries(${PROJECT_NAME}_lib 
-    PUBLIC 
-        Qt6::Widgets 
-        Qt6::Core
-        Qt6::Network
-        Qt6::Svg
-        Qt6::Concurrent
-        FirehornCommons
-        config_interface
-)
+    target_compile_definitions(${name}_lib PUBLIC ${flag})
+    # add_subdirectory(../commons FirehornCommons)
 
-# Create the executable
-add_executable(${PROJECT_NAME} src/main.cpp)
+    # Set include directories for the library
+    target_include_directories(${name}_lib 
+        PUBLIC 
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
 
-# Link the executable with the library
-target_link_libraries(${PROJECT_NAME} 
-    PRIVATE 
-        ${PROJECT_NAME}_lib
-)
+    # Link against the Qt6 modules for the library
+    target_link_libraries(${name}_lib 
+        PUBLIC 
+            Qt6::Widgets 
+            Qt6::Core
+            Qt6::Network
+            Qt6::Svg
+            Qt6::Concurrent
+            CommonsLib
+            config_interface
+    )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-)
+    # Create the executable
+    add_executable(${name} src/main.cpp)
+
+    # Link the executable with the library
+    target_link_libraries(${name} 
+        PRIVATE 
+            ${name}_lib
+    )
+
+    set_target_properties(${name} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+
+    target_compile_definitions(${name} PUBLIC ${flag})
+endfunction()
+
+
+make_gui(FirehornGUI FIREHORN_GUI)
+make_gui(IcarusGUI ICARUS_GUI)

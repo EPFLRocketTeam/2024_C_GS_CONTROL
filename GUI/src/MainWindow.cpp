@@ -21,8 +21,7 @@
 
 MainWindow::MainWindow(
     QWidget *parent,
-    QMap<std::string, QMap<std::string, std::vector<GUI_FIELD>>>
-        *controlPannelMap,
+    QMap<std::string, QList<std::vector<GUI_FIELD>>> *controlPannelMap,
     QWidget *leftWidget, QWidget *middleWidget, QWidget *rightWidget)
     : QMainWindow(parent) {
   setWindowTitle(mws::title);
@@ -33,6 +32,39 @@ MainWindow::MainWindow(
   centralWidget->setStyleSheet(col::background());
 
   QVBoxLayout *centralLayout = new QVBoxLayout(centralWidget);
+
+  // Initialize launch timer
+  launchTimerLabel = new QLabel("", this);
+  launchTimerLabel->setAlignment(Qt::AlignCenter);
+  launchTimerLabel->setStyleSheet(
+      "QLabel { font-size: 24px; font-weight: bold; color: red; background: "
+      "transparent; }");
+  launchTimerLabel->setVisible(false); // Initially hidden
+  launchTimer = new QTimer(this);
+  launchTimerValue = 0.0;
+  connect(launchTimer, &QTimer::timeout, this, &MainWindow::updateLaunchTimer);
+  clientManager->subscribe(AV_STATE, [this](const QString &message) {
+    this->UpdateLaunchTimerState(message);
+  });
+
+  // Initialize GSC timer
+  gscTimerLabel = new QLabel("GSC: 00:00:00", this);
+  gscTimerLabel->setAlignment(Qt::AlignLeft);
+  gscTimerLabel->setStyleSheet("QLabel { font-size: 14px; font-weight: normal; "
+                               "color: #FFFFFF; background: transparent; }");
+  gscTimer = new QTimer(this);
+  gscStartTime = QTime::currentTime();
+  connect(gscTimer, &QTimer::timeout, this, &MainWindow::updateGscTimer);
+  gscTimer->start(1000); // Update every second
+
+  // Create top layout with GSC timer on left and launch timer in center
+  QHBoxLayout *topLayout = new QHBoxLayout();
+  topLayout->addWidget(gscTimerLabel, 0, Qt::AlignLeft);
+  topLayout->addStretch(1);
+  topLayout->addWidget(launchTimerLabel, 0, Qt::AlignCenter);
+  topLayout->addStretch(1);
+
+  centralLayout->addLayout(topLayout);
 
   pannelSection = new ControlPannelView(this, controlPannelMap);
   leftSection = leftWidget;
@@ -93,7 +125,45 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
   }
   if (rightSection) {
     /*rightSection->setParent(this);*/
-    sectionsLayout->addWidget(rightSection,
+    /*sectionsLayout->addWidget(rightSection,*/
+    /*                          (100 - mws::middleSectionWidth) / 2);*/
+
+    rightSection->setParent(this);
+    QScrollArea *rightScrollArea = new QScrollArea(this);
+    rightScrollArea->setWidget(rightSection);
+    rightScrollArea->setWidgetResizable(true);
+    // Optionally hide the horizontal scroll bar if you only need vertical
+    // scrolling:
+    rightScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    rightScrollArea->verticalScrollBar()->setAttribute(
+        Qt::WA_TranslucentBackground, true);
+
+    rightScrollArea->verticalScrollBar()->setStyleSheet(
+        "QScrollBar:vertical {"
+        "    background: #2e2e2e;"
+        "    width: 15px;"
+        "    margin: 15px 3px 15px 3px;"
+        "}"
+        "QScrollBar::handle:vertical {"
+        "    background: #b0b0b0;"
+        "    min-height: 20px;"
+        "    border: 2px solid transparent;" // transparent border to trigger
+                                             // border-radius
+        "    border-radius: 7px;"
+        "    background-clip: padding;" // ensure the background respects the
+                                        // border-radius
+        "}"
+        "QScrollBar::handle:vertical:hover {"
+        "    background: #a0a0a0;"
+        "}"
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {"
+        "    background: none;"
+        "    height: 15px;"
+        "}"
+        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
+        "    background: none;"
+        "}");
+    sectionsLayout->addWidget(rightScrollArea,
                               (100 - mws::middleSectionWidth) / 2);
   }
 
@@ -108,4 +178,62 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
 void MainWindow::replacePannelButton() {
   // QPoint p = QWidget::mapTo(this, QPoint(width()/2-pannelButton->width()/2,
   // height()-pannelButton->height())); pannelButton->move(p);
+}
+
+#define AV_PRESSURIZE 1
+#define AV_EOG 2
+
+void MainWindow::UpdateLaunchTimerState(const QString &av_state) {
+  if (av_state == "PRESSURIZATION"){
+    if (launchInitiated && !launchTimer->isActive()) {
+        startLaunchTimer();
+      }
+  } else if (av_state == "AoG") {
+    launchTimer->stop();
+    launchInitiated = false;
+  } else if (av_state == "INIT") {
+    launchTimer->stop();
+    launchTimerLabel->setVisible(false);
+  }
+}
+
+void MainWindow::initiateLaunchTimer() {
+  launchInitiated = true;
+}
+
+void MainWindow::startLaunchTimer() {
+  launchTimerValue = LAUNCH_DELAY; // Start at -20.0
+  launchTimerLabel->setVisible(true);
+  updateLaunchTimer();     // Update display immediately
+  launchTimer->start(100); // Update every 100ms (0.1 seconds)
+}
+
+void MainWindow::updateLaunchTimer() {
+  // Format the timer value with one decimal place
+  QString timeText = QString::number(launchTimerValue, 'f', 1);
+  launchTimerLabel->setText(QString("T  %1 %2s")
+                                .arg(launchTimerValue >= 0 ? "+" : " ")
+                                .arg(timeText));
+
+  // Increment by 0.1 seconds
+  launchTimerValue += 0.1;
+}
+
+void MainWindow::updateGscTimer() {
+  // Calculate elapsed time since GSC start
+  QTime currentTime = QTime::currentTime();
+  int elapsedSeconds = gscStartTime.secsTo(currentTime);
+
+  // Convert to hours:minutes:seconds
+  int hours = elapsedSeconds / 3600;
+  int minutes = (elapsedSeconds % 3600) / 60;
+  int seconds = elapsedSeconds % 60;
+
+  // Format as hh:mm:ss
+  QString timeText = QString("GSC: %1:%2:%3")
+                         .arg(hours, 2, 10, QChar('0'))
+                         .arg(minutes, 2, 10, QChar('0'))
+                         .arg(seconds, 2, 10, QChar('0'));
+
+  gscTimerLabel->setText(timeText);
 }

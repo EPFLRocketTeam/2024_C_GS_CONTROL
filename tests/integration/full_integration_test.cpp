@@ -50,16 +50,15 @@ private slots:
     int tmp = QTest::qWaitForWindowExposed(&window);
 
     // 2) Find all ValveControlButton children
-    auto valves = window.findChildren<ValveControlButton *>();
+    auto valves = window.findChildren<ValveButton *>();
     qDebug() << "Found valve buttons:" << valves.size();
     QVERIFY(!valves.isEmpty());
 
     // 3) Find the target button for MAIN_LOX
-    ValveControlButton *targetVcb = nullptr;
+    ValveButton *targetVcb = nullptr;
     for (auto *vcb : valves) {
-      auto *tb = vcb->findChild<ToggleButton *>();
-      if (tb &&
-          tb->fieldSensitivity() == static_cast<int>(GUI_FIELD::MAIN_LOX)) {
+      if (vcb &&
+          vcb->fieldSensivity() == static_cast<int>(GUI_FIELD::MAIN_LOX)) {
         qDebug() << "Found MAIN_LOX button:" << vcb;
         targetVcb = vcb;
         break;
@@ -74,7 +73,7 @@ private slots:
     QVERIFY(targetVcb);
 
     // 4) Get the ToggleButton child
-    auto *tb = targetVcb->findChild<ToggleButton *>();
+    ValveButton *tb = targetVcb;
     QVERIFY(tb);
     QVERIFY(tb != nullptr);
     QVERIFY(tb->isVisible());
@@ -82,11 +81,8 @@ private slots:
     QVERIFY(tb->window()->isActiveWindow());
 
     // 5) Ensure widgets are properly set up
-    targetVcb->ensurePolished();
     tb->ensurePolished();
     QApplication::processEvents();
-    QVERIFY(targetVcb->isVisible());
-    QVERIFY(targetVcb->isEnabled());
     QVERIFY(tb->isVisible());
     QVERIFY(tb->isEnabled());
     // 6) Clear any previous server signals
@@ -94,18 +90,43 @@ private slots:
     QVERIFY(postSpy->isValid());
     QVERIFY(postSpy->isEmpty());
 
-    // 7) Click the ValveControlButton
-    QTest::mouseClick(tb, Qt::LeftButton, Qt::NoModifier, tb->rect().center());
+    qDebug() << "Before Click";
+    QTimer::singleShot(100, [&]() {
+    // Find the confirmation dialog after it appears
+    QMessageBox *msgBox = nullptr;
+    for (int attempts = 0; attempts < 50; ++attempts) {
+        QTest::qWait(10);
+        
+        // Search through all top-level widgets
+        for (QWidget *widget : QApplication::topLevelWidgets()) {
+            msgBox = qobject_cast<QMessageBox *>(widget);
+            if (msgBox && msgBox->isVisible()) {
+                qDebug() << "Found QMessageBox:" << msgBox;
+                break;
+            }
+        }
+        if (msgBox) break;
+    }
     
-    qDebug() << "Clicked the button";
-    // 8) Wait for the server's post signal
-    QVERIFY2(waitForPost(2000), "No post signal received within timeout");
+    if (msgBox) {
+        QAbstractButton *yesBtn = msgBox->button(QMessageBox::Yes);
+        if (yesBtn) {
+            qDebug() << "Clicking Yes button...";
+            QTest::mouseClick(yesBtn, Qt::LeftButton);
+        }
+    }
+});
+    // 7) Click the ValveControlButton
+    QTest::mouseClick(targetVcb, Qt::LeftButton, Qt::NoModifier, targetVcb->rect().center());
 
+    qDebug() << "After Click";
+    // 8) Wait for and handle the confirmation dialog
+    QVERIFY(waitForPost(2000));
     qDebug() << "Received a post ";
     // 9) Debug the spy contents
     // DumpSpySignal(postSpy);
 
-    QVERIFY2(hasPostCommand(GUI_FIELD::MAIN_LOX, 1),
+    QVERIFY2(hasPostCommand(GUI_FIELD::MAIN_LOX, 0),
              "Expected MAIN_LOX toggle-on command not found");
     
     return;
