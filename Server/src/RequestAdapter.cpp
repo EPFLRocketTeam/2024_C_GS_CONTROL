@@ -663,7 +663,7 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_PUMP:
-    return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_PUMP, GSE_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GSE_SERVO1:
     return {GSE_CMD_SERVO_1, GSE_TELEMETRY};
