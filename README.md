@@ -72,6 +72,39 @@ And in another terminal window
 ./FirehornGUI
 ```
 
+# Run the http server
+
+to run the server you need to first create a python environement with the following commands:
+
+```sh
+python3 -m venv .env
+source .env/bin/activate
+pip install -r requirements.txt
+```
+
+Now that the environement is setup you can simply run:
+
+```sh
+python3 server.py 127.0.0.1 12345
+```
+
+above 127.0.0.1 need to be replaced by the host of the FirehornServer and 12345 is the default port it exposes.
+When the python server run it should expose 2 endpoints:
+
+```
+curl -X GET http://localhost:5000/api/speed
+{"speed":8.0}
+```
+
+to get the vertical speed and:
+
+```
+curl -X GET http://localhost:5000/api/location
+{"lat":-139.314,"lon":-144.092}
+```
+
+to get the gps location of the rocket
+
 # Config files
 
 There are 2 config files:
