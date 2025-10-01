@@ -4,7 +4,6 @@
 #include <qcoreapplication.h>
 #include <qt6/QtNetwork/QTcpSocket>
 #include <qt6/QtNetwork/QTcpServer>
-#include <QtHttpServer/qhttpserver.h>
 
 #include <QtSerialPort/QSerialPort>
 #include <QMap>
@@ -64,7 +63,6 @@ private:
     QList<QTcpSocket *> clients;
     sqlite3 *database;
     SqliteDB *sqlDatabase;
-    QHttpServer httpServer;
     void setupHttpServer();
     
     

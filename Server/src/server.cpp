@@ -48,52 +48,8 @@ Server::Server(QObject *parent)
           &Server::receiveSerialData);
   connect(serialPort, &QSerialPort::errorOccurred, this, &Server::serialError);
   setup_db();
-  setupHttpServer();
 
   openSerialPort();
-}
-
-void Server::setupHttpServer() {
-  // Set up REST endpoints
-
-#ifdef RF_PROTOCOL_FIREHORN
-  // GET endpoint example
-  httpServer.route(
-      "/api/location", QHttpServerRequest::Method::Get,
-      [this](const QHttpServerRequest &request) {
-        QJsonObject response;
-        Packet pkt = sqlDatabase->read_last_av();
-        if (!pkt.av_down_pkt) {
-          return QHttpServerResponse("",
-                                     QHttpServerResponse::StatusCode::NotFound);
-        }
-        response["latitude"] = pkt.av_down_pkt->gnss_lon;
-        response["longitude"] = pkt.av_down_pkt->gnss_lat;
-        free(pkt.av_down_pkt);
-        return QHttpServerResponse(QJsonDocument(response).toJson(),
-                                   QHttpServerResponse::StatusCode::Ok);
-      });
-
-  // POST endpoint example
-  httpServer.route(
-      "/api/speed", QHttpServerRequest::Method::Get,
-      [this](const QHttpServerRequest &request) {
-        QJsonObject response;
-        Packet pkt = sqlDatabase->read_last_av();
-        if (!pkt.av_down_pkt) {
-          return QHttpServerResponse("",
-                                     QHttpServerResponse::StatusCode::NotFound);
-        }
-
-        response["vspeed"] = pkt.av_down_pkt->gnss_vertical_speed;
-        free(pkt.av_down_pkt);
-        return QHttpServerResponse(QJsonDocument(response).toJson(),
-                                   QHttpServerResponse::StatusCode::Ok);
-      });
-
-  // Start the HTTP server on a different port
-  httpServer.listen(QHostAddress::Any, 8080);
-#endif
 }
 
 int Server::setup_db() {

@@ -50,5 +50,6 @@ archives
 Log
 auth_keys.json
 todo.txt
-*.py
+helper.py
 *.db
+*.env

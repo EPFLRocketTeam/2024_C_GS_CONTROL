@@ -49,7 +49,6 @@ function(add_server_exec exec_name protocol_name definition)
             Qt6::Core
             Qt6::Network
             Qt6::SerialPort
-            Qt6HttpServer
             sqlite3
             CapsuleLib
             CommonsLib
