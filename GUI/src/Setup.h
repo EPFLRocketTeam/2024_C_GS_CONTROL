@@ -290,7 +290,7 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::N2_TEMP, 0.66, 0.155},
 
     {GUI_FIELD::LOX_PRESSURE, 0.67, 0.584},
-    {GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.665}, //LOX_TEMP donne la température inutile du capteur sensata au dessus du tank. La température utile pour le tank de LOX est enfaite LOX_INJ_TEMP
+    {GUI_FIELD::LOX_INJ_TEMP, 0.83, 0.665}, //LOX_TEMP donne la température inutile du capteur sensata au dessus du tank. La température utile pour le tank de LOX est enfaite LOX_INJ_TEMP
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.67, 0.79},
     //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865}, 
@@ -383,9 +383,9 @@ inline QFrame *gseMiddlePlaceholder;
 /*inline QString connectedBackgroundImage = ":/images/prop_firehorn_connect.svg";*/
 /*inline QString disconnectedBackgroundImage =*/
 /*    ":/images/prop_firehorn_disconnect.svg";*/
-inline QString connectedBackgroundImage = ":/images/prop_firehorn_V5.svg";
+inline QString connectedBackgroundImage = ":/images/prop_firehorn_V6.svg";
 inline QString disconnectedBackgroundImage =
-    ":/images/prop_firehorn_V5.svg";
+    ":/images/prop_firehorn_V6.svg";
 
 
 inline void init_views() {
@@ -449,9 +449,9 @@ const int serverPort = 12345;
 } // namespace network
 // ----------------------------- Colour ----------------------------------------
 namespace col {
-inline QString backgroundColorCode = "#1d1e29";
+inline QString backgroundColorCode = "#131313";
 inline QString primary = "#FFFFFF";
-inline QString secondary = "#BDB979";
+inline QString secondary = "#FFFFFF";
 inline QString accent = "#F5251A";
 inline QString complementary = "#457069";
 inline QString complementaryLighter = "#538078";
@@ -473,7 +473,7 @@ inline QString defaultCardStyle(QString id) {
         }
         )")
       .arg(col::backgroundColorCode)
-      .arg("rgba(30, 35, 69, 225)")
+      .arg("rgba(15, 15, 20, 225)")
       .arg(id);
 }
 

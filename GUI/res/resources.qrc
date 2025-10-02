@@ -28,13 +28,13 @@
         <file>images/prop_firehorn_connect.svg</file>
         <file>images/prop_icarus_disconnect.svg</file>
         <file>images/prop_firehorn_disconnect.svg</file>
-	<file>images/svgviewer-output.svg</file>
-	<file>images/fixed_prop_diagram_firehorn.svg</file>
-	<file>images/gse_plumbing.svg</file>
-	<file>images/prop_firehorn_V2.svg</file>
-	<file>images/prop_firehorn_V3.svg</file>
-    <file>images/prop_firehorn_V4.svg</file>
-    <file>images/prop_firehorn_V5.svg</file>
-
+        <file>images/svgviewer-output.svg</file>
+        <file>images/fixed_prop_diagram_firehorn.svg</file>
+        <file>images/gse_plumbing.svg</file>
+        <file>images/prop_firehorn_V2.svg</file>
+        <file>images/prop_firehorn_V3.svg</file>
+        <file>images/prop_firehorn_V4.svg</file>
+        <file>images/prop_firehorn_V5.svg</file>
+        <file>images/prop_firehorn_V6.svg</file>
     </qresource>
 </RCC>
