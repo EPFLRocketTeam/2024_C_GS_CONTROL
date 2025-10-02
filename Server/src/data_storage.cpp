@@ -1,4 +1,5 @@
 #include "../include/data_storage.h"
+#include "sqlite_orm.h"
 #include <chrono>
 #include <cstdint>
 #include <filesystem>
@@ -243,6 +244,7 @@ SqliteDB::SqliteDB()
       ) {
   printf("creating db\n");
   storage.sync_schema();
+  storage.pragma.journal_mode(sqlite_orm::journal_mode::WAL);
   this->pkt_id_avup = -1;
   this->pkt_id_avdw = -1;
   this->pkt_id_gsdw = -1;
