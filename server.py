@@ -79,8 +79,7 @@ class SimpleTCPClient:
                     # Clean the value: remove units like [°], [m], etc.
                     cleaned_value = self.clean_value(value)
                     self.data_store[key] = cleaned_value
-                    print(f"  Stored Field {key}: {
-                        cleaned_value} (original: {value})")
+                    print(f"  Stored Field {key}: {cleaned_value} (original: {value})")
 
     def clean_value(self, value):
         """Remove unit notation from values."""
