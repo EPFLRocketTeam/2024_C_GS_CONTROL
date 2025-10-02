@@ -219,13 +219,10 @@ def run_flask(port=5000):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python client.py <host> <port> [flask_port]")
-        sys.exit(1)
 
-    host = sys.argv[1]
-    port = int(sys.argv[2])
-    flask_port = int(sys.argv[3]) if len(sys.argv) > 3 else 5000
+    host = "127.0.0.1"
+    port = 12345
+    flask_port = 5000
 
     client = SimpleTCPClient(host, port)
 

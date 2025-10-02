@@ -85,11 +85,8 @@ pip install -r requirements.txt
 Now that the environement is setup you can simply run:
 
 ```sh
-python3 server.py 127.0.0.1 12345
+python3 server.py
 ```
-
-above 127.0.0.1 need to be replaced by the host of the FirehornServer and 12345 is the default port it exposes.
-When the python server run it should expose 2 endpoints:
 
 ```
 curl -X GET http://localhost:5000/api/speed
