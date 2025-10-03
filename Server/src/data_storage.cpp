@@ -49,6 +49,8 @@ SqliteDB::SqliteDB()
                   sqlite_orm::make_column("lox_inj_pressure",
                                           &AV_downlink_pkt::LOX_inj_pressure),
                   sqlite_orm::make_column("N2_temp", &AV_downlink_pkt::N2_temp),
+                  sqlite_orm::make_column("N2_PT1000_temp",
+                                          &AV_downlink_pkt::N2_PT1000_temp),
                   sqlite_orm::make_column("LOX_temp",
                                           &AV_downlink_pkt::LOX_temp),
                   sqlite_orm::make_column("LOX_inj_temp",
@@ -70,7 +72,17 @@ SqliteDB::SqliteDB()
                   sqlite_orm::make_column("av_state",
                                           &AV_downlink_pkt::av_state),
                   sqlite_orm::make_column("cam_rec",
-                                          &AV_downlink_pkt::cam_rec)),
+                                          &AV_downlink_pkt::cam_rec),
+                  sqlite_orm::make_column("LOX_cap_fls_0",
+                                          &AV_downlink_pkt::LOX_cap_fls_0),
+                  sqlite_orm::make_column("LOX_fls_10",
+                                          &AV_downlink_pkt::LOX_fls_10),
+                  sqlite_orm::make_column("LOX_fls_50",
+                                          &AV_downlink_pkt::LOX_fls_50),
+                  sqlite_orm::make_column("LOX_fls_80",
+                                          &AV_downlink_pkt::LOX_fls_80),
+                  sqlite_orm::make_column("LOX_fls_90",
+                                          &AV_downlink_pkt::LOX_fls_90)),
               sqlite_orm::make_table<GSE_downlink_pkt>(
                   "GSE_DOWNLINK",
                   sqlite_orm::make_column("id", &GSE_downlink_pkt::id,
@@ -243,7 +255,7 @@ SqliteDB::SqliteDB()
 #endif
       ) {
   printf("creating db\n");
-  storage.sync_schema();
+  storage.sync_schema(true);
   storage.pragma.journal_mode(sqlite_orm::journal_mode::WAL);
   this->pkt_id_avup = -1;
   this->pkt_id_avdw = -1;
@@ -546,31 +558,41 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
     uint32_t id = this->get_pkt_id(AV_DOWNLINK);
 #if RF_PROTOCOL_FIREHORN
     AV_downlink_pkt *raw_avdw =
-        new AV_downlink_pkt{.id = id,
-                            .ts = ts,
-                            .packet_nbr = avdw->packet_nbr,
-                            .gnss_lon = avdw->gnss_lon,
-                            .gnss_lat = avdw->gnss_lat,
-                            .gnss_alt = avdw->gnss_alt,
-                            .gnss_vertical_speed = avdw->gnss_vertical_speed,
-                            .N2_pressure = avdw->N2_pressure,
-                            .N2_temp = avdw->N2_temp,
-                            .fuel_pressure = avdw->fuel_pressure,
-                            .LOX_pressure = avdw->LOX_pressure,
-                            .LOX_temp = avdw->LOX_temp,
-                            .LOX_inj_pressure = avdw->LOX_inj_pressure,
-                            .LOX_inj_temp = avdw->LOX_inj_temp,
-                            .fuel_inj_pressure = avdw->fuel_inj_pressure,
-                            .chamber_pressure = avdw->chamber_pressure,
-                            .engine_state = avdw->engine_state,
-                            .lpb_voltage = avdw->lpb_voltage,
-                            .lpb_current = avdw->lpb_current,
-                            .hpb_voltage = avdw->hpb_voltage,
-                            .hpb_current = avdw->hpb_current,
-                            .av_fc_temp = avdw->av_fc_temp,
-                            .ambient_temp = avdw->ambient_temp,
-                            .av_state = avdw->av_state,
-                            .cam_rec = avdw->cam_rec};
+        new AV_downlink_pkt{
+            .id = id,
+            .ts = ts,
+            .packet_nbr = avdw->packet_nbr,
+            .gnss_lon = avdw->gnss_lon,
+            .gnss_lat = avdw->gnss_lat,
+            .gnss_alt = avdw->gnss_alt,
+            .gnss_vertical_speed = avdw->gnss_vertical_speed,
+            .N2_pressure = avdw->N2_pressure,
+            .N2_temp = avdw->N2_temp,
+            .N2_PT1000_temp = avdw->N2_PT1000_temp,
+            .fuel_pressure = static_cast<float>(avdw->fuel_pressure),
+            .LOX_pressure = static_cast<float>(avdw->LOX_pressure),
+            .LOX_temp = avdw->LOX_temp,
+            .LOX_inj_pressure =
+                static_cast<float>(avdw->LOX_inj_pressure),
+            .LOX_inj_temp = avdw->LOX_inj_temp,
+            .fuel_inj_pressure =
+                static_cast<float>(avdw->fuel_inj_pressure),
+            .chamber_pressure =
+                static_cast<float>(avdw->chamber_pressure),
+            .engine_state = avdw->engine_state,
+            .lpb_voltage = avdw->lpb_voltage,
+            .lpb_current = avdw->lpb_current,
+            .hpb_voltage = avdw->hpb_voltage,
+            .hpb_current = avdw->hpb_current,
+            .av_fc_temp = avdw->av_fc_temp,
+            .ambient_temp = avdw->ambient_temp,
+            .av_state = avdw->av_state,
+            .cam_rec = avdw->cam_rec,
+            .LOX_cap_fls_0 = avdw->LOX_cap_fls_0,
+            .LOX_fls_10 = avdw->LOX_fls_10,
+            .LOX_fls_50 = avdw->LOX_fls_50,
+            .LOX_fls_80 = avdw->LOX_fls_80,
+            .LOX_fls_90 = avdw->LOX_fls_90};
 #else
     AV_downlink_pkt *raw_avdw = new AV_downlink_pkt{
         .id = id,
@@ -697,13 +719,19 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
         .gnss_vertical_speed = pkt.av_down_pkt->gnss_vertical_speed,
         .N2_pressure = pkt.av_down_pkt->N2_pressure,
         .N2_temp = pkt.av_down_pkt->N2_temp,
-        .fuel_pressure = pkt.av_down_pkt->fuel_pressure,
-        .LOX_pressure = pkt.av_down_pkt->LOX_pressure,
+        .N2_PT1000_temp = pkt.av_down_pkt->N2_PT1000_temp,
+        .fuel_pressure =
+            static_cast<uint8_t>(pkt.av_down_pkt->fuel_pressure),
+        .LOX_pressure =
+            static_cast<uint8_t>(pkt.av_down_pkt->LOX_pressure),
         .LOX_temp = pkt.av_down_pkt->LOX_temp,
-        .LOX_inj_pressure = pkt.av_down_pkt->LOX_inj_pressure,
+        .LOX_inj_pressure = static_cast<uint8_t>(
+            pkt.av_down_pkt->LOX_inj_pressure),
         .LOX_inj_temp = pkt.av_down_pkt->LOX_inj_temp,
-        .fuel_inj_pressure = pkt.av_down_pkt->fuel_inj_pressure,
-        .chamber_pressure = pkt.av_down_pkt->chamber_pressure,
+        .fuel_inj_pressure = static_cast<uint8_t>(
+            pkt.av_down_pkt->fuel_inj_pressure),
+        .chamber_pressure = static_cast<uint16_t>(
+            pkt.av_down_pkt->chamber_pressure),
         .engine_state = pkt.av_down_pkt->engine_state,
         .lpb_voltage = pkt.av_down_pkt->lpb_voltage,
         .lpb_current = pkt.av_down_pkt->lpb_current,
@@ -712,7 +740,12 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
         .av_fc_temp = pkt.av_down_pkt->av_fc_temp,
         .ambient_temp = pkt.av_down_pkt->ambient_temp,
         .av_state = pkt.av_down_pkt->av_state,
-        .cam_rec = pkt.av_down_pkt->cam_rec};
+        .cam_rec = pkt.av_down_pkt->cam_rec,
+        .LOX_cap_fls_0 = pkt.av_down_pkt->LOX_cap_fls_0,
+        .LOX_fls_10 = pkt.av_down_pkt->LOX_fls_10,
+        .LOX_fls_50 = pkt.av_down_pkt->LOX_fls_50,
+        .LOX_fls_80 = pkt.av_down_pkt->LOX_fls_80,
+        .LOX_fls_90 = pkt.av_down_pkt->LOX_fls_90};
 
 #else
     *avdw = (av_downlink_t){

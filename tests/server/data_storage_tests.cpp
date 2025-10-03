@@ -26,23 +26,29 @@ av_downlink_unpacked_t *get_avdw() {
             .gnss_alt = 12,
             .gnss_vertical_speed = 13,
             .N2_pressure = 14,
-            .N2_temp = 0,              // must be filled in order
-            .fuel_pressure = 15,
-            .LOX_pressure = 16,
-            .LOX_temp = 20,
-            .LOX_inj_pressure = 0,     // must be filled in order
-            .LOX_inj_temp = 21,
-            .fuel_inj_pressure = 0,    // must be filled in order
-            .chamber_pressure = 0,     // must be filled in order
+      .N2_temp = 30,
+      .N2_PT1000_temp = 32,
+      .fuel_pressure = 15,
+      .LOX_pressure = 16,
+      .LOX_temp = 20,
+      .LOX_inj_pressure = 17,
+      .LOX_inj_temp = 21,
+      .fuel_inj_pressure = 18,
+      .chamber_pressure = 19,
             .engine_state = 26,
             .lpb_voltage = 22,
-            .lpb_current = 0,          // must be filled in order
+      .lpb_current = 23.5f,
             .hpb_voltage = 23,
-            .hpb_current = 0,          // must be filled in order
+      .hpb_current = 24.5f,
             .av_fc_temp = 24,
             .ambient_temp = 25,
             .av_state = 27,
-            .cam_rec = 28
+      .cam_rec = 28,
+      .LOX_cap_fls_0 = 101.0f,
+      .LOX_fls_10 = 102.0f,
+      .LOX_fls_50 = 103.0f,
+      .LOX_fls_80 = 104.0f,
+      .LOX_fls_90 = 105.0f
         };
     return avdw;
 }
@@ -95,6 +101,17 @@ void equal_avdw(av_downlink_unpacked_t *avdw1, av_downlink_unpacked_t *avdw2) {
   EXPECT_EQ(avdw1->N2_pressure, avdw2->N2_pressure);
   EXPECT_EQ(avdw1->N2_temp, avdw2->N2_temp);
   EXPECT_EQ(avdw1->packet_nbr, avdw2->packet_nbr);
+  EXPECT_EQ(avdw1->N2_PT1000_temp, avdw2->N2_PT1000_temp);
+  EXPECT_EQ(avdw1->LOX_inj_pressure, avdw2->LOX_inj_pressure);
+  EXPECT_EQ(avdw1->fuel_inj_pressure, avdw2->fuel_inj_pressure);
+  EXPECT_EQ(avdw1->chamber_pressure, avdw2->chamber_pressure);
+  EXPECT_FLOAT_EQ(avdw1->lpb_current, avdw2->lpb_current);
+  EXPECT_FLOAT_EQ(avdw1->hpb_current, avdw2->hpb_current);
+  EXPECT_FLOAT_EQ(avdw1->LOX_cap_fls_0, avdw2->LOX_cap_fls_0);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_10, avdw2->LOX_fls_10);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_50, avdw2->LOX_fls_50);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_80, avdw2->LOX_fls_80);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_90, avdw2->LOX_fls_90);
 }
 
 void equal_gsdw(gse_downlink_t *gsdw1, gse_downlink_t *gsdw2) {
