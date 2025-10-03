@@ -63,55 +63,67 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
 
     av_downlink_unpacked_t dataAv = decode_downlink(*packedData);
     db->write_pkt(db->process_pkt(NULL, &dataAv, NULL));
-    _logger.info("PROCESSING UNPACKED", QString(R"(
-    packet_nbr: %1,
-    gnss_lon: %2,
-    gnss_lat: %3,
-    gnss_alt: %4,
-    gnss_vertical_speed: %5,
-    N2_pressure: %6,
-    N2_PT1000_temp: %7,
-    fuel_pressure: %8,
-    LOX_pressure: %9,
-    LOX_temp: %10,
-    LOX_inj_pressure: %11,
-    LOX_inj_temp: %12,
-    fuel_inj_pressure: %13,
-    chamber_pressure: %14,
-    engine_state: %15,
-    lpb_voltage: %16,
-    lpb_current: %17,
-    hpb_voltage: %18,
-    hpb_current: %19,
-    av_fc_temp: %20,
-    ambient_temp: %21,
-    av_state: %22,
-    cam_rec: %23,
-    )")
-                                            .arg(dataAv.packet_nbr)
-                                            .arg(dataAv.gnss_lon)
-                                            .arg(dataAv.gnss_lat)
-                                            .arg(dataAv.gnss_alt)
-                                            .arg(dataAv.gnss_vertical_speed)
-                                            .arg(dataAv.N2_pressure)
-                                            .arg(dataAv.N2_PT1000_temp)
-                                            .arg(dataAv.fuel_pressure)
-                                            .arg(dataAv.LOX_pressure)
-                                            .arg(dataAv.LOX_temp)
-                                            .arg(dataAv.LOX_inj_pressure)
-                                            .arg(dataAv.LOX_inj_temp)
-                                            .arg(dataAv.fuel_inj_pressure)
-                                            .arg(dataAv.chamber_pressure)
-                                            .arg(dataAv.engine_state)
-                                            .arg(dataAv.lpb_voltage)
-                                            .arg(dataAv.lpb_current)
-                                            .arg(dataAv.hpb_voltage)
-                                            .arg(dataAv.hpb_current)
-                                            .arg(dataAv.av_fc_temp)
-                                            .arg(dataAv.ambient_temp)
-                                            .arg(dataAv.av_state)
-                                            .arg(dataAv.cam_rec)
-                                            .toStdString());
+  _logger.info("PROCESSING UNPACKED", QString(R"(
+  packet_nbr: %1,
+  gnss_lon: %2,
+  gnss_lat: %3,
+  gnss_alt: %4,
+  gnss_vertical_speed: %5,
+  N2_pressure: %6,
+  N2_temp: %7,
+  N2_PT1000_temp: %8,
+  fuel_pressure: %9,
+  LOX_pressure: %10,
+  LOX_temp: %11,
+  LOX_inj_pressure: %12,
+  LOX_inj_temp: %13,
+  fuel_inj_pressure: %14,
+  chamber_pressure: %15,
+  engine_state: %16,
+  lpb_voltage: %17,
+  lpb_current: %18,
+  hpb_voltage: %19,
+  hpb_current: %20,
+  av_fc_temp: %21,
+  ambient_temp: %22,
+  av_state: %23,
+  cam_rec: %24,
+  LOX_cap_fls_0: %25,
+  LOX_fls_10: %26,
+  LOX_fls_50: %27,
+  LOX_fls_80: %28,
+  LOX_fls_90: %29,
+  )")
+                      .arg(dataAv.packet_nbr)
+                      .arg(dataAv.gnss_lon)
+                      .arg(dataAv.gnss_lat)
+                      .arg(dataAv.gnss_alt)
+                      .arg(dataAv.gnss_vertical_speed)
+                      .arg(dataAv.N2_pressure)
+                      .arg(dataAv.N2_temp)
+                      .arg(dataAv.N2_PT1000_temp)
+                      .arg(dataAv.fuel_pressure)
+                      .arg(dataAv.LOX_pressure)
+                      .arg(dataAv.LOX_temp)
+                      .arg(dataAv.LOX_inj_pressure)
+                      .arg(dataAv.LOX_inj_temp)
+                      .arg(dataAv.fuel_inj_pressure)
+                      .arg(dataAv.chamber_pressure)
+                      .arg(dataAv.engine_state)
+                      .arg(dataAv.lpb_voltage)
+                      .arg(dataAv.lpb_current)
+                      .arg(dataAv.hpb_voltage)
+                      .arg(dataAv.hpb_current)
+                      .arg(dataAv.av_fc_temp)
+                      .arg(dataAv.ambient_temp)
+                      .arg(dataAv.av_state)
+                      .arg(dataAv.cam_rec)
+                      .arg(dataAv.LOX_cap_fls_0)
+                      .arg(dataAv.LOX_fls_10)
+                      .arg(dataAv.LOX_fls_50)
+                      .arg(dataAv.LOX_fls_80)
+                      .arg(dataAv.LOX_fls_90)
+                      .toStdString());
     delete packedData;
 
     jsonObj[QString::number(GUI_FIELD::PACKET_NBR)] =

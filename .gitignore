@@ -48,6 +48,8 @@ build
 
 archives
 Log
+*.log
+*.csv
 auth_keys.json
 todo.txt
 helper.py
