@@ -94,7 +94,7 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
 
     scrollArea->verticalScrollBar()->setStyleSheet(
         "QScrollBar:vertical {"
-        "    background: #2e2e2e;"
+        "    background: #131313;"
         "    width: 15px;"
         "    margin: 15px 3px 15px 3px;"
         "}"
@@ -140,7 +140,7 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
 
     rightScrollArea->verticalScrollBar()->setStyleSheet(
         "QScrollBar:vertical {"
-        "    background: #2e2e2e;"
+        "    background: #131313;"
         "    width: 15px;"
         "    margin: 15px 3px 15px 3px;"
         "}"

@@ -290,7 +290,11 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::N2_TEMP, 0.66, 0.155},
 
     {GUI_FIELD::LOX_PRESSURE, 0.67, 0.584},
-    {GUI_FIELD::LOX_INJ_TEMP, 0.83, 0.665}, //LOX_TEMP donne la température inutile du capteur sensata au dessus du tank. La température utile pour le tank de LOX est enfaite LOX_INJ_TEMP
+    {GUI_FIELD::LOX_FLS_90, 0.83, 0.665}, // LOX float level sensor at 90%
+    {GUI_FIELD::LOX_FLS_80, 0.83, 0.715}, // LOX float level sensor at 80%
+    {GUI_FIELD::LOX_FLS_50, 0.83, 0.765}, // LOX float level sensor at 50%
+    {GUI_FIELD::LOX_FLS_10, 0.83, 0.815}, // LOX float level sensor at 10%
+    {GUI_FIELD::LOX_CAP_FLS_0, 0.83, 0.865}, // LOX capacitive float level sensor at 0%
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.67, 0.79},
     //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865}, 

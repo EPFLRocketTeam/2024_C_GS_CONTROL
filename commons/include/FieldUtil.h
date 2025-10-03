@@ -31,6 +31,11 @@ enum GUI_FIELD {
   LOX_LEVEL,
   LOX_TEMP,
   LOX_INJ_TEMP,
+  LOX_CAP_FLS_0,
+  LOX_FLS_10,
+  LOX_FLS_50,
+  LOX_FLS_80,
+  LOX_FLS_90,
   N2_TEMP,
   IGNITER_PRESSURE,
   LOX_INJ_PRESSURE,
@@ -256,6 +261,21 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case LOX_INJ_TEMP:
     name = "LOX INJ TEMPERATURE";
+    break;
+  case LOX_CAP_FLS_0:
+    name = "LOX CAP FLS 0%";
+    break;
+  case LOX_FLS_10:
+    name = "LOX FLS 10%";
+    break;
+  case LOX_FLS_50:
+    name = "LOX FLS 50%";
+    break;
+  case LOX_FLS_80:
+    name = "LOX FLS 80%";
+    break;
+  case LOX_FLS_90:
+    name = "LOX FLS 90%";
     break;
   case IGNITER_PRESSURE:
     name = "IGNITER PRESSURE";
@@ -707,6 +727,16 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return N2_TEMP;
   else if (fieldName == "LOX INJ TEMPERATURE")
     return LOX_INJ_TEMP;
+  else if (fieldName == "LOX CAP FLS 0%")
+    return LOX_CAP_FLS_0;
+  else if (fieldName == "LOX FLS 10%")
+    return LOX_FLS_10;
+  else if (fieldName == "LOX FLS 50%")
+    return LOX_FLS_50;
+  else if (fieldName == "LOX FLS 80%")
+    return LOX_FLS_80;
+  else if (fieldName == "LOX FLS 90%")
+    return LOX_FLS_90;
   else if (fieldName == "IGNITER PRESSURE")
     return IGNITER_PRESSURE;
   else if (fieldName == "LOX INJ PRESSURE")

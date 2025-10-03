@@ -145,8 +145,16 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataAv.N2_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
         QString::number(static_cast<int>(dataAv.LOX_temp)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_INJ_TEMP)] =
-        QString::number(static_cast<int>(dataAv.LOX_inj_temp)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_CAP_FLS_0)] =
+        QString::number(static_cast<int>(dataAv.LOX_cap_fls_0)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_10)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_10)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_50)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_50)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_80)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_80)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_90)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_90)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] =
         QString::number(static_cast<double>(dataAv.lpb_voltage)) + " [V]";
     jsonObj[QString::number(GUI_FIELD::HPB_VOLTAGE)] =
@@ -545,9 +553,9 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
   jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC5)] =
       QString::number(static_cast<unsigned int>(dataGse->GQN_NC5));
   jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC)] =
-      QString::number(static_cast<unsigned int>(dataGse->GPN_NC1));
-  jsonObj[QString::number(GUI_FIELD::GSE_GPA_NC)] =
       QString::number(static_cast<unsigned int>(dataGse->GPN_NC2));
+  jsonObj[QString::number(GUI_FIELD::GSE_GPA_NC)] =
+      QString::number(static_cast<unsigned int>(dataGse->GPN_NC1));
   jsonObj[QString::number(GUI_FIELD::GSE_GVN_NC)] =
       QString::number(static_cast<unsigned int>(dataGse->GVN_NC));
   jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)] =
