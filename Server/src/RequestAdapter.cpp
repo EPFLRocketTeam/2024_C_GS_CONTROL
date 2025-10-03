@@ -70,7 +70,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     gnss_alt: %4,
     gnss_vertical_speed: %5,
     N2_pressure: %6,
-    N2_temp: %7,
+    N2_PT1000_temp: %7,
     fuel_pressure: %8,
     LOX_pressure: %9,
     LOX_temp: %10,
@@ -94,7 +94,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                                             .arg(dataAv.gnss_alt)
                                             .arg(dataAv.gnss_vertical_speed)
                                             .arg(dataAv.N2_pressure)
-                                            .arg(dataAv.N2_temp)
+                                            .arg(dataAv.N2_PT1000_temp)
                                             .arg(dataAv.fuel_pressure)
                                             .arg(dataAv.LOX_pressure)
                                             .arg(dataAv.LOX_temp)
@@ -142,7 +142,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<double>(dataAv.chamber_pressure)) +
         " [bar]";
     jsonObj[QString::number(GUI_FIELD::N2_TEMP)] =
-        QString::number(static_cast<int>(dataAv.N2_temp)) + " [°C]";
+        QString::number(static_cast<int>(dataAv.N2_PT1000_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
         QString::number(static_cast<int>(dataAv.LOX_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_CAP_FLS_0)] =
