@@ -154,7 +154,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<double>(dataAv.chamber_pressure)) +
         " [bar]";
     jsonObj[QString::number(GUI_FIELD::N2_TEMP)] =
-        QString::number(static_cast<int>(dataAv.N2_PT1000_temp)) + " [°C]";
+        QString::number(static_cast<int>(dataAv.N2_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
         QString::number(static_cast<int>(dataAv.LOX_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_CAP_FLS_0)] =
