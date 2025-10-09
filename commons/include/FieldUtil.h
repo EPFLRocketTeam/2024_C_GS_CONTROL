@@ -313,6 +313,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case CAM_REC:
     name = "CAM REC";
     break;
+  case DOWNRANGE:
+    name = "DOWNRANGE";
+    break;
   case GNSS_CHOICE:
     name = "GNSS CHOICE";
     break;
@@ -761,6 +764,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return AV_STATE;
   else if (fieldName == "CAM REC")
     return CAM_REC;
+  else if (fieldName == "DOWNRANGE")
+    return DOWNRANGE;
   else if (fieldName == "GNSS CHOICE")
     return GNSS_CHOICE;
   else if (fieldName == "HOPPER FO-nc")

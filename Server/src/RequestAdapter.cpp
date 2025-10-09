@@ -3,8 +3,10 @@
 #include "Log.h"
 #include "ServerSetup.h"
 #include "packet_helper.h"
+#include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <limits>
 #include <optional>
 #include <ostream>
 #include <qjsonobject.h>
@@ -21,6 +23,41 @@
 #endif /* RF_PROTOCOL_ICARUS */
 
 static ModuleLog _logger = ModuleLog("RequestAdapter");
+
+namespace {
+
+constexpr double kGroundStationLatDeg = 39.3949167;
+constexpr double kGroundStationLonDeg = -8.2928830;
+constexpr double kEarthRadiusMeters = 6'371'000.0;
+constexpr double kPi = 3.14159265358979323846;
+
+double degToRad(double deg) { return deg * kPi / 180.0; }
+
+double computeDownrangeMeters(double vehicleLatDeg, double vehicleLonDeg) {
+  if (!std::isfinite(vehicleLatDeg) || !std::isfinite(vehicleLonDeg)) {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
+  const double lat1 = degToRad(kGroundStationLatDeg);
+  const double lon1 = degToRad(kGroundStationLonDeg);
+  const double lat2 = degToRad(vehicleLatDeg);
+  const double lon2 = degToRad(vehicleLonDeg);
+
+  const double dLat = lat2 - lat1;
+  const double dLon = lon2 - lon1;
+
+  const double sinHalfDLat = std::sin(dLat / 2.0);
+  const double sinHalfDLon = std::sin(dLon / 2.0);
+
+  const double a = sinHalfDLat * sinHalfDLat +
+                   std::cos(lat1) * std::cos(lat2) *
+                       sinHalfDLon * sinHalfDLon;
+  const double c = 2.0 * std::atan2(std::sqrt(a), std::sqrt(1.0 - a));
+
+  return kEarthRadiusMeters * c;
+}
+
+} // namespace
 
 /*#define RF_PROTOCOL_ICARUS 1*/
 /*#define RF_PROTOCOL_FIREHORN 0*/
@@ -201,6 +238,16 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         fieldUtil::avStateToName(dataAv.av_state);
     jsonObj[QString::number(GUI_FIELD::CAM_REC)] =
         QString::number(static_cast<int>(dataAv.cam_rec));
+
+  const double downrangeMeters =
+    computeDownrangeMeters(static_cast<double>(dataAv.gnss_lat),
+                 static_cast<double>(dataAv.gnss_lon));
+  if (std::isfinite(downrangeMeters)) {
+    jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] =
+      QString::number(downrangeMeters, 'f', 1) + " [m]";
+  } else {
+    jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "--";
+  }
     QJsonObject engineStateObj;
     // Add the sub-object to the main JSON object
     /*jsonObj[QString::number(GUI_FIELD::ENGINE_STATE)] = engineStateObj;*/
