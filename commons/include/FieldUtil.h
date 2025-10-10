@@ -655,7 +655,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
 
   case GSE_GP2:
-    name = "GP2";
+    name = "P. Pneumatique";
     break;
 
   case GSE_GP3:
