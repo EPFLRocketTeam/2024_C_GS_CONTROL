@@ -82,6 +82,7 @@ enum GUI_FIELD {
   GSE_VENT,
   GSE_CMD_STATUS,
   DOWNRANGE,
+  AV_PACKET_FREQ,
   SERIAL_STATUS,
   SERIAL_NAME_USE,
   AV_TIMER,
@@ -315,6 +316,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case DOWNRANGE:
     name = "DOWNRANGE";
+    break;
+  case AV_PACKET_FREQ:
+    name = "AV PACKET FREQ [Hz]";
     break;
   case GNSS_CHOICE:
     name = "GNSS CHOICE";
@@ -615,7 +619,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "GQN 4";
     break;
   case GSE_GQN_NC5:
-    name = "GQN 5";
+    name = "GQN 6";
     break;
 
   case GSE_GPN_NC:

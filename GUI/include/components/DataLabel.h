@@ -1,6 +1,7 @@
 
 
 #include <QLabel>
+#include <QtGlobal>
 
 #include "FieldUtil.h"
 
@@ -16,5 +17,8 @@ public:
     virtual ~DataLabel() {};
 private:
     GUI_FIELD field;
+    bool m_hasPacketFrequencyBaseline{false};
+    qint64 m_lastPacketFrequencyTimestampMs{0};
+    int m_lastPacketNumber{0};
 
 };

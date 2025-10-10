@@ -291,9 +291,9 @@ inline std::vector<LabelInfo> labels = {
 
     {GUI_FIELD::LOX_PRESSURE, 0.67, 0.584},
     {GUI_FIELD::LOX_FLS_90, 0.83, 0.665}, // LOX float level sensor at 90%
-    {GUI_FIELD::LOX_FLS_80, 0.83, 0.715}, // LOX float level sensor at 80%
+    //{GUI_FIELD::LOX_FLS_80, 0.83, 0.715}, // LOX float level sensor at 80%
     {GUI_FIELD::LOX_FLS_50, 0.83, 0.765}, // LOX float level sensor at 50%
-    {GUI_FIELD::LOX_FLS_10, 0.83, 0.815}, // LOX float level sensor at 10%
+    //{GUI_FIELD::LOX_FLS_10, 0.83, 0.815}, // LOX float level sensor at 10%
     {GUI_FIELD::LOX_CAP_FLS_0, 0.83, 0.865}, // LOX capacitive float level sensor at 0%
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.67, 0.79},
@@ -368,7 +368,7 @@ inline QList<GUI_FIELD> gps = {
 };
 
 inline QList<GUI_FIELD> tbd = {
-    PACKET_NBR, AV_STATE, LPB_VOLTAGE, LPB_CURRENT, HPB_VOLTAGE, HPB_CURRENT, AV_FC_TEMP, AMBIENT_TEMP, CAM_REC, DOWNRANGE,
+    PACKET_NBR, AV_STATE, LPB_VOLTAGE, LPB_CURRENT, HPB_VOLTAGE, HPB_CURRENT, AV_FC_TEMP, AMBIENT_TEMP, CAM_REC, DOWNRANGE, AV_PACKET_FREQ,
 };
 inline QMap<QString, QList<GUI_FIELD>> data_sections = {{"GPS", gps},
                                                         {"INFOS", tbd}};
