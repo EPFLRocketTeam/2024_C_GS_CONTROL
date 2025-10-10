@@ -20,19 +20,17 @@ private:
     void setupUI(); 
     void setupInfoSection();
     void setupTimersSection();
-    std::function<void(const QString)> setDownRange = [this](const QString newText) { downRange->setText(newText); };
     std::function<void(const QString)> setAltitude = [this](const QString newText) { 
         // setInfoChildrenStyle(packetNumber, 27, false);
         altitude->setText(newText); 
         };
     void setInfoChildrenStyle(QFrame *child, int fontSize, bool isBold);
     void setupConnections();
-    void setupInfoLayout(QLabel *downRangeLabel, QLabel *packetNumberLabel, QWidget *line);
+    void setupInfoLayout(QLabel *altitudeLabel);
     void setupSerialSection();
 
     ModuleLog _logger = ModuleLog("GSManagerView", LOG_FILE_PATH);
 
-    QLabel *downRange; 
     QLabel *altitude;
     QVBoxLayout *layout;
     TimerView *timerViewAV;

@@ -240,11 +240,12 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataAv.cam_rec));
 
   const double downrangeMeters =
-    computeDownrangeMeters(static_cast<double>(dataAv.gnss_lat),
-                 static_cast<double>(dataAv.gnss_lon));
+      computeDownrangeMeters(static_cast<double>(dataAv.gnss_lat),
+                             static_cast<double>(dataAv.gnss_lon));
   if (std::isfinite(downrangeMeters)) {
-    jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] =
-      QString::number(downrangeMeters, 'f', 1) + " [m]";
+    const double downrangeKilometers = downrangeMeters / 1000.0;
+  jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] =
+    QString::number(downrangeKilometers, 'f', 2) + " [km]";
   } else {
     jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "--";
   }

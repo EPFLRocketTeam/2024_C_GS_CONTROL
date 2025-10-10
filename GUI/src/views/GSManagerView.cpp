@@ -59,35 +59,18 @@ void GSManagerView::setupInfoSection() {
   infoSection->setObjectName("infoSection");
   infoSection->setStyleSheet(col::defaultCardStyle("infoSection"));
 
-  QWidget *line = new QWidget;
-  line->setFixedHeight(1);
-
-  line->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  line->setStyleSheet(QString("background-color: rgba(130, 130, 130, 100);"));
-
-  downRange = new QLabel("--");
-  setInfoChildrenStyle(downRange, 27, false);
-
   altitude = new QLabel("--");
   setInfoChildrenStyle(altitude, 27, false);
-
-  QLabel *downRangeLabel = new QLabel("Downrange");
-  setInfoChildrenStyle(downRangeLabel, 15, true);
 
   QLabel *altitudeLabel = new QLabel("Altitude");
   setInfoChildrenStyle(altitudeLabel, 15, true);
 
-  setupInfoLayout(altitudeLabel, downRangeLabel, line);
+  setupInfoLayout(altitudeLabel);
 }
 
-void GSManagerView::setupInfoLayout(QLabel *downRangeLabel,
-                                    QLabel *altitudeLabel, QWidget *line) {
+void GSManagerView::setupInfoLayout(QLabel *altitudeLabel) {
   QVBoxLayout *infoLayout = new QVBoxLayout(infoSection);
   infoLayout->addWidget(altitudeLabel, 1);
-  infoLayout->addWidget(downRange, 2);
-  infoLayout->addStretch(1);
-  infoLayout->addWidget(line);
-  infoLayout->addWidget(downRangeLabel, 1);
   infoLayout->addWidget(altitude, 2);
   infoLayout->addStretch(1);
 
@@ -144,6 +127,5 @@ void GSManagerView::setupTimersSection() {
 }
 
 void GSManagerView::setupConnections() {
-  MainWindow::clientManager->subscribe(GUI_FIELD::DOWNRANGE, setDownRange);
   MainWindow::clientManager->subscribe(GUI_FIELD::GNSS_ALT, setAltitude);
 }
