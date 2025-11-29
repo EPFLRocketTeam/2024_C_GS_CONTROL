@@ -11,16 +11,19 @@
 #include <ostream>
 #include <qjsonobject.h>
 #include <stdexcept>
+
 #ifdef RF_PROTOCOL_FIREHORN
 #include "DownlinkCompression_Firehorn.h"
 #include "PacketDefinition_Firehorn.h"
 #include "ParameterDefinition_Firehorn.h"
 #endif /* RF_PROTOCOL_FIREHORN */
 
+
 #ifdef RF_PROTOCOL_ICARUS
 #include "PacketDefinition_Icarus.h"
 #include "ParameterDefinition_Icarus.h"
 #endif /* RF_PROTOCOL_ICARUS */
+
 
 static ModuleLog _logger = ModuleLog("RequestAdapter");
 
@@ -275,6 +278,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     break;
   }
 
+
 #if RF_PROTOCOL_ICARUS
   case CAPSULE_ID::HOPPER_TELEMETRY: {
 
@@ -300,6 +304,14 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
 
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_PRESSURE)] =
         QString::number(extractDoubleFromFixedPoint(dataHopper.ETH_pressure));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_O_LINE_PRESSURE)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.o_line_pressure));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_LINE_PRESSURE)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.e_line_pressure));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_O_INJ_PRESSURE)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.o_inj_pressure));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_INJ_PRESSURE)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.e_inj_pressure));
     _logger.error("EVENT",
                   QString(R"(%1)")
                       .arg(extractDoubleFromFixedPoint(dataHopper.N2O_temp))
@@ -341,6 +353,12 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(extractDoubleFromFixedPoint(dataHopper.acc_y));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ACC_Z)] =
         QString::number(extractDoubleFromFixedPoint(dataHopper.acc_z));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_TEMP1)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.temp1));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_TEMP2)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.temp2));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_TEMP3)] =
+        QString::number(extractDoubleFromFixedPoint(dataHopper.temp3));
     jsonObj[QString::number(GUI_FIELD::HOPPER_BARO)] =
         QString::number(extractDoubleFromFixedPoint(dataHopper.baro));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_POS_X)] =
@@ -355,6 +373,14 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_pitch));
     jsonObj[QString::number(GUI_FIELD::HOPPER_KALMAN_ROLL)] =
         QString::number(extractDoubleFromFixedPoint(dataHopper.kalman_roll));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_LOADCELL1)] =
+        QString::number(static_cast<int>(dataHopper.loadcell1));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_LOADCELL2)] =
+        QString::number(static_cast<int>(dataHopper.loadcell2));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_LOADCELL3)] =
+        QString::number(static_cast<int>(dataHopper.loadcell3));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_LOADCELL4)] =
+        QString::number(static_cast<int>(dataHopper.loadcell4));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_X)] =
         QString::number(static_cast<int>(dataHopper.gimbal_x));
     jsonObj[QString::number(GUI_FIELD::HOPPER_GIMBAL_Y)] =
@@ -530,6 +556,18 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GUI_CMD_HOPPER_HOMING_GIMBAL:
     return {CMD_ID::HOPPER_CMD_HOMING_GIMBAL, HOPPER_TELEMETRY};
 
+  case GUI_FIELD::GUI_CMD_HOPPER_HOMING_X:
+    return {CMD_ID::HOPPER_CMD_HOMING_X, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_HOMING_Y:
+    return {CMD_ID::HOPPER_CMD_HOMING_Y, HOPPER_TELEMETRY};
+  
+  case GUI_FIELD::GUI_CMD_HOPPER_HOMING_MAIN_N2O:
+    return {CMD_ID::HOPPER_CMD_HOMING_MAIN_N2O, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_HOMING_MAIN_FUEL:
+    return {CMD_ID::HOPPER_CMD_HOMING_MAIN_FUEL, HOPPER_TELEMETRY};
+
   case GUI_FIELD::GUI_CMD_HOPPER_HOMING_MAIN_VALVES:
     return {CMD_ID::HOPPER_CMD_HOMING_MAIN_VALVES, HOPPER_TELEMETRY};
 
@@ -541,6 +579,15 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 
   case GUI_FIELD::HOPPER_ID_CONFIG:
     return {CMD_ID::HOPPER_CMD_ID_CONFIG, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_SPARE_F1:
+    return {CMD_ID::HOPPER_CMD_SPARE1, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_SPARE_F2:
+    return {CMD_ID::HOPPER_CMD_SPARE2, HOPPER_TELEMETRY};
+
+  case GUI_FIELD::GUI_CMD_HOPPER_SPARE_F3:
+    return {CMD_ID::HOPPER_CMD_SPARE3, HOPPER_TELEMETRY};
 
   case GUI_FIELD::GUI_CMD_GSE_IDLE:
     return {CMD_ID::GSE_CMD_IDLE, GSE_TELEMETRY};

@@ -104,6 +104,13 @@ enum GUI_FIELD {
   GUI_CMD_HOPPER_TARE_ORIENTATION,
   GUI_CMD_HOPPER_HOMING_GIMBAL,
   GUI_CMD_HOPPER_HOMING_MAIN_VALVES,
+  GUI_CMD_HOPPER_HOMING_X,
+  GUI_CMD_HOPPER_HOMING_Y,
+  GUI_CMD_HOPPER_HOMING_MAIN_N2O,
+  GUI_CMD_HOPPER_HOMING_MAIN_FUEL,
+  GUI_CMD_HOPPER_SPARE_F1,
+  GUI_CMD_HOPPER_SPARE_F2,
+  GUI_CMD_HOPPER_SPARE_F3,
   GUI_CMD_ABORT,
   GUI_CMD_IGNITER_LOX,
   GUI_CMD_IGNITER_FUEL,
@@ -152,6 +159,10 @@ enum GUI_FIELD {
   HOPPER_ETH_MAIN,     // 8 bits
   HOPPER_N2O_SOL,      // 8 bits
   HOPPER_ETH_SOL,      // 8 bits
+  HOPPER_ETH_INJ_PRESSURE,
+  HOPPER_ETH_LINE_PRESSURE,
+  HOPPER_O_INJ_PRESSURE,
+  HOPPER_O_LINE_PRESSURE,
   HOPPER_IGNITER,      
   HOPPER_CHAMBER_PRESSURE,      
   HOPPER_GNSS_LON,     // 32 bits (float)
@@ -163,6 +174,13 @@ enum GUI_FIELD {
   HOPPER_ACC_X,        // 16 bits (raw accelerometer)
   HOPPER_ACC_Y,        // 16 bits
   HOPPER_ACC_Z,        // 16 bits
+  HOPPER_TEMP1,
+  HOPPER_TEMP2,
+  HOPPER_TEMP3,
+  HOPPER_LOADCELL1,
+  HOPPER_LOADCELL2,
+  HOPPER_LOADCELL3,
+  HOPPER_LOADCELL4,
   HOPPER_BARO,         // 16 bits (barometric reading)
   HOPPER_KALMAN_POS_X, // 16 bits (Kalman filter position estimate)
   HOPPER_KALMAN_POS_Y, // 16 bits
@@ -374,6 +392,18 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case HOPPER_ETH_PRESSURE:
     name = "HOPPER ETH PRESSURE";
     break;
+  case HOPPER_O_INJ_PRESSURE:
+    name = "HOPPER PS_INJ-O";
+    break;
+  case HOPPER_ETH_INJ_PRESSURE:
+    name = "HOPPER PS_INJ-E";
+    break;
+  case HOPPER_O_LINE_PRESSURE:
+    name = "HOPPER PS_LINE-O";
+    break;
+  case HOPPER_ETH_LINE_PRESSURE:
+    name = "HOPPER PS_LINE-E";
+    break;
   case HOPPER_N2O_TEMP:
     name = "HOPPER N2O TEMP";
     break;
@@ -424,6 +454,27 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case HOPPER_ACC_Z:
     name = "HOPPER ACC Z";
+    break;
+  case HOPPER_TEMP1:
+    name = "HOPPER TEMP 1";
+    break;
+  case HOPPER_TEMP2:
+    name = "HOPPER TEMP 2";
+    break;
+  case HOPPER_TEMP3:
+    name = "HOPPER TEMP 3";
+    break;
+  case HOPPER_LOADCELL1:
+    name = "HOPPER LOADCELL1";
+    break;
+  case HOPPER_LOADCELL2:
+    name = "HOPPER LOADCELL2";
+    break;
+  case HOPPER_LOADCELL3:
+    name = "HOPPER LOADCELL3";
+    break;
+  case HOPPER_LOADCELL4:
+    name = "HOPPER LOADCELL4";
     break;
   case HOPPER_BARO:
     name = "HOPPER BARO";
@@ -509,6 +560,27 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case GUI_CMD_HOPPER_HOMING_MAIN_VALVES:
     name = "HOMING VALVES";
+    break;
+  case GUI_CMD_HOPPER_HOMING_X:
+    name = "HOMING X";
+    break;
+  case GUI_CMD_HOPPER_HOMING_Y:
+    name = "HOMING Y";
+    break;
+  case GUI_CMD_HOPPER_HOMING_MAIN_N2O:
+    name = "HOMING MAIN N2O";
+    break;
+  case GUI_CMD_HOPPER_HOMING_MAIN_FUEL:
+    name = "HOMING MAIN FUEL";
+    break;
+  case GUI_CMD_HOPPER_SPARE_F1:
+    name = "SPARE F1";
+    break;
+  case GUI_CMD_HOPPER_SPARE_F2:
+    name = "SPARE F2";
+    break;
+  case GUI_CMD_HOPPER_SPARE_F3:
+    name = "SPARE F3";
     break;
 
   case GUI_CMD_SERVO_1:
@@ -806,6 +878,14 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_IGNITER;
   else if (fieldName == "HOPPER ETH PRESSURE")
     return HOPPER_ETH_PRESSURE;
+  else if (fieldName == "HOPPER PS_INJ-E")
+    return HOPPER_ETH_INJ_PRESSURE;
+  else if (fieldName == "HOPPER PS_INJ-O")
+    return HOPPER_O_INJ_PRESSURE;
+  else if (fieldName == "HOPPER PS_LINE-E")
+    return HOPPER_ETH_LINE_PRESSURE;
+  else if (fieldName == "HOPPER PS_LINE-O")
+    return HOPPER_O_LINE_PRESSURE;
   else if (fieldName == "HOPPER N2O TEMP")
     return HOPPER_N2O_TEMP;
   else if (fieldName == "HOPPER VO-no")
@@ -840,6 +920,20 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_ACC_Y;
   else if (fieldName == "HOPPER ACC Z")
     return HOPPER_ACC_Z;
+  else if (fieldName == "HOPPER TEMP 1")
+    return HOPPER_TEMP1;
+  else if (fieldName == "HOPPER TEMP 2")
+    return HOPPER_TEMP2;
+  else if (fieldName == "HOPPER TEMP 3")
+    return HOPPER_TEMP3;
+  else if (fieldName == "HOPPER LOADCELL1")
+    return HOPPER_LOADCELL1;
+  else if (fieldName == "HOPPER LOADCELL2")
+    return HOPPER_LOADCELL2;
+  else if (fieldName == "HOPPER LOADCELL3")
+    return HOPPER_LOADCELL3;
+  else if (fieldName == "HOPPER LOADCELL4")
+    return HOPPER_LOADCELL4;
   else if (fieldName == "HOPPER BARO")
     return HOPPER_BARO;
   else if (fieldName == "HOPPER KALMAN POS X")
@@ -890,6 +984,20 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_HOPPER_HOMING_MAIN_VALVES;
   else if (fieldName == "HOMING GIMBAL")
     return GUI_CMD_HOPPER_HOMING_GIMBAL;
+  else if (fieldName == "HOMING X")
+    return GUI_CMD_HOPPER_HOMING_X;
+  else if (fieldName == "HOMING Y")
+    return GUI_CMD_HOPPER_HOMING_Y;
+  else if (fieldName == "HOMING MAIN N2O")
+    return GUI_CMD_HOPPER_HOMING_MAIN_N2O;
+  else if (fieldName == "HOMING MAIN FUEL")
+    return GUI_CMD_HOPPER_HOMING_MAIN_FUEL;
+  else if (fieldName == "SPARE F1")
+    return GUI_CMD_HOPPER_SPARE_F1;
+  else if (fieldName == "SPARE F2")
+    return GUI_CMD_HOPPER_SPARE_F2;
+  else if (fieldName == "SPARE F3")
+    return GUI_CMD_HOPPER_SPARE_F3;
   else if (fieldName == "SERVO 2")
     return GUI_CMD_SERVO_2;
   else if (fieldName == "GSE SERVO 1")
