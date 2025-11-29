@@ -57,7 +57,7 @@ ControlPannelView::ControlPannelView(
   containerLayout->setContentsMargins(20, 10, 20, 10);
   containerLayout->setSpacing(15);
 
-  controlContainerWidget->setFixedHeight(140);
+  controlContainerWidget->setFixedHeight(210);
 
   connect(expandButton, &QPushButton::clicked, this,
           &ControlPannelView::expandClicked);
@@ -72,7 +72,7 @@ void ControlPannelView::createValveLayouts(
 
   for (auto it : *valves) {
     /*const QString &title = QString::fromStdString(it.key());*/
-    int maxColumns = std::ceil(it.size() / 2.0);
+    int maxColumns = std::ceil(it.size() / 3.0);
     const std::vector<GUI_FIELD> &valveNames = it;
 
     QVBoxLayout *controlLayout = new QVBoxLayout;
@@ -165,7 +165,7 @@ void ControlPannelView::createPushButtonLayouts(
 
     gridLayout->setSpacing(15);
     int maxColumns =
-        std::max(static_cast<int>(std::floor(buttonField.size() / 2.0)), 1);
+        std::max(static_cast<int>(std::ceil(buttonField.size() / 3.0)), 1);
 
     for (int i = 0; i < buttonField.size(); ++i) {
       std::string trimmedName =
