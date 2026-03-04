@@ -19,7 +19,7 @@ public:
   enum Orientation { Horizontal = 0, Vertical };
 
   explicit ValveButton(GUI_FIELD field, Orientation orientation = Horizontal,
-                       QWidget *parent = nullptr);
+                       QWidget *parent = nullptr, bool read_only = 0);
   ~ValveButton() override;
   void resetStyle();
   State getState();
@@ -42,6 +42,7 @@ private:
   Orientation orientation;
   QSize iconSize;
   GUI_FIELD m_field;
+  bool m_readOnly = false;
   ModuleLog _logger = ModuleLog("ValveButton", LOG_FILE_PATH);
   QMessageBox::StandardButton showConfirmDialog(QWidget *parent, 
                                               const QString &title, 

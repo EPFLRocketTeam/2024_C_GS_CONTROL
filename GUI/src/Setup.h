@@ -62,29 +62,40 @@ inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
 
 inline std::vector<ValveInfo> valves = {{GUI_FIELD::GSE_VENT,
                                          {0.234569, 0.668},
-                                         ValveButton::Orientation::Vertical},
+                                         ValveButton::Orientation::Vertical,
+                                         false},
                                         {GUI_FIELD::GSE_FILLING_N2O,
                                          {0.23, 0.45},
-                                         ValveButton::Orientation::Horizontal},
+                                         ValveButton::Orientation::Horizontal, false},
 
                                         {GUI_FIELD::HOPPER_N2O_VENT,
                                          {0.50665, 0.318},
-                                         ValveButton::Orientation::Horizontal},
+                                         ValveButton::Orientation::Horizontal, false},
                                         {GUI_FIELD::HOPPER_ETH_VENT,
                                          {0.785838, 0.318},
-                                         ValveButton::Orientation::Horizontal},
+                                         ValveButton::Orientation::Horizontal, false},
                                         {GUI_FIELD::HOPPER_N2_SOL,
                                          {0.645736, 0.124315},
-                                         ValveButton::Orientation::Horizontal},
+                                         ValveButton::Orientation::Horizontal, false},
+
                                         {GUI_FIELD::HOPPER_N2O_SOL,
                                          {0.585838, 0.638},
-                                         ValveButton::Orientation::Vertical},
+                                         ValveButton::Orientation::Vertical, false},
+                                        {GUI_FIELD::HOPPER_N2O_MAIN,
+                                         {0.585838, 0.57},
+                                         ValveButton::Orientation::Vertical, true},
+
+
                                         {GUI_FIELD::HOPPER_ETH_SOL,
                                          {0.703604, 0.638},
-                                         ValveButton::Orientation::Vertical},
+                                         ValveButton::Orientation::Vertical, false},
+                                        {GUI_FIELD::HOPPER_ETH_MAIN,
+                                         {0.703604, 0.57},
+                                         ValveButton::Orientation::Vertical, true},
+
                                         {GUI_FIELD::HOPPER_IGNITER,
                                          {0.5, 0.85},
-                                         ValveButton::Orientation::Vertical}};
+                                         ValveButton::Orientation::Vertical, false}};
 
 inline QList<std::vector<GUI_FIELD>> gseValvesMap{
     {GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC,
@@ -113,28 +124,28 @@ inline std::vector<ValveInfo> gseValves = {
     // LOX quadrant
     {GUI_FIELD::GSE_GFO_NCC,
      {0.186, 0.35},
-     ValveButton::Orientation::Horizontal},
+     ValveButton::Orientation::Horizontal,false},
     {GUI_FIELD::GSE_GDO_NCC,
      {0.186, 0.247},
-     ValveButton::Orientation::Horizontal},
+     ValveButton::Orientation::Horizontal,false},
 
     // Ethanol quadrant
-    {GUI_FIELD::GSE_GFE_NC, {0.7, 0.382}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_PUMP, {0.575, 0.382}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GFE_NC, {0.7, 0.382}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_PUMP, {0.575, 0.382}, ValveButton::Orientation::Horizontal,false},
 
     // N2 quadrant
-    {GUI_FIELD::GSE_GPN_NC, {0.15, 0.58}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GPA_NC, {0.15, 0.7}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GPN_NC, {0.15, 0.58}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GPA_NC, {0.15, 0.7}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal,false},
 
     // Air valves
 
-    {GUI_FIELD::GSE_GQN_NC1, {0.515, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC2, {0.585, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC3, {0.655, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC4, {0.725, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC1, {0.515, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC2, {0.585, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC3, {0.655, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC4, {0.725, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical,false},
 
 };
 
@@ -243,19 +254,19 @@ inline QMap<std::string, QList<std::vector<GUI_FIELD>>> gseControlMap{
 inline std::vector<ValveInfo> valves = {
     /*{GUI_FIELD::GSE_VENT, {0.24, 0.668},
        ValveButton::Orientation::Horizontal},*/
-    {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::MAIN_LOX, {0.487, 0.75}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Horizontal, false},
+    {GUI_FIELD::MAIN_LOX, {0.487, 0.75}, ValveButton::Orientation::Vertical, false},
+    {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical, false},
     {GUI_FIELD::VENT_FUEL,
      {0.386, 0.249},
-     ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Horizontal},
+     ValveButton::Orientation::Horizontal, false},
+    {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Horizontal, false},
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
      {0.513, 0.225},
-     ValveButton::Orientation::Vertical},
+     ValveButton::Orientation::Vertical, false},
     {GUI_FIELD::PRESSURE_VALVE_LOX,
      {0.572, 0.33},
-     ValveButton::Orientation::Vertical},
+     ValveButton::Orientation::Vertical, false},
 };
 
 inline std::vector<LabelInfo> labels = {
@@ -286,28 +297,28 @@ inline std::vector<ValveInfo> gseValves = {
     // LOX quadrant
     {GUI_FIELD::GSE_GFO_NCC,
      {0.186, 0.35},
-     ValveButton::Orientation::Horizontal},
+     ValveButton::Orientation::Horizontal,false},
     {GUI_FIELD::GSE_GDO_NCC,
      {0.186, 0.247},
-     ValveButton::Orientation::Horizontal},
+     ValveButton::Orientation::Horizontal,false},
 
     // Ethanol quadrant
-    {GUI_FIELD::GSE_GFE_NC, {0.7, 0.382}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_PUMP, {0.575, 0.382}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GFE_NC, {0.7, 0.382}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_PUMP, {0.575, 0.382}, ValveButton::Orientation::Horizontal,false},
 
     // N2 quadrant
-    {GUI_FIELD::GSE_GPN_NC, {0.15, 0.58}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GPA_NC, {0.15, 0.7}, ValveButton::Orientation::Horizontal},
-    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal},
+    {GUI_FIELD::GSE_GPN_NC, {0.15, 0.58}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GPA_NC, {0.15, 0.7}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal,false},
 
     // Air valves
 
-    {GUI_FIELD::GSE_GQN_NC1, {0.515, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC2, {0.585, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC3, {0.655, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC4, {0.725, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical},
-    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical},
+    {GUI_FIELD::GSE_GQN_NC1, {0.515, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC2, {0.585, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC3, {0.655, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC4, {0.725, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical,false},
 
 };
 

@@ -28,6 +28,7 @@ typedef struct  {
     GUI_FIELD f;
     Position p;
     ValveButton::Orientation o;
+    bool read_only;
 } ValveInfo;
 
 typedef struct  {
@@ -49,7 +50,7 @@ protected:
 
 private:
     void setSvgBackground(const QString& filePath);
-    void addButtonIcon(GUI_FIELD field,float x, float y, ValveButton::Orientation orientation = ValveButton::Orientation::Vertical);
+    void addButtonIcon(GUI_FIELD field,float x, float y, ValveButton::Orientation orientation = ValveButton::Orientation::Vertical, bool read_only = 0);
     void addDataLabel(const GUI_FIELD field, float x, float y);
     void placeValves();
     void placeDataLabels();

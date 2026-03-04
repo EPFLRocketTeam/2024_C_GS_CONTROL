@@ -18,8 +18,8 @@
 #include "components/ValveButton.h"
 
 ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
-                         QWidget *parent)
-    : QLabel(parent), currentState(Unknown), iconSize(52, 52), m_field(field) {
+                         QWidget *parent, bool read_only)
+    : QLabel(parent), currentState(Unknown), iconSize(52, 52), m_field(field), m_readOnly(read_only) {
   // Set initial state and update button icon
   // Change this to set the initial state as needed
   this->orientation = orientation;
@@ -78,6 +78,10 @@ ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
                                        .toStdString());
     }
   });
+
+  if (m_readOnly) {
+        setAttribute(Qt::WA_TransparentForMouseEvents, true);
+  }
 
   setFixedSize(sizeHint());
 }
@@ -183,6 +187,8 @@ void ValveButton::updateButtonIcon() {
 ValveButton::State ValveButton::getState() { return currentState; }
 
 void ValveButton::mousePressEvent(QMouseEvent *event) {
+  if (m_readOnly) return;
+
   if (event->button() == Qt::LeftButton)
     emit clicked();
 
@@ -201,6 +207,10 @@ void ValveButton::mousePressEvent(QMouseEvent *event) {
 }
 
 void ValveButton::resetStyle() {
+   if (m_readOnly) {
+        setStyleSheet("background: transparent;");
+        return;
+    }
   setStyleSheet(QString(R"(
             #valveButton {
                 background:transparent;

@@ -33,47 +33,6 @@ IcarusCommandsView::IcarusCommandsView(QWidget *parent)
     QLayout* configSection = setupIDConfigSection();
     QLayout *gimbalSection = setupGimbalSection();
     QLayout *valvesSection = setupValvesSection();
-    /*QScrollArea *scrollArea = new QScrollArea(this);*/
-    /*QWidget* mainWidget = new QWidget();*/
-    /*mainWidget->setObjectName("IcarusCommandsViewInternalWidget");*/
-    /*mainWidget->setStyleSheet(col::defaultCardStyle("IcarusCommandsViewInternalWidget"));*/
-    /*mainWidget->setLayout(mainLayout);*/
-    /*scrollArea->setWidget(mainWidget);*/
-    /*scrollArea->setWidgetResizable(true);*/
-    /*// Optionally hide the horizontal scroll bar if you only need vertical*/
-    /*// scrolling:*/
-    /*scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);*/
-    /*scrollArea->verticalScrollBar()->setAttribute(Qt::WA_TranslucentBackground,*/
-    /*                                              true);*/
-    /**/
-    /*scrollArea->verticalScrollBar()->setStyleSheet(*/
-    /*    "QScrollBar {"*/
-    /*    "   border: none;"*/
-    /*    "}"*/
-    /*    "QScrollBar:vertical {"*/
-    /*    "    background: #2e2e2e;"*/
-    /*    "    width: 15px;"*/
-    /*    "    margin: 15px 3px 15px 3px;"*/
-    /*    "}"*/
-    /*    "QScrollBar::handle:vertical {"*/
-    /*    "    background: #b0b0b0;"*/
-    /*    "    min-height: 20px;"*/
-    /*    "    border: 2px solid transparent;" // transparent border to trigger*/
-    /*                                         // border-radius*/
-    /*    "    border-radius: 7px;"*/
-    /*    "    background-clip: padding;" // ensure the background respects the*/
-    /*                                    // border-radius*/
-    /*    "}"*/
-    /*    "QScrollBar::handle:vertical:hover {"*/
-    /*    "    background: #a0a0a0;"*/
-    /*    "}"*/
-    /*    "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {"*/
-    /*    "    background: none;"*/
-    /*    "    height: 15px;"*/
-    /*    "}"*/
-    /*    "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"*/
-    /*    "    background: none;"*/
-    /*    "}");*/
 
     mainLayout->addLayout(configSection);
     mainLayout->addWidget(line);
@@ -305,7 +264,7 @@ void IcarusCommandsView::onValvesCommandButtonClicked()
     bool okX, okY;
     int n2oValue = m_mainOLineEdit->text().toInt(&okX);
     int fuelValue = m_mainELineEdit->text().toInt(&okY);
-    if (n2oValue < 0 || n2oValue > 100 || fuelValue < 0 || fuelValue > 100) {
+    if (n2oValue < -10 || n2oValue > 100 || fuelValue < -10 || fuelValue > 100) {
         _logger.error("Invalid Command Value", QString(R"(The value valve_MAIN_N2O=%1, valve_MAIN_FUEL=%2, contain an invalid value, they should be between 0 and 100)").arg(n2oValue).arg(fuelValue).toStdString());
         return;
     }

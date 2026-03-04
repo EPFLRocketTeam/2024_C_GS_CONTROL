@@ -543,6 +543,8 @@ void Server::simulateJsonData() {
   packet.gnss_lat = distCoord(gen);
   packet.baro = distAlt(gen);
   packet.N2_solenoid = static_cast<int8_t>(distState(gen));
+  packet.N2O_sol = static_cast<int8_t>(distState(gen));
+  packet.ETH_sol = static_cast<int8_t>(distState(gen));
   packet.N2O_main = distPressure(gen);
   packet.N2O_vent = distPressure(gen);
   packet.N2O_temp = distPressure(gen);

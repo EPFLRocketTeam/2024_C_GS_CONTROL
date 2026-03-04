@@ -51,7 +51,7 @@ ValveControlView::ValveControlView(std::vector<ValveInfo> valves,
 
 void ValveControlView::placeValves() {
   for (auto valveInfo : _valves) {
-    addButtonIcon(valveInfo.f, valveInfo.p.x, valveInfo.p.y, valveInfo.o);
+    addButtonIcon(valveInfo.f, valveInfo.p.x, valveInfo.p.y, valveInfo.o, valveInfo.read_only);
   }
 }
 
@@ -114,7 +114,7 @@ void ValveControlView::setSvgBackground(const QString &filePath) {
 }
 
 void ValveControlView::addButtonIcon(GUI_FIELD field, float x, float y,
-                                     ValveButton::Orientation orientation) {
+                                     ValveButton::Orientation orientation, bool read_only) {
   /*ValveButton *button = new ValveButton(orientation, this);*/
 
   // Create a container widget
@@ -129,7 +129,7 @@ void ValveControlView::addButtonIcon(GUI_FIELD field, float x, float y,
 
   // Create the valve button
   ValveButton *button =
-      new ValveButton(field, orientation, valveWithTitle);
+      new ValveButton(field, orientation, valveWithTitle, read_only);
   button->setAlignment(Qt::AlignCenter);
   
   // Add them to the layout
