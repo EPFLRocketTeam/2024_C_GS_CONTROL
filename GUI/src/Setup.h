@@ -55,7 +55,7 @@ inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {GUI_CMD_HOPPER_IDLE, GUI_CMD_HOPPER_TARE_ORIENTATION, GUI_CMD_ARM,
      GUI_CMD_LAUNCH, GUI_CMD_ABORT, GUI_CMD_HOPPER_TARE,
      GUI_CMD_HOPPER_HOMING_X, GUI_CMD_HOPPER_HOMING_Y,
-     GUI_CMD_HOPPER_HOMING_MAIN_FUEL, GUI_CMD_HOPPER_HOMING_MAIN_N2O},
+     GUI_CMD_HOPPER_HOMING_MAIN_FUEL, GUI_CMD_HOPPER_HOMING_MAIN_N2O, GUI_CMD_HOPPER_SPARE_F1, GUI_CMD_HOPPER_SPARE_F2, GUI_CMD_HOPPER_SPARE_F3},
     {GUI_CMD_DISCONNECT}};
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     {"ValveControlButton", valvesMap}, {"QPushButton", pushButtonMap}};
@@ -171,7 +171,7 @@ inline QList<GUI_FIELD> tempProbe = {
     HOPPER_TEMP3,
     };
 inline QList<GUI_FIELD> tbd = {HOPPER_GIMBAL_X,     HOPPER_GIMBAL_Y,
-                               HOPPER_HV_VOLTAGE,   HOPPER_AV_TEMP,
+                               HOPPER_HV_VOLTAGE, HOPPER_LV_VOLTAGE,   HOPPER_AV_TEMP,
                                HOPPER_FIREUP_STATE, HOPPER_AV_STATE};
 inline QMap<QString, QList<GUI_FIELD>> data_sections = {
     {"GPS", gps},
