@@ -162,6 +162,8 @@ QLayout* IcarusCommandsView::setupCurrentValueLabels() {
 
 
 QLayout* IcarusCommandsView::setupValvesSection() {
+    
+
     QLabel* mainOLabel = new QLabel("Main N2O", this);
     mainOLabel->setStyleSheet(QString("font-size: 14pt; color: %1;font-weight: 400;background: transparent;").arg(col::primary));
     QLabel* MainELabel = new QLabel("Main Fuel", this);
@@ -203,6 +205,22 @@ QLayout* IcarusCommandsView::setupValvesSection() {
 
 
 QLayout* IcarusCommandsView::setupCurrentValvesLabels() {
+    QLabel *mainLabel = new QLabel("Current N20: ");
+    mainLabel->setStyleSheet(col::labelStyle);
+    QLabel *mainValue = new QLabel("-");
+    mainValue->setStyleSheet(col::labelStyle);
+    QLabel *ethLabel = new QLabel("Current Fuel: ");
+    ethLabel->setStyleSheet(col::labelStyle);
+    QLabel *ethValue = new QLabel("-");
+    ethValue->setStyleSheet(col::labelStyle);
+    QHBoxLayout *voltageLayout = new QHBoxLayout;
+    voltageLayout->addWidget(mainLabel);
+    voltageLayout->addWidget(mainValue);
+    voltageLayout->addWidget(ethLabel);
+    voltageLayout->addWidget(ethValue);
+
+
+
     QLabel *xLabel = new QLabel("Main N20: ");
     xLabel->setStyleSheet(col::labelStyle);
     QLabel *xValue = new QLabel("-");
@@ -216,13 +234,24 @@ QLayout* IcarusCommandsView::setupCurrentValvesLabels() {
     currentValLayout->addWidget(xValue);
     currentValLayout->addWidget(yLabel);
     currentValLayout->addWidget(yValue);
+
+
+    QVBoxLayout *valvesStatusLayout = new QVBoxLayout;
+    valvesStatusLayout->addLayout(voltageLayout);
+    valvesStatusLayout->addLayout(currentValLayout);
     MainWindow::clientManager->subscribe(HOPPER_N2O_MAIN, [xValue](const QString &value){
         xValue->setText(value);
     });
     MainWindow::clientManager->subscribe(HOPPER_ETH_MAIN, [yValue](const QString &value){
         yValue->setText(value);
     });
-    return currentValLayout;
+    MainWindow::clientManager->subscribe(HOPPER_N2O_MAIN, [mainValue](const QString &value){
+        mainValue->setText(value);
+    });
+    MainWindow::clientManager->subscribe(HOPPER_ETH_MAIN, [ethValue](const QString &value){
+        ethValue->setText(value);
+    });
+    return valvesStatusLayout;
 }
 
 
