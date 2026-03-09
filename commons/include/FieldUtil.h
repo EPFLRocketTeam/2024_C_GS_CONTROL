@@ -155,6 +155,8 @@ enum GUI_FIELD {
   HOPPER_N2O_VENT,     // 1 bit
   HOPPER_ETH_VENT,     // 1 bit
   HOPPER_N2_SOL,       // 1 bit
+  HOPPER_N2O_CURRENT,     // 8 bits
+  HOPPER_ETH_CURRENT,     // 8 bits
   HOPPER_N2O_MAIN,     // 8 bits
   HOPPER_ETH_MAIN,     // 8 bits
   HOPPER_N2O_SOL,      // 8 bits
@@ -421,6 +423,12 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case HOPPER_ETH_SOL:
     name = "HOPPER MSE-nc";
+    break;
+  case HOPPER_N2O_CURRENT:
+    name = "HOPPER N2O CURRENT";
+    break;
+  case HOPPER_ETH_CURRENT:
+    name = "HOPPER ETH CURRENT";
     break;
   case HOPPER_N2O_MAIN:
     name = "HOPPER N2O MAIN";
@@ -894,12 +902,16 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HOPPER_ETH_VENT;
   else if (fieldName == "HOPPER PN-nc")
     return HOPPER_N2_SOL;
+  else if (fieldName == "HOPPER N2O CURRENT")
+    return HOPPER_N2O_CURRENT;
+  else if (fieldName == "HOPPER ETH CURRENT")
+    return HOPPER_ETH_CURRENT;
   else if (fieldName == "HOPPER N2O MAIN")
     return HOPPER_N2O_MAIN;
-  else if (fieldName == "HOPPER N2O MAIN")
-    return HOPPER_N2O_SOL;
-  else if (fieldName == "HOPPER MSO-nc")
+  else if (fieldName == "HOPPER ETH MAIN")
     return HOPPER_ETH_MAIN;
+  else if (fieldName == "HOPPER MSO-nc")
+    return HOPPER_N2O_SOL;
   else if (fieldName == "HOPPER MSE-nc")
     return HOPPER_ETH_SOL;
   else if (fieldName == "HOPPER GNSS LON")

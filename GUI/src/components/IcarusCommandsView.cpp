@@ -245,10 +245,10 @@ QLayout* IcarusCommandsView::setupCurrentValvesLabels() {
     MainWindow::clientManager->subscribe(HOPPER_ETH_MAIN, [yValue](const QString &value){
         yValue->setText(value);
     });
-    MainWindow::clientManager->subscribe(HOPPER_N2O_MAIN, [mainValue](const QString &value){
+    MainWindow::clientManager->subscribe(HOPPER_N2O_CURRENT, [mainValue](const QString &value){
         mainValue->setText(value);
     });
-    MainWindow::clientManager->subscribe(HOPPER_ETH_MAIN, [ethValue](const QString &value){
+    MainWindow::clientManager->subscribe(HOPPER_ETH_CURRENT, [ethValue](const QString &value){
         ethValue->setText(value);
     });
     return valvesStatusLayout;

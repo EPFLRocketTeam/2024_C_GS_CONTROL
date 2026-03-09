@@ -329,6 +329,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataHopper.N2O_main));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_MAIN)] =
         QString::number(static_cast<int>(dataHopper.ETH_main));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_CURRENT)] =
+        QString::number(static_cast<int>(dataHopper.N2O_current));
+    jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_CURRENT)] =
+        QString::number(static_cast<int>(dataHopper.ETH_current));
     jsonObj[QString::number(GUI_FIELD::HOPPER_ETH_SOL)] =
         QString::number(static_cast<int>(dataHopper.ETH_sol));
     jsonObj[QString::number(GUI_FIELD::HOPPER_N2O_SOL)] =

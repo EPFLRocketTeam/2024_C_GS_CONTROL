@@ -546,6 +546,8 @@ void Server::simulateJsonData() {
   packet.N2O_sol = static_cast<int8_t>(distState(gen));
   packet.ETH_sol = static_cast<int8_t>(distState(gen));
   packet.N2O_main = distPressure(gen);
+  packet.N2O_current = 12;
+  packet.ETH_current = 13;
   packet.N2O_vent = distPressure(gen);
   packet.N2O_temp = distPressure(gen);
   packet.N2O_pressure = distPressure(gen);
