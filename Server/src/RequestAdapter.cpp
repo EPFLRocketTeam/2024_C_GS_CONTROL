@@ -13,9 +13,9 @@
 #include <stdexcept>
 
 #ifdef RF_PROTOCOL_FIREHORN
-#include "DownlinkCompression_Firehorn.h"
-#include "PacketDefinition_Firehorn.h"
-#include "ParameterDefinition_Firehorn.h"
+#include "DownlinkCompression_Firehorn2.h"
+#include "PacketDefinition_Firehorn2.h"
+#include "ParameterDefinition_Firehorn2.h"
 #endif /* RF_PROTOCOL_FIREHORN */
 
 
@@ -105,64 +105,98 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     db->write_pkt(db->process_pkt(NULL, &dataAv, NULL));
   _logger.info("PROCESSING UNPACKED", QString(R"(
   packet_nbr: %1,
-  gnss_lon: %2,
-  gnss_lat: %3,
-  gnss_alt: %4,
-  gnss_vertical_speed: %5,
-  N2_pressure: %6,
-  N2_temp: %7,
-  N2_PT1000_temp: %8,
-  fuel_pressure: %9,
-  LOX_pressure: %10,
-  LOX_temp: %11,
-  LOX_inj_pressure: %12,
-  LOX_inj_temp: %13,
-  fuel_inj_pressure: %14,
-  chamber_pressure: %15,
-  engine_state: %16,
-  lpb_voltage: %17,
-  lpb_current: %18,
-  hpb_voltage: %19,
-  hpb_current: %20,
-  av_fc_temp: %21,
-  ambient_temp: %22,
-  av_state: %23,
-  cam_rec: %24,
-  LOX_cap_fls_0: %25,
-  LOX_fls_10: %26,
-  LOX_fls_50: %27,
-  LOX_fls_80: %28,
-  LOX_fls_90: %29,
+  av_timestamp: %2,
+  gnss_lon: %3,
+  gnss_lat: %4,
+  gnss_alt: %5,
+  vertical_speed: %6,
+  absolute_speed; %7,
+  agl_altitude: %8,
+  N2_pressure_1: %9,
+  N2_temp_1: %10,
+  N2_pressure_2: %11,
+  N2_temp_2: %12,
+  fuel_pressure: %13,
+  fuel_temp: %14,
+  LOX_pressure: %15,
+  LOX_temp: %16,
+  LOX_fls_temp_1: %17,
+  LOX_fls_temp_2: %18,
+  LOX_fls_temp_3: %19,
+  LOX_fls_temp_4: %20,
+  LOX_fls_temp_5: %21,
+  LOX_fls_temp_6: %22,
+  LOX_fls_temp_7: %23,
+  LOX_fls_temp_8: %24,
+  fuel_inj_pressure: %25,
+  LOX_inj_pressure: %26,
+  chamber_pressure: %27,
+  chamber_temp: %28,
+  valves_state: %29,
+  valve_dpr_fuel: %30,
+  valve_dpr_LOX: %31,
+  lpb_voltage: %32,
+  lpb_current: %33,
+  vout_5v_voltage: %34,
+  vout_5v_current: %35, 
+  hpb_main_voltage: %36,
+  hpb_main_current: %37,
+  hpb_backup_voltage: %38,
+  hpb_backup_current: %39,
+  vout_24v_voltage: %40,
+  vout_24v_current: %41, 
+  av_fc_temp: %42,
+  ambient_temp: %43,
+  av_state: %44,
+  cam_rec: %45,
+  av_pyros: %46
   )")
                       .arg(dataAv.packet_nbr)
+                      .arg(dataAv.av_timestamp)
                       .arg(dataAv.gnss_lon)
                       .arg(dataAv.gnss_lat)
                       .arg(dataAv.gnss_alt)
-                      .arg(dataAv.gnss_vertical_speed)
-                      .arg(dataAv.N2_pressure)
-                      .arg(dataAv.N2_temp)
-                      .arg(dataAv.N2_PT1000_temp)
+                      .arg(dataAv.vertical_speed)
+                      .arg(dataAv.absolute_speed)
+                      .arg(dataAv.agl_altitude)
+                      .arg(dataAv.N2_pressure_1)
+                      .arg(dataAv.N2_temp_1)
+                      .arg(dataAv.N2_pressure_2)
+                      .arg(dataAv.N2_temp_2)
                       .arg(dataAv.fuel_pressure)
+                      .arg(dataAv.fuel_temp)
                       .arg(dataAv.LOX_pressure)
                       .arg(dataAv.LOX_temp)
-                      .arg(dataAv.LOX_inj_pressure)
-                      .arg(dataAv.LOX_inj_temp)
+                      .arg(dataAv.LOX_fls_temp_1)
+                      .arg(dataAv.LOX_fls_temp_2)
+                      .arg(dataAv.LOX_fls_temp_3)
+                      .arg(dataAv.LOX_fls_temp_4)
+                      .arg(dataAv.LOX_fls_temp_5)
+                      .arg(dataAv.LOX_fls_temp_6)
+                      .arg(dataAv.LOX_fls_temp_7)
+                      .arg(dataAv.LOX_fls_temp_8)
                       .arg(dataAv.fuel_inj_pressure)
+                      .arg(dataAv.LOX_inj_pressure)
                       .arg(dataAv.chamber_pressure)
-                      .arg(dataAv.engine_state)
+                      .arg(dataAv.chamber_temp)
+                      .arg(dataAv.valves_state)
+                      .arg(dataAv.valve_dpr_fuel)
+                      .arg(dataAv.valve_dpr_LOX)
                       .arg(dataAv.lpb_voltage)
                       .arg(dataAv.lpb_current)
-                      .arg(dataAv.hpb_voltage)
-                      .arg(dataAv.hpb_current)
+                      .arg(dataAv.vout_5v_voltage)
+                      .arg(dataAv.vout_5v_current)
+                      .arg(dataAv.hpb_main_voltage)
+                      .arg(dataAv.hpb_main_current)
+                      .arg(dataAv.hpb_backup_voltage)
+                      .arg(dataAv.hpb_backup_current)
+                      .arg(dataAv.vout_24v_voltage)
+                      .arg(dataAv.vout_24v_current)
                       .arg(dataAv.av_fc_temp)
                       .arg(dataAv.ambient_temp)
                       .arg(dataAv.av_state)
                       .arg(dataAv.cam_rec)
-                      .arg(dataAv.LOX_cap_fls_0)
-                      .arg(dataAv.LOX_fls_10)
-                      .arg(dataAv.LOX_fls_50)
-                      .arg(dataAv.LOX_fls_80)
-                      .arg(dataAv.LOX_fls_90)
+                      .arg(dataAv.pyro_status)
                       .toStdString());
     delete packedData;
 
@@ -175,11 +209,15 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<double>(dataAv.gnss_lat)) + " [°]";
     jsonObj[QString::number(GUI_FIELD::GNSS_ALT)] =
         QString::number(static_cast<double>(dataAv.gnss_alt)) + " [m]";
-    jsonObj[QString::number(GUI_FIELD::GNSS_VERTICAL_SPEED)] =
-        QString::number(static_cast<int>(dataAv.gnss_vertical_speed)) +
+    jsonObj[QString::number(GUI_FIELD::VERTICAL_SPEED)] =
+        QString::number(static_cast<int>(dataAv.vertical_speed)) +
         " [m/s]";
+    jsonObj[QString::number(GUI_FIELD::ABSOLUTE_SPEED)] =
+        QString::number(static_cast<int>(dataAv.absolute_speed)) +
+        " [m/s]";
+    // TODO: update GUI and add N2_temp_2 field for COPV 2
     jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] =
-        QString::number(static_cast<double>(dataAv.N2_pressure)) + " [bar]";
+        QString::number(static_cast<double>(dataAv.N2_pressure_1)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] =
         QString::number(static_cast<double>(dataAv.fuel_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] =
@@ -193,54 +231,77 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] =
         QString::number(static_cast<double>(dataAv.chamber_pressure)) +
         " [bar]";
+    // TODO: update GUI and add N2_temp_2 field for COPV 2
     jsonObj[QString::number(GUI_FIELD::N2_TEMP)] =
-        QString::number(static_cast<int>(dataAv.N2_temp)) + " [°C]";
+        QString::number(static_cast<int>(dataAv.N2_temp_1)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
         QString::number(static_cast<int>(dataAv.LOX_temp)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_CAP_FLS_0)] =
-        QString::number(static_cast<int>(dataAv.LOX_cap_fls_0)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_FLS_10)] =
-        QString::number(static_cast<int>(dataAv.LOX_fls_10)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_FLS_50)] =
-        QString::number(static_cast<int>(dataAv.LOX_fls_50)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_FLS_80)] =
-        QString::number(static_cast<int>(dataAv.LOX_fls_80)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_FLS_90)] =
-        QString::number(static_cast<int>(dataAv.LOX_fls_90)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_1)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_1)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_2)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_2)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_3)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_3)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_4)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_4)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_5)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_5)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_6)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_6)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_7)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_7)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_8)] =
+        QString::number(static_cast<int>(dataAv.LOX_fls_temp_8)) + " [°C]";
+
     jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] =
         QString::number(static_cast<double>(dataAv.lpb_voltage)) + " [V]";
-    jsonObj[QString::number(GUI_FIELD::HPB_VOLTAGE)] =
-        QString::number(static_cast<double>(dataAv.hpb_voltage)) + " [V]";
     jsonObj[QString::number(GUI_FIELD::LPB_CURRENT)] =
         QString::number(static_cast<double>(dataAv.lpb_current)) + " [A]";
-    jsonObj[QString::number(GUI_FIELD::HPB_CURRENT)] =
-        QString::number(static_cast<double>(dataAv.hpb_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::VOUT_5V_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.vout_5v_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::VOUT_5V_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.vout_5v_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::HPB_MAIN_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.hpb_main_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::HPB_MAIN_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.hpb_main_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::HPB_BACKUP_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.hpb_backup_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::HPB_BACKUP_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.hpb_backup_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::VOUT_24V_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.vout_24v_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::VOUT_24V_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.vout_24v_current)) + " [A]";
 
     jsonObj[QString::number(GUI_FIELD::AV_FC_TEMP)] =
         QString::number(static_cast<int>(dataAv.av_fc_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::AMBIENT_TEMP)] =
         QString::number(static_cast<int>(dataAv.ambient_temp)) + " [°C]";
 
-    int engine_states = static_cast<int>(dataAv.engine_state);
+    int engine_states = static_cast<int>(dataAv.valves_state);
     jsonObj[QString::number(GUI_FIELD::VENT_N2)] =
-        QString::number((engine_states & ENGINE_STATE_VENT_N2) > 0 ? 1 : 0);
-    jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_LOX)] =
-        QString::number((engine_states & ENGINE_STATE_P_LOX) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_VENT_N2) > 0 ? 1 : 0);
+// TODO: UPDATE FOR BALL VALVE DPR (2x servos + 1x solenoid SDPR_N2, cf. PacketDefinition_Firehorn2.h)
     jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_FUEL)] =
-        QString::number((engine_states & ENGINE_STATE_P_FUEL) > 0 ? 1 : 0);
+        QString::number(dataAv.valve_dpr_fuel);
+    jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_LOX)] =
+        QString::number(dataAv.valve_dpr_LOX);
     jsonObj[QString::number(GUI_FIELD::VENT_LOX)] =
-        QString::number((engine_states & ENGINE_STATE_VENT_LOX) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_VENT_LOX) > 0 ? 1 : 0);
     jsonObj[QString::number(GUI_FIELD::VENT_FUEL)] =
-        QString::number((engine_states & ENGINE_STATE_VENT_FUEL) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_VENT_FUEL) > 0 ? 1 : 0);
     jsonObj[QString::number(GUI_FIELD::MAIN_LOX)] =
-        QString::number((engine_states & ENGINE_STATE_MAIN_LOX) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_MAIN_LOX) > 0 ? 1 : 0);
     jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] =
-        QString::number((engine_states & ENGINE_STATE_MAIN_FUEL) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_MAIN_FUEL) > 0 ? 1 : 0);
 
     jsonObj[QString::number(GUI_FIELD::AV_STATE)] =
         fieldUtil::avStateToName(dataAv.av_state);
     jsonObj[QString::number(GUI_FIELD::CAM_REC)] =
         QString::number(static_cast<int>(dataAv.cam_rec));
+    jsonObj[QString::number(GUI_FIELD::AV_PYROS)] =
+        QString::number(static_cast<int>(dataAv.pyro_status));
 
   const double downrangeMeters =
       computeDownrangeMeters(static_cast<double>(dataAv.gnss_lat),
@@ -252,7 +313,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   } else {
     jsonObj[QString::number(GUI_FIELD::DOWNRANGE)] = "--";
   }
-    QJsonObject engineStateObj;
+    // QJsonObject engineStateObj;
     // Add the sub-object to the main JSON object
     /*jsonObj[QString::number(GUI_FIELD::ENGINE_STATE)] = engineStateObj;*/
     break;
@@ -653,6 +714,49 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 
 void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
   // uint8_t fields - cast to unsigned int
+
+#if RF_PROTOCOL_FIREHORN
+  jsonObj[QString::number(GUI_FIELD::GSE_GQD1_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GQD1_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GQD2_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GQD2_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GQD3_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GQD3_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GQD4_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GQD4_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GQD5_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GQD5_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GQD6_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GQD6_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GPA_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GPA_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GVA_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GVA_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GPN_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GVN_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GVN_NO) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GFE_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GFO_NCC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GFO_NCC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GDO_NCC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GDO_NCC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GFD_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GFD_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GDD_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GDD_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_PUMP)] =
+      QString::number(static_cast<unsigned int>(dataGse->PUMP));
+
+  // float fields - no cast needed, QString::number handles float directly
+  jsonObj[QString::number(GUI_FIELD::GSE_GP1)] = QString::number(dataGse->GP1);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP2)] = QString::number(dataGse->GP2);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP3)] = QString::number(dataGse->GP3);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP4)] = QString::number(dataGse->GP4);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP5)] = QString::number(dataGse->GP5);
+
+#else
   jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC1)] =
       QString::number(static_cast<unsigned int>(dataGse->GQN_NC1));
   jsonObj[QString::number(GUI_FIELD::GSE_GQN_NC2)] =
@@ -686,6 +790,7 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
   jsonObj[QString::number(GUI_FIELD::GSE_GP3)] = QString::number(dataGse->GP3);
   jsonObj[QString::number(GUI_FIELD::GSE_GP4)] = QString::number(dataGse->GP4);
   jsonObj[QString::number(GUI_FIELD::GSE_GP5)] = QString::number(dataGse->GP5);
+#endif
 }
 
 #if RF_PROTOCOL_FIREHORN
@@ -728,10 +833,10 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {AV_CMD_MAIN_FUEL, GSC_CMD};
 
   case GUI_FIELD::PRESSURE_VALVE_FUEL:
-    return {AV_CMD_P_FUEL, GSC_CMD};
+    return {AV_CMD_DPR_FUEL, GSC_CMD};
 
   case GUI_FIELD::PRESSURE_VALVE_LOX:
-    return {AV_CMD_P_LOX, GSC_CMD};
+    return {AV_CMD_DPR_LOX, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_GSE_IDLE:
     return {GSE_CMD_IDLE, GSE_TELEMETRY};
@@ -745,26 +850,32 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GUI_CMD_GSE_PASSIVATE:
     return {GSE_CMD_PASSIVATE, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GQN_NC1:
-    return {GSE_CMD_TOGGLE_GQN1, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GQD1_NC:
+    return {GSE_CMD_TOGGLE_GQD1, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GQN_NC2:
-    return {GSE_CMD_TOGGLE_GQN2, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GQD2_NC:
+    return {GSE_CMD_TOGGLE_GQD2, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GQN_NC3:
-    return {GSE_CMD_TOGGLE_GQN3, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GQD3_NC:
+    return {GSE_CMD_TOGGLE_GQD3, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GQN_NC4:
-    return {GSE_CMD_TOGGLE_GQN4, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GQD4_NC:
+    return {GSE_CMD_TOGGLE_GQD4, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GQN_NC5:
-    return {GSE_CMD_TOGGLE_GQN5, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GQD5_NC:
+    return {GSE_CMD_TOGGLE_GQD5, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GPN_NC:
-    return {GSE_CMD_TOGGLE_GPN, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GQD6_NC:
+    return {GSE_CMD_TOGGLE_GQD6, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GPA_NC:
     return {GSE_CMD_TOGGLE_GPA, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GVA_NC:
+    return {GSE_CMD_TOGGLE_GVA, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GPN_NC:
+    return {GSE_CMD_TOGGLE_GPN, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GVN_NC:
     return {GSE_CMD_TOGGLE_GVN, GSE_TELEMETRY};
@@ -778,8 +889,11 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GSE_GDO_NCC:
     return {GSE_CMD_TOGGLE_GDO, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_PC_OLC:
-    return {GSE_CMD_TOGGLE_PC, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GFD_NC:
+    return {GSE_CMD_TOGGLE_GFD, GSE_TELEMETRY};
+
+  case GUI_FIELD::GSE_GDD_NC:
+    return {GSE_CMD_TOGGLE_GDD, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_PUMP:
     return {GSE_CMD_TOGGLE_PUMP, GSE_TELEMETRY};

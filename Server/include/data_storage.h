@@ -30,50 +30,69 @@ struct AV_downlink_pkt {
   float gnss_lon;
   float gnss_lat;
   uint16_t gnss_alt;
-  int16_t gnss_vertical_speed;
-  uint16_t N2_pressure;
-  uint8_t N2_temp;
-  uint8_t N2_PT1000_temp;
+  int16_t vertical_speed;
+  int16_t absolute_speed;
+  int16_t agl_altitude;
+  uint16_t N2_pressure_1;
+  uint8_t N2_temp_1;
+  uint16_t N2_pressure_2;
+  uint8_t N2_temp_2;
   float fuel_pressure;
+  int16_t fuel_temp;
   float LOX_pressure;
   int16_t LOX_temp;
-  float LOX_inj_pressure;
-  int32_t LOX_inj_temp;
+  float LOX_fls_temp_1;
+  float LOX_fls_temp_2;
+  float LOX_fls_temp_3;
+  float LOX_fls_temp_4;
+  float LOX_fls_temp_5;
+  float LOX_fls_temp_6;
+  float LOX_fls_temp_7;
+  float LOX_fls_temp_8;
   float fuel_inj_pressure;
+  float LOX_inj_pressure;
   float chamber_pressure;
-  uint8_t engine_state;
+  float chamber_temp;
+  uint8_t valves_state;
+  float valve_dpr_fuel;
+  float valve_dpr_LOX;
   float lpb_voltage;
   float lpb_current;
-  float hpb_voltage;
-  float hpb_current;
+  float vout_5v_voltage;
+  float vout_5v_current;
+  float hpb_main_voltage;
+  float hpb_main_current;
+  float hpb_backup_voltage;
+  float hpb_backup_current;
+  float vout_24v_voltage;
+  float vout_24v_current;
   int8_t av_fc_temp;
   int8_t ambient_temp;
   uint8_t av_state;
   uint8_t cam_rec;
-  float LOX_cap_fls_0;
-  float LOX_fls_10;
-  float LOX_fls_50;
-  float LOX_fls_80;
-  float LOX_fls_90;
+  uint8_t pyro_status;
 };
 
 struct GSE_downlink_pkt {
   uint32_t id;
   std::string ts;
-  uint8_t GQN_NC1; // Nitrogen and Ethanol disconnect actuation
-  uint8_t GQN_NC2; // LOX disconnect actuation
-  uint8_t GQN_NC3; // reserved
-  uint8_t GQN_NC4; // reserved
+  uint8_t GQD1_NC; // Quick Disconnect Actuators
+  uint8_t GQD2_NC; // 
+  uint8_t GQD3_NC; // 
+  uint8_t GQD4_NC; // 
+  uint8_t GQD5_NC; //
+  uint8_t GQD6_NC; //
 
-  uint8_t GQN_NC5; // Low mass flow anti-freeze lox disconnect
-  uint8_t GPN_NC1; // Controls the activation of the pressure booster
+  uint8_t GPA_NC; // Controls the activation of the pressure booster
+  uint8_t GVA_NC; // Vents the pneumatic system
 
-  uint8_t GPN_NC2; // Control the opening of the high pressure bottle
+  uint8_t GPN_NC; // Control the opening of the high pressure bottle
   uint8_t GVN_NC;  // Vents the tube before disconnect
   uint8_t GFE_NC;  // Controls the filling of ethanol along with the pump
   uint8_t GFO_NCC; // Controls LOX filling
   uint8_t GDO_NCC; // Vent the tube before disconnect
-  uint8_t PC_OLC;  // Trigger Lox disconnect and purge the tube of LOX
+  uint8_t GFD_NC; // Low-mass flow anti freeze LOX filling line
+  uint8_t GDD_NC; // Low-mass flow anti freeze LOX disconnect
 
   float GP1; // Nitrogen pressure in the filling line
   float GP2; // LOX pressure in the deware
@@ -201,7 +220,7 @@ public:
   int delete_database();
 
 #if RF_PROTOCOL_FIREHORN
-#include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
+#include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn2.h"
 #elif RF_PROTOCOL_ICARUS
 #include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h"
 #endif
@@ -283,59 +302,73 @@ private:
           sqlite_orm::make_column("gnss_lon", &AV_downlink_pkt::gnss_lon),
           sqlite_orm::make_column("gnss_lat", &AV_downlink_pkt::gnss_lat),
           sqlite_orm::make_column("gnss_alt", &AV_downlink_pkt::gnss_alt),
-          sqlite_orm::make_column("gnss_vertical_speed",
-                                  &AV_downlink_pkt::gnss_vertical_speed),
-          sqlite_orm::make_column("N2_pressure", &AV_downlink_pkt::N2_pressure),
+          sqlite_orm::make_column("vertical_speed",
+                                  &AV_downlink_pkt::vertical_speed),
+          sqlite_orm::make_column("absolute_speed", &AV_downlink_pkt::absolute_speed),
+          sqlite_orm::make_column("agl_altitude", &AV_downlink_pkt::agl_altitude),
+          sqlite_orm::make_column("N2_pressure_1", &AV_downlink_pkt::N2_pressure_1),
+          sqlite_orm::make_column("N2_temp_1", &AV_downlink_pkt::N2_temp_1),
+          sqlite_orm::make_column("N2_pressure_2", &AV_downlink_pkt::N2_pressure_2),
+          sqlite_orm::make_column("N2_temp_2", &AV_downlink_pkt::N2_temp_2),
           sqlite_orm::make_column("fuel_pressure",
                                   &AV_downlink_pkt::fuel_pressure),
+          sqlite_orm::make_column("fuel_temp", &AV_downlink_pkt::fuel_temp),
           sqlite_orm::make_column("LOX_pressure",
                                   &AV_downlink_pkt::LOX_pressure),
+          sqlite_orm::make_column("LOX_temp", &AV_downlink_pkt::LOX_temp),
+          sqlite_orm::make_column("LOX_fls_temp_1", &AV_downlink_pkt::LOX_fls_temp_1),
+          sqlite_orm::make_column("LOX_fls_temp_2", &AV_downlink_pkt::LOX_fls_temp_2),
+          sqlite_orm::make_column("LOX_fls_temp_3", &AV_downlink_pkt::LOX_fls_temp_3),
+          sqlite_orm::make_column("LOX_fls_temp_4", &AV_downlink_pkt::LOX_fls_temp_4),
+          sqlite_orm::make_column("LOX_fls_temp_5", &AV_downlink_pkt::LOX_fls_temp_5),
+          sqlite_orm::make_column("LOX_fls_temp_6", &AV_downlink_pkt::LOX_fls_temp_6),
+          sqlite_orm::make_column("LOX_fls_temp_7", &AV_downlink_pkt::LOX_fls_temp_7),
+          sqlite_orm::make_column("LOX_fls_temp_8", &AV_downlink_pkt::LOX_fls_temp_8),
           sqlite_orm::make_column("fuel_inj_pressure",
                                   &AV_downlink_pkt::fuel_inj_pressure),
+          sqlite_orm::make_column("LOX_inj_pressure", &AV_downlink_pkt::LOX_inj_pressure),
           sqlite_orm::make_column("chamber_pressure",
                                   &AV_downlink_pkt::chamber_pressure),
-          sqlite_orm::make_column("lox_inj_pressure",
-                                  &AV_downlink_pkt::LOX_inj_pressure),
-          sqlite_orm::make_column("N2_temp", &AV_downlink_pkt::N2_temp),
-          sqlite_orm::make_column("N2_PT1000_temp",
-                                  &AV_downlink_pkt::N2_PT1000_temp),
-          sqlite_orm::make_column("LOX_temp", &AV_downlink_pkt::LOX_temp),
-          sqlite_orm::make_column("LOX_inj_temp",
-                                  &AV_downlink_pkt::LOX_inj_temp),
+          sqlite_orm::make_column("chamber_temp", &AV_downlink_pkt::chamber_temp),
+          sqlite_orm::make_column("valves_state", &AV_downlink_pkt::valves_state),
+          sqlite_orm::make_column("valve_dpr_fuel", &AV_downlink_pkt::valve_dpr_fuel),
+          sqlite_orm::make_column("valve_dpr_LOX", &AV_downlink_pkt::valve_dpr_LOX),
           sqlite_orm::make_column("lpb_voltage", &AV_downlink_pkt::lpb_voltage),
           sqlite_orm::make_column("lpb_current", &AV_downlink_pkt::lpb_current),
-          sqlite_orm::make_column("hpb_voltage", &AV_downlink_pkt::hpb_voltage),
-          sqlite_orm::make_column("hpb_current", &AV_downlink_pkt::hpb_current),
+          sqlite_orm::make_column("vout_5v_voltage", &AV_downlink_pkt::vout_5v_voltage),
+          sqlite_orm::make_column("vout_5v_current", &AV_downlink_pkt::vout_5v_current),
+          sqlite_orm::make_column("hpb_main_voltage", &AV_downlink_pkt::hpb_main_voltage),
+          sqlite_orm::make_column("hpb_main_current", &AV_downlink_pkt::hpb_main_current),
+          sqlite_orm::make_column("hpb_backup_voltage", &AV_downlink_pkt::hpb_backup_voltage),
+          sqlite_orm::make_column("hpb_backup_current", &AV_downlink_pkt::hpb_backup_current),
+          sqlite_orm::make_column("vout_24v_voltage", &AV_downlink_pkt::vout_24v_voltage),
+          sqlite_orm::make_column("vout_24v_current", &AV_downlink_pkt::vout_24v_current),
           sqlite_orm::make_column("av_fc_temp", &AV_downlink_pkt::av_fc_temp),
           sqlite_orm::make_column("ambient_temp",
                                   &AV_downlink_pkt::ambient_temp),
-          sqlite_orm::make_column("engine_state",
-                                  &AV_downlink_pkt::engine_state),
           sqlite_orm::make_column("av_state", &AV_downlink_pkt::av_state),
           sqlite_orm::make_column("cam_rec", &AV_downlink_pkt::cam_rec),
-          sqlite_orm::make_column("LOX_cap_fls_0",
-                                  &AV_downlink_pkt::LOX_cap_fls_0),
-          sqlite_orm::make_column("LOX_fls_10", &AV_downlink_pkt::LOX_fls_10),
-          sqlite_orm::make_column("LOX_fls_50", &AV_downlink_pkt::LOX_fls_50),
-          sqlite_orm::make_column("LOX_fls_80", &AV_downlink_pkt::LOX_fls_80),
-          sqlite_orm::make_column("LOX_fls_90", &AV_downlink_pkt::LOX_fls_90)),
+          sqlite_orm::make_column("pyro_status", &AV_downlink_pkt::pyro_status)),
       sqlite_orm::make_table<GSE_downlink_pkt>(
           "GSE_DOWNLINK",
           sqlite_orm::make_column("id", &GSE_downlink_pkt::id,
                                   sqlite_orm::primary_key()),
           sqlite_orm::make_column("ts", &GSE_downlink_pkt::ts),
-          sqlite_orm::make_column("GQN_NC1", &GSE_downlink_pkt::GQN_NC1),
-          sqlite_orm::make_column("GQN_NC2", &GSE_downlink_pkt::GQN_NC2),
-          sqlite_orm::make_column("GQN_NC3", &GSE_downlink_pkt::GQN_NC3),
-          sqlite_orm::make_column("GQN_NC4", &GSE_downlink_pkt::GQN_NC4),
-          sqlite_orm::make_column("GQN_NC5", &GSE_downlink_pkt::GQN_NC5),
-          sqlite_orm::make_column("GPN_NC1", &GSE_downlink_pkt::GPN_NC1),
-          sqlite_orm::make_column("GPN_NC2", &GSE_downlink_pkt::GPN_NC2),
+          sqlite_orm::make_column("GQD1_NC", &GSE_downlink_pkt::GQD1_NC),
+          sqlite_orm::make_column("GQD2_NC", &GSE_downlink_pkt::GQD2_NC),
+          sqlite_orm::make_column("GQD3_NC", &GSE_downlink_pkt::GQD3_NC),
+          sqlite_orm::make_column("GQD4_NC", &GSE_downlink_pkt::GQD4_NC),
+          sqlite_orm::make_column("GQD5_NC", &GSE_downlink_pkt::GQD5_NC),
+          sqlite_orm::make_column("GQD6_NC", &GSE_downlink_pkt::GQD6_NC),
+          sqlite_orm::make_column("GPN_NC", &GSE_downlink_pkt::GPN_NC),
           sqlite_orm::make_column("GVN_NC", &GSE_downlink_pkt::GVN_NC),
           sqlite_orm::make_column("GFE_NC", &GSE_downlink_pkt::GFE_NC),
           sqlite_orm::make_column("GFO_NCC", &GSE_downlink_pkt::GFO_NCC),
           sqlite_orm::make_column("GDO_NCC", &GSE_downlink_pkt::GDO_NCC),
-          sqlite_orm::make_column("PC_OLC", &GSE_downlink_pkt::PC_OLC),
+          sqlite_orm::make_column("GPA_NC", &GSE_downlink_pkt::GPA_NC),
+          sqlite_orm::make_column("GVA_NC", &GSE_downlink_pkt::GVA_NC),
+          sqlite_orm::make_column("GFD_NC", &GSE_downlink_pkt::GFD_NC),
+          sqlite_orm::make_column("GDD_NC", &GSE_downlink_pkt::GDD_NC),
           sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),
           sqlite_orm::make_column("GP2", &GSE_downlink_pkt::GP2),
           sqlite_orm::make_column("GP3", &GSE_downlink_pkt::GP3),
