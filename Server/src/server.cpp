@@ -502,35 +502,58 @@ void Server::simulateJsonData() {
 #ifdef RF_PROTOCOL_FIREHORN
   av_downlink_unpacked_t packet;
   packet.packet_nbr = 1212;
+  packet.av_timestamp = 12345;
   packet.gnss_lon = distCoord(gen);
   packet.gnss_lat = distCoord(gen);
   packet.gnss_alt = distAlt(gen);
-  packet.gnss_vertical_speed = static_cast<int8_t>(distSpeed(gen));
-  packet.N2_pressure = distPressure(gen);
-  packet.N2_temp = static_cast<int16_t>(distTemp(gen));
-  packet.N2_PT1000_temp = static_cast<int16_t>(distTemp(gen));
+  packet.vertical_speed = static_cast<int8_t>(distSpeed(gen));
+  packet.absolute_speed = static_cast<int8_t>(distSpeed(gen));
+  packet.agl_altitude = distAlt(gen);
+  packet.N2_pressure_1 = distPressure(gen);
+  packet.N2_pressure_2 = distPressure(gen);
+  packet.N2_temp_1 = static_cast<int16_t>(distTemp(gen));
+  packet.N2_temp_2 = static_cast<int16_t>(distTemp(gen));
   packet.fuel_pressure = distPressure(gen);
+  packet.fuel_temp = static_cast<int16_t>(distTemp(gen));
   packet.LOX_pressure = distPressure(gen);
-  packet.fuel_inj_pressure = distPressure(gen);
-  packet.chamber_pressure = distPressure(gen);
-  packet.LOX_inj_pressure = distPressure(gen);
   packet.LOX_temp = static_cast<int16_t>(distTemp(gen));
-  packet.LOX_inj_temp = static_cast<int16_t>(distTemp(gen));
+#if (defined FLS_CONIFG) && (FLS_CONFIG == FLS_CAPA)
+  packet.fuel_fls_capa = distLevel(gen);
+  packet.LOX_fls_capa = distLevel(gen);
+#elif (defined FLS_CONFIG) && (FLS_CONFIG == FLS_DIFF)
+  packet.fuel_fls_diff_bot = distPressure(gen);
+  packet.LOX_fls_diff_bot = distPressure(gen);
+#elif FLS_CONFIG == FLS_TEMP
+  packet.LOX_fls_temp_1 = distLevel(gen);
+  packet.LOX_fls_temp_2 = distLevel(gen);
+  packet.LOX_fls_temp_3 = distLevel(gen);
+  packet.LOX_fls_temp_4 = distLevel(gen);
+  packet.LOX_fls_temp_5 = distLevel(gen);
+  packet.LOX_fls_temp_6 = distLevel(gen);
+  packet.LOX_fls_temp_7 = distLevel(gen);
+  packet.LOX_fls_temp_8 = distLevel(gen);
+#endif /* FLS_CONFIG */
+  packet.fuel_inj_pressure = distPressure(gen);
+  packet.LOX_inj_pressure = distPressure(gen);
+  packet.chamber_pressure = distPressure(gen);
+  packet.chamber_temp = static_cast<int16_t>(distTemp(gen));
+  packet.valves_state = 255;
+  packet.valve_dpr_fuel = 0;
+  packet.valve_dpr_LOX = 90;
   packet.lpb_voltage = distVoltage(gen);
   packet.lpb_current = distVoltage(gen);
-  packet.hpb_voltage = distVoltage(gen);
-  packet.hpb_current = distVoltage(gen);
+  packet.vout_5v_voltage = distVoltage(gen);
+  packet.vout_5v_current = distVoltage(gen);
+  packet.hpb_main_voltage = distVoltage(gen);
+  packet.hpb_main_current = distVoltage(gen);
+  packet.hpb_backup_voltage = distVoltage(gen);
+  packet.hpb_backup_current = distVoltage(gen);
+  packet.vout_24v_voltage = distVoltage(gen);
+  packet.vout_24v_current = distVoltage(gen);
   packet.av_fc_temp = static_cast<int16_t>(distTemp(gen));
   packet.ambient_temp = static_cast<int16_t>(distTemp(gen));
-  packet.engine_state = static_cast<uint8_t>(0);
-  packet.engine_state = 255;
   packet.av_state = static_cast<uint8_t>(distState(gen));
   packet.cam_rec = static_cast<uint8_t>(distState(gen));
-  packet.LOX_cap_fls_0 = distLevel(gen);
-  packet.LOX_fls_10 = distLevel(gen);
-  packet.LOX_fls_50 = distLevel(gen);
-  packet.LOX_fls_80 = distLevel(gen);
-  packet.LOX_fls_90 = distLevel(gen);
   av_downlink_t p = encode_downlink(packet);
   handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&p,
                      sizeof(av_downlink_t));
@@ -568,7 +591,7 @@ void Server::simulateJsonData() {
 #ifdef RF_PROTOCOL_FIREHORN
 
   gse_downlink_t gsePacket;
-  gsePacket.PC_OLC = 1;
+  gsePacket.valves_state = 0xFFFF;
 
 #else
   fs_downlink_t gsePacket;

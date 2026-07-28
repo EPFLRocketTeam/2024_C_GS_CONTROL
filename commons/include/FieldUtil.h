@@ -4,10 +4,9 @@
 #include <QString>
 
 enum GUI_FIELD {
-  IGNITER_LOX = 42,
-  IGNITER_FUEL,
+  PRESSURE_VALVE_FUEL = 42,
   PRESSURE_VALVE_LOX,
-  PRESSURE_VALVE_FUEL,
+  SECURITY_DPR_N2,
   MAIN_LOX,
   MAIN_FUEL,
   VENT_LOX,
@@ -20,50 +19,58 @@ enum GUI_FIELD {
   GNSS_LON,
   GNSS_LAT,
   GNSS_ALT,
-  GNSS_LON_R,
-  GNSS_LAT_R,
-  GNSS_ALT_R,
-  GNSS_VERTICAL_SPEED,
+  VERTICAL_SPEED,
+  ABSOLUTE_SPEED,
+  AGL_ALTITUDE,
   N2_PRESSURE,
   FUEL_PRESSURE,
   LOX_PRESSURE,
-  FUEL_LEVEL,
-  LOX_LEVEL,
-  LOX_TEMP,
-  LOX_INJ_TEMP,
-  LOX_CAP_FLS_0,
-  LOX_FLS_10,
-  LOX_FLS_50,
-  LOX_FLS_80,
-  LOX_FLS_90,
   N2_TEMP,
-  IGNITER_PRESSURE,
-  LOX_INJ_PRESSURE,
+  LOX_TEMP,
+  LOX_FLS_TEMP_1,
+  LOX_FLS_TEMP_2,
+  LOX_FLS_TEMP_3,
+  LOX_FLS_TEMP_4,
+  LOX_FLS_TEMP_5,
+  LOX_FLS_TEMP_6,
+  LOX_FLS_TEMP_7,
+  LOX_FLS_TEMP_8,
   FUEL_INJ_PRESSURE,
+  LOX_INJ_PRESSURE,
   CHAMBER_PRESSURE,
+  CHAMBER_TEMP,
   LPB_VOLTAGE,
-  HPB_VOLTAGE,
   LPB_CURRENT,
-  HPB_CURRENT,
+  VOUT_5V_VOLTAGE,
+  VOUT_5V_CURRENT,
+  HPB_MAIN_VOLTAGE,
+  HPB_MAIN_CURRENT,
+  HPB_BACKUP_VOLTAGE,
+  HPB_BACKUP_CURRENT,
+  VOUT_24V_VOLTAGE,
+  VOUT_24V_CURRENT,
   AV_FC_TEMP,
   AMBIENT_TEMP,
-  CAM_REC,
-  ENGINE_STATE,
   AV_STATE,
-  GNSS_CHOICE,
+  CAM_REC,
+  AV_PYROS,
   GSE_FILLING_N2O,
   VENT_GSE,
-  GSE_GQN_NC1,
-  GSE_GQN_NC2,
-  GSE_GQN_NC3,
-  GSE_GQN_NC4,
-  GSE_GQN_NC5,
-  GSE_GPN_NC,
+  GSE_GQD1_NC,
+  GSE_GQD2_NC,
+  GSE_GQD3_NC,
+  GSE_GQD4_NC,
+  GSE_GQD5_NC,
+  GSE_GQD6_NC,
   GSE_GPA_NC,
+  GSE_GVA_NC,
+  GSE_GPN_NC,
   GSE_GVN_NC,
   GSE_GFE_NC,
   GSE_GFO_NCC,
   GSE_GDO_NCC,
+  GSE_GFD_NC,
+  GSE_GDD_NC,
   GSE_PC_OLC,
   GSE_PUMP,
   GSE_GP1,
@@ -71,6 +78,11 @@ enum GUI_FIELD {
   GSE_GP3,
   GSE_GP4,
   GSE_GP5,
+  GSE_GQN_NC1,
+  GSE_GQN_NC2,
+  GSE_GQN_NC3,
+  GSE_GQN_NC4,
+  GSE_GQN_NC5,
   GSE_TANK_PRESSURE,
   GSE_TANK_TEMPERATURE,
   GSE_FILLING_PRESSURE,
@@ -112,8 +124,6 @@ enum GUI_FIELD {
   GUI_CMD_HOPPER_SPARE_F2,
   GUI_CMD_HOPPER_SPARE_F3,
   GUI_CMD_ABORT,
-  GUI_CMD_IGNITER_LOX,
-  GUI_CMD_IGNITER_FUEL,
   GUI_CMD_MAIN_LOX,
   GUI_CMD_MAIN_FUEL,
   GUI_CMD_MAIN_N2O,
@@ -247,17 +257,14 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GNSS_ALT:
     name = "GNSS ALT";
     break;
-  case GNSS_LON_R:
-    name = "GNSS LON R";
+  case VERTICAL_SPEED:
+    name = "VERT. SPEED";
     break;
-  case GNSS_LAT_R:
-    name = "GNSS LAT R";
+  case ABSOLUTE_SPEED:
+    name = "VELOCITY";
     break;
-  case GNSS_ALT_R:
-    name = "GNSS ALT R";
-    break;
-  case GNSS_VERTICAL_SPEED:
-    name = "GNSS VERTICAL SPEED";
+  case AGL_ALTITUDE:
+    name = "AGL ALT";
     break;
   case N2_PRESSURE:
     name = "N2 PRESSURE";
@@ -268,38 +275,35 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case LOX_PRESSURE:
     name = "LOX PRESSURE";
     break;
-  case FUEL_LEVEL:
-    name = "FUEL LEVEL";
-    break;
-  case LOX_LEVEL:
-    name = "LOX LEVEL";
-    break;
   case LOX_TEMP:
     name = "LOX TEMPERATURE";
     break;
+  case LOX_FLS_TEMP_1:
+    name = "LOX FLS TEMP 1";
+    break;
+  case LOX_FLS_TEMP_2:
+    name = "LOX FLS TEMP 2";
+    break;
+  case LOX_FLS_TEMP_3:
+    name = "LOX FLS TEMP 3";
+    break;
+  case LOX_FLS_TEMP_4:
+    name = "LOX FLS TEMP 4";
+    break;
+  case LOX_FLS_TEMP_5:
+    name = "LOX FLS TEMP 5";
+    break;
+  case LOX_FLS_TEMP_6:
+    name = "LOX FLS TEMP 6";
+    break;
+  case LOX_FLS_TEMP_7:
+    name = "LOX FLS TEMP 7";
+    break;
+  case LOX_FLS_TEMP_8:
+    name = "LOX FLS TEMP 8";
+    break;
   case N2_TEMP:
     name = "N2 TEMPERATURE";
-    break;
-  case LOX_INJ_TEMP:
-    name = "LOX INJ TEMPERATURE";
-    break;
-  case LOX_CAP_FLS_0:
-    name = "LOX CAP FLS 0%";
-    break;
-  case LOX_FLS_10:
-    name = "LOX FLS 10%";
-    break;
-  case LOX_FLS_50:
-    name = "LOX FLS 50%";
-    break;
-  case LOX_FLS_80:
-    name = "LOX FLS 80%";
-    break;
-  case LOX_FLS_90:
-    name = "LOX FLS 90%";
-    break;
-  case IGNITER_PRESSURE:
-    name = "IGNITER PRESSURE";
     break;
   case LOX_INJ_PRESSURE:
     name = "LOX INJ PRESSURE";
@@ -310,17 +314,38 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case CHAMBER_PRESSURE:
     name = "CHAMBER PRESSURE";
     break;
+  case CHAMBER_TEMP:
+    name = "CHAMBER TEMPERATURE";
+    break;
   case LPB_VOLTAGE:
     name = "LPB VOLTAGE";
-    break;
-  case HPB_VOLTAGE:
-    name = "HPB VOLTAGE";
     break;
   case LPB_CURRENT:
     name = "LPB CURRENT";
     break;
-  case HPB_CURRENT:
-    name = "HPB CURRENT";
+  case VOUT_5V_VOLTAGE:
+    name = "5V VOLTAGE";
+    break;
+  case VOUT_5V_CURRENT:
+    name = "5V CURRENT";
+    break;
+  case HPB_MAIN_VOLTAGE:
+    name = "HPB MAIN VOLTAGE";
+    break;
+  case HPB_MAIN_CURRENT:
+    name = "HPB MAIN CURRENT";
+    break;
+  case HPB_BACKUP_VOLTAGE:
+    name = "HPB BACKUP VOLTAGE";
+    break;
+  case HPB_BACKUP_CURRENT:
+    name = "HPB BACKUP CURRENT";
+    break;
+  case VOUT_24V_VOLTAGE:
+    name = "24V VOLTAGE";
+    break;
+  case VOUT_24V_CURRENT:
+    name = "24V CURRENT";
     break;
   case AV_FC_TEMP:
     name = "AV FC TEMPERATURE";
@@ -339,9 +364,6 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case AV_PACKET_FREQ:
     name = "AV PACKET FREQ [Hz]";
-    break;
-  case GNSS_CHOICE:
-    name = "GNSS CHOICE";
     break;
   case GSE_FILLING_N2O:
     name = "HOPPER FO-nc";
@@ -372,9 +394,6 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case GSE_LOADCELL_4:
     name = "GSE LOADCELL 4";
-    break;
-  case ENGINE_STATE:
-    name = "ENGINE STATE";
     break;
   case GSE_VENT:
     name = "HOPPER DO-nc";
@@ -684,6 +703,32 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "FILLING N2O";
     break;
 
+
+  case GSE_GQD1_NC:
+    name = "GQD 1";
+    break;
+
+  case GSE_GQD2_NC:
+    name = "GQD 2";
+    break;
+
+  case GSE_GQD3_NC:
+    name = "GQD 3";
+    break;
+
+  case GSE_GQD4_NC:
+    name = "GQD 4";
+    break;
+
+  case GSE_GQD5_NC:
+    name = "GQD 5";
+    break;
+
+  case GSE_GQD6_NC:
+    name = "GQD 6";
+    break;
+
+
   case GSE_GQN_NC1:
     name = "GQN 1";
     break;
@@ -702,12 +747,17 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "GQN 6";
     break;
 
-  case GSE_GPN_NC:
-    name = "GPN";
-    break;
 
   case GSE_GPA_NC:
     name = "GPA";
+    break;
+
+  case GSE_GVA_NC:
+    name = "GVA";
+    break;
+
+  case GSE_GPN_NC:
+    name = "GPN";
     break;
 
   case GSE_GVN_NC:
@@ -724,6 +774,14 @@ inline QString enumToFieldName(GUI_FIELD field) {
 
   case GSE_GDO_NCC:
     name = "GDO";
+    break;
+
+  case GSE_GFD_NC:
+    name = "GFD";
+    break;
+
+  case GSE_GDD_NC:
+    name = "GDD";
     break;
 
   case GSE_PC_OLC:
@@ -790,56 +848,66 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GNSS_LAT;
   else if (fieldName == "GNSS ALT")
     return GNSS_ALT;
-  else if (fieldName == "GNSS LON R")
-    return GNSS_LON_R;
-  else if (fieldName == "GNSS LAT R")
-    return GNSS_LAT_R;
-  else if (fieldName == "GNSS ALT R")
-    return GNSS_ALT_R;
-  else if (fieldName == "GNSS VERTICAL SPEED")
-    return GNSS_VERTICAL_SPEED;
+  else if (fieldName == "VERT. SPEED")
+    return VERTICAL_SPEED;
+  else if (fieldName == "VELOCITY")
+    return ABSOLUTE_SPEED;
+  else if (fieldName == "AGL ALTITUDE")
+    return AGL_ALTITUDE;
   else if (fieldName == "N2 PRESSURE")
     return N2_PRESSURE;
   else if (fieldName == "FUEL PRESSURE")
     return FUEL_PRESSURE;
   else if (fieldName == "LOX PRESSURE")
     return LOX_PRESSURE;
-  else if (fieldName == "FUEL LEVEL")
-    return FUEL_LEVEL;
-  else if (fieldName == "LOX LEVEL")
-    return LOX_LEVEL;
   else if (fieldName == "LOX TEMPERATURE")
     return LOX_TEMP;
   else if (fieldName == "N2 TEMPERATURE")
     return N2_TEMP;
-  else if (fieldName == "LOX INJ TEMPERATURE")
-    return LOX_INJ_TEMP;
-  else if (fieldName == "LOX CAP FLS 0%")
-    return LOX_CAP_FLS_0;
-  else if (fieldName == "LOX FLS 10%")
-    return LOX_FLS_10;
-  else if (fieldName == "LOX FLS 50%")
-    return LOX_FLS_50;
-  else if (fieldName == "LOX FLS 80%")
-    return LOX_FLS_80;
-  else if (fieldName == "LOX FLS 90%")
-    return LOX_FLS_90;
-  else if (fieldName == "IGNITER PRESSURE")
-    return IGNITER_PRESSURE;
+  else if (fieldName == "LOX FLS TEMP 1")
+    return LOX_FLS_TEMP_1;
+  else if (fieldName == "LOX FLS TEMP 2")
+    return LOX_FLS_TEMP_2;
+  else if (fieldName == "LOX FLS TEMP 3")
+    return LOX_FLS_TEMP_3;
+  else if (fieldName == "LOX FLS TEMP 4")
+    return LOX_FLS_TEMP_4;
+  else if (fieldName == "LOX FLS TEMP 5")
+    return LOX_FLS_TEMP_5;
+  else if (fieldName == "LOX FLS TEMP 6")
+    return LOX_FLS_TEMP_6;
+  else if (fieldName == "LOX FLS TEMP 7")
+    return LOX_FLS_TEMP_7;
+  else if (fieldName == "LOX FLS TEMP 8")
+    return LOX_FLS_TEMP_8;
   else if (fieldName == "LOX INJ PRESSURE")
     return LOX_INJ_PRESSURE;
   else if (fieldName == "FUEL INJ PRESSURE")
     return FUEL_INJ_PRESSURE;
   else if (fieldName == "CHAMBER PRESSURE")
     return CHAMBER_PRESSURE;
+  else if (fieldName == "CHAMBER TEPERATURE")
+    return CHAMBER_TEMP;
   else if (fieldName == "LPB VOLTAGE")
     return LPB_VOLTAGE;
-  else if (fieldName == "HPB VOLTAGE")
-    return HPB_VOLTAGE;
   else if (fieldName == "LPB CURRENT")
     return LPB_CURRENT;
-  else if (fieldName == "HPB CURRENT")
-    return HPB_CURRENT;
+  else if (fieldName == "5V VOLTAGE")
+    return VOUT_5V_VOLTAGE;
+  else if (fieldName == "5V CURRENT")
+    return VOUT_5V_CURRENT;
+  else if (fieldName == "HPB MAIN VOLTAGE")
+    return HPB_MAIN_VOLTAGE;
+  else if (fieldName == "HPB MAIN CURRENT")
+    return HPB_MAIN_CURRENT;
+  else if (fieldName == "HPB BACKUP VOLTAGE")
+    return HPB_BACKUP_VOLTAGE;
+  else if (fieldName == "HPB BACKUP CURRENT")
+    return HPB_BACKUP_CURRENT;
+  else if (fieldName == "24V VOLTAGE")
+    return VOUT_24V_VOLTAGE;
+  else if (fieldName == "24V CURRENT")
+    return VOUT_24V_CURRENT;
   else if (fieldName == "AV FC TEMPERATURE")
     return AV_FC_TEMP;
   else if (fieldName == "AMBIENT TEMPERATURE")
@@ -850,8 +918,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return CAM_REC;
   else if (fieldName == "DOWNRANGE")
     return DOWNRANGE;
-  else if (fieldName == "GNSS CHOICE")
-    return GNSS_CHOICE;
   else if (fieldName == "HOPPER FO-nc")
     return GSE_FILLING_N2O;
   else if (fieldName == "VENT GSE")
@@ -872,8 +938,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GSE_LOADCELL_3;
   else if (fieldName == "GSE LOADCELL 4")
     return GSE_LOADCELL_4;
-  else if (fieldName == "ENGINE STATE")
-    return ENGINE_STATE;
   else if (fieldName == "HOPPER DO-nc")
     return GSE_VENT;
   else if (fieldName == "GSE CMD STATUS")
@@ -1066,41 +1130,60 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_FILLING_LOX;
   else if (fieldName == "FILLING N2O")
     return GUI_CMD_FILLING_N2O;
-  else if (fieldName == "GSE GQN 1")
+
+  else if (fieldName == "GQD 1")
+    return GSE_GQD1_NC;
+  else if (fieldName == "GQD 2")
+    return GSE_GQD2_NC;
+  else if (fieldName == "GQD 3")
+    return GSE_GQD3_NC;
+  else if (fieldName == "GQD 4")
+    return GSE_GQD4_NC;
+  else if (fieldName == "GQD 5")
+    return GSE_GQD5_NC;
+  else if (fieldName == "GQD 6")
+    return GSE_GQD6_NC;
+
+  else if (fieldName == "GQN 1")
     return GSE_GQN_NC1;
-  else if (fieldName == "GSE GQN 2")
+  else if (fieldName == "GQN 2")
     return GSE_GQN_NC2;
-  else if (fieldName == "GSE GQN 3")
+  else if (fieldName == "GQN 3")
     return GSE_GQN_NC3;
-  else if (fieldName == "GSE GQN 4")
+  else if (fieldName == "GQN 4")
     return GSE_GQN_NC4;
-  else if (fieldName == "GSE GQN 5")
+  else if (fieldName == "GQN 5")
     return GSE_GQN_NC5;
-  else if (fieldName == "GSE GPN")
+
+  else if (fieldName == "GPN")
     return GSE_GPN_NC;
-  else if (fieldName == "GSE GPN")
+  else if (fieldName == "GPN")
     return GSE_GPA_NC;
-  else if (fieldName == "GSE GVN")
+  else if (fieldName == "GVN")
     return GSE_GVN_NC;
-  else if (fieldName == "GSE GFE")
+  else if (fieldName == "GFE")
     return GSE_GFE_NC;
-  else if (fieldName == "GSE GFO")
+  else if (fieldName == "GFO")
     return GSE_GFO_NCC;
-  else if (fieldName == "GSE GDO")
+  else if (fieldName == "GDO")
     return GSE_GDO_NCC;
-  else if (fieldName == "GSE PC OLC")
+  else if (fieldName == "GFD")
+    return GSE_GFD_NC;
+  else if (fieldName == "GDD")
+    return GSE_GDD_NC;
+  else if (fieldName == "PC OLC")
     return GSE_PC_OLC;
-  else if (fieldName == "GSE PUMP")
+  else if (fieldName == "PUMP")
     return GSE_PUMP;
-  else if (fieldName == "GSE GP1")
+  else if (fieldName == "GP1")
     return GSE_GP1;
-  else if (fieldName == "GSE GP2")
+  else if (fieldName == "GP2")
     return GSE_GP2;
-  else if (fieldName == "GSE GP3")
+  else if (fieldName == "GP3")
     return GSE_GP3;
-  else if (fieldName == "GSE GP4")
+  else if (fieldName == "GP4")
     return GSE_GP4;
-  else if (fieldName == "GSE GP5")
+  else if (fieldName == "GP5")
     return GSE_GP5;
   else
     return UNKNOWN;
@@ -1121,31 +1204,31 @@ inline QString avStateToName(const uint8_t state){
       name = "FILLING";
       break;
     case 3:
-      name = "ARM";
+      name = "ARMED";
       break; 
     case 4:
       name = "PRESSURIZATION";
       break;
     case 5:
-      name = "AoG";
-      break;
-    case 6:
       name = "IGNITION";
       break;
-    case 7:
+    case 6:
       name = "BURN";
       break;
-    case 8:
+    case 7:
       name = "ASCENT";
+      break;
+    case 8:
+      name = "DESCENT";
       break;
     case 9:
       name = "LANDED";
       break;
     case 10:
-      name = "DESCENT";
+      name = "ABORT GROUND";
       break;
     case 11:
-      name = "AiF";
+      name = "ABORT FLIGHT";
       break;         
     default:
       name = "Unknown"; 

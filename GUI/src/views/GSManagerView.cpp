@@ -127,5 +127,5 @@ void GSManagerView::setupTimersSection() {
 }
 
 void GSManagerView::setupConnections() {
-  MainWindow::clientManager->subscribe(GUI_FIELD::GNSS_ALT, setAltitude);
+  MainWindow::clientManager->subscribe(GUI_FIELD::AGL_ALTITUDE, setAltitude);
 }

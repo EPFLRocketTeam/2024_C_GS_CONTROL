@@ -4,7 +4,6 @@
 #include "../../commons/ERT_RF_Protocol_Interface/Protocol.h"
 
 #if defined(RF_PROTOCOL_FIREHORN)
-#include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h"
 TEST(RequestAdapterTest, FirehornProtocol) {
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_CALIBRATE).order_id, AV_CMD_CALIBRATE);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_LAUNCH).order_id, AV_CMD_LAUNCH);
@@ -15,11 +14,10 @@ TEST(RequestAdapterTest, FirehornProtocol) {
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::VENT_FUEL).order_id, AV_CMD_VENT_FUEL);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::MAIN_LOX).order_id, AV_CMD_MAIN_LOX);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::MAIN_FUEL).order_id, AV_CMD_MAIN_FUEL);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::PRESSURE_VALVE_FUEL).order_id, AV_CMD_P_FUEL);
-    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::PRESSURE_VALVE_LOX).order_id, AV_CMD_P_LOX);
+    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::PRESSURE_VALVE_FUEL).order_id, AV_CMD_DPR_FUEL);
+    EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::PRESSURE_VALVE_LOX).order_id, AV_CMD_DPR_LOX);
 }
 #elif defined(RF_PROTOCOL_ICARUS)
-#include "../../commons/ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h"
 TEST(RequestAdapterTest, IcarusProtocol) {
     EXPECT_EQ(getOrderIdFromGui(GUI_CMD_DISCONNECT).order_id, CMD_ID::GSE_CMD_DISCONNECT);
     EXPECT_EQ(getOrderIdFromGui(GUI_FIELD::GUI_CMD_CALIBRATE).order_id, CMD_ID::HOPPER_CMD_CALIBRATE);

@@ -217,11 +217,11 @@ inline void init_views() {
 } // namespace ui_elements
 #endif
 
+//TODO
 #ifdef FIREHORN_GUI
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
 inline QList<std::vector<GUI_FIELD>> valvesMap{{
-
     GUI_FIELD::MAIN_LOX,
     GUI_FIELD::MAIN_FUEL,
     GUI_FIELD::VENT_LOX,
@@ -229,6 +229,7 @@ inline QList<std::vector<GUI_FIELD>> valvesMap{{
     GUI_FIELD::VENT_N2,
     GUI_FIELD::PRESSURE_VALVE_LOX,
     GUI_FIELD::PRESSURE_VALVE_FUEL,
+    GUI_FIELD::SECURITY_DPR_N2,
 }};
 
 inline QList<std::vector<GUI_FIELD>> pushButtonMap{
@@ -240,9 +241,23 @@ inline QList<std::vector<GUI_FIELD>> pushButtonMap{
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     /*{"ValveControlButton", valvesMap},*/ {"QPushButton", pushButtonMap}};
 
-inline QList<std::vector<GUI_FIELD>> gseValvesMap{
-    {GUI_FIELD::GSE_GQN_NC1, GUI_FIELD::GSE_GQN_NC2, GSE_GQN_NC5, GSE_GPN_NC,
-     GSE_GPA_NC, GSE_GVN_NC, GSE_GFE_NC, GSE_GFO_NCC, GSE_GDO_NCC, GSE_PC_OLC}};
+inline QList<std::vector<GUI_FIELD>> gseValvesMap{{
+    GUI_FIELD::GSE_GQD1_NC, 
+    GUI_FIELD::GSE_GQD2_NC, 
+    GUI_FIELD::GSE_GQD3_NC,
+    GUI_FIELD::GSE_GQD4_NC,
+    GUI_FIELD::GSE_GQD5_NC,
+    GUI_FIELD::GSE_GQD6_NC,
+    GUI_FIELD::GSE_GPA_NC, 
+    GUI_FIELD::GSE_GVA_NC, 
+    GUI_FIELD::GSE_GPN_NC,
+    GUI_FIELD::GSE_GVN_NC, 
+    GUI_FIELD::GSE_GFE_NC, 
+    GUI_FIELD::GSE_GFO_NCC, 
+    GUI_FIELD::GSE_GDO_NCC, 
+    GUI_FIELD::GSE_GFD_NC, 
+    GUI_FIELD::GSE_GDD_NC
+}};
 
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
     {GUI_CMD_GSE_IDLE, GUI_CMD_GSE_CALIBRATE, GUI_CMD_GSE_ARM,
@@ -261,6 +276,7 @@ inline std::vector<ValveInfo> valves = {
      {0.386, 0.249},
      ValveButton::Orientation::Horizontal, false},
     {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Horizontal, false},
+    // TODO: Create a new struct for ball valves servomotors (PE and PO)
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
      {0.513, 0.225},
      ValveButton::Orientation::Vertical, false},
@@ -275,17 +291,20 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::N2_TEMP, 0.66, 0.155},
 
     {GUI_FIELD::LOX_PRESSURE, 0.67, 0.584},
-    {GUI_FIELD::LOX_FLS_90, 0.83, 0.665}, // LOX float level sensor at 90%
-    //{GUI_FIELD::LOX_FLS_80, 0.83, 0.715}, // LOX float level sensor at 80%
-    {GUI_FIELD::LOX_FLS_50, 0.83, 0.765}, // LOX float level sensor at 50%
-    //{GUI_FIELD::LOX_FLS_10, 0.83, 0.815}, // LOX float level sensor at 10%
-    {GUI_FIELD::LOX_CAP_FLS_0, 0.83,
-     0.865}, // LOX capacitive float level sensor at 0%
+    {GUI_FIELD::LOX_FLS_TEMP_8, 0.83, 0.665}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_7, 0.83, 0.715}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_6, 0.83, 0.765}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_5, 0.83, 0.815}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_4, 0.83, 0.865}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_3, 0.83, 0.915}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_2, 0.83, 0.965}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_1, 0.83, 1.015}, // LOX float level sensor at TBD%
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.67, 0.79},
     //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865},
 
     {GUI_FIELD::CHAMBER_PRESSURE, 0.67, 0.897},
+    {GUI_FIELD::CHAMBER_TEMP, 0.67, 0.97},
 
     {GUI_FIELD::FUEL_PRESSURE, 0.325, 0.365},
 
@@ -309,16 +328,16 @@ inline std::vector<ValveInfo> gseValves = {
     // N2 quadrant
     {GUI_FIELD::GSE_GPN_NC, {0.15, 0.58}, ValveButton::Orientation::Horizontal,false},
     {GUI_FIELD::GSE_GPA_NC, {0.15, 0.7}, ValveButton::Orientation::Horizontal,false},
+    //{GUI_FIELD::GSE_GVA_NC, {0.15, 0.7}, ValveButton::Orientation::Horizontal,false},
     {GUI_FIELD::GSE_GVN_NC, {0.7, 0.565}, ValveButton::Orientation::Horizontal,false},
 
-    // Air valves
-
-    {GUI_FIELD::GSE_GQN_NC1, {0.515, 0.08}, ValveButton::Orientation::Vertical,false},
-    {GUI_FIELD::GSE_GQN_NC2, {0.585, 0.08}, ValveButton::Orientation::Vertical,false},
-    {GUI_FIELD::GSE_GQN_NC3, {0.655, 0.08}, ValveButton::Orientation::Vertical,false},
-    {GUI_FIELD::GSE_GQN_NC4, {0.725, 0.08}, ValveButton::Orientation::Vertical,false},
-    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical,false},
-    {GUI_FIELD::GSE_GQN_NC5, {0.78, 0.08}, ValveButton::Orientation::Vertical,false},
+    // Air valves for Quick Disconnect Actuation
+    {GUI_FIELD::GSE_GQD1_NC, {0.515, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQD2_NC, {0.585, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQD3_NC, {0.655, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQD4_NC, {0.725, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQD5_NC, {0.78, 0.08}, ValveButton::Orientation::Vertical,false},
+    {GUI_FIELD::GSE_GQD6_NC, {0.85, 0.08}, ValveButton::Orientation::Vertical,false},
 
 };
 
@@ -328,13 +347,23 @@ inline QList<GUI_FIELD> gps = {
     GNSS_LON,
     GNSS_LAT,
     GNSS_ALT,
-    GNSS_VERTICAL_SPEED,
+    DOWNRANGE
 };
 
 inline QList<GUI_FIELD> tbd = {
-    PACKET_NBR,  AV_STATE,    LPB_VOLTAGE,    LPB_CURRENT,
-    HPB_VOLTAGE, HPB_CURRENT, AV_FC_TEMP,     AMBIENT_TEMP,
-    CAM_REC,     DOWNRANGE,   AV_PACKET_FREQ,
+    PACKET_NBR,  
+    AV_STATE,    
+    LPB_VOLTAGE,  
+    LPB_CURRENT,
+    VOUT_5V_VOLTAGE,
+    VOUT_5V_CURRENT,
+    VOUT_24V_VOLTAGE, 
+    VOUT_24V_CURRENT, 
+    AV_FC_TEMP,     
+    AMBIENT_TEMP,
+    CAM_REC,     
+    AV_PYROS,
+    AV_PACKET_FREQ
 };
 inline QMap<QString, QList<GUI_FIELD>> data_sections = {{"GPS", gps},
                                                         {"INFOS", tbd}};

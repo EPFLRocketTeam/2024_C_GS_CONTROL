@@ -24,7 +24,7 @@ set(HEADERS_COMMONS
 
 set(ERT_PROTOCOL_INTERFACE_FILES
     ERT_RF_Protocol_Interface/Protocol.h
-    ERT_RF_Protocol_Interface/PacketDefinition_Firehorn.h
+    ERT_RF_Protocol_Interface/PacketDefinition_Firehorn2.h
     ERT_RF_Protocol_Interface/PacketDefinition_Icarus.h
 )
 

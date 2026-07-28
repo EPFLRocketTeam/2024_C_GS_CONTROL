@@ -1,5 +1,5 @@
 #include "ERT_RF_Protocol_Interface/Protocol.h"
-#include "PacketDefinition_Firehorn.h"
+#include "PacketDefinition_Firehorn2.h"
 #include "data_storage.h"
 #include <gtest/gtest.h>
 
@@ -24,37 +24,44 @@ av_downlink_unpacked_t *get_avdw() {
             .gnss_lon = 10,
             .gnss_lat = 11,
             .gnss_alt = 12,
-            .gnss_vertical_speed = 13,
-            .N2_pressure = 14,
-      .N2_temp = 30,
-      .N2_PT1000_temp = 32,
+            .vertical_speed = 150,
+            .absolute_speed = 20,
+            .N2_pressure_1 = 14,
+      .N2_temp_1 = 30,
       .fuel_pressure = 15,
       .LOX_pressure = 16,
-      .LOX_temp = 20,
-      .LOX_inj_pressure = 17,
-      .LOX_inj_temp = 21,
+      .LOX_temp = -100.0f,
+      .LOX_fls_temp_1 = -101.0f,
+      .LOX_fls_temp_2 = -102.0f,
+      .LOX_fls_temp_3 = -103.0f,
+      .LOX_fls_temp_4 = -104.0f,
       .fuel_inj_pressure = 18,
+      .LOX_inj_pressure = 17,
       .chamber_pressure = 19,
-            .engine_state = 26,
-            .lpb_voltage = 22,
+            .valves_state = 26,
+      .lpb_voltage = 22,
       .lpb_current = 23.5f,
-            .hpb_voltage = 23,
-      .hpb_current = 24.5f,
+      .hpb_main_voltage = 23,
+      .hpb_main_current = 24.5f,
             .av_fc_temp = 24,
             .ambient_temp = 25,
             .av_state = 27,
-      .cam_rec = 28,
-      .LOX_cap_fls_0 = 101.0f,
-      .LOX_fls_10 = 102.0f,
-      .LOX_fls_50 = 103.0f,
-      .LOX_fls_80 = 104.0f,
-      .LOX_fls_90 = 105.0f
+      .cam_rec = 28
         };
     return avdw;
 }
 
 gse_downlink_t *get_gsdw() {
   gse_downlink_t *gsdw = new gse_downlink_t;
+
+#if RF_PROTOCOL_FIREHORN
+  *gsdw = {.valves_state = 0b010011010100011,
+           .GP1 = 11.3f,
+           .GP2 = 231.2654f,
+           .GP3 = 0.0f,
+           .GP4 = 0.0f,
+           .GP5 = 0.0f};
+#else
   *gsdw = {.GQN_NC1 = 0,
            .GQN_NC2 = 0,
            .GQN_NC3 = 0,
@@ -72,6 +79,7 @@ gse_downlink_t *get_gsdw() {
            .GP3 = 0.0f,
            .GP4 = 0.0f,
            .GP5 = 0.0f};
+#endif
   return gsdw;
 }
 
@@ -87,37 +95,42 @@ void equal_avdw(av_downlink_unpacked_t *avdw1, av_downlink_unpacked_t *avdw2) {
   EXPECT_EQ(avdw1->av_fc_temp, avdw2->av_fc_temp);
   EXPECT_EQ(avdw1->av_state, avdw2->av_state);
   EXPECT_EQ(avdw1->cam_rec, avdw2->cam_rec);
-  EXPECT_EQ(avdw1->engine_state, avdw2->engine_state);
+  EXPECT_EQ(avdw1->valves_state, avdw2->valves_state);
   EXPECT_EQ(avdw1->fuel_pressure, avdw2->fuel_pressure);
   EXPECT_EQ(avdw1->gnss_alt, avdw2->gnss_alt);
   EXPECT_EQ(avdw1->gnss_lat, avdw2->gnss_lat);
   EXPECT_EQ(avdw1->gnss_lon, avdw2->gnss_lon);
-  EXPECT_EQ(avdw1->gnss_vertical_speed, avdw2->gnss_vertical_speed);
-  EXPECT_EQ(avdw1->hpb_voltage, avdw2->hpb_voltage);
-  EXPECT_EQ(avdw1->LOX_inj_temp, avdw2->LOX_inj_temp);
+  EXPECT_EQ(avdw1->vertical_speed, avdw2->vertical_speed);
+  EXPECT_EQ(avdw1->hpb_main_voltage, avdw2->hpb_main_voltage);
   EXPECT_EQ(avdw1->LOX_pressure, avdw2->LOX_pressure);
   EXPECT_EQ(avdw1->LOX_temp, avdw2->LOX_temp);
   EXPECT_EQ(avdw1->lpb_voltage, avdw2->lpb_voltage);
-  EXPECT_EQ(avdw1->N2_pressure, avdw2->N2_pressure);
-  EXPECT_EQ(avdw1->N2_temp, avdw2->N2_temp);
+  EXPECT_EQ(avdw1->N2_pressure_1, avdw2->N2_pressure_1);
+  EXPECT_EQ(avdw1->N2_temp_1, avdw2->N2_temp_1);
   EXPECT_EQ(avdw1->packet_nbr, avdw2->packet_nbr);
-  EXPECT_EQ(avdw1->N2_PT1000_temp, avdw2->N2_PT1000_temp);
   EXPECT_EQ(avdw1->LOX_inj_pressure, avdw2->LOX_inj_pressure);
   EXPECT_EQ(avdw1->fuel_inj_pressure, avdw2->fuel_inj_pressure);
   EXPECT_EQ(avdw1->chamber_pressure, avdw2->chamber_pressure);
+  EXPECT_EQ(avdw1->chamber_temp, avdw2->chamber_temp);
   EXPECT_FLOAT_EQ(avdw1->lpb_current, avdw2->lpb_current);
-  EXPECT_FLOAT_EQ(avdw1->hpb_current, avdw2->hpb_current);
-  EXPECT_FLOAT_EQ(avdw1->LOX_cap_fls_0, avdw2->LOX_cap_fls_0);
-  EXPECT_FLOAT_EQ(avdw1->LOX_fls_10, avdw2->LOX_fls_10);
-  EXPECT_FLOAT_EQ(avdw1->LOX_fls_50, avdw2->LOX_fls_50);
-  EXPECT_FLOAT_EQ(avdw1->LOX_fls_80, avdw2->LOX_fls_80);
-  EXPECT_FLOAT_EQ(avdw1->LOX_fls_90, avdw2->LOX_fls_90);
+  EXPECT_FLOAT_EQ(avdw1->hpb_main_current, avdw2->hpb_main_current);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_1, avdw2->LOX_fls_temp_1);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_2, avdw2->LOX_fls_temp_2);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_3, avdw2->LOX_fls_temp_3);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_4, avdw2->LOX_fls_temp_4);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_5, avdw2->LOX_fls_temp_5);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_6, avdw2->LOX_fls_temp_6);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_7, avdw2->LOX_fls_temp_7);
+  EXPECT_FLOAT_EQ(avdw1->LOX_fls_temp_8, avdw2->LOX_fls_temp_8);
 }
 
 void equal_gsdw(gse_downlink_t *gsdw1, gse_downlink_t *gsdw2) {
   printf("equal_gsdw called\n");
 
   // uint8_t fields
+#if RF_PROTOCOL_FIREHORN
+  EXPECT_EQ(gsdw1->valves_state, gsdw2->valves_state);
+#else
   EXPECT_EQ(gsdw1->GQN_NC1, gsdw2->GQN_NC1);
   EXPECT_EQ(gsdw1->GQN_NC2, gsdw2->GQN_NC2);
   EXPECT_EQ(gsdw1->GQN_NC3, gsdw2->GQN_NC3);
@@ -130,6 +143,7 @@ void equal_gsdw(gse_downlink_t *gsdw1, gse_downlink_t *gsdw2) {
   EXPECT_EQ(gsdw1->GFO_NCC, gsdw2->GFO_NCC);
   EXPECT_EQ(gsdw1->GDO_NCC, gsdw2->GDO_NCC);
   EXPECT_EQ(gsdw1->PC_OLC, gsdw2->PC_OLC);
+#endif
 
   // float fields
   EXPECT_EQ(gsdw1->GP1, gsdw2->GP1);
