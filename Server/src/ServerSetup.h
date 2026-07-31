@@ -14,7 +14,7 @@
 // Generate packets every seconds with random data for part of the fields
 #define SIMULATE_PACKETS false
 // Change the debug level to show the debug messages
-#define DEBUG_LOG false
+#define DEBUG_LOG true
 
 // If MANUALLY_SET_PORT is set to true then please specify the serial port used, otherwise the program will auto open the serial
 #define MANUALLY_SET_PORT false

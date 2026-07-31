@@ -486,7 +486,8 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                                             .arg(internalData.rssi)
                                             .arg(internalData.snr)
                                             .toStdString());
-    return std::nullopt;
+    jsonObj["INTERNAL"] = "INTERNAL";
+    break;
   }
   case CAPSULE_ID::GSC_INTERNAL_ERR_UPLINK:
   case CAPSULE_ID::GSC_INTERNAL_ERR_VEHICLE_DOWNLINK:

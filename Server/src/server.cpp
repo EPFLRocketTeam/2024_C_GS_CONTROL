@@ -433,6 +433,8 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn,
 
   if (result && result->contains("ABORT")) {
     abort_loop();
+  } else if (result && result->contains("INTERNAL")) {
+    _packetLogger.info("Received internal packet", "");
   } else if (result) {
     QJsonDocument doc(result.value());
     QByteArray jsonData = doc.toJson(QJsonDocument::Indented);
