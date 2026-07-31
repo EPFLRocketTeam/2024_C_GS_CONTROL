@@ -215,9 +215,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::ABSOLUTE_SPEED)] =
         QString::number(static_cast<int>(dataAv.absolute_speed)) +
         " [m/s]";
-    // TODO: update GUI and add N2_temp_2 field for COPV 2
-    jsonObj[QString::number(GUI_FIELD::N2_PRESSURE)] =
+    jsonObj[QString::number(GUI_FIELD::N2_PRESSURE_1)] =
         QString::number(static_cast<double>(dataAv.N2_pressure_1)) + " [bar]";
+    jsonObj[QString::number(GUI_FIELD::N2_PRESSURE_2)] =
+        QString::number(static_cast<double>(dataAv.N2_pressure_2)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] =
         QString::number(static_cast<double>(dataAv.fuel_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] =
@@ -231,9 +232,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] =
         QString::number(static_cast<double>(dataAv.chamber_pressure)) +
         " [bar]";
-    // TODO: update GUI and add N2_temp_2 field for COPV 2
-    jsonObj[QString::number(GUI_FIELD::N2_TEMP)] =
+    jsonObj[QString::number(GUI_FIELD::N2_TEMP_1)] =
         QString::number(static_cast<int>(dataAv.N2_temp_1)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::N2_TEMP_2)] =
+        QString::number(static_cast<int>(dataAv.N2_temp_2)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
         QString::number(static_cast<int>(dataAv.LOX_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_1)] =
@@ -842,6 +844,12 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
 
   case GUI_FIELD::PRESSURE_VALVE_LOX:
     return {AV_CMD_DPR_LOX, GSC_CMD};
+
+  case GUI_FIELD::SECURITY_DPR_FUEL:
+    return {TODO, GSC_CMD};
+
+  case GUI_FIELD::SECURITY_DPR_LOX:
+    return {TODO, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_GSE_IDLE:
     return {GSE_CMD_IDLE, GSE_TELEMETRY};

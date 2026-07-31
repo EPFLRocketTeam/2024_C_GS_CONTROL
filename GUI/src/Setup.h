@@ -217,7 +217,6 @@ inline void init_views() {
 } // namespace ui_elements
 #endif
 
-//TODO
 #ifdef FIREHORN_GUI
 namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values

@@ -23,10 +23,12 @@ enum GUI_FIELD {
   VERTICAL_SPEED,
   ABSOLUTE_SPEED,
   AGL_ALTITUDE,
-  N2_PRESSURE,
+  N2_PRESSURE_1,
+  N2_PRESSURE_2,
   FUEL_PRESSURE,
   LOX_PRESSURE,
-  N2_TEMP,
+  N2_TEMP_1,
+  N2_TEMP_2,
   LOX_TEMP,
   LOX_FLS_TEMP_1,
   LOX_FLS_TEMP_2,
@@ -273,8 +275,11 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case AGL_ALTITUDE:
     name = "AGL ALT";
     break;
-  case N2_PRESSURE:
-    name = "N2 PRESSURE";
+  case N2_PRESSURE_1:
+    name = "N2 PRESSURE_1";
+    break;
+  case N2_PRESSURE_2:
+    name = "N2 PRESSURE_2";
     break;
   case FUEL_PRESSURE:
     name = "FUEL PRESSURE";
@@ -309,8 +314,11 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case LOX_FLS_TEMP_8:
     name = "LOX FLS TEMP 8";
     break;
-  case N2_TEMP:
-    name = "N2 TEMPERATURE";
+  case N2_TEMP_1:
+    name = "N2 TEMPERATURE 1";
+    break;
+  case N2_TEMP_2:
+    name = "N2 TEMPERATURE 2";
     break;
   case LOX_INJ_PRESSURE:
     name = "LOX INJ PRESSURE";
@@ -846,9 +854,9 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return PRESSURE_VALVE_LOX;
   else if (fieldName == "PE")
     return PRESSURE_VALVE_FUEL;
-  else if (fieldName == "SPO")
+  else if (fieldName == "SPO-nc")
     return SECURITY_DPR_LOX;
-  else if (fieldName == "SPE")
+  else if (fieldName == "SPE-nc")
     return SECURITY_DPR_FUEL;
   else if (fieldName == "MO")
     return MAIN_LOX;
@@ -880,16 +888,20 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return ABSOLUTE_SPEED;
   else if (fieldName == "AGL ALTITUDE")
     return AGL_ALTITUDE;
-  else if (fieldName == "N2 PRESSURE")
-    return N2_PRESSURE;
+  else if (fieldName == "N2 PRESSURE 1")
+    return N2_PRESSURE_1;
+  else if (fieldName == "N2 PRESSURE 2")
+    return N2_PRESSURE_2;
   else if (fieldName == "FUEL PRESSURE")
     return FUEL_PRESSURE;
   else if (fieldName == "LOX PRESSURE")
     return LOX_PRESSURE;
   else if (fieldName == "LOX TEMPERATURE")
     return LOX_TEMP;
-  else if (fieldName == "N2 TEMPERATURE")
-    return N2_TEMP;
+  else if (fieldName == "N2 TEMPERATURE 1")
+    return N2_TEMP_1;
+  else if (fieldName == "N2 TEMPERATURE 2")
+    return N2_TEMP_2;
   else if (fieldName == "LOX FLS TEMP 1")
     return LOX_FLS_TEMP_1;
   else if (fieldName == "LOX FLS TEMP 2")
