@@ -18,6 +18,7 @@ set(SOURCES_GUI
     src/components/IcarusCommandsView.cpp
     src/components/ToggleButton.cpp
     src/components/ValveButton.cpp
+    src/components/BallValveButton.cpp
     src/components/ValveControlButton.cpp
     src/json/jsoncpp.cpp
     src/views/ControlPannelView.cpp 
@@ -41,6 +42,7 @@ set(HEADERS_GUI
     include/components/IcarusCommandsView.h
     include/components/ToggleButton.h
     include/components/ValveButton.h
+    include/components/BallValveButton.h
     include/components/ValveControlButton.h
     include/json/json-forwards.h
     include/json/json.h
@@ -101,4 +103,4 @@ endfunction()
 
 
 make_gui(FirehornGUI FIREHORN_GUI)
-make_gui(IcarusGUI ICARUS_GUI)
+# make_gui(IcarusGUI ICARUS_GUI)

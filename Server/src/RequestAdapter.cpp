@@ -282,11 +282,15 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     int engine_states = static_cast<int>(dataAv.valves_state);
     jsonObj[QString::number(GUI_FIELD::VENT_N2)] =
         QString::number((engine_states & AV_VALVE_VENT_N2) > 0 ? 1 : 0);
-// TODO: UPDATE FOR BALL VALVE DPR (2x servos + 1x solenoid SDPR_N2, cf. PacketDefinition_Firehorn2.h)
+
     jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_FUEL)] =
         QString::number(dataAv.valve_dpr_fuel);
     jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_LOX)] =
         QString::number(dataAv.valve_dpr_LOX);
+    jsonObj[QString::number(GUI_FIELD::SECURITY_DPR_FUEL)] =
+        QString::number((engine_states & AV_VALVE_SDPR_FUEL) > 0 ? 1 : 0);
+    jsonObj[QString::number(GUI_FIELD::SECURITY_DPR_LOX)] =
+        QString::number((engine_states & AV_VALVE_SDPR_LOX) > 0 ? 1 : 0);
     jsonObj[QString::number(GUI_FIELD::VENT_LOX)] =
         QString::number((engine_states & AV_VALVE_VENT_LOX) > 0 ? 1 : 0);
     jsonObj[QString::number(GUI_FIELD::VENT_FUEL)] =

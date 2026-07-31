@@ -27,12 +27,6 @@ ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
   setObjectName("valveButton");
   resetStyle();
 
-  m_rOpen =
-      new QSvgRenderer(QStringLiteral(":/images/GS-valve-open.svg"), this);
-  m_rClose =
-      new QSvgRenderer(QStringLiteral(":/images/GS-valve-close.svg"), this);
-  m_rUnknown =
-      new QSvgRenderer(QStringLiteral(":/images/GS-valve-unknown.svg"), this);
   updateButtonIcon();
 
   MainWindow::clientManager->subscribe(field, [this](const QString &message) {

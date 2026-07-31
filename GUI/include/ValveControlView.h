@@ -17,6 +17,7 @@
 #include "FieldUtil.h"
 #include "Log.h"
 #include "components/ValveButton.h"
+#include "components/BallValveButton.h"
 #include "FileLocation.h"
 
 struct Position {
@@ -34,13 +35,21 @@ typedef struct  {
 typedef struct  {
     GUI_FIELD f;
     Position p;
+    BallValveButton::Orientation o;
+    bool read_only;
+} BallValveInfo;
+
+
+typedef struct  {
+    GUI_FIELD f;
+    Position p;
 } LabelInfo;
 
 class ValveControlView : public QFrame {
     Q_OBJECT
 
 public:
-    ValveControlView(std::vector<ValveInfo> valves, std::vector<LabelInfo> labels, 
+    ValveControlView(std::vector<ValveInfo> valves,std::vector<BallValveInfo> dpr_valves, std::vector<LabelInfo> labels, 
                      QString connectedBg, QString disconnectedBg, QWidget *parent = nullptr);
     
     virtual ~ValveControlView() override = default;
@@ -51,6 +60,7 @@ protected:
 private:
     void setSvgBackground(const QString& filePath);
     void addButtonIcon(GUI_FIELD field,float x, float y, ValveButton::Orientation orientation = ValveButton::Orientation::Vertical, bool read_only = 0);
+    void addButtonIcon(GUI_FIELD field,float x, float y, BallValveButton::Orientation orientation = BallValveButton::Orientation::Vertical, bool read_only = 0);
     void addDataLabel(const GUI_FIELD field, float x, float y);
     void placeValves();
     void placeDataLabels();
@@ -61,6 +71,7 @@ private:
     QString connectedBgPath;
     QString disconnectedBgPath;
     std::vector<ValveInfo> _valves;
+    std::vector<BallValveInfo> _dpr_valves;
     std::vector<LabelInfo> _labels;
     ModuleLog _logger = ModuleLog("ValveControlView", LOG_FILE_PATH);
     std::unique_ptr<QSvgRenderer> svgRenderer;

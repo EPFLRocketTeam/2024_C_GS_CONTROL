@@ -72,7 +72,7 @@ function(add_server_exec exec_name protocol_name definition)
 endfunction()
 
 add_server_exec(FirehornServer FirehornProtocol RF_PROTOCOL_FIREHORN)
-add_server_exec(IcarusServer IcarusProtocol RF_PROTOCOL_ICARUS)
+# add_server_exec(IcarusServer IcarusProtocol RF_PROTOCOL_ICARUS)
 ##### data_storage stuff #####
 
 find_package(SQLite3 REQUIRED)

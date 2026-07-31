@@ -6,7 +6,8 @@
 enum GUI_FIELD {
   PRESSURE_VALVE_FUEL = 42,
   PRESSURE_VALVE_LOX,
-  SECURITY_DPR_N2,
+  SECURITY_DPR_FUEL,
+  SECURITY_DPR_LOX,
   MAIN_LOX,
   MAIN_FUEL,
   VENT_LOX,
@@ -216,10 +217,16 @@ inline QString enumToFieldName(GUI_FIELD field) {
   QString name;
   switch (field) {
   case PRESSURE_VALVE_FUEL:
-    name = "PE-nc";
+    name = "PE";
     break;
   case PRESSURE_VALVE_LOX:
-    name = "PO-nc";
+    name = "PO";
+    break;
+  case SECURITY_DPR_FUEL:
+    name = "SPE-nc";
+    break;
+  case SECURITY_DPR_LOX:
+    name = "SPO-nc";
     break;
   case MAIN_LOX:
     name = "MO";
@@ -359,11 +366,26 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case CAM_REC:
     name = "CAM REC";
     break;
+  case AV_PYROS:
+    name = "AV PYROS";
+    break;
   case DOWNRANGE:
     name = "DOWNRANGE";
     break;
   case AV_PACKET_FREQ:
     name = "AV PACKET FREQ [Hz]";
+    break;
+  case SERIAL_STATUS:
+    name = "SERIAL STATUS";
+    break;
+  case SERIAL_NAME_USE:
+    name = "SERIAL NAME";
+    break;
+  case AV_TIMER:
+    name = "AV TIMER";
+    break;
+  case GSE_TIMER:
+    name = "GSE TIMER";
     break;
   case GSE_FILLING_N2O:
     name = "HOPPER FO-nc";
@@ -820,10 +842,14 @@ inline QString enumToFieldName(GUI_FIELD field) {
 }
 
 inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
-  if (fieldName == "PO-nc")
+  if (fieldName == "PO")
     return PRESSURE_VALVE_LOX;
-  else if (fieldName == "PE-nc")
+  else if (fieldName == "PE")
     return PRESSURE_VALVE_FUEL;
+  else if (fieldName == "SPO")
+    return SECURITY_DPR_LOX;
+  else if (fieldName == "SPE")
+    return SECURITY_DPR_FUEL;
   else if (fieldName == "MO")
     return MAIN_LOX;
   else if (fieldName == "ME")

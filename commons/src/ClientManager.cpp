@@ -79,8 +79,8 @@ void ClientManager::readyRead() {
 }
 
 void ClientManager::subscribe(const GUI_FIELD field, CallbackFunction<QString> callback) {
-  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1, on server %2:%3)").
-                arg(fieldUtil::enumToFieldName(field)).arg(serverHost).arg(serverPort).toStdString());
+  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1 [%4], on server %2:%3)").
+                arg(fieldUtil::enumToFieldName(field)).arg(serverHost).arg(serverPort).arg(field).toStdString());
   if (subscriptionsStrings[field].size() == 0)
     sendSubscribeRequest(field);
   // sendSubscribeRequest(field);
@@ -125,8 +125,8 @@ void ClientManager::unsubscribeAll(const GUI_FIELD field) {
 
 void ClientManager::subscribe(const GUI_FIELD field,
                               CallbackFunction<QJsonValue> callback) {
-  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1)").
-                arg(fieldUtil::enumToFieldName(field)).toStdString());
+  _logger.debug("Subscription", QString(R"(An UI element subscribed to %1 [%2])").
+                arg(fieldUtil::enumToFieldName(field)).arg(field).toStdString());
   if (subscriptionsJson[field].size() == 0)
     sendSubscribeRequest(field);
   subscriptionsJson[field].append(callback);

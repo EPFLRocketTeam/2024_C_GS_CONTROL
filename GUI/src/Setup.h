@@ -229,7 +229,8 @@ inline QList<std::vector<GUI_FIELD>> valvesMap{{
     GUI_FIELD::VENT_N2,
     GUI_FIELD::PRESSURE_VALVE_LOX,
     GUI_FIELD::PRESSURE_VALVE_FUEL,
-    GUI_FIELD::SECURITY_DPR_N2,
+    GUI_FIELD::SECURITY_DPR_FUEL,
+    GUI_FIELD::SECURITY_DPR_LOX,
 }};
 
 inline QList<std::vector<GUI_FIELD>> pushButtonMap{
@@ -269,6 +270,8 @@ inline QMap<std::string, QList<std::vector<GUI_FIELD>>> gseControlMap{
 inline std::vector<ValveInfo> valves = {
     /*{GUI_FIELD::GSE_VENT, {0.24, 0.668},
        ValveButton::Orientation::Horizontal},*/
+    {GUI_FIELD::SECURITY_DPR_FUEL, {0.69,0.64}, ValveButton::Orientation::Horizontal, false},
+    {GUI_FIELD::SECURITY_DPR_LOX, {0.69,0.34}, ValveButton::Orientation::Horizontal, false},
     {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Horizontal, false},
     {GUI_FIELD::MAIN_LOX, {0.487, 0.75}, ValveButton::Orientation::Vertical, false},
     {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical, false},
@@ -276,13 +279,14 @@ inline std::vector<ValveInfo> valves = {
      {0.386, 0.249},
      ValveButton::Orientation::Horizontal, false},
     {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Horizontal, false},
-    // TODO: Create a new struct for ball valves servomotors (PE and PO)
+};
+inline std::vector<BallValveInfo> dpr_valves = {
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
      {0.513, 0.225},
-     ValveButton::Orientation::Vertical, false},
+     BallValveButton::Orientation::Vertical, false},
     {GUI_FIELD::PRESSURE_VALVE_LOX,
      {0.572, 0.33},
-     ValveButton::Orientation::Vertical, false},
+     BallValveButton::Orientation::Vertical, false},
 };
 
 inline std::vector<LabelInfo> labels = {
@@ -340,7 +344,7 @@ inline std::vector<ValveInfo> gseValves = {
     {GUI_FIELD::GSE_GQD6_NC, {0.85, 0.08}, ValveButton::Orientation::Vertical,false},
 
 };
-
+inline std::vector<BallValveInfo> gseDpr_valves = {};
 inline std::vector<LabelInfo> gseLabels = {};
 
 inline QList<GUI_FIELD> gps = {
@@ -388,9 +392,9 @@ inline QString disconnectedBackgroundImage = ":/images/prop_firehorn_V6.svg";
 
 inline void init_views() {
   middlePlaceholder = new ValveControlView(
-      valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
+      valves, dpr_valves, labels, connectedBackgroundImage, disconnectedBackgroundImage);
   gseMiddlePlaceholder =
-      new ValveControlView(gseValves, gseLabels, ":/images/gse_plumbing.svg",
+      new ValveControlView(gseValves, gseDpr_valves, gseLabels, ":/images/gse_plumbing.svg",
                            ":/images/gse_plumbing.svg");
 
   leftPlaceholder = new TelemetryView(data_sections);

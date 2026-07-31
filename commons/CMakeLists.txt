@@ -53,4 +53,4 @@ target_link_libraries(CommonsLib
 add_commons_library(FirehornProtocol RF_PROTOCOL_FIREHORN)
 
 # Create IcarusCommons
-add_commons_library(IcarusProtocol RF_PROTOCOL_ICARUS)
+# add_commons_library(IcarusProtocol RF_PROTOCOL_ICARUS)
