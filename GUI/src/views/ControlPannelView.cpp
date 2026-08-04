@@ -54,8 +54,8 @@ ControlPannelView::ControlPannelView(
       controls->value("QPushButton");
   createPushButtonLayouts(containerLayout, &pushButtonControls);
 
-  containerLayout->setContentsMargins(20, 10, 20, 10);
-  containerLayout->setSpacing(15);
+  containerLayout->setContentsMargins(10, 5, 10, 5);
+  containerLayout->setSpacing(10);
 
   controlContainerWidget->setFixedHeight(210);
 

@@ -225,7 +225,6 @@ inline QList<std::vector<GUI_FIELD>> valvesMap{{
     GUI_FIELD::MAIN_FUEL,
     GUI_FIELD::VENT_LOX,
     GUI_FIELD::VENT_FUEL,
-    GUI_FIELD::VENT_N2,
     GUI_FIELD::PRESSURE_VALVE_LOX,
     GUI_FIELD::PRESSURE_VALVE_FUEL,
     GUI_FIELD::SECURITY_DPR_FUEL,
@@ -271,7 +270,6 @@ inline std::vector<ValveInfo> valves = {
        ValveButton::Orientation::Horizontal},*/
     {GUI_FIELD::SECURITY_DPR_FUEL, {0.69,0.64}, ValveButton::Orientation::Horizontal, false},
     {GUI_FIELD::SECURITY_DPR_LOX, {0.69,0.34}, ValveButton::Orientation::Horizontal, false},
-    {GUI_FIELD::VENT_N2, {0.55, -0.005}, ValveButton::Orientation::Horizontal, false},
     {GUI_FIELD::MAIN_LOX, {0.487, 0.75}, ValveButton::Orientation::Vertical, false},
     {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical, false},
     {GUI_FIELD::VENT_FUEL,
@@ -386,8 +384,8 @@ inline QFrame *gseMiddlePlaceholder;
  * ":/images/prop_firehorn_connect.svg";*/
 /*inline QString disconnectedBackgroundImage =*/
 /*    ":/images/prop_firehorn_disconnect.svg";*/
-inline QString connectedBackgroundImage = ":/images/prop_firehorn_V6.svg";
-inline QString disconnectedBackgroundImage = ":/images/prop_firehorn_V6.svg";
+inline QString connectedBackgroundImage = ":/images/prop_firehorn2_V1.svg";
+inline QString disconnectedBackgroundImage = ":/images/prop_firehorn2_V1.svg";
 
 inline void init_views() {
   middlePlaceholder = new ValveControlView(

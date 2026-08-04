@@ -282,8 +282,6 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataAv.ambient_temp)) + " [°C]";
 
     int engine_states = static_cast<int>(dataAv.valves_state);
-    jsonObj[QString::number(GUI_FIELD::VENT_N2)] =
-        QString::number((engine_states & AV_VALVE_VENT_N2) > 0 ? 1 : 0);
 
     jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_FUEL)] =
         QString::number(dataAv.valve_dpr_fuel);
@@ -830,9 +828,6 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::VENT_FUEL:
     return {AV_CMD_VENT_FUEL, GSC_CMD};
 
-  case GUI_FIELD::VENT_N2:
-    return {AV_CMD_VENT_N2, GSC_CMD};
-
   case GUI_FIELD::MAIN_LOX:
     return {AV_CMD_MAIN_LOX, GSC_CMD};
 
@@ -846,10 +841,10 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {AV_CMD_DPR_LOX, GSC_CMD};
 
   case GUI_FIELD::SECURITY_DPR_FUEL:
-    return {AV_CMD_DPR_LOX, GSC_CMD};
+    return {AV_CMD_SDPR_FUEL, GSC_CMD};
 
   case GUI_FIELD::SECURITY_DPR_LOX:
-    return {AV_CMD_DPR_LOX, GSC_CMD};
+    return {AV_CMD_SDPR_LOX, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_GSE_IDLE:
     return {GSE_CMD_IDLE, GSE_TELEMETRY};

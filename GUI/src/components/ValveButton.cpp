@@ -173,6 +173,7 @@ void ValveButton::updateButtonIcon() {
     newPixmap = icon.pixmap(iconSize).transformed(transform.rotate(180));
     break;
   }
+  newPixmap.transformed(transform.scale(0.95,0.95));
   setPixmap(newPixmap);
 
   update();
