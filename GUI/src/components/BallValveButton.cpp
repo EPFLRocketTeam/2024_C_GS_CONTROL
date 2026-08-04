@@ -5,6 +5,7 @@
 #include <QStyleFactory>
 #include <QIcon>
 #include <QLabel>
+#include <QLayout>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
@@ -26,6 +27,7 @@ BallValveButton::BallValveButton(GUI_FIELD field, Orientation orientation,
   currentAngle = 0;
   setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
   setObjectName("BallValveButton");
+  
   if (m_readOnly) {
     setStyleSheet("background: transparent;");
     return;
@@ -44,12 +46,16 @@ BallValveButton::BallValveButton(GUI_FIELD field, Orientation orientation,
   updateButtonIcon();
 
   MainWindow::clientManager->subscribe(field, [this](const QString &message) {
-    int temp(message.toInt());
-    if (temp >= 0 && temp <= 90) {
-      setAngle(temp);
-      setState(BallValveButton::State::Angle);
-    } else {
+    if (message == "unknown")  {
       setState(BallValveButton::State::Unknown);
+    } else {      
+      int temp(message.toInt());
+      if (temp >= 0 && temp <= 90) {
+        setAngle(temp);
+        setState(BallValveButton::State::Angle);
+      } else {
+        setState(BallValveButton::State::Unknown);
+      }
     }
   });
 
@@ -62,7 +68,7 @@ BallValveButton::BallValveButton(GUI_FIELD field, Orientation orientation,
       // Proceed with request
       RequestBuilder b;
       b.setHeader(RequestType::POST);
-      int value = getState() == BallValveButton::State::Unknown ? 1 : 0;
+      int value = getAngle();
       b.addField("cmd", m_field);
       b.addField("cmd_order", value);
       MainWindow::clientManager->send(b.toString());
@@ -86,7 +92,6 @@ BallValveButton::BallValveButton(GUI_FIELD field, Orientation orientation,
                                        .toStdString());
     }
   });
-
   if (m_readOnly) {
         setAttribute(Qt::WA_TransparentForMouseEvents, true);
   }
@@ -99,6 +104,9 @@ GUI_FIELD BallValveButton::fieldSensivity() { return m_field;}
 QMessageBox::StandardButton BallValveButton::showConfirmDialog(QWidget *parent, 
                                               const QString &title, 
                                               const QString &text) {
+    angle_sel = new ValueSelector(this, currentAngle);
+    connect(angle_sel, &ValueSelector::valueChanged, this, &BallValveButton::setAngle);
+    
     QMessageBox msgBox(parent);
     msgBox.setWindowTitle(title);
     msgBox.setText(text);
@@ -108,19 +116,32 @@ QMessageBox::StandardButton BallValveButton::showConfirmDialog(QWidget *parent,
 
     // Apply custom stylesheet
     msgBox.setStyleSheet(QString(R"(
+        QMessageBox {
+            background-color: #535353;
+            color: black;
+        }
+        QLabel {
+            color: white;
+            font-size: 14px;
+        }
         QPushButton {
             min-width: 80px;
             padding: 6px 12px;
             border-radius: 6px;
             font-weight: bold;
+            background-color: #868686;
             border: 1px solid black;
         }
         QPushButton:hover {
             background-color: grey;
         }
     )")
-    );
-
+    );    
+    QLayout *temp(msgBox.layout());
+    if (angle_sel) {
+      temp->addWidget(angle_sel);
+    }
+    
     // Give object names so stylesheet can target them
     /*QAbstractButton *yesBtn = msgBox.button(QMessageBox::Yes);*/
     /*if (yesBtn) yesBtn->setObjectName("yesButton");*/
@@ -139,9 +160,8 @@ void BallValveButton::setState(State state) {
   currentState = state;
   updateButtonIcon();
 }
-void BallValveButton::setAngle(angle newAngle) {
+void BallValveButton::setAngle(int newAngle) {
   currentAngle = newAngle;
-  updateButtonIcon();
 }
 
 
@@ -179,7 +199,7 @@ void BallValveButton::updateButtonIcon() {
 }
 
 BallValveButton::State BallValveButton::getState() { return currentState; }
-BallValveButton::angle BallValveButton::getAngle() { return currentAngle; }
+int BallValveButton::getAngle() { return currentAngle; }
 
 void BallValveButton::mousePressEvent(QMouseEvent *event) {
   if (m_readOnly) return;
@@ -188,3 +208,26 @@ void BallValveButton::mousePressEvent(QMouseEvent *event) {
     emit clicked();
 
 }
+
+
+  ValueSelector::ValueSelector(QWidget *parent, int value) {
+    valueSpinBox = new QSpinBox;
+    
+    valueSpinBox->setRange(0, 90);
+    valueSpinBox->setSingleStep(1);
+    valueSpinBox->setValue(value);
+    
+    valueLabel = new QLabel(tr("Angle:"));
+
+    connect(valueSpinBox,  &QSpinBox::valueChanged,
+            this,         &ValueSelector::valueChanged);
+
+    layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    layout->addWidget(valueLabel);
+    layout->addWidget(valueSpinBox);
+    setLayout(layout);
+  }
+
+  void ValueSelector::setValue(int value) {
+    valueSpinBox->setValue(value);
+  }

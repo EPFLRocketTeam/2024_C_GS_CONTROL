@@ -846,10 +846,10 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {AV_CMD_DPR_LOX, GSC_CMD};
 
   case GUI_FIELD::SECURITY_DPR_FUEL:
-    return {TODO, GSC_CMD};
+    return {AV_CMD_DPR_LOX, GSC_CMD};
 
   case GUI_FIELD::SECURITY_DPR_LOX:
-    return {TODO, GSC_CMD};
+    return {AV_CMD_DPR_LOX, GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_GSE_IDLE:
     return {GSE_CMD_IDLE, GSE_TELEMETRY};

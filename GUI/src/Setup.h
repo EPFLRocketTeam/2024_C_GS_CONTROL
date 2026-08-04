@@ -290,8 +290,8 @@ inline std::vector<BallValveInfo> dpr_valves = {
 
 inline std::vector<LabelInfo> labels = {
 
-    {GUI_FIELD::N2_PRESSURE, 0.66, 0.076},
-    {GUI_FIELD::N2_TEMP, 0.66, 0.155},
+    {GUI_FIELD::N2_PRESSURE_1, 0.66, 0.076},
+    {GUI_FIELD::N2_TEMP_1, 0.66, 0.155},
 
     {GUI_FIELD::LOX_PRESSURE, 0.67, 0.584},
     {GUI_FIELD::LOX_FLS_TEMP_8, 0.83, 0.665}, // LOX float level sensor at TBD%
