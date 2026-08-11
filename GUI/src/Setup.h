@@ -265,51 +265,52 @@ inline QMap<std::string, QList<std::vector<GUI_FIELD>>> gseControlMap{
     /*{"ValveControlButton", gseValvesMap},*/
     {"QPushButton", gsePushButtonMap}};
 
+inline float c_line = 0.4861;
 inline std::vector<ValveInfo> valves = {
     /*{GUI_FIELD::GSE_VENT, {0.24, 0.668},
        ValveButton::Orientation::Horizontal},*/
-    {GUI_FIELD::SECURITY_DPR_FUEL, {0.69,0.64}, ValveButton::Orientation::Horizontal, false},
-    {GUI_FIELD::SECURITY_DPR_LOX, {0.69,0.34}, ValveButton::Orientation::Horizontal, false},
-    {GUI_FIELD::MAIN_LOX, {0.487, 0.75}, ValveButton::Orientation::Vertical, false},
-    {GUI_FIELD::MAIN_FUEL, {0.4, 0.78}, ValveButton::Orientation::Vertical, false},
-    {GUI_FIELD::VENT_FUEL,
-     {0.386, 0.249},
-     ValveButton::Orientation::Horizontal, false},
-    {GUI_FIELD::VENT_LOX, {0.625, 0.498}, ValveButton::Orientation::Horizontal, false},
+    {GUI_FIELD::SECURITY_DPR_FUEL, {c_line,0.139}, ValveButton::Orientation::Vertical, false},
+    {GUI_FIELD::SECURITY_DPR_LOX, {c_line,0.55}, ValveButton::Orientation::Vertical, false},
+    {GUI_FIELD::MAIN_LOX, {c_line, 0.815}, ValveButton::Orientation::Vertical, false},
+    {GUI_FIELD::MAIN_FUEL, {0.374, 0.84}, ValveButton::Orientation::Vertical, false},
+    {GUI_FIELD::VENT_FUEL, {0.35, 0.252}, ValveButton::Orientation::Horizontal, false},
+    {GUI_FIELD::VENT_LOX, {0.57, 0.652}, ValveButton::Orientation::Horizontal, false},
 };
 inline std::vector<BallValveInfo> dpr_valves = {
     {GUI_FIELD::PRESSURE_VALVE_FUEL,
-     {0.513, 0.225},
+     {c_line, 0.24},
      BallValveButton::Orientation::Vertical, false},
     {GUI_FIELD::PRESSURE_VALVE_LOX,
-     {0.572, 0.33},
+     {c_line, 0.637},
      BallValveButton::Orientation::Vertical, false},
 };
 
 inline std::vector<LabelInfo> labels = {
 
-    {GUI_FIELD::N2_PRESSURE_1, 0.66, 0.076},
-    {GUI_FIELD::N2_TEMP_1, 0.66, 0.155},
+    {GUI_FIELD::N2_PRESSURE_1, 0.755, 0.0505},
 
-    {GUI_FIELD::LOX_PRESSURE, 0.67, 0.584},
-    {GUI_FIELD::LOX_FLS_TEMP_8, 0.83, 0.665}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_7, 0.83, 0.715}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_6, 0.83, 0.765}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_5, 0.83, 0.815}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_4, 0.83, 0.865}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_3, 0.83, 0.915}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_2, 0.83, 0.965}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_1, 0.83, 1.015}, // LOX float level sensor at TBD%
+    {GUI_FIELD::N2_PRESSURE_2, 0.685, 0.446},
 
-    {GUI_FIELD::LOX_INJ_PRESSURE, 0.67, 0.79},
+
+    {GUI_FIELD::LOX_PRESSURE, 0.685, 0.705},
+    {GUI_FIELD::LOX_FLS_TEMP_8, 0.92, 0.632},           // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_7, 0.92, 0.632 + 0.044*1}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_6, 0.92, 0.632 + 0.044*2}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_5, 0.92, 0.632 + 0.044*3}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_4, 0.92, 0.632 + 0.044*4}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_3, 0.92, 0.632 + 0.044*5}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_2, 0.92, 0.632 + 0.044*6}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_1, 0.92, 0.632 + 0.044*7}, // LOX float level sensor at TBD%
+
+    {GUI_FIELD::LOX_INJ_PRESSURE, 0.685, 0.85},
     //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865},
 
-    {GUI_FIELD::CHAMBER_PRESSURE, 0.67, 0.897},
-    {GUI_FIELD::CHAMBER_TEMP, 0.67, 0.97},
+    {GUI_FIELD::CHAMBER_PRESSURE, 0.685, 0.914},
+    {GUI_FIELD::CHAMBER_TEMP, 0.685, 0.96},
 
-    {GUI_FIELD::FUEL_PRESSURE, 0.325, 0.365},
+    {GUI_FIELD::FUEL_PRESSURE, 0.22, 0.33},
 
-    {GUI_FIELD::FUEL_INJ_PRESSURE, 0.28, 0.89}, // SVG V5
+    {GUI_FIELD::FUEL_INJ_PRESSURE, 0.18, 0.8926}, 
 
 };
 

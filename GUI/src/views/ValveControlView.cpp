@@ -28,7 +28,7 @@ ValveControlView::ValveControlView(std::vector<ValveInfo> valves,
                                    QString connectedBg, QString disconnectedBg,
                                    QWidget *parent)
     : QFrame(parent), svgRenderer(nullptr) {
-  setContentsMargins(10, 10, 10, 10);
+  setContentsMargins(25, 5, 25, 10);
   setMinimumWidth(mws::middleSectionWidth / 100.0 * mws::width);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   _valves = valves;
