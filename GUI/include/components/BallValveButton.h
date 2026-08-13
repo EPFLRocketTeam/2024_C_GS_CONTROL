@@ -62,6 +62,7 @@ private:
   int currentAngle;
 
   void updateButtonIcon();
+  
 protected:
   QSize sizeHint() const override { return QSize(52,52); }
   void mousePressEvent(QMouseEvent *event) override;
@@ -76,7 +77,8 @@ private:
   QMessageBox::StandardButton showConfirmDialog(QWidget *parent, 
                                               const QString &title, 
                                               const QString &text);
-  ValueSelector *angle_sel;
+  ValueSelector *angleSel;
+  QLabel *angleLabel;
 };
 
 

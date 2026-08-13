@@ -94,7 +94,6 @@ SqliteDB::SqliteDB()
                   sqlite_orm::make_column("GFO_NCC", &GSE_downlink_pkt::GFO_NCC),
                   sqlite_orm::make_column("GDO_NCC", &GSE_downlink_pkt::GDO_NCC),
                   sqlite_orm::make_column("GPA_NC", &GSE_downlink_pkt::GPA_NC),
-                  sqlite_orm::make_column("GVA_NC", &GSE_downlink_pkt::GVA_NC),
                   sqlite_orm::make_column("GFD_NC", &GSE_downlink_pkt::GFD_NC),
                   sqlite_orm::make_column("GDD_NC", &GSE_downlink_pkt::GDD_NC),
                   sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),
@@ -659,7 +658,6 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
                                                       .GQD5_NC = gsdw->valves_state & GSE_VALVE_GQD5_NC,
                                                       .GQD6_NC = gsdw->valves_state & GSE_VALVE_GQD6_NC,
                                                       .GPA_NC = gsdw->valves_state & GSE_VALVE_GPA_NC,
-                                                      .GVA_NC = gsdw->valves_state & GSE_VALVE_GVA_NC,
                                                       .GPN_NC = gsdw->valves_state & GSE_VALVE_GPN_NC,
                                                       .GVN_NC = gsdw->valves_state & GSE_VALVE_GVN_NO,
                                                       .GFE_NC = gsdw->valves_state & GSE_VALVE_GFE_NC,
@@ -850,7 +848,6 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
     gsdw->valves_state |= pkt.gse_down_pkt->GQD5_NC;
     gsdw->valves_state |= pkt.gse_down_pkt->GQD6_NC;
     gsdw->valves_state |= pkt.gse_down_pkt->GPA_NC;
-    gsdw->valves_state |= pkt.gse_down_pkt->GVA_NC;
     gsdw->valves_state |= pkt.gse_down_pkt->GPN_NC;
     gsdw->valves_state |= pkt.gse_down_pkt->GVN_NC;
     gsdw->valves_state |= pkt.gse_down_pkt->GFE_NC;

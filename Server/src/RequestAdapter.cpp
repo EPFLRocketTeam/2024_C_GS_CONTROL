@@ -735,14 +735,12 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
       QString::number((dataGse->valves_state & GSE_VALVE_GQD6_NC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GPA_NC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GPA_NC) > 0 ? 1 : 0);
-  jsonObj[QString::number(GUI_FIELD::GSE_GVA_NC)] =
-      QString::number((dataGse->valves_state & GSE_VALVE_GVA_NC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GPN_NC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GPN_NC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GVN_NC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GVN_NO) > 0 ? 1 : 0);
-  jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)] =
-      QString::number((dataGse->valves_state & GSE_VALVE_GFE_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GPA_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GPA_NC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GFO_NCC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GFO_NCC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GDO_NCC)] =
@@ -751,6 +749,8 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
       QString::number((dataGse->valves_state & GSE_VALVE_GFD_NC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GDD_NC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GDD_NC) > 0 ? 1 : 0);
+  jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)] =
+      QString::number((dataGse->valves_state & GSE_VALVE_GFE_NC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_PUMP)] =
       QString::number(static_cast<unsigned int>(dataGse->PUMP));
 
@@ -778,12 +778,12 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
       QString::number(static_cast<unsigned int>(dataGse->GPN_NC1));
   jsonObj[QString::number(GUI_FIELD::GSE_GVN_NC)] =
       QString::number(static_cast<unsigned int>(dataGse->GVN_NC));
-  jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)] =
-      QString::number(static_cast<unsigned int>(dataGse->GFE_NC));
   jsonObj[QString::number(GUI_FIELD::GSE_GFO_NCC)] =
       QString::number(static_cast<unsigned int>(dataGse->GFO_NCC));
   jsonObj[QString::number(GUI_FIELD::GSE_GDO_NCC)] =
       QString::number(static_cast<unsigned int>(dataGse->GDO_NCC));
+  jsonObj[QString::number(GUI_FIELD::GSE_GFE_NC)] =
+      QString::number(static_cast<unsigned int>(dataGse->GFE_NC));
   jsonObj[QString::number(GUI_FIELD::GSE_PC_OLC)] =
       QString::number(static_cast<unsigned int>(dataGse->PC_OLC));
   jsonObj[QString::number(GUI_FIELD::GSE_PUMP)] =
@@ -858,6 +858,9 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GUI_CMD_GSE_PASSIVATE:
     return {GSE_CMD_PASSIVATE, GSE_TELEMETRY};
 
+  case GUI_FIELD::GUI_CMD_GSE_TOGGLE_ALL_GQD:
+    return {GSE_CMD_TOGGLE_ALL_GQD, GSE_TELEMETRY};
+
   case GUI_FIELD::GSE_GQD1_NC:
     return {GSE_CMD_TOGGLE_GQD1, GSE_TELEMETRY};
 
@@ -865,31 +868,25 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {GSE_CMD_TOGGLE_GQD2, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQD3_NC:
-    return {GSE_CMD_TOGGLE_GQD3, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQD2, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQD4_NC:
-    return {GSE_CMD_TOGGLE_GQD4, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQD2, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQD5_NC:
-    return {GSE_CMD_TOGGLE_GQD5, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQD2, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GQD6_NC:
-    return {GSE_CMD_TOGGLE_GQD6, GSE_TELEMETRY};
-
-  case GUI_FIELD::GSE_GPA_NC:
-    return {GSE_CMD_TOGGLE_GPA, GSE_TELEMETRY};
-
-  case GUI_FIELD::GSE_GVA_NC:
-    return {GSE_CMD_TOGGLE_GVA, GSE_TELEMETRY};
+    return {GSE_CMD_TOGGLE_GQD2, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GPN_NC:
     return {GSE_CMD_TOGGLE_GPN, GSE_TELEMETRY};
-
+  
   case GUI_FIELD::GSE_GVN_NC:
     return {GSE_CMD_TOGGLE_GVN, GSE_TELEMETRY};
 
-  case GUI_FIELD::GSE_GFE_NC:
-    return {GSE_CMD_TOGGLE_GFE, GSE_TELEMETRY};
+  case GUI_FIELD::GSE_GPA_NC:
+    return {GSE_CMD_TOGGLE_GPA, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GFO_NCC:
     return {GSE_CMD_TOGGLE_GFO, GSE_TELEMETRY};
@@ -897,20 +894,18 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GSE_GDO_NCC:
     return {GSE_CMD_TOGGLE_GDO, GSE_TELEMETRY};
 
+
   case GUI_FIELD::GSE_GFD_NC:
     return {GSE_CMD_TOGGLE_GFD, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GDD_NC:
     return {GSE_CMD_TOGGLE_GDD, GSE_TELEMETRY};
 
+  case GUI_FIELD::GSE_GFE_NC:
+    return {GSE_CMD_TOGGLE_GFE, GSE_TELEMETRY};
+
   case GUI_FIELD::GSE_PUMP:
     return {GSE_CMD_TOGGLE_PUMP, GSE_TELEMETRY};
-
-  case GUI_FIELD::GUI_CMD_GSE_SERVO1:
-    return {GSE_CMD_SERVO_1, GSE_TELEMETRY};
-
-  case GUI_FIELD::GUI_CMD_GSE_SERVO2:
-    return {GSE_CMD_SERVO_2, GSE_TELEMETRY};
 
   default:
     throw std::invalid_argument("Invalid GUI_FIELD, no command matching");

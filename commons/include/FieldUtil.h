@@ -113,6 +113,7 @@ enum GUI_FIELD {
   GUI_CMD_PRESSURIZE,
   GUI_CMD_GSE_ARM,
   GUI_CMD_GSE_PASSIVATE,
+  GUI_CMD_GSE_TOGGLE_ALL_GQD,
   GUI_CMD_HOPPER_TARE,
   GUI_CMD_HOPPER_IDLE,
   GUI_CMD_HOPPER_TARE_ORIENTATION,
@@ -141,24 +142,6 @@ enum GUI_FIELD {
 
   GUI_CMD_P_LOX,
   GUI_CMD_P_FUEL,
-  GUI_CMD_GSE_TOGGLE_11,
-  GUI_CMD_GSE_TOGGLE_12,
-  GUI_CMD_GSE_TOGGLE_13,
-  GUI_CMD_GSE_TOGGLE_14,
-  GUI_CMD_GSE_TOGGLE_15,
-  GUI_CMD_GSE_TOGGLE_16,
-  GUI_CMD_GSE_TOGGLE_17,
-  GUI_CMD_GSE_TOGGLE_18,
-  GUI_CMD_GSE_TOGGLE_21,
-  GUI_CMD_GSE_TOGGLE_22,
-  GUI_CMD_GSE_TOGGLE_23,
-  GUI_CMD_GSE_TOGGLE_24,
-  GUI_CMD_GSE_TOGGLE_25,
-  GUI_CMD_GSE_TOGGLE_26,
-  GUI_CMD_GSE_TOGGLE_27,
-  GUI_CMD_GSE_TOGGLE_28,
-  GUI_CMD_GSE_TOGGLE_29,
-  GUI_CMD_GSE_TOGGLE_210,
   GUI_CMD_DISCONNECT,
   HOPPER_PACKET_NBR,   // 32 bits: packet counter (10Hz update)
   HOPPER_N2O_PRESSURE, // 16 bits (12-bit ADC value)
@@ -599,6 +582,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_GSE_PASSIVATE:
     name = "GSE PASSIVATE";
     break;
+  case GUI_CMD_GSE_TOGGLE_ALL_GQD:
+    name = "GSE TOGGLE ALL GQD";
+    break;
   case GUI_CMD_HOPPER_TARE:
     name = "HOPPER TARE PRESSURE";
     break;
@@ -634,75 +620,6 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case GUI_CMD_HOPPER_SPARE_F3:
     name = "SPARE F3";
-    break;
-
-
-    case GUI_CMD_GSE_TOGGLE_11:
-    name = "GSE TOGGLE 1.1";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_12:
-    name = "GSE TOGGLE 1.2";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_13:
-    name = "GSE TOGGLE 1.3";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_14:
-    name = "GSE TOGGLE 1.4";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_15:
-    name = "GSE TOGGLE 1.5";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_16:
-    name = "GSE TOGGLE 1.6";
-    break;
-  case GUI_CMD_GSE_TOGGLE_17:
-    name = "GSE TOGGLE 1.7";
-    break;
-  case GUI_CMD_GSE_TOGGLE_18:
-    name = "GSE TOGGLE 1.8";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_21:
-    name = "GSE TOGGLE 2.1";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_22:
-    name = "GSE TOGGLE 2.2";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_23:
-    name = "GSE TOGGLE 2.3";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_24:
-    name = "GSE TOGGLE 2.4";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_25:
-    name = "GSE TOGGLE 2.5";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_26:
-    name = "GSE TOGGLE 2.6";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_27:
-    name = "GSE TOGGLE 2.7";
-    break;
-
-  case GUI_CMD_GSE_TOGGLE_28:
-    name = "GSE TOGGLE 2.8";
-    break;
-  case GUI_CMD_GSE_TOGGLE_29:
-    name = "GSE TOGGLE 2.9";
-    break;
-  case GUI_CMD_GSE_TOGGLE_210:
-    name = "GSE TOGGLE 2.10";
     break;
   case GUI_CMD_ARM:
     name = "ARM";
@@ -1075,6 +992,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GSE_CALIBRATE;
   else if (fieldName == "GSE ARM")
     return GUI_CMD_GSE_ARM;
+  else if (fieldName == "GSE TOGGLE ALL GQD")
+    return GUI_CMD_GSE_TOGGLE_ALL_GQD;
   else if (fieldName == "GSE PASSIVATE")
     return GUI_CMD_GSE_PASSIVATE;
   else if (fieldName == "HOPPER TARE ORIENTATION")
@@ -1101,42 +1020,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_HOPPER_SPARE_F2;
   else if (fieldName == "SPARE F3")
     return GUI_CMD_HOPPER_SPARE_F3;
-  else if (fieldName == "GSE TOGGLE 1.1")
-    return GUI_CMD_GSE_TOGGLE_11;
-  else if (fieldName == "GSE TOGGLE 1.2")
-    return GUI_CMD_GSE_TOGGLE_12;
-  else if (fieldName == "GSE TOGGLE 1.3")
-    return GUI_CMD_GSE_TOGGLE_13;
-  else if (fieldName == "GSE TOGGLE 1.4")
-    return GUI_CMD_GSE_TOGGLE_14;
-  else if (fieldName == "GSE TOGGLE 1.5")
-    return GUI_CMD_GSE_TOGGLE_15;
-  else if (fieldName == "GSE TOGGLE 1.6")
-    return GUI_CMD_GSE_TOGGLE_16;
-  else if (fieldName == "GSE TOGGLE 1.7")
-    return GUI_CMD_GSE_TOGGLE_17;
-  else if (fieldName == "GSE TOGGLE 1.8")
-    return GUI_CMD_GSE_TOGGLE_18;
-  else if (fieldName == "GSE TOGGLE 2.1")
-    return GUI_CMD_GSE_TOGGLE_21;
-  else if (fieldName == "GSE TOGGLE 2.2")
-    return GUI_CMD_GSE_TOGGLE_22;
-  else if (fieldName == "GSE TOGGLE 2.3")
-    return GUI_CMD_GSE_TOGGLE_23;
-  else if (fieldName == "GSE TOGGLE 2.4")
-    return GUI_CMD_GSE_TOGGLE_24;
-  else if (fieldName == "GSE TOGGLE 2.5")
-    return GUI_CMD_GSE_TOGGLE_25;
-  else if (fieldName == "GSE TOGGLE 2.6")
-    return GUI_CMD_GSE_TOGGLE_26;
-  else if (fieldName == "GSE TOGGLE 2.7")
-    return GUI_CMD_GSE_TOGGLE_27;
-  else if (fieldName == "GSE TOGGLE 2.8")
-    return GUI_CMD_GSE_TOGGLE_28;
-  else if (fieldName == "GSE TOGGLE 2.9")
-    return GUI_CMD_GSE_TOGGLE_28;
-  else if (fieldName == "GSE TOGGLE 2.10")
-    return GUI_CMD_GSE_TOGGLE_28;
   else if (fieldName == "CALIBRATE")
     return GUI_CMD_CALIBRATE;
   else if (fieldName == "RECOVER")

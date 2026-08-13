@@ -84,7 +84,6 @@ struct GSE_downlink_pkt {
   uint8_t GQD6_NC; //
 
   uint8_t GPA_NC; // Controls the activation of the pressure booster
-  uint8_t GVA_NC; // Vents the pneumatic system
 
   uint8_t GPN_NC; // Control the opening of the high pressure bottle
   uint8_t GVN_NC;  // Vents the tube before disconnect
@@ -366,7 +365,6 @@ private:
           sqlite_orm::make_column("GFO_NCC", &GSE_downlink_pkt::GFO_NCC),
           sqlite_orm::make_column("GDO_NCC", &GSE_downlink_pkt::GDO_NCC),
           sqlite_orm::make_column("GPA_NC", &GSE_downlink_pkt::GPA_NC),
-          sqlite_orm::make_column("GVA_NC", &GSE_downlink_pkt::GVA_NC),
           sqlite_orm::make_column("GFD_NC", &GSE_downlink_pkt::GFD_NC),
           sqlite_orm::make_column("GDD_NC", &GSE_downlink_pkt::GDD_NC),
           sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),

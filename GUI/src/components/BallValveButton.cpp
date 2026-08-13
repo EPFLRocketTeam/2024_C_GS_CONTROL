@@ -104,9 +104,11 @@ GUI_FIELD BallValveButton::fieldSensivity() { return m_field;}
 QMessageBox::StandardButton BallValveButton::showConfirmDialog(QWidget *parent, 
                                               const QString &title, 
                                               const QString &text) {
-    angle_sel = new ValueSelector(this, currentAngle);
-    connect(angle_sel, &ValueSelector::valueChanged, this, &BallValveButton::setAngle);
-    
+    angleSel = new ValueSelector(this, currentAngle);
+    angleLabel = new QLabel(tr("Angle: "),this);
+
+    connect(angleSel, &ValueSelector::valueChanged, this, &BallValveButton::setAngle);
+
     QMessageBox msgBox(parent);
     msgBox.setWindowTitle(title);
     msgBox.setText(text);
@@ -138,8 +140,8 @@ QMessageBox::StandardButton BallValveButton::showConfirmDialog(QWidget *parent,
     )")
     );    
     QLayout *temp(msgBox.layout());
-    if (angle_sel) {
-      temp->addWidget(angle_sel);
+    if (angleSel) {
+      temp->addWidget(angleSel);
     }
     
     // Give object names so stylesheet can target them
