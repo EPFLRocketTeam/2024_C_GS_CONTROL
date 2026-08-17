@@ -19,20 +19,21 @@
 #include <QPropertyAnimation>
 #include <QVBoxLayout>
 
-#include "ControlPannelView.h"
+#include "ControlPanelView.h"
 #include "FieldUtil.h"
 #include "MainWindow.h"
 #include "RequestBuilder.h"
 #include "components/ValveControlButton.h"
 #include <Setup.h>
 
-ControlPannelView::ControlPannelView(
+ControlPanelView::ControlPanelView(
     QWidget *parent, QMap<std::string, QList<std::vector<GUI_FIELD>>> *controls)
     : QFrame(parent) {
 
   setStyleSheet("background:transparent;");
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  toggled = false;
+  setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  setFixedSize(100,100);
+  toggled = true;
   // Add a QLabel to display text
   displayText = std::make_unique<QLabel>("This is DataView");
   displayText->setAlignment(Qt::AlignCenter);
@@ -56,18 +57,18 @@ ControlPannelView::ControlPannelView(
 
   containerLayout->setContentsMargins(10, 5, 10, 5);
   containerLayout->setSpacing(10);
-
+  containerLayout->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
   controlContainerWidget->setFixedHeight(210);
 
   connect(expandButton, &QPushButton::clicked, this,
-          &ControlPannelView::expandClicked);
+          &ControlPanelView::expandClicked);
 
   resizeWidget();
 
-  _logger.debug("ControlPannelView", "Setup finished");
+  _logger.debug("ControlPanelView", "Setup finished");
 }
 
-void ControlPannelView::createValveLayouts(
+void ControlPanelView::createValveLayouts(
     QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *valves) {
 
   for (auto it : *valves) {
@@ -92,7 +93,7 @@ void ControlPannelView::createValveLayouts(
   }
 }
 
-QMessageBox::StandardButton ControlPannelView::showConfirmDialog(QWidget *parent, 
+QMessageBox::StandardButton ControlPanelView::showConfirmDialog(QWidget *parent, 
                                               const QString &title, 
                                               const QString &text) {
     QMessageBox msgBox(parent);
@@ -142,7 +143,7 @@ QMessageBox::StandardButton ControlPannelView::showConfirmDialog(QWidget *parent
     return static_cast<QMessageBox::StandardButton>(msgBox.exec());
 }
 
-void ControlPannelView::createPushButtonLayouts(
+void ControlPanelView::createPushButtonLayouts(
     QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *buttons) {
 
   for (auto it : *buttons) {
@@ -260,14 +261,14 @@ void ControlPannelView::createPushButtonLayouts(
                         b.toString().toStdString());
           MainWindow::clientManager->send(b.toString());
         } else {
-          _logger.debug("ControlPannelView", QString("Cancelled action for %1")
+          _logger.debug("ControlPanelView", QString("Cancelled action for %1")
                                                  .arg(button->text())
                                                  .toStdString());
         }
       });
 
       _logger.debug(
-          "ControlPannelView",
+          "ControlPanelView",
           QString(R"(Created Button %1)").arg(button->text()).toStdString());
     }
 
@@ -279,7 +280,7 @@ void ControlPannelView::createPushButtonLayouts(
   }
 }
 
-void ControlPannelView::createValveControlButtons(
+void ControlPanelView::createValveControlButtons(
     QGridLayout *gridLayout, const std::vector<GUI_FIELD> &fields,
     int maxColumns) {
   // Clear existing items from the grid layout
@@ -309,7 +310,7 @@ void ControlPannelView::createValveControlButtons(
   }
 }
 
-void ControlPannelView::setupContainerWidget() {
+void ControlPanelView::setupContainerWidget() {
 
   controlContainerWidget = new QWidget(this);
   controlContainerWidget->setObjectName("controlPannel");
@@ -325,9 +326,9 @@ void ControlPannelView::setupContainerWidget() {
                                         controlPannelStyle);
 }
 
-void ControlPannelView::resizeEvent(QResizeEvent *event) { resizeWidget(); }
+void ControlPanelView::resizeEvent(QResizeEvent *event) { resizeWidget(); }
 
-void ControlPannelView::setupExpandButton() {
+void ControlPanelView::setupExpandButton() {
 
   expandButton = new QPushButton(this);
   expandButton->setObjectName("expandButton");
@@ -351,7 +352,7 @@ void ControlPannelView::setupExpandButton() {
   expandButton->setIconSize(QSize(64, 64));
 }
 
-void ControlPannelView::resizeWidget() {
+void ControlPanelView::resizeWidget() {
   int windowWidth = parentWidget()->width();
   int newWidth(windowWidth * mws::middleSectionWidth / 100);
   int newHeight(controlContainerWidget->height() + expandButton->height());
@@ -368,7 +369,7 @@ void ControlPannelView::resizeWidget() {
   // controlContainerWidget->move(0, expandButton->height());
 }
 
-void ControlPannelView::expandClicked() {
+void ControlPanelView::expandClicked() {
   toggled = !toggled;
   QPropertyAnimation *anim = new QPropertyAnimation(this, "pos");
   anim->setDuration(1000);
@@ -384,7 +385,7 @@ void ControlPannelView::expandClicked() {
   expandButton->setIconSize(QSize(64, 64));
 }
 
-int ControlPannelView::getHeightPos() {
+int ControlPanelView::getHeightPos() {
   int windowWidth = parentWidget()->width();
   int newHeight(controlContainerWidget->height() + expandButton->height());
   int newY;

@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QtSvg/QSvgRenderer>
+#include <QtSvg>
 #include <qglobal.h>
 #include <qnamespace.h>
 #include <qsvgrenderer.h>
@@ -113,6 +114,7 @@ void ValveControlView::addCommandButton(const QString &label, float x,
 
 void ValveControlView::setSvgBackground(const QString &filePath) {
   // Load the SVG image
+  
   svgRenderer = std::make_unique<QSvgRenderer>(filePath, this);
   svgRenderer->setAspectRatioMode(Qt::AspectRatioMode::KeepAspectRatio);
   update();

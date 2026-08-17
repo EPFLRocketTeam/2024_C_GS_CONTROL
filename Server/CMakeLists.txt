@@ -9,7 +9,6 @@ set(CMAKE_AUTOMOC ON)
 # Find the required Qt6 components
 find_package(Qt6 COMPONENTS Widgets Core Network SerialPort REQUIRED)
 
-find_package(Qt6HttpServer)
 # Add CapsuleLib
 add_library(CapsuleLib Capsule/src/capsule.h)
 

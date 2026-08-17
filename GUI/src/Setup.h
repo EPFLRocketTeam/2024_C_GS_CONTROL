@@ -222,9 +222,8 @@ namespace ui_elements {
 // Instantiate a QMap with std::string keys and std::vector<std::string> values
 
 inline QList<std::vector<GUI_FIELD>> pushButtonMap{
-    {GUI_CMD_CALIBRATE, GUI_CMD_RECOVER},
-    {GUI_CMD_ARM, GUI_CMD_PRESSURIZE},
-    {GUI_CMD_LAUNCH},
+    {GUI_CMD_CALIBRATE,GUI_CMD_ARM,GUI_CMD_PRESSURIZE,GUI_CMD_LAUNCH, GUI_CMD_RECOVER},
+
     {GUI_CMD_ABORT},
 };
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
@@ -310,11 +309,11 @@ inline std::vector<ValveInfo> gseValves = {
 
     // Air valves for Quick Disconnect Actuation
     {GUI_FIELD::GSE_GQD1_NC, {0.59, 0.578},         ValveButton::Orientation::Horizontal,false},
-    {GUI_FIELD::GSE_GQD2_NC, {0.59, 0.579 + 0.0749*1}, ValveButton::Orientation::Horizontal,false},
-    {GUI_FIELD::GSE_GQD3_NC, {0.59, 0.579 + 0.0749*2}, ValveButton::Orientation::Horizontal,false},
-    {GUI_FIELD::GSE_GQD4_NC, {0.59, 0.579 + 0.0749*3}, ValveButton::Orientation::Horizontal,false},
-    {GUI_FIELD::GSE_GQD5_NC, {0.59, 0.579 + 0.0749*4}, ValveButton::Orientation::Horizontal,false},
-    {GUI_FIELD::GSE_GQD6_NC, {0.59, 0.579 + 0.0749*5}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GQD2_NC, {0.59, 0.579 + 0.075*1}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GQD3_NC, {0.59, 0.579 + 0.075*2}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GQD4_NC, {0.59, 0.579 + 0.075*3}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GQD5_NC, {0.59, 0.579 + 0.075*4}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GQD6_NC, {0.59, 0.579 + 0.075*5}, ValveButton::Orientation::Horizontal,false},
 };
 inline std::vector<BallValveInfo> gseDpr_valves = {};
 inline std::vector<LabelInfo> gseLabels = {

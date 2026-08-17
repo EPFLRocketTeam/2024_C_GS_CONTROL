@@ -18,13 +18,13 @@
 #include "Log.h"
 #include "FileLocation.h"
 
-class ControlPannelView : public QFrame {
+class ControlPanelView : public QFrame {
     Q_OBJECT
 
 public:
-    ControlPannelView(QWidget *parent = nullptr, QMap<std::string, QList<std::vector<GUI_FIELD>>> *controls = nullptr);
+    ControlPanelView(QWidget *parent = nullptr, QMap<std::string, QList<std::vector<GUI_FIELD>>> *controls = nullptr);
     void resizeWidget();
-    virtual ~ControlPannelView() override = default;
+    virtual ~ControlPanelView() override = default;
 
 
 protected:
@@ -43,7 +43,7 @@ private:
                                               const QString &title, 
                                               const QString &text);
     
-    ModuleLog _logger = ModuleLog("ControlPannelView", LOG_FILE_PATH);
+    ModuleLog _logger = ModuleLog("ControlPanelView", LOG_FILE_PATH);
     QPixmap buttonPixMap;
     bool toggled;
     QWidget *controlContainerWidget;

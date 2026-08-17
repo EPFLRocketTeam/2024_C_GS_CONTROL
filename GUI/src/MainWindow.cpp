@@ -13,7 +13,7 @@
 #include <qabstractscrollarea.h>
 #include <qwidget.h>
 
-#include "ControlPannelView.h"
+#include "ControlPanelView.h"
 #include "GSEWindow.h"
 #include "Log.h"
 #include "MainWindow.h"
@@ -21,7 +21,7 @@
 
 MainWindow::MainWindow(
     QWidget *parent,
-    QMap<std::string, QList<std::vector<GUI_FIELD>>> *controlPannelMap,
+    QMap<std::string, QList<std::vector<GUI_FIELD>>> *controlPanelMap,
     QWidget *leftWidget, QWidget *middleWidget, QWidget *rightWidget)
     : QMainWindow(parent) {
   setWindowTitle(mws::title);
@@ -66,7 +66,7 @@ MainWindow::MainWindow(
 
   centralLayout->addLayout(topLayout);
 
-  pannelSection = new ControlPannelView(this, controlPannelMap);
+  panelSection = new ControlPanelView(this, controlPanelMap);
   leftSection = leftWidget;
   middleSection = middleWidget;
   rightSection = rightWidget;
@@ -77,10 +77,6 @@ MainWindow::MainWindow(
 
 QHBoxLayout *MainWindow::createSectionsLayout() {
   QHBoxLayout *sectionsLayout = new QHBoxLayout();
-
-  pannelSection->move(100, 300);
-  replacePannelButton();
-
   if (leftSection) {
     leftSection->setParent(this);
     QScrollArea *scrollArea = new QScrollArea(this);
@@ -171,17 +167,8 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event) {
-  replacePannelButton();
-  pannelSection->resizeWidget();
+  panelSection->resizeWidget();
 }
-
-void MainWindow::replacePannelButton() {
-  // QPoint p = QWidget::mapTo(this, QPoint(width()/2-pannelButton->width()/2,
-  // height()-pannelButton->height())); pannelButton->move(p);
-}
-
-#define AV_PRESSURIZE 1
-#define AV_EOG 2
 
 void MainWindow::UpdateLaunchTimerState(const QString &av_state) {
   if (av_state == "PRESSURIZATION"){

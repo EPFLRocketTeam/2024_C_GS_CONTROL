@@ -21,7 +21,7 @@
 #include <QWidget>
 
 #include "ClientManager.h"
-#include "ControlPannelView.h"
+#include "ControlPanelView.h"
 #include "RequestBuilder.h"
 #include "components/DraggableButton.h"
 #include <Log.h>
@@ -51,8 +51,6 @@ private slots:
   void updateGscTimer();
 
 private:
-  void replacePannelButton();
-  void buttonGrabbed(QEvent *event);
   void UpdateLaunchTimerState(const QString& av_state);
   void startLaunchTimer();
 
@@ -62,7 +60,7 @@ private:
 
   ModuleLog _logger = ModuleLog("MainWindow", LOG_FILE_PATH);
   DraggableButton *pannelButton;
-  ControlPannelView *pannelSection;
+  ControlPanelView *panelSection;
   QHBoxLayout *createSectionsLayout();
 
   // Launch timer components

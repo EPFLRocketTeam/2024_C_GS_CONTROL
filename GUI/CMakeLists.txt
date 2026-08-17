@@ -21,8 +21,7 @@ set(SOURCES_GUI
     src/components/BallValveButton.cpp
     src/components/ValveControlButton.cpp
     src/json/jsoncpp.cpp
-    src/views/ControlPannelView.cpp 
-    src/views/DataView.cpp
+    src/views/ControlPanelView.cpp 
     src/views/GSManagerView.cpp
     src/views/SerialView.cpp
     src/views/TelemetryView.cpp
@@ -46,8 +45,7 @@ set(HEADERS_GUI
     include/components/ValveControlButton.h
     include/json/json-forwards.h
     include/json/json.h
-    include/ControlPannelView.h
-    include/DataView.h
+    include/ControlPanelView.h
     include/GSEWindow.h
     include/GSManagerView.h
     include/MainWindow.h

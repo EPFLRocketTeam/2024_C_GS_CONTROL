@@ -50,6 +50,7 @@ int start_client(int argc, char *argv[]) {
 
   mainWindow.show();
   MainWindow gseWindow(nullptr, &ui_elements::gseControlMap, nullptr, ui_elements::gseMiddlePlaceholder, nullptr);
+  gseWindow.setWindowIcon(QIcon(":/icons/firehorn.ico"));
   gseWindow.show();
 
   return app.exec();

@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include "ControlPannelView.h"
+#include "ControlPanelView.h"
 #include "Log.h"
 #include "TimerView.h"
 
