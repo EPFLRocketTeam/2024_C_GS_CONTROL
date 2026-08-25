@@ -33,7 +33,7 @@ ControlPanelView::ControlPanelView(
   setStyleSheet("background:transparent;");
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   setFixedSize(100,100);
-  toggled = true;
+  toggled = false;
   // Add a QLabel to display text
   displayText = std::make_unique<QLabel>("This is DataView");
   displayText->setAlignment(Qt::AlignCenter);

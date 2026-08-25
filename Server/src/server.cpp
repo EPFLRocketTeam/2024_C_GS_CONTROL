@@ -262,8 +262,6 @@ void Server::readyRead() {
         jsonStr.append("}");
       }
       counter++;
-      _serverLogger.debug("Server", "Here we are");
-      _serverLogger.debug("Server", jsonStr.toStdString());
       requestHandler.handleRequest(jsonStr, senderSocket);
     }
   }

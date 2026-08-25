@@ -27,6 +27,7 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
             writeBit = key.accessRight & 0x1;
             break;
         }
+        std::cout << "Unauthorized request by: " << json["Authorization"].toString().toStdString() << std::endl;
     }
 
     if (found != 1) {
@@ -35,7 +36,6 @@ void RequestHandler::handleRequest(const QString &request, QTcpSocket* senderSoc
     
 
     QString header = json["header"].toString();
-
     // Emit the corresponding signal based on the header type
     if (header == "subscribe" && readBit)
         emit subscribe(json, senderSocket);

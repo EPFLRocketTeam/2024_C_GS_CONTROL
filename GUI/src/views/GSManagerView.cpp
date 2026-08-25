@@ -21,6 +21,7 @@ GSManagerView::GSManagerView(std::unique_ptr<QWidget> parent)
   // setStyleSheet("background-color: lightblue;");
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   setMinimumWidth(mws::sideWidth / 100.0 * mws::width);
+  setMaximumWidth(mws::sideWidth / 3 * mws::width);
   setupUI();
 
   _logger.debug("SetupUI", "Setup finished");

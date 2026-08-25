@@ -62,7 +62,7 @@ private:
   DraggableButton *pannelButton;
   ControlPanelView *panelSection;
   QHBoxLayout *createSectionsLayout();
-
+  QRect segmentSize;
   // Launch timer components
   QLabel *launchTimerLabel;
   QTimer *launchTimer;

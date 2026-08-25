@@ -120,10 +120,8 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
     sectionsLayout->addWidget(middleSection, mws::middleSectionWidth);
   }
   if (rightSection) {
-    /*rightSection->setParent(this);*/
-    /*sectionsLayout->addWidget(rightSection,*/
-    /*                          (100 - mws::middleSectionWidth) / 2);*/
 
+    
     rightSection->setParent(this);
     QScrollArea *rightScrollArea = new QScrollArea(this);
     rightScrollArea->setWidget(rightSection);
@@ -159,7 +157,10 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
         "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
         "    background: none;"
         "}");
-    sectionsLayout->addWidget(rightScrollArea,
+    QVBoxLayout *finalRightScrollArea = new QVBoxLayout();
+    finalRightScrollArea->addWidget(rightScrollArea);
+    finalRightScrollArea->addWidget(panelSection);
+    sectionsLayout->addLayout(finalRightScrollArea,
                               (100 - mws::middleSectionWidth) / 2);
   }
 
