@@ -146,7 +146,7 @@ void ClientManager::sendSubscribeRequest(const GUI_FIELD field) {
   builder.addField("field", field);
   socket->write(builder.toString().toUtf8());
   
-  _logger.debug("Subscription", "subscribed to " + std::to_string(field));
+  _logger.debug("Subscription", "subscribed to " + fieldUtil::enumToFieldName(field).toStdString());
     /*std::cout << "Try to subscribe " << socket->isValid() << socket->state() << std::endl;*/
 
   socket->waitForBytesWritten();

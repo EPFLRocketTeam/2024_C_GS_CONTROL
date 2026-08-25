@@ -51,7 +51,7 @@ void GSManagerView::setupUI() {
   setupConnections();
 }
 
-void GSManagerView::setupSerialSection() { serialSection = new SerialView; }
+void GSManagerView::setupSerialSection() { serialSection = new SerialView(this); }
 
 void GSManagerView::setupInfoSection() {
 

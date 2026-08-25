@@ -79,14 +79,13 @@ void Server::openSerialPort() {
   }
   foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
     if (info.portName().startsWith("ttyACM")) {
-      serial_port_name = "/dev/" + info.portName();
-      _serverLogger.info(serial_port_name.toStdString(),
-                         serial_port_name.toStdString());
-      serialPort->setPortName(serial_port_name);
+      serialPort->setPort(info);
       if (serialPort->open(QIODevice::ReadWrite)) {
+        serialPort->clearError();        
         foundPort = true;
         break;
       }
+      _serverLogger.error("Serial Error", std::to_string(serialPort->error()) );
     }
   }
   // If not found, try ttyS ports.
@@ -130,7 +129,7 @@ void Server::openSerialPort() {
     serialPort->clearError();
     _serverLogger.info(
         "SerialActions",
-        QString("Serial port open on %1").arg(serial_port_name).toStdString());
+        QString("Serial port open on %1").arg(serialPort->portName()).toStdString());
   } else {
     serialPort->setPortName("-");
     _serverLogger.error("SerialActions", "Serial port could not open");
@@ -145,12 +144,18 @@ void Server::receiveSerialData() {
 }
 
 void Server::serialError() {
-  _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
-
-  if (serialPort->error() == QSerialPort::UnknownError) {
-    serialPort->close();
-    _serverLogger.error("Serial Unkown Error",
-                        "Serial port closed due to error.");
+  switch (serialPort->error()) {
+    case QSerialPort::UnknownError:
+      serialPort->close();
+      _serverLogger.error("Serial Unkown Error",
+                          "Serial port closed due to error.");    
+    break;
+    case QSerialPort::NoError:
+    
+    break;
+    default:
+      _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
+    break;
   }
 }
 

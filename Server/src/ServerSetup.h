@@ -18,7 +18,7 @@
 
 // If MANUALLY_SET_PORT is set to true then please specify the serial port used, otherwise the program will auto open the serial
 #define MANUALLY_SET_PORT false
-#define SERIAL_USED "/dev/tty0"
+#define SERIAL_USED "/dev/ttyACM0"
 
 
 
