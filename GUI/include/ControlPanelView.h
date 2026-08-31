@@ -23,12 +23,8 @@ class ControlPanelView : public QFrame {
 
 public:
     ControlPanelView(QWidget *parent = nullptr, QMap<std::string, QList<std::vector<GUI_FIELD>>> *controls = nullptr);
-    void resizeWidget();
     virtual ~ControlPanelView() override = default;
 
-
-protected:
-    void resizeEvent(QResizeEvent *event) override;
 
 private:
     void expandClicked();

@@ -29,10 +29,9 @@
 ControlPanelView::ControlPanelView(
     QWidget *parent, QMap<std::string, QList<std::vector<GUI_FIELD>>> *controls)
     : QFrame(parent) {
-
   setStyleSheet("background:transparent;");
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  setFixedSize(100,100);
+  setFixedSize(500 ,410);
   toggled = false;
   // Add a QLabel to display text
   displayText = std::make_unique<QLabel>("This is DataView");
@@ -41,11 +40,6 @@ ControlPanelView::ControlPanelView(
   setupExpandButton();
   setupContainerWidget();
 
-  QVBoxLayout *layout = new QVBoxLayout(this);
-  layout->addWidget(expandButton, 1, Qt::AlignCenter);
-  layout->addWidget(controlContainerWidget, 1, Qt::AlignCenter);
-  layout->setSpacing(0);
-  layout->setContentsMargins(0, 0, 0, 0);
 
   QHBoxLayout *containerLayout = new QHBoxLayout(controlContainerWidget);
   QList<std::vector<GUI_FIELD>> valveControls =
@@ -55,15 +49,13 @@ ControlPanelView::ControlPanelView(
       controls->value("QPushButton");
   createPushButtonLayouts(containerLayout, &pushButtonControls);
 
-  containerLayout->setContentsMargins(10, 5, 10, 5);
-  containerLayout->setSpacing(10);
+  containerLayout->setContentsMargins(1, 1, 1, 1);
+  containerLayout->setSpacing(1);
   containerLayout->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
   controlContainerWidget->setFixedHeight(210);
 
   connect(expandButton, &QPushButton::clicked, this,
           &ControlPanelView::expandClicked);
-
-  resizeWidget();
 
   _logger.debug("ControlPanelView", "Setup finished");
 }
@@ -326,8 +318,6 @@ void ControlPanelView::setupContainerWidget() {
                                         controlPannelStyle);
 }
 
-void ControlPanelView::resizeEvent(QResizeEvent *event) { resizeWidget(); }
-
 void ControlPanelView::setupExpandButton() {
 
   expandButton = new QPushButton(this);
@@ -352,37 +342,23 @@ void ControlPanelView::setupExpandButton() {
   expandButton->setIconSize(QSize(64, 64));
 }
 
-void ControlPanelView::resizeWidget() {
-  int windowWidth = parentWidget()->width();
-  int newWidth(windowWidth * mws::middleSectionWidth / 100);
-  int newHeight(controlContainerWidget->height() + expandButton->height());
-  setFixedWidth(newWidth);
-
-  move(QPoint((windowWidth - newWidth) / 2, getHeightPos()));
-  // Set a minimum height to ensure visibility
-  setFixedHeight(newHeight);
-
-  QPoint p =
-      QWidget::mapTo(this, QPoint(width() / 2 - expandButton->width() / 2, 0));
-
-  controlContainerWidget->setFixedWidth(newWidth);
-  // controlContainerWidget->move(0, expandButton->height());
-}
 
 void ControlPanelView::expandClicked() {
-  toggled = !toggled;
+    toggled = !toggled;
+
   QPropertyAnimation *anim = new QPropertyAnimation(this, "pos");
   anim->setDuration(1000);
   anim->setEasingCurve(QEasingCurve::Type::OutQuart);
   anim->setStartValue(pos());
   anim->setEndValue(QPoint(pos().x(), getHeightPos()));
-  anim->start(QAbstractAnimation::DeleteWhenStopped);
+  anim->start();
   QTransform transform;
   buttonPixMap = buttonPixMap.transformed(transform.rotate(180));
   QIcon buttonIcon(buttonPixMap);
   expandButton->setFixedHeight(35);
   expandButton->setIcon(buttonIcon);
   expandButton->setIconSize(QSize(64, 64));
+  controlContainerWidget->setFixedHeight(getHeightPos());
 }
 
 int ControlPanelView::getHeightPos() {

@@ -43,8 +43,6 @@ public:
 
   void initiateLaunchTimer();
 
-protected:
-  void resizeEvent(QResizeEvent *event) override;
 
 private slots:
   void updateLaunchTimer();

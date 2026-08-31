@@ -159,16 +159,15 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
         "}");
     QVBoxLayout *finalRightScrollArea = new QVBoxLayout();
     finalRightScrollArea->addWidget(rightScrollArea);
+    rightScrollArea->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    panelSection->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    rightScrollArea->setFixedSize(200, 200);
+    panelSection->setFixedSize(200, 200);
     finalRightScrollArea->addWidget(panelSection);
-    sectionsLayout->addLayout(finalRightScrollArea,
-                              (100 - mws::middleSectionWidth) / 2);
+    sectionsLayout->addLayout(finalRightScrollArea);
   }
 
   return sectionsLayout;
-}
-
-void MainWindow::resizeEvent(QResizeEvent *event) {
-  panelSection->resizeWidget();
 }
 
 void MainWindow::UpdateLaunchTimerState(const QString &av_state) {
