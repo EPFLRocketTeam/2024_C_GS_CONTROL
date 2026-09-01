@@ -46,7 +46,6 @@ public:
 
 private slots:
   void updateLaunchTimer();
-  void updateGscTimer();
 
 private:
   void UpdateLaunchTimerState(const QString& av_state);
@@ -67,11 +66,6 @@ private:
   double launchTimerValue;
   int launchInitiated;
   int launchTimerStarted;
-
-  // GSC timer components
-  QLabel *gscTimerLabel;
-  QTimer *gscTimer;
-  QTime gscStartTime;
 };
 
 #endif /* MAINWINDOW_H */
