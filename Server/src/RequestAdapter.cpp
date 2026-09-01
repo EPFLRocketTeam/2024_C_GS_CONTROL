@@ -126,8 +126,6 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   LOX_fls_temp_4: %20,
   LOX_fls_temp_5: %21,
   LOX_fls_temp_6: %22,
-  LOX_fls_temp_7: %23,
-  LOX_fls_temp_8: %24,
   fuel_inj_pressure: %25,
   LOX_inj_pressure: %26,
   chamber_pressure: %27,
@@ -149,6 +147,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   ambient_temp: %43,
   av_state: %44,
   cam_rec: %45,
+  rail_cable_status: %47
   av_pyros: %46
   )")
                       .arg(dataAv.packet_nbr)
@@ -173,8 +172,6 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                       .arg(dataAv.LOX_fls_temp_4)
                       .arg(dataAv.LOX_fls_temp_5)
                       .arg(dataAv.LOX_fls_temp_6)
-                      .arg(dataAv.LOX_fls_temp_7)
-                      .arg(dataAv.LOX_fls_temp_8)
                       .arg(dataAv.fuel_inj_pressure)
                       .arg(dataAv.LOX_inj_pressure)
                       .arg(dataAv.chamber_pressure)
@@ -196,6 +193,7 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                       .arg(dataAv.ambient_temp)
                       .arg(dataAv.av_state)
                       .arg(dataAv.cam_rec)
+                      .arg(dataAv.rail_cable_status)
                       .arg(dataAv.pyro_status)
                       .toStdString());
     delete packedData;
@@ -250,10 +248,6 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataAv.LOX_fls_temp_5)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_6)] =
         QString::number(static_cast<int>(dataAv.LOX_fls_temp_6)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_7)] =
-        QString::number(static_cast<int>(dataAv.LOX_fls_temp_7)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_8)] =
-        QString::number(static_cast<int>(dataAv.LOX_fls_temp_8)) + " [°C]";
 
     jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] =
         QString::number(static_cast<double>(dataAv.lpb_voltage)) + " [V]";
@@ -304,6 +298,8 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         fieldUtil::avStateToName(dataAv.av_state);
     jsonObj[QString::number(GUI_FIELD::CAM_REC)] =
         QString::number(static_cast<int>(dataAv.cam_rec));
+    jsonObj[QString::number(GUI_FIELD::RAIL_CABLE)] =
+        QString::number(static_cast<int>(dataAv.rail_cable_status));
     jsonObj[QString::number(GUI_FIELD::AV_PYROS)] =
         QString::number(static_cast<int>(dataAv.pyro_status));
 

@@ -535,8 +535,6 @@ void Server::simulateJsonData() {
   packet.LOX_fls_temp_4 = distLevel(gen);
   packet.LOX_fls_temp_5 = distLevel(gen);
   packet.LOX_fls_temp_6 = distLevel(gen);
-  packet.LOX_fls_temp_7 = distLevel(gen);
-  packet.LOX_fls_temp_8 = distLevel(gen);
 #endif /* FLS_CONFIG */
   packet.fuel_inj_pressure = distPressure(gen);
   packet.LOX_inj_pressure = distPressure(gen);

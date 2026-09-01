@@ -262,14 +262,12 @@ inline std::vector<LabelInfo> labels = {
 
 
     {GUI_FIELD::LOX_PRESSURE, 0.685, 0.705},
-    {GUI_FIELD::LOX_FLS_TEMP_8, 0.92, 0.632},           // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_7, 0.92, 0.632 + 0.044*1}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_6, 0.92, 0.632 + 0.044*2}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_5, 0.92, 0.632 + 0.044*3}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_4, 0.92, 0.632 + 0.044*4}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_3, 0.92, 0.632 + 0.044*5}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_2, 0.92, 0.632 + 0.044*6}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_1, 0.92, 0.632 + 0.044*7}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_6, 0.92, 0.632 + 0.044*0}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_5, 0.92, 0.632 + 0.044*1}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_4, 0.92, 0.632 + 0.044*2}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_3, 0.92, 0.632 + 0.044*3}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_2, 0.92, 0.632 + 0.044*4}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_1, 0.92, 0.632 + 0.044*5}, // LOX float level sensor at TBD%
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.685, 0.85},
     //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865},
@@ -345,6 +343,7 @@ inline QList<GUI_FIELD> tbd = {
     AMBIENT_TEMP,
     CAM_REC,     
     AV_PYROS,
+    RAIL_CABLE,
     AV_PACKET_FREQ
 };
 inline QMap<QString, QList<GUI_FIELD>> data_sections = {{"GPS", gps},

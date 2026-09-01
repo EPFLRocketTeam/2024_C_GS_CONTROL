@@ -35,8 +35,6 @@ enum GUI_FIELD {
   LOX_FLS_TEMP_4,
   LOX_FLS_TEMP_5,
   LOX_FLS_TEMP_6,
-  LOX_FLS_TEMP_7,
-  LOX_FLS_TEMP_8,
   FUEL_INJ_PRESSURE,
   LOX_INJ_PRESSURE,
   CHAMBER_PRESSURE,
@@ -55,6 +53,7 @@ enum GUI_FIELD {
   AMBIENT_TEMP,
   AV_STATE,
   CAM_REC,
+  RAIL_CABLE,
   AV_PYROS,
   GSE_FILLING_N2O,
   VENT_GSE,
@@ -287,12 +286,6 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case LOX_FLS_TEMP_6:
     name = "LOX FLS TEMP 6";
     break;
-  case LOX_FLS_TEMP_7:
-    name = "LOX FLS TEMP 7";
-    break;
-  case LOX_FLS_TEMP_8:
-    name = "LOX FLS TEMP 8";
-    break;
   case N2_TEMP_1:
     name = "N2 TEMPERATURE 1";
     break;
@@ -352,6 +345,9 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
   case CAM_REC:
     name = "CAM REC";
+    break;
+  case RAIL_CABLE:
+    name = "RAIL CABLE";
     break;
   case AV_PYROS:
     name = "AV PYROS";
@@ -822,10 +818,6 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return LOX_FLS_TEMP_5;
   else if (fieldName == "LOX FLS TEMP 6")
     return LOX_FLS_TEMP_6;
-  else if (fieldName == "LOX FLS TEMP 7")
-    return LOX_FLS_TEMP_7;
-  else if (fieldName == "LOX FLS TEMP 8")
-    return LOX_FLS_TEMP_8;
   else if (fieldName == "LOX INJ PRESSURE")
     return LOX_INJ_PRESSURE;
   else if (fieldName == "FUEL INJ PRESSURE")
@@ -862,6 +854,10 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return AV_STATE;
   else if (fieldName == "CAM REC")
     return CAM_REC;
+  else if (fieldName == "RAIL CABLE")
+    return RAIL_CABLE;
+  else if (fieldName == "AV PYROS")
+    return AV_PYROS;
   else if (fieldName == "DOWNRANGE")
     return DOWNRANGE;
   else if (fieldName == "HOPPER FO-nc")
