@@ -8,7 +8,6 @@
 
 #include "ClientManager.h"
 #include "FileLocation.h"
-#include "GSEWindow.h"
 #include "MainWindow.h"
 #include "RequestBuilder.h"
 #include "Setup.h"
@@ -43,13 +42,13 @@ int start_client(int argc, char *argv[]) {
   ui_elements::init_views();
 
   MainWindow mainWindow(
-      nullptr, &ui_elements::controlMap, ui_elements::leftPlaceholder,
+      nullptr, &ui_elements::controlMap,&ui_elements::gseControlMap, ui_elements::leftPlaceholder,
       ui_elements::middlePlaceholder, ui_elements::rightPlaceholder);
 
   mainWindow.setWindowIcon(QIcon(":/icons/firehorn.ico"));
-
   mainWindow.show();
-  MainWindow gseWindow(nullptr, &ui_elements::gseControlMap, nullptr, ui_elements::gseMiddlePlaceholder, nullptr);
+
+  MainWindow gseWindow(nullptr, nullptr,nullptr, nullptr, ui_elements::gseMiddlePlaceholder, nullptr);
   gseWindow.setWindowIcon(QIcon(":/icons/firehorn.ico"));
   gseWindow.show();
 

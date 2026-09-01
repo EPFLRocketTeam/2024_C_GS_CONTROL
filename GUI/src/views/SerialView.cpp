@@ -10,7 +10,7 @@ SerialView::SerialView(QWidget *parent) : QFrame(parent) {
   setStyleSheet(col::defaultCardStyle("SerialView"));
 
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
+  setMaximumHeight(50);
   isOpen = false;
   QHBoxLayout *outterLayout = new QHBoxLayout(this);
   outterLayout->setContentsMargins(5, 5, 5, 5);

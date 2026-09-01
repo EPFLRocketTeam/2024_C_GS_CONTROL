@@ -30,60 +30,25 @@ ControlPanelView::ControlPanelView(
     QWidget *parent, QMap<std::string, QList<std::vector<GUI_FIELD>>> *controls)
     : QFrame(parent) {
   setStyleSheet("background:transparent;");
-  setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  setFixedSize(500 ,410);
   toggled = false;
   // Add a QLabel to display text
   displayText = std::make_unique<QLabel>("This is DataView");
   displayText->setAlignment(Qt::AlignCenter);
-
-  setupExpandButton();
+  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+  setMinimumWidth(mws::sideWidth / 100.0 * mws::width);
+  setMaximumWidth(mws::sideWidth / 3 * mws::width);
+  setMaximumHeight(mws::height*10.0/100.0);
   setupContainerWidget();
 
 
   QHBoxLayout *containerLayout = new QHBoxLayout(controlContainerWidget);
-  QList<std::vector<GUI_FIELD>> valveControls =
-      controls->value("ValveControlButton");
-  createValveLayouts(containerLayout, &valveControls);
   QList<std::vector<GUI_FIELD>> pushButtonControls =
       controls->value("QPushButton");
   createPushButtonLayouts(containerLayout, &pushButtonControls);
 
-  containerLayout->setContentsMargins(1, 1, 1, 1);
-  containerLayout->setSpacing(1);
-  containerLayout->setSizeConstraint(QLayout::SizeConstraint::SetFixedSize);
-  controlContainerWidget->setFixedHeight(210);
-
-  connect(expandButton, &QPushButton::clicked, this,
-          &ControlPanelView::expandClicked);
-
   _logger.debug("ControlPanelView", "Setup finished");
 }
 
-void ControlPanelView::createValveLayouts(
-    QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *valves) {
-
-  for (auto it : *valves) {
-    /*const QString &title = QString::fromStdString(it.key());*/
-    int maxColumns = std::ceil(it.size() / 3.0);
-    const std::vector<GUI_FIELD> &valveNames = it;
-
-    QVBoxLayout *controlLayout = new QVBoxLayout;
-    /*QLabel *titleLabel = new QLabel(title);*/
-    /*QFont font = titleLabel->font();*/
-    /*font.setPointSize(12);*/
-    /*font.setBold(true);*/
-    /*titleLabel->setFont(font);*/
-    /*titleLabel->setStyleSheet(QString("color:%1").arg(col::primary));*/
-    /*controlLayout->addWidget(titleLabel, 1, Qt::AlignLeft);*/
-
-    QGridLayout *gridLayout = new QGridLayout;
-    createValveControlButtons(gridLayout, valveNames, maxColumns);
-    controlLayout->addLayout(gridLayout, 4);
-
-    mainLayout->addLayout(controlLayout);
-  }
-}
 
 QMessageBox::StandardButton ControlPanelView::showConfirmDialog(QWidget *parent, 
                                               const QString &title, 
@@ -143,20 +108,10 @@ void ControlPanelView::createPushButtonLayouts(
     /*const QString &title = QString::fromStdString(it.key());*/
     const std::vector<GUI_FIELD> &buttonField = it;
 
-    QVBoxLayout *controlLayout = new QVBoxLayout;
-    /*QLabel *titleLabel = new QLabel(title);*/
-
-    /*titleLabel->setFixedHeight(37);*/
-    /*titleLabel->setStyleSheet(QString("color:%1;").arg(col::primary));*/
-    /*QFont font = titleLabel->font();*/
-    /*font.setPointSize(13);*/
-    /*font.setBold(true);*/
-    /*titleLabel->setFont(font);*/
-    /*controlLayout->addWidget(titleLabel, 1, Qt::AlignLeft);*/
-    controlLayout->setSpacing(15);
     QGridLayout *gridLayout = new QGridLayout;
 
-    gridLayout->setSpacing(15);
+    
+    gridLayout->setSpacing(10);
     int maxColumns =
         std::max(static_cast<int>(std::ceil(buttonField.size() / 3.0)), 1);
 
@@ -172,7 +127,7 @@ void ControlPanelView::createPushButtonLayouts(
                 color: %4;
                 font: bold 14px;
                 background: %1;
-                padding:5px;
+                padding:3px;
                 border:2px solid %1;
                 border-radius: 10px;
                 }
@@ -190,6 +145,9 @@ void ControlPanelView::createPushButtonLayouts(
                           .arg(col::complementaryLighter)
                           .arg(col::primary)
                           .arg(QString::fromStdString(trimmedName));
+      button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+      button->setMinimumWidth(100);
+      button->setMaximumWidth(300);
       button->setFixedHeight(40);
       button->setStyleSheet(style);
       gridLayout->addWidget(button, i / maxColumns, i % maxColumns);
@@ -264,47 +222,17 @@ void ControlPanelView::createPushButtonLayouts(
           QString(R"(Created Button %1)").arg(button->text()).toStdString());
     }
 
-    controlLayout->addLayout(gridLayout, 4);
-    controlLayout->setAlignment(Qt::AlignTop);
-
-    mainLayout->addLayout(controlLayout, Qt::AlignBottom);
+    mainLayout->addLayout(gridLayout, 2);
     // mainLayout->addWidget(w, Qt::AlignTop);
   }
 }
 
-void ControlPanelView::createValveControlButtons(
-    QGridLayout *gridLayout, const std::vector<GUI_FIELD> &fields,
-    int maxColumns) {
-  // Clear existing items from the grid layout
-  QLayoutItem *child;
-  while ((child = gridLayout->takeAt(0)) != nullptr) {
-    delete child->widget();
-    delete child;
-  }
-
-  // Set the maximum number of columns based on the desired width
-  // Set the desired number of columns
-  gridLayout->setColumnStretch(maxColumns, 1);
-
-  int row = 0;
-  int column = 0;
-
-  // Add ValveControlButton for each string
-  for (const GUI_FIELD &field : fields) {
-    ValveControlButton *button = new ValveControlButton(field);
-    gridLayout->addWidget(button, row, column);
-
-    // Move to the next row or wrap to the next column
-    if (++column == maxColumns) {
-      column = 0;
-      ++row;
-    }
-  }
-}
 
 void ControlPanelView::setupContainerWidget() {
 
   controlContainerWidget = new QWidget(this);
+
+
   controlContainerWidget->setObjectName("controlPannel");
   QString controlPannelStyle = QString(R"(
         #controlPannel {
@@ -340,35 +268,4 @@ void ControlPanelView::setupExpandButton() {
   expandButton->setFixedHeight(35);
   expandButton->setIcon(buttonIcon);
   expandButton->setIconSize(QSize(64, 64));
-}
-
-
-void ControlPanelView::expandClicked() {
-    toggled = !toggled;
-
-  QPropertyAnimation *anim = new QPropertyAnimation(this, "pos");
-  anim->setDuration(1000);
-  anim->setEasingCurve(QEasingCurve::Type::OutQuart);
-  anim->setStartValue(pos());
-  anim->setEndValue(QPoint(pos().x(), getHeightPos()));
-  anim->start();
-  QTransform transform;
-  buttonPixMap = buttonPixMap.transformed(transform.rotate(180));
-  QIcon buttonIcon(buttonPixMap);
-  expandButton->setFixedHeight(35);
-  expandButton->setIcon(buttonIcon);
-  expandButton->setIconSize(QSize(64, 64));
-  controlContainerWidget->setFixedHeight(getHeightPos());
-}
-
-int ControlPanelView::getHeightPos() {
-  int windowWidth = parentWidget()->width();
-  int newHeight(controlContainerWidget->height() + expandButton->height());
-  int newY;
-  if (toggled) {
-    newY = parentWidget()->height() - newHeight;
-  } else {
-    newY = parentWidget()->height() - expandButton->height();
-  }
-  return newY;
 }

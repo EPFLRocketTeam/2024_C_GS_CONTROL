@@ -379,9 +379,7 @@ inline void init_views() {
   QVBoxLayout *rightLayout = new QVBoxLayout;
   rightLayout->setAlignment(Qt::AlignLeft);
   rightLayout->addWidget(new GSManagerView());
-  // rightLayout->addWidget(new IcarusCommandsView);
   rightLayout->addWidget(new TelemetryView(gse_sections));
-  rightLayout->addStretch(1);
   rightLayout->setContentsMargins(0, 0, 0, 0);
   rightPlaceholder = new QFrame();
   rightPlaceholder->setContentsMargins(0, 0, 0, 0);

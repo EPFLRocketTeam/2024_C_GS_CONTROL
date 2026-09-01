@@ -14,7 +14,6 @@
 #include <qwidget.h>
 
 #include "ControlPanelView.h"
-#include "GSEWindow.h"
 #include "Log.h"
 #include "MainWindow.h"
 #include "Setup.h"
@@ -22,6 +21,7 @@
 MainWindow::MainWindow(
     QWidget *parent,
     QMap<std::string, QList<std::vector<GUI_FIELD>>> *controlPanelMap,
+    QMap<std::string, QList<std::vector<GUI_FIELD>>> *controlPanelGSEMap,
     QWidget *leftWidget, QWidget *middleWidget, QWidget *rightWidget)
     : QMainWindow(parent) {
   setWindowTitle(mws::title);
@@ -46,8 +46,12 @@ MainWindow::MainWindow(
   clientManager->subscribe(AV_STATE, [this](const QString &message) {
     this->UpdateLaunchTimerState(message);
   });
-
-  panelSection = new ControlPanelView(this, controlPanelMap);
+  if (controlPanelMap) {
+    panelSection = new ControlPanelView(this, controlPanelMap);
+  }
+  if (controlPanelGSEMap) {
+    panelSectionGSE = new ControlPanelView(this, controlPanelGSEMap);
+  }
   leftSection = leftWidget;
   middleSection = middleWidget;
   rightSection = rightWidget;
@@ -63,8 +67,6 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
     QScrollArea *scrollArea = new QScrollArea(this);
     scrollArea->setWidget(ui_elements::leftPlaceholder);
     scrollArea->setWidgetResizable(true);
-    // Optionally hide the horizontal scroll bar if you only need vertical
-    // scrolling:
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->verticalScrollBar()->setAttribute(Qt::WA_TranslucentBackground,
                                                   true);
@@ -94,15 +96,17 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
         "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
         "    background: none;"
         "}");
-    sectionsLayout->addWidget(scrollArea, (100 - mws::middleSectionWidth) / 2);
+    sectionsLayout->addWidget(scrollArea, (100 - mws::middleSectionWidth) / 2, Qt::AlignHCenter);
   }
   if (middleSection) {
-    /*middleSection->setParent(this);*/
-    sectionsLayout->addWidget(middleSection, mws::middleSectionWidth);
+    middleSection->setParent(this);
+    if (!leftSection && !rightSection) {
+      sectionsLayout->addWidget(middleSection);
+    } else {
+      sectionsLayout->addWidget(middleSection, mws::middleSectionWidth, Qt::AlignHCenter);
+    }
   }
   if (rightSection) {
-
-    
     rightSection->setParent(this);
     QScrollArea *rightScrollArea = new QScrollArea(this);
     rightScrollArea->setWidget(rightSection);
@@ -138,15 +142,12 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
         "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
         "    background: none;"
         "}");
-    QVBoxLayout *finalRightScrollArea = new QVBoxLayout();
-    finalRightScrollArea->addWidget(rightScrollArea);
-    rightScrollArea->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    panelSection->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    rightScrollArea->setFixedSize(200, 200);
-    panelSection->setFixedSize(200, 200);
-    finalRightScrollArea->addWidget(panelSection);
-    sectionsLayout->addLayout(finalRightScrollArea);
-  }
+        QVBoxLayout *finalRightScrollArea = new QVBoxLayout();
+        finalRightScrollArea->addWidget(rightScrollArea, 1);
+        finalRightScrollArea->addWidget(panelSection, 1);
+        finalRightScrollArea->addWidget(panelSectionGSE, 1);
+        sectionsLayout->addLayout(finalRightScrollArea,(100 - mws::middleSectionWidth) / 2);
+      }
 
   return sectionsLayout;
 }

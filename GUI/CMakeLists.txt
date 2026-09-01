@@ -28,7 +28,6 @@ set(SOURCES_GUI
     src/views/TimerView.cpp
     src/views/ValveControlView.cpp
     src/MainWindow.cpp
-    src/GSEWindow.cpp
 
     ./res/resources.qrc
 )
@@ -46,7 +45,6 @@ set(HEADERS_GUI
     include/json/json-forwards.h
     include/json/json.h
     include/ControlPanelView.h
-    include/GSEWindow.h
     include/GSManagerView.h
     include/MainWindow.h
     include/SerialView.h

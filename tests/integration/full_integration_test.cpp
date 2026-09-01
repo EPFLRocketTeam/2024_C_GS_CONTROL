@@ -24,7 +24,7 @@ private slots:
 
     ui_elements::init_views();
     MainWindow window(
-        nullptr, &ui_elements::controlMap, ui_elements::leftPlaceholder,
+        nullptr, &ui_elements::controlMap,&ui_elements::gseControlMap, ui_elements::leftPlaceholder,
         ui_elements::middlePlaceholder, ui_elements::rightPlaceholder);
 
     Q_INIT_RESOURCE(resources);
@@ -43,7 +43,7 @@ private slots:
     ui_elements::init_views();
 
     MainWindow window(
-        nullptr, &ui_elements::controlMap, ui_elements::leftPlaceholder,
+        nullptr, &ui_elements::controlMap, &ui_elements::gseControlMap, ui_elements::leftPlaceholder,
         ui_elements::middlePlaceholder, ui_elements::rightPlaceholder);
     Q_INIT_RESOURCE(resources);
     window.show();

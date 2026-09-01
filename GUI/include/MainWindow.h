@@ -34,8 +34,10 @@ public:
   MainWindow(QWidget *parent = nullptr,
              QMap<std::string, QList<std::vector<GUI_FIELD>>>
                  *controlPannelMap = nullptr,
-             QWidget *leftWidget = nullptr, QWidget *middleWidget = nullptr,
-             QWidget *rightWidget = nullptr);
+             QMap<std::string, QList<std::vector<GUI_FIELD>>>
+                 *controlPannelGSEMap = nullptr,
+              QWidget *leftWidget = nullptr, QWidget *middleWidget = nullptr,
+              QWidget *rightWidget = nullptr);
   
   ~MainWindow() override = default;
 
@@ -56,8 +58,8 @@ private:
   QWidget *rightSection;
 
   ModuleLog _logger = ModuleLog("MainWindow", LOG_FILE_PATH);
-  DraggableButton *pannelButton;
   ControlPanelView *panelSection;
+  ControlPanelView *panelSectionGSE;
   QHBoxLayout *createSectionsLayout();
   QRect segmentSize;
   // Launch timer components

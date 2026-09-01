@@ -27,13 +27,9 @@ public:
 
 
 private:
-    void expandClicked();
     std::unique_ptr<QLabel> displayText;
-    int getHeightPos();
     void setupExpandButton();
     void setupContainerWidget();
-    void createValveControlButtons(QGridLayout *gridLayout, const std::vector<GUI_FIELD> &strings, int maxColumns);
-    void createValveLayouts(QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *valves);
     void createPushButtonLayouts(QHBoxLayout *mainLayout, QList<std::vector<GUI_FIELD>> *buttons);
     QMessageBox::StandardButton showConfirmDialog(QWidget *parent, 
                                               const QString &title, 
