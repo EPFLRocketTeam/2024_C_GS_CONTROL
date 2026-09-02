@@ -104,51 +104,49 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     av_downlink_unpacked_t dataAv = decode_downlink(*packedData);
     db->write_pkt(db->process_pkt(NULL, &dataAv, NULL));
   _logger.info("PROCESSING UNPACKED", QString(R"(
-  packet_nbr: %1,
-  av_timestamp: %2,
-  gnss_lon: %3,
-  gnss_lat: %4,
-  gnss_alt: %5,
-  vertical_speed: %6,
-  absolute_speed; %7,
-  agl_altitude: %8,
-  N2_pressure_1: %9,
-  N2_temp_1: %10,
-  N2_pressure_2: %11,
-  N2_temp_2: %12,
-  fuel_pressure: %13,
-  fuel_temp: %14,
-  LOX_pressure: %15,
-  LOX_temp: %16,
-  LOX_fls_temp_1: %17,
-  LOX_fls_temp_2: %18,
-  LOX_fls_temp_3: %19,
-  LOX_fls_temp_4: %20,
-  LOX_fls_temp_5: %21,
-  LOX_fls_temp_6: %22,
-  fuel_inj_pressure: %25,
-  LOX_inj_pressure: %26,
-  chamber_pressure: %27,
-  chamber_temp: %28,
-  valves_state: %29,
-  valve_dpr_fuel: %30,
-  valve_dpr_LOX: %31,
-  lpb_voltage: %32,
-  lpb_current: %33,
-  vout_5v_voltage: %34,
-  vout_5v_current: %35, 
-  hpb_main_voltage: %36,
-  hpb_main_current: %37,
-  hpb_backup_voltage: %38,
-  hpb_backup_current: %39,
-  vout_24v_voltage: %40,
-  vout_24v_current: %41, 
-  av_fc_temp: %42,
-  ambient_temp: %43,
-  av_state: %44,
-  cam_rec: %45,
-  rail_cable_status: %47
-  av_pyros: %46
+  packet_nbr:              %1,
+  av_timestamp:            %2,
+  gnss_lon:                %3,
+  gnss_lat:                %4,
+  gnss_alt:                %5,
+  vertical_speed:          %6,
+  absolute_speed;          %7,
+  agl_altitude:            %8,
+  HPE_pressure:            %9,
+  HPE_temp:               %10,
+  HPO_pressure:           %11,
+  HPO_temp:               %12,
+  fuel_pressure:          %13,
+  LOX_pressure:           %15,
+  LOX_fls_temp_1:         %16,
+  LOX_fls_temp_2:         %17,
+  LOX_fls_temp_3:         %18,
+  LOX_fls_temp_4:         %19,
+  LOX_fls_temp_5:         %20,
+  LOX_fls_temp_6:         %21,
+  fuel_inj_pressure:      %22,
+  LOX_inj_pressure:       %23,
+  chamber_pressure:       %24,
+  chamber_temp:           %25,
+  valves_state:           %26,
+  valve_dpr_fuel:         %27,
+  valve_dpr_LOX:          %28,
+  lpb_voltage:            %29,
+  lpb_current:            %30,
+  vout_5v_voltage:        %31,
+  vout_5v_current:        %32, 
+  hpb_main_voltage:       %33,
+  hpb_main_current:       %34,
+  hpb_backup_voltage:     %35,
+  hpb_backup_current:     %36,
+  vout_24v_voltage:       %37,
+  vout_24v_current:       %38, 
+  av_fc_temp:             %39,
+  ambient_temp:           %40,
+  av_state:               %41,
+  cam_rec:                %42,
+  rail_cable_status:      %43,
+  av_pyros:               %44
   )")
                       .arg(dataAv.packet_nbr)
                       .arg(dataAv.av_timestamp)
@@ -158,14 +156,12 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                       .arg(dataAv.vertical_speed)
                       .arg(dataAv.absolute_speed)
                       .arg(dataAv.agl_altitude)
-                      .arg(dataAv.N2_pressure_1)
-                      .arg(dataAv.N2_temp_1)
-                      .arg(dataAv.N2_pressure_2)
-                      .arg(dataAv.N2_temp_2)
+                      .arg(dataAv.HPE_pressure)
+                      .arg(dataAv.HPE_temp)
+                      .arg(dataAv.HPO_pressure)
+                      .arg(dataAv.HPO_temp)
                       .arg(dataAv.fuel_pressure)
-                      .arg(dataAv.fuel_temp)
                       .arg(dataAv.LOX_pressure)
-                      .arg(dataAv.LOX_temp)
                       .arg(dataAv.LOX_fls_temp_1)
                       .arg(dataAv.LOX_fls_temp_2)
                       .arg(dataAv.LOX_fls_temp_3)
@@ -213,10 +209,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::ABSOLUTE_SPEED)] =
         QString::number(static_cast<int>(dataAv.absolute_speed)) +
         " [m/s]";
-    jsonObj[QString::number(GUI_FIELD::N2_PRESSURE_1)] =
-        QString::number(static_cast<double>(dataAv.N2_pressure_1)) + " [bar]";
-    jsonObj[QString::number(GUI_FIELD::N2_PRESSURE_2)] =
-        QString::number(static_cast<double>(dataAv.N2_pressure_2)) + " [bar]";
+    jsonObj[QString::number(GUI_FIELD::HPE_PRESSURE)] =
+        QString::number(static_cast<double>(dataAv.HPE_pressure)) + " [bar]";
+    jsonObj[QString::number(GUI_FIELD::HPO_PRESSURE)] =
+        QString::number(static_cast<double>(dataAv.HPO_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::FUEL_PRESSURE)] =
         QString::number(static_cast<double>(dataAv.fuel_pressure)) + " [bar]";
     jsonObj[QString::number(GUI_FIELD::LOX_PRESSURE)] =
@@ -230,12 +226,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::CHAMBER_PRESSURE)] =
         QString::number(static_cast<double>(dataAv.chamber_pressure)) +
         " [bar]";
-    jsonObj[QString::number(GUI_FIELD::N2_TEMP_1)] =
-        QString::number(static_cast<int>(dataAv.N2_temp_1)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::N2_TEMP_2)] =
-        QString::number(static_cast<int>(dataAv.N2_temp_2)) + " [°C]";
-    jsonObj[QString::number(GUI_FIELD::LOX_TEMP)] =
-        QString::number(static_cast<int>(dataAv.LOX_temp)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::HPE_temp)] =
+        QString::number(static_cast<int>(dataAv.HPE_temp)) + " [°C]";
+    jsonObj[QString::number(GUI_FIELD::HPO_temp)] =
+        QString::number(static_cast<int>(dataAv.HPO_temp)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_1)] =
         QString::number(static_cast<int>(dataAv.LOX_fls_temp_1)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_2)] =

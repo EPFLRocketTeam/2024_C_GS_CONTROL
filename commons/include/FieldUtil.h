@@ -22,12 +22,12 @@ enum GUI_FIELD {
   VERTICAL_SPEED,
   ABSOLUTE_SPEED,
   AGL_ALTITUDE,
-  N2_PRESSURE_1,
-  N2_PRESSURE_2,
+  HPE_PRESSURE,
+  HPO_PRESSURE,
   FUEL_PRESSURE,
   LOX_PRESSURE,
-  N2_TEMP_1,
-  N2_TEMP_2,
+  HPE_temp,
+  HPO_temp,
   LOX_TEMP,
   LOX_FLS_TEMP_1,
   LOX_FLS_TEMP_2,
@@ -253,11 +253,11 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case AGL_ALTITUDE:
     name = "AGL ALT";
     break;
-  case N2_PRESSURE_1:
-    name = "N2 PRESSURE_1";
+  case HPE_PRESSURE:
+    name = "HPE PRESSURE";
     break;
-  case N2_PRESSURE_2:
-    name = "N2 PRESSURE_2";
+  case HPO_PRESSURE:
+    name = "HPO PRESSURE";
     break;
   case FUEL_PRESSURE:
     name = "FUEL PRESSURE";
@@ -286,10 +286,10 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case LOX_FLS_TEMP_6:
     name = "LOX FLS TEMP 6";
     break;
-  case N2_TEMP_1:
+  case HPE_temp:
     name = "N2 TEMPERATURE 1";
     break;
-  case N2_TEMP_2:
+  case HPO_temp:
     name = "N2 TEMPERATURE 2";
     break;
   case LOX_INJ_PRESSURE:
@@ -792,10 +792,10 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return ABSOLUTE_SPEED;
   else if (fieldName == "AGL ALTITUDE")
     return AGL_ALTITUDE;
-  else if (fieldName == "N2 PRESSURE 1")
-    return N2_PRESSURE_1;
-  else if (fieldName == "N2 PRESSURE 2")
-    return N2_PRESSURE_2;
+  else if (fieldName == "HPE PRESSURE")
+    return HPE_PRESSURE;
+  else if (fieldName == "HPO PRESSURE")
+    return HPO_PRESSURE;
   else if (fieldName == "FUEL PRESSURE")
     return FUEL_PRESSURE;
   else if (fieldName == "LOX PRESSURE")
@@ -803,9 +803,9 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
   else if (fieldName == "LOX TEMPERATURE")
     return LOX_TEMP;
   else if (fieldName == "N2 TEMPERATURE 1")
-    return N2_TEMP_1;
+    return HPE_temp;
   else if (fieldName == "N2 TEMPERATURE 2")
-    return N2_TEMP_2;
+    return HPO_temp;
   else if (fieldName == "LOX FLS TEMP 1")
     return LOX_FLS_TEMP_1;
   else if (fieldName == "LOX FLS TEMP 2")

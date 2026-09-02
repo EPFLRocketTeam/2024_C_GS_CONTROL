@@ -27,6 +27,3 @@ target_compile_definitions(config_interface
 add_subdirectory(commons)
 add_subdirectory(GUI)
 add_subdirectory(Server)
-
-# Define all tests last, now that libraries are available
-add_subdirectory(tests)

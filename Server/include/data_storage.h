@@ -33,22 +33,18 @@ struct AV_downlink_pkt {
   int16_t vertical_speed;
   int16_t absolute_speed;
   int16_t agl_altitude;
-  uint16_t N2_pressure_1;
-  uint8_t N2_temp_1;
-  uint16_t N2_pressure_2;
-  uint8_t N2_temp_2;
+  uint16_t HPE_pressure;
+  uint8_t  HPE_temp;
+  uint16_t HPO_pressure;
+  uint8_t HPO_temp;
   float fuel_pressure;
-  int16_t fuel_temp;
   float LOX_pressure;
-  int16_t LOX_temp;
   float LOX_fls_temp_1;
   float LOX_fls_temp_2;
   float LOX_fls_temp_3;
   float LOX_fls_temp_4;
   float LOX_fls_temp_5;
   float LOX_fls_temp_6;
-  float LOX_fls_temp_7;
-  float LOX_fls_temp_8;
   float fuel_inj_pressure;
   float LOX_inj_pressure;
   float chamber_pressure;
@@ -70,6 +66,7 @@ struct AV_downlink_pkt {
   int8_t ambient_temp;
   uint8_t av_state;
   uint8_t cam_rec;
+  uint8_t rail_cable_status;
   uint8_t pyro_status;
 };
 
@@ -305,24 +302,20 @@ private:
                                   &AV_downlink_pkt::vertical_speed),
           sqlite_orm::make_column("absolute_speed", &AV_downlink_pkt::absolute_speed),
           sqlite_orm::make_column("agl_altitude", &AV_downlink_pkt::agl_altitude),
-          sqlite_orm::make_column("N2_pressure_1", &AV_downlink_pkt::N2_pressure_1),
-          sqlite_orm::make_column("N2_temp_1", &AV_downlink_pkt::N2_temp_1),
-          sqlite_orm::make_column("N2_pressure_2", &AV_downlink_pkt::N2_pressure_2),
-          sqlite_orm::make_column("N2_temp_2", &AV_downlink_pkt::N2_temp_2),
+          sqlite_orm::make_column("HPE_pressure", &AV_downlink_pkt::HPE_pressure),
+          sqlite_orm::make_column("HPE_temp", &AV_downlink_pkt::HPE_temp),
+          sqlite_orm::make_column("HPO_pressure", &AV_downlink_pkt::HPO_pressure),
+          sqlite_orm::make_column("HPO_temp", &AV_downlink_pkt::HPO_temp),
           sqlite_orm::make_column("fuel_pressure",
                                   &AV_downlink_pkt::fuel_pressure),
-          sqlite_orm::make_column("fuel_temp", &AV_downlink_pkt::fuel_temp),
           sqlite_orm::make_column("LOX_pressure",
                                   &AV_downlink_pkt::LOX_pressure),
-          sqlite_orm::make_column("LOX_temp", &AV_downlink_pkt::LOX_temp),
           sqlite_orm::make_column("LOX_fls_temp_1", &AV_downlink_pkt::LOX_fls_temp_1),
           sqlite_orm::make_column("LOX_fls_temp_2", &AV_downlink_pkt::LOX_fls_temp_2),
           sqlite_orm::make_column("LOX_fls_temp_3", &AV_downlink_pkt::LOX_fls_temp_3),
           sqlite_orm::make_column("LOX_fls_temp_4", &AV_downlink_pkt::LOX_fls_temp_4),
           sqlite_orm::make_column("LOX_fls_temp_5", &AV_downlink_pkt::LOX_fls_temp_5),
           sqlite_orm::make_column("LOX_fls_temp_6", &AV_downlink_pkt::LOX_fls_temp_6),
-          sqlite_orm::make_column("LOX_fls_temp_7", &AV_downlink_pkt::LOX_fls_temp_7),
-          sqlite_orm::make_column("LOX_fls_temp_8", &AV_downlink_pkt::LOX_fls_temp_8),
           sqlite_orm::make_column("fuel_inj_pressure",
                                   &AV_downlink_pkt::fuel_inj_pressure),
           sqlite_orm::make_column("LOX_inj_pressure", &AV_downlink_pkt::LOX_inj_pressure),
@@ -347,7 +340,8 @@ private:
                                   &AV_downlink_pkt::ambient_temp),
           sqlite_orm::make_column("av_state", &AV_downlink_pkt::av_state),
           sqlite_orm::make_column("cam_rec", &AV_downlink_pkt::cam_rec),
-          sqlite_orm::make_column("pyro_status", &AV_downlink_pkt::pyro_status)),
+          sqlite_orm::make_column("pyro_status", &AV_downlink_pkt::pyro_status),
+          sqlite_orm::make_column("rail_button_status", &AV_downlink_pkt::rail_cable_status)),
       sqlite_orm::make_table<GSE_downlink_pkt>(
           "GSE_DOWNLINK",
           sqlite_orm::make_column("id", &GSE_downlink_pkt::id,

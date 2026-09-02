@@ -145,9 +145,9 @@ void ControlPanelView::createPushButtonLayouts(
                           .arg(col::complementaryLighter)
                           .arg(col::primary)
                           .arg(QString::fromStdString(trimmedName));
-      button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+      button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
       button->setMinimumWidth(100);
-      button->setMaximumWidth(300);
+      button->setMaximumWidth(400);
       button->setFixedHeight(40);
       button->setStyleSheet(style);
       gridLayout->addWidget(button, i / maxColumns, i % maxColumns);

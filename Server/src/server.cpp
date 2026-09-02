@@ -514,14 +514,12 @@ void Server::simulateJsonData() {
   packet.vertical_speed = static_cast<int8_t>(distSpeed(gen));
   packet.absolute_speed = static_cast<int8_t>(distSpeed(gen));
   packet.agl_altitude = distAlt(gen);
-  packet.N2_pressure_1 = distPressure(gen);
-  packet.N2_pressure_2 = distPressure(gen);
-  packet.N2_temp_1 = static_cast<int16_t>(distTemp(gen));
-  packet.N2_temp_2 = static_cast<int16_t>(distTemp(gen));
+  packet.HPE_pressure = distPressure(gen);
+  packet.HPO_pressure = distPressure(gen);
+  packet.HPE_temp = static_cast<int16_t>(distTemp(gen));
+  packet.HPO_temp = static_cast<int16_t>(distTemp(gen));
   packet.fuel_pressure = distPressure(gen);
-  packet.fuel_temp = static_cast<int16_t>(distTemp(gen));
   packet.LOX_pressure = distPressure(gen);
-  packet.LOX_temp = static_cast<int16_t>(distTemp(gen));
 #if (defined FLS_CONIFG) && (FLS_CONFIG == FLS_CAPA)
   packet.fuel_fls_capa = distLevel(gen);
   packet.LOX_fls_capa = distLevel(gen);
