@@ -24,7 +24,7 @@ TelemetryView::TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidge
     // Set up the appearance or behavior as needed
     //setStyleSheet("background-color: lightblue;");
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    setMaximumWidth(200);
+    setMaximumWidth(290);
     layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignTop);
     layout->setContentsMargins(0, 0, 0, 0);

@@ -29,8 +29,8 @@ static ModuleLog _logger = ModuleLog("RequestAdapter");
 
 namespace {
 
-constexpr double kGroundStationLatDeg = 39.3949167;
-constexpr double kGroundStationLonDeg = -8.2928830;
+constexpr double kGroundStationLatDeg = 46.536852;
+constexpr double kGroundStationLonDeg = 6.713738;
 constexpr double kEarthRadiusMeters = 6'371'000.0;
 constexpr double kPi = 3.14159265358979323846;
 
@@ -276,17 +276,17 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::PRESSURE_VALVE_LOX)] =
         QString::number(dataAv.valve_dpr_LOX);
     jsonObj[QString::number(GUI_FIELD::SECURITY_DPR_FUEL)] =
-        QString::number((engine_states & AV_VALVE_SDPR_FUEL) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_SDPR_FUEL) > 0 ? 0 : 1);
     jsonObj[QString::number(GUI_FIELD::SECURITY_DPR_LOX)] =
-        QString::number((engine_states & AV_VALVE_SDPR_LOX) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_SDPR_LOX) > 0 ? 0 : 1);
     jsonObj[QString::number(GUI_FIELD::VENT_LOX)] =
-        QString::number((engine_states & AV_VALVE_VENT_LOX) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_VENT_LOX) > 0 ? 0 : 1);
     jsonObj[QString::number(GUI_FIELD::VENT_FUEL)] =
-        QString::number((engine_states & AV_VALVE_VENT_FUEL) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_VENT_FUEL) > 0 ? 0 : 1);
     jsonObj[QString::number(GUI_FIELD::MAIN_LOX)] =
-        QString::number((engine_states & AV_VALVE_MAIN_LOX) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_MAIN_LOX) > 0 ? 0 : 1);
     jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] =
-        QString::number((engine_states & AV_VALVE_MAIN_FUEL) > 0 ? 1 : 0);
+        QString::number((engine_states & AV_VALVE_MAIN_FUEL) > 0 ? 0 : 1);
 
     jsonObj[QString::number(GUI_FIELD::AV_STATE)] =
         fieldUtil::avStateToName(dataAv.av_state);

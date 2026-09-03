@@ -257,7 +257,7 @@ private:
 
   const size_t BATCH_SIZE = 6; // value to be reconsidered
 
-  const char *PATH_TO_DB = "../flightDB.db";
+  const char *PATH_TO_DB = "/home/ert/2026_C_GS_SOFTWARE/2024_C_GS_CONTROL/Log/flightDB.db";
 
   std::vector<AV_uplink_pkt *> buffer_av_up;
 

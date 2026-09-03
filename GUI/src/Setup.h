@@ -37,7 +37,7 @@ using MiddleView = ValveControlView;
 using RightView = GSManagerView;
 
 // CHange the debug level to show the debug messages
-#define DEBUG_LOG true
+#define DEBUG_LOG false
 
 // Launch timer configuration
 constexpr double LAUNCH_DELAY = -30.0; // seconds
@@ -224,7 +224,7 @@ namespace ui_elements {
 inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {GUI_CMD_CALIBRATE,GUI_CMD_ARM,GUI_CMD_PRESSURIZE},
 
-    {GUI_CMD_LAUNCH, GUI_CMD_RECOVER, GUI_CMD_ABORT},
+    {GUI_CMD_LAUNCH, GUI_CMD_RECOVER, GUI_CMD_ABORT, GUI_CMD_RECOVER},
 };
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     {"QPushButton", pushButtonMap}};

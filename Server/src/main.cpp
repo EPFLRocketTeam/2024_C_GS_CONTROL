@@ -29,7 +29,7 @@ int start_server(int argc, char *argv[]) {
     std::signal(SIGABRT, sigint_handler);
 
 
-  ModuleLog logger = ModuleLog("Server Launcher", "../Log/server.logs");
+  ModuleLog logger = ModuleLog("Server Launcher", "/home/ert/2026_C_GS_SOFTWARE/2024_C_GS_CONTROL/Log/server.logs");
 #if DEBUG_LOG
   MainLog::setDebugLevel(DEBUG);
 #endif

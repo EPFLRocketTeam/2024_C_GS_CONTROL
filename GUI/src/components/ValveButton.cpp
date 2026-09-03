@@ -40,11 +40,11 @@ ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
   });
 
   connect(this, &ValveButton::clicked, [this]() {
-    
-    if (showConfirmDialog(
-        this, "Confirm Valve Action",
-        QString("Are you sure you want to toggle the valve '%1'?")
-            .arg(fieldUtil::enumToFieldName(m_field))) == QMessageBox::Yes) {
+    // if (showConfirmDialog(
+    //     this, "Confirm Valve Action",
+    //     QString("Are you sure you want to toggle the valve '%1'?")
+    //         .arg(fieldUtil::enumToFieldName(m_field))) == QMessageBox::Yes) 
+    {
       // Proceed with request
       RequestBuilder b;
       b.setHeader(RequestType::POST);
@@ -66,11 +66,12 @@ ValveButton::ValveButton(GUI_FIELD field, Orientation orientation,
               .arg(fieldUtil::enumToFieldName(m_field))
               .arg(value)
               .toStdString());
-    } else {
-      _logger.debug("ValveButton", QString("Cancelled action for valve %1")
-                                       .arg(fieldUtil::enumToFieldName(m_field))
-                                       .toStdString());
-    }
+    } 
+    // else {
+    //   _logger.debug("ValveButton", QString("Cancelled action for valve %1")
+    //                                    .arg(fieldUtil::enumToFieldName(m_field))
+    //                                    .toStdString());
+    // }
   });
 
   if (m_readOnly) {
