@@ -189,14 +189,14 @@ void ControlPanelView::createPushButtonLayouts(
         QString("Are you sure you want to execute '%1'?").arg(button->text())) 
         == QMessageBox::Yes) {
           // Check if this is the LAUNCH command and start the timer
-          if (button->text() == "LAUNCH") {
+          if (button->text() == "PRESSURIZE") {
             // Get the main window and start the launch timer
             QWidget *mainWindow = this;
             while (mainWindow->parentWidget()) {
               mainWindow = mainWindow->parentWidget();
             }
             if (MainWindow *mw = qobject_cast<MainWindow*>(mainWindow)) {
-              mw->initiateLaunchTimer();
+              mw->startLaunchTimer();
             }
           }
           

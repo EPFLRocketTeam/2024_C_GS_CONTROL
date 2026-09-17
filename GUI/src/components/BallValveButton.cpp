@@ -68,9 +68,8 @@ BallValveButton::BallValveButton(GUI_FIELD field, Orientation orientation,
       // Proceed with request
       RequestBuilder b;
       b.setHeader(RequestType::POST);
-      int value = getAngle();
       b.addField("cmd", m_field);
-      b.addField("cmd_order", value);
+      b.addField("cmd_order", tempAngle);
       MainWindow::clientManager->send(b.toString());
 
       // Send "unknown" state internally
@@ -84,7 +83,7 @@ BallValveButton::BallValveButton(GUI_FIELD field, Orientation orientation,
           QString(
               R"(The valve of field %1 was confirmed and the new %2 value was sent to server)")
               .arg(fieldUtil::enumToFieldName(m_field))
-              .arg(value)
+              .arg(tempAngle)
               .toStdString());
     } else {
       _logger.debug("BallValveButton", QString("Cancelled action for valve %1")
@@ -107,8 +106,7 @@ QMessageBox::StandardButton BallValveButton::showConfirmDialog(QWidget *parent,
     angleSel = new ValueSelector(this, currentAngle);
     angleLabel = new QLabel(tr("Angle: "),this);
 
-    connect(angleSel, &ValueSelector::valueChanged, this, &BallValveButton::setAngle);
-
+    connect(angleSel, &ValueSelector::valueChanged, [this](int newA) { tempAngle = newA; });
     QMessageBox msgBox(parent);
     msgBox.setWindowTitle(title);
     msgBox.setText(text);

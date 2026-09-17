@@ -66,7 +66,7 @@ namespace {
 }
 
 // STATIC MEMBERS INITIALIZATION -----------------------------------------------
-std::string MainLog::filename_ = "/../Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
+std::string MainLog::filename_ = "/home/ert/2026_C_GS_SOFTWARE/2024_C_GS_CONTROL/Log/firehorn.logs"; // if you set it to "default" the naming will automatically follow a date-time-minute format
 
 // PUBLIC METHODS --------------------------------------------------------------
 

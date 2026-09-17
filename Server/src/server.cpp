@@ -155,6 +155,9 @@ void Server::serialError() {
     break;
     default:
       _serverLogger.error("Serial Error", serialPort->errorString().toStdString());
+      serialPort->close();
+      _serverLogger.error("Serial Unkown Error",
+                          "Serial port closed due to error.");
     break;
   }
 }

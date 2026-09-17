@@ -25,7 +25,7 @@
 #endif /* RF_PROTOCOL_ICARUS */
 
 
-static ModuleLog _logger = ModuleLog("RequestAdapter");
+static ModuleLog _logger = ModuleLog("RequestAdapter", "/home/ert/2026_C_GS_SOFTWARE/2024_C_GS_CONTROL/Log/server.logs");
 
 namespace {
 
@@ -735,7 +735,7 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
       QString::number((dataGse->valves_state & GSE_VALVE_GFO_NCC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GDO_NCC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GDO_NCC) > 0 ? 1 : 0);
-  jsonObj[QString::number(GUI_FIELD::GSE_GFD_NC)] =
+  jsonObj[QString::number(GUI_FIELD::GSE_GLP_NC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GFD_NC) > 0 ? 1 : 0);
   jsonObj[QString::number(GUI_FIELD::GSE_GDD_NC)] =
       QString::number((dataGse->valves_state & GSE_VALVE_GDD_NC) > 0 ? 1 : 0);
@@ -746,7 +746,7 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
 
   // float fields - no cast needed, QString::number handles float directly
   jsonObj[QString::number(GUI_FIELD::GSE_GP1)] = QString::number(dataGse->GP1);
-  jsonObj[QString::number(GUI_FIELD::GSE_GP2)] = QString::number(dataGse->GP2);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP2)] = QString::number((dataGse->GP2)*4);
   jsonObj[QString::number(GUI_FIELD::GSE_GP3)] = QString::number(dataGse->GP3);
   jsonObj[QString::number(GUI_FIELD::GSE_GP4)] = QString::number(dataGse->GP4);
   jsonObj[QString::number(GUI_FIELD::GSE_GP5)] = QString::number(dataGse->GP5);
@@ -885,7 +885,7 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {GSE_CMD_TOGGLE_GDO, GSE_TELEMETRY};
 
 
-  case GUI_FIELD::GSE_GFD_NC:
+  case GUI_FIELD::GSE_GLP_NC:
     return {GSE_CMD_TOGGLE_GFD, GSE_TELEMETRY};
 
   case GUI_FIELD::GSE_GDD_NC:

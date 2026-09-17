@@ -90,7 +90,7 @@ SqliteDB::SqliteDB()
                   sqlite_orm::make_column("GFO_NCC", &GSE_downlink_pkt::GFO_NCC),
                   sqlite_orm::make_column("GDO_NCC", &GSE_downlink_pkt::GDO_NCC),
                   sqlite_orm::make_column("GPA_NC", &GSE_downlink_pkt::GPA_NC),
-                  sqlite_orm::make_column("GFD_NC", &GSE_downlink_pkt::GFD_NC),
+                  sqlite_orm::make_column("GPL_NC", &GSE_downlink_pkt::GFD_NC),
                   sqlite_orm::make_column("GDD_NC", &GSE_downlink_pkt::GDD_NC),
                   sqlite_orm::make_column("GP1", &GSE_downlink_pkt::GP1),
                   sqlite_orm::make_column("GP2", &GSE_downlink_pkt::GP2),

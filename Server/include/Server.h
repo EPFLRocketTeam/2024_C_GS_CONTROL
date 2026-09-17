@@ -41,8 +41,8 @@ private slots:
 private:
 
     int setup_db();
-    ModuleLog _packetLogger = ModuleLog("PacketHandler",  "../Log/packets.logs");
-    ModuleLog _serverLogger = ModuleLog("Server",  "../Log/server.logs");
+    ModuleLog _packetLogger = ModuleLog("PacketHandler",  "/home/ert/2026_C_GS_SOFTWARE/2024_C_GS_CONTROL/Log/packets.logs");
+    ModuleLog _serverLogger = ModuleLog("Server",  "/home/ert/2026_C_GS_SOFTWARE/2024_C_GS_CONTROL/Log/server.logs");
     void receiveSubscribe(const QJsonObject &request,  QTcpSocket *senderSocket);
     void receiveUnsubscribe(const QJsonObject &request,  QTcpSocket *senderSocket);
     void receivePost(const QJsonObject &request,  QTcpSocket *senderSocket);

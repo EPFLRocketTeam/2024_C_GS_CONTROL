@@ -42,16 +42,14 @@ public:
   ~MainWindow() override = default;
 
   inline static std::unique_ptr<ClientManager> clientManager;
-
-  void initiateLaunchTimer();
+  void startLaunchTimer();
 
 
 private slots:
   void updateLaunchTimer();
 
 private:
-  void UpdateLaunchTimerState(const QString& av_state);
-  void startLaunchTimer();
+  QString AVstate;
 
   QWidget *leftSection;
   QWidget *middleSection;

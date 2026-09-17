@@ -34,17 +34,18 @@ MainWindow::MainWindow(
   QVBoxLayout *centralLayout = new QVBoxLayout(centralWidget);
 
   // Initialize launch timer
-  launchTimerLabel = new QLabel("", this);
-  launchTimerLabel->setAlignment(Qt::AlignCenter);
+  launchTimerLabel = new QLabel("", middleWidget);
+  launchTimerLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  launchTimerLabel->setFixedSize(600,90);
+  launchTimerLabel->setAlignment(Qt::AlignHCenter);
   launchTimerLabel->setStyleSheet(
-      "QLabel { font-size: 24px; font-weight: bold; color: red; background: "
-      "transparent; }");
+      "QLabel { font-size: 90px; font-weight: bold; color: red; background: black; text-align: center;}");
   launchTimerLabel->setVisible(false); // Initially hidden
   launchTimer = new QTimer(this);
   launchTimerValue = 0.0;
   connect(launchTimer, &QTimer::timeout, this, &MainWindow::updateLaunchTimer);
   clientManager->subscribe(AV_STATE, [this](const QString &message) {
-    this->UpdateLaunchTimerState(message);
+    AVstate = message;
   });
   if (controlPanelMap) {
     panelSection = new ControlPanelView(this, controlPanelMap);
@@ -152,38 +153,38 @@ QHBoxLayout *MainWindow::createSectionsLayout() {
   return sectionsLayout;
 }
 
-void MainWindow::UpdateLaunchTimerState(const QString &av_state) {
-  if (av_state == "PRESSURIZATION"){
-    if (launchInitiated && !launchTimer->isActive()) {
-        startLaunchTimer();
+void MainWindow::startLaunchTimer() {
+  if (AVstate == "PRESSURIZE" || AVstate == "ARMED"){
+    _logger.info("Launch", "Launch timer started");
+    if (!launchTimer->isActive()) {
+        launchTimerValue = LAUNCH_DELAY; // Start at -20.0
+        launchTimerLabel->setVisible(true);
+        updateLaunchTimer();     // Update display immediately
+        launchTimer->start(100); // Update every 100ms (0.1 seconds)
       }
-  } else if (av_state == "AoG") {
+  } else if (AVstate == "AoG") {
     launchTimer->stop();
-    launchInitiated = false;
-  } else if (av_state == "INIT") {
+  } else if (AVstate == "INIT") {
     launchTimer->stop();
     launchTimerLabel->setVisible(false);
+  } else {
+    launchTimer->stop();
   }
-}
 
-void MainWindow::initiateLaunchTimer() {
-  launchInitiated = true;
-}
-
-void MainWindow::startLaunchTimer() {
-  launchTimerValue = LAUNCH_DELAY; // Start at -20.0
-  launchTimerLabel->setVisible(true);
-  updateLaunchTimer();     // Update display immediately
-  launchTimer->start(100); // Update every 100ms (0.1 seconds)
 }
 
 void MainWindow::updateLaunchTimer() {
   // Format the timer value with one decimal place
-  QString timeText = QString::number(launchTimerValue, 'f', 1);
-  launchTimerLabel->setText(QString("T  %1 %2s")
-                                .arg(launchTimerValue >= 0 ? "+" : " ")
-                                .arg(timeText));
-
-  // Increment by 0.1 seconds
-  launchTimerValue += 0.1;
+  if (launchTimerValue < 1) {
+    QString timeText = QString::number(launchTimerValue, 'f', 1);
+    launchTimerLabel->setText(QString("T%1 %2s")
+                                  .arg(launchTimerValue >= 0 ? "+" : " ")
+                                  .arg(timeText));
+  
+    // Increment by 0.1 seconds
+    launchTimerValue += 0.1;
+  } else {
+    launchTimer->stop();
+    launchTimerLabel->setVisible(false);
+  }
 }

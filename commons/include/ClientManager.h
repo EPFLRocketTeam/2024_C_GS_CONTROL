@@ -52,7 +52,7 @@ private:
   QMap<GUI_FIELD, QVector<CallbackFunction<QString>>> subscriptionsStrings;
   QMap<GUI_FIELD, QVector<CallbackFunction<QJsonValue>>> subscriptionsJson;
 
-  ModuleLog _logger = ModuleLog("ClientManager");
+  ModuleLog _logger = ModuleLog("ClientManager", "/home/ert/2026_C_GS_SOFTWARE/2024_C_GS_CONTROL/Log/server.logs");
 
   bool p = false;
   QTcpSocket *socket;

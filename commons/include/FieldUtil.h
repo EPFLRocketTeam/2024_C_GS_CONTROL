@@ -69,7 +69,7 @@ enum GUI_FIELD {
   GSE_GVA_NC,
   GSE_GFO_NCC,
   GSE_GDO_NCC,
-  GSE_GFD_NC,
+  GSE_GLP_NC,
   GSE_GDD_NC,
   GSE_GFE_NC,
   GSE_PC_OLC,
@@ -712,8 +712,8 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "GDO";
     break;
 
-  case GSE_GFD_NC:
-    name = "GFD";
+  case GSE_GLP_NC:
+    name = "GLP";
     break;
 
   case GSE_GDD_NC:
@@ -1075,8 +1075,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GSE_GFO_NCC;
   else if (fieldName == "GDO")
     return GSE_GDO_NCC;
-  else if (fieldName == "GFD")
-    return GSE_GFD_NC;
+  else if (fieldName == "GLP")
+    return GSE_GLP_NC;
   else if (fieldName == "GDD")
     return GSE_GDD_NC;
   else if (fieldName == "GFE")

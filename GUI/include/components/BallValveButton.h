@@ -60,6 +60,7 @@ public slots:
 private:
   State currentState;
   int currentAngle;
+  int tempAngle;
 
   void updateButtonIcon();
   

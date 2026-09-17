@@ -40,7 +40,7 @@ using RightView = GSManagerView;
 #define DEBUG_LOG false
 
 // Launch timer configuration
-constexpr double LAUNCH_DELAY = -30.0; // seconds
+constexpr double LAUNCH_DELAY = -10.0; // seconds
 
 // <---------- DO NOT CHANGE ---------->
 #ifdef ICARUS_GUI
@@ -302,7 +302,7 @@ inline std::vector<ValveInfo> gseValves = {
     {GUI_FIELD::GSE_GVN_NC, {0.9, 0.14}, ValveButton::Orientation::Horizontal,false},
     {GUI_FIELD::GSE_GPA_NC, {0.52, 0.15}, ValveButton::Orientation::Horizontal,false},
 
-    {GUI_FIELD::GSE_GFD_NC, {0.15, 0.879}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GLP_NC, {0.15, 0.879}, ValveButton::Orientation::Horizontal,false},
     {GUI_FIELD::GSE_GDD_NC, {0.45, 0.7}, ValveButton::Orientation::Horizontal,false},
 
     // Air valves for Quick Disconnect Actuation
