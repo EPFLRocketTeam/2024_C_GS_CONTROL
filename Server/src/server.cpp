@@ -544,10 +544,14 @@ void Server::simulateJsonData() {
   packet.valves_state = 255;
   packet.valve_dpr_fuel = 0;
   packet.valve_dpr_LOX = 90;
-  packet.lpb_voltage = distVoltage(gen);
-  packet.lpb_current = distVoltage(gen);
-  packet.vout_5v_voltage = distVoltage(gen);
-  packet.vout_5v_current = distVoltage(gen);
+  packet.lpb1_voltage = distVoltage(gen);
+  packet.lpb1_current = distVoltage(gen);
+  packet.lpb2_voltage = distVoltage(gen);
+  packet.lpb2_current = distVoltage(gen);
+  packet.vout1_5v_voltage = distVoltage(gen);
+  packet.vout1_5v_current = distVoltage(gen);
+  packet.vout2_5v_voltage = distVoltage(gen);
+  packet.vout2_5v_current = distVoltage(gen);
   packet.hpb_main_voltage = distVoltage(gen);
   packet.hpb_main_current = distVoltage(gen);
   packet.hpb_backup_voltage = distVoltage(gen);
@@ -558,7 +562,8 @@ void Server::simulateJsonData() {
   packet.ambient_temp = static_cast<int16_t>(distTemp(gen));
   packet.av_state = static_cast<uint8_t>(distState(gen));
   packet.cam_rec = static_cast<uint8_t>(distState(gen));
-  av_downlink_t p = encode_downlink(packet);
+  av_downlink_t p;
+  encode_downlink(&p, packet);
   handleSerialPacket(CAPSULE_ID::AV_TELEMETRY, (uint8_t *)&p,
                      sizeof(av_downlink_t));
 #endif

@@ -52,10 +52,14 @@ struct AV_downlink_pkt {
   uint8_t valves_state;
   float valve_dpr_fuel;
   float valve_dpr_LOX;
-  float lpb_voltage;
-  float lpb_current;
-  float vout_5v_voltage;
-  float vout_5v_current;
+  float lpb1_voltage;
+  float lpb1_current;
+  float lpb2_voltage;
+  float lpb2_current;
+  float vout1_5v_voltage;
+  float vout1_5v_current;
+  float vout2_5v_voltage;
+  float vout2_5v_current;
   float hpb_main_voltage;
   float hpb_main_current;
   float hpb_backup_voltage;
@@ -68,6 +72,10 @@ struct AV_downlink_pkt {
   uint8_t cam_rec;
   uint8_t rail_cable_status;
   uint8_t pyro_status;
+  uint64_t remaining_disk_size;
+  uint64_t sd_fail_count;
+  float average_imu_rate;
+  uint8_t baro_count;
 };
 
 struct GSE_downlink_pkt {
@@ -325,10 +333,14 @@ private:
           sqlite_orm::make_column("valves_state", &AV_downlink_pkt::valves_state),
           sqlite_orm::make_column("valve_dpr_fuel", &AV_downlink_pkt::valve_dpr_fuel),
           sqlite_orm::make_column("valve_dpr_LOX", &AV_downlink_pkt::valve_dpr_LOX),
-          sqlite_orm::make_column("lpb_voltage", &AV_downlink_pkt::lpb_voltage),
-          sqlite_orm::make_column("lpb_current", &AV_downlink_pkt::lpb_current),
-          sqlite_orm::make_column("vout_5v_voltage", &AV_downlink_pkt::vout_5v_voltage),
-          sqlite_orm::make_column("vout_5v_current", &AV_downlink_pkt::vout_5v_current),
+          sqlite_orm::make_column("lpb1_voltage", &AV_downlink_pkt::lpb1_voltage),
+          sqlite_orm::make_column("lpb1_current", &AV_downlink_pkt::lpb1_current),
+          sqlite_orm::make_column("lpb2_voltage", &AV_downlink_pkt::lpb2_voltage),
+          sqlite_orm::make_column("lpb2_current", &AV_downlink_pkt::lpb2_current),
+          sqlite_orm::make_column("vout1_5v_voltage", &AV_downlink_pkt::vout1_5v_voltage),
+          sqlite_orm::make_column("vout1_5v_current", &AV_downlink_pkt::vout1_5v_current),
+          sqlite_orm::make_column("vout2_5v_voltage", &AV_downlink_pkt::vout2_5v_voltage),
+          sqlite_orm::make_column("vout2_5v_current", &AV_downlink_pkt::vout2_5v_current),
           sqlite_orm::make_column("hpb_main_voltage", &AV_downlink_pkt::hpb_main_voltage),
           sqlite_orm::make_column("hpb_main_current", &AV_downlink_pkt::hpb_main_current),
           sqlite_orm::make_column("hpb_backup_voltage", &AV_downlink_pkt::hpb_backup_voltage),
@@ -341,7 +353,11 @@ private:
           sqlite_orm::make_column("av_state", &AV_downlink_pkt::av_state),
           sqlite_orm::make_column("cam_rec", &AV_downlink_pkt::cam_rec),
           sqlite_orm::make_column("pyro_status", &AV_downlink_pkt::pyro_status),
-          sqlite_orm::make_column("rail_button_status", &AV_downlink_pkt::rail_cable_status)),
+          sqlite_orm::make_column("rail_button_status", &AV_downlink_pkt::rail_cable_status),
+          sqlite_orm::make_column("average_imu_rate", &AV_downlink_pkt::average_imu_rate),
+          sqlite_orm::make_column("sd_fail_count", &AV_downlink_pkt::sd_fail_count),
+          sqlite_orm::make_column("remaining_disk_size", &AV_downlink_pkt::remaining_disk_size),
+          sqlite_orm::make_column("baro_count", &AV_downlink_pkt::baro_count)),
       sqlite_orm::make_table<GSE_downlink_pkt>(
           "GSE_DOWNLINK",
           sqlite_orm::make_column("id", &GSE_downlink_pkt::id,

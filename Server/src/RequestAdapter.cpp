@@ -131,22 +131,30 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
   valves_state:           %26,
   valve_dpr_fuel:         %27,
   valve_dpr_LOX:          %28,
-  lpb_voltage:            %29,
-  lpb_current:            %30,
-  vout_5v_voltage:        %31,
-  vout_5v_current:        %32, 
-  hpb_main_voltage:       %33,
-  hpb_main_current:       %34,
-  hpb_backup_voltage:     %35,
-  hpb_backup_current:     %36,
-  vout_24v_voltage:       %37,
-  vout_24v_current:       %38, 
-  av_fc_temp:             %39,
-  ambient_temp:           %40,
-  av_state:               %41,
-  cam_rec:                %42,
-  rail_cable_status:      %43,
-  av_pyros:               %44
+  lpb1_voltage:           %29,
+  lpb1_current:           %30,
+  lpb2_voltage:           %31,
+  lpb2_current:           %32,
+  vout1_5v_voltage:       %33,
+  vout1_5v_current:       %34, 
+  vout2_5v_voltage:       %35,
+  vout2_5v_current:       %36, 
+  hpb_main_voltage:       %37,
+  hpb_main_current:       %38,
+  hpb_backup_voltage:     %39,
+  hpb_backup_current:     %40,
+  vout_24v_voltage:       %41,
+  vout_24v_current:       %42, 
+  av_fc_temp:             %43,
+  ambient_temp:           %44,
+  av_state:               %45,
+  cam_rec:                %46,
+  rail_cable_status:      %47,
+  av_pyros:               %48,
+  remaining_disk_size:    %49,
+  sd_fail_count:          %50,
+  baro_count:             %51,
+  average_imu_rate:       %52
   )")
                       .arg(dataAv.packet_nbr)
                       .arg(dataAv.av_timestamp)
@@ -175,10 +183,14 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                       .arg(dataAv.valves_state)
                       .arg(dataAv.valve_dpr_fuel)
                       .arg(dataAv.valve_dpr_LOX)
-                      .arg(dataAv.lpb_voltage)
-                      .arg(dataAv.lpb_current)
-                      .arg(dataAv.vout_5v_voltage)
-                      .arg(dataAv.vout_5v_current)
+                      .arg(dataAv.lpb1_voltage)
+                      .arg(dataAv.lpb1_current)
+                      .arg(dataAv.lpb2_voltage)
+                      .arg(dataAv.lpb2_current)
+                      .arg(dataAv.vout1_5v_voltage)
+                      .arg(dataAv.vout1_5v_current)
+                      .arg(dataAv.vout2_5v_voltage)
+                      .arg(dataAv.vout2_5v_current)
                       .arg(dataAv.hpb_main_voltage)
                       .arg(dataAv.hpb_main_current)
                       .arg(dataAv.hpb_backup_voltage)
@@ -191,6 +203,10 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
                       .arg(dataAv.cam_rec)
                       .arg(dataAv.rail_cable_status)
                       .arg(dataAv.pyro_status)
+                      .arg(dataAv.remaining_disk_size)
+                      .arg(dataAv.sd_fail_count)
+                      .arg(dataAv.baro_count)
+                      .arg(dataAv.average_imu_rate)
                       .toStdString());
     delete packedData;
 
@@ -242,15 +258,22 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number(static_cast<int>(dataAv.LOX_fls_temp_5)) + " [°C]";
     jsonObj[QString::number(GUI_FIELD::LOX_FLS_TEMP_6)] =
         QString::number(static_cast<int>(dataAv.LOX_fls_temp_6)) + " [°C]";
-
-    jsonObj[QString::number(GUI_FIELD::LPB_VOLTAGE)] =
-        QString::number(static_cast<double>(dataAv.lpb_voltage)) + " [V]";
-    jsonObj[QString::number(GUI_FIELD::LPB_CURRENT)] =
-        QString::number(static_cast<double>(dataAv.lpb_current)) + " [A]";
-    jsonObj[QString::number(GUI_FIELD::VOUT_5V_VOLTAGE)] =
-        QString::number(static_cast<double>(dataAv.vout_5v_voltage)) + " [V]";
-    jsonObj[QString::number(GUI_FIELD::VOUT_5V_CURRENT)] =
-        QString::number(static_cast<double>(dataAv.vout_5v_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::LPB1_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.lpb1_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::LPB1_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.lpb1_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::LPB2_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.lpb2_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::LPB2_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.lpb2_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::VOUT1_5V_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.vout1_5v_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::VOUT1_5V_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.vout1_5v_current)) + " [A]";
+    jsonObj[QString::number(GUI_FIELD::VOUT2_5V_VOLTAGE)] =
+        QString::number(static_cast<double>(dataAv.vout2_5v_voltage)) + " [V]";
+    jsonObj[QString::number(GUI_FIELD::VOUT2_5V_CURRENT)] =
+        QString::number(static_cast<double>(dataAv.vout2_5v_current)) + " [A]";
     jsonObj[QString::number(GUI_FIELD::HPB_MAIN_VOLTAGE)] =
         QString::number(static_cast<double>(dataAv.hpb_main_voltage)) + " [V]";
     jsonObj[QString::number(GUI_FIELD::HPB_MAIN_CURRENT)] =
@@ -287,6 +310,15 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
         QString::number((engine_states & AV_VALVE_MAIN_LOX) > 0 ? 0 : 1);
     jsonObj[QString::number(GUI_FIELD::MAIN_FUEL)] =
         QString::number((engine_states & AV_VALVE_MAIN_FUEL) > 0 ? 0 : 1);
+    
+    jsonObj[QString::number(GUI_FIELD::AVERAGE_IMU_RATE)] =
+        QString::number(dataAv.average_imu_rate);
+    jsonObj[QString::number(GUI_FIELD::SD_FAIL_COUNT)] =
+        QString::number(dataAv.sd_fail_count);
+    jsonObj[QString::number(GUI_FIELD::REMAINING_DISK_SIZE)] =
+        QString::number(dataAv.remaining_disk_size);
+    jsonObj[QString::number(GUI_FIELD::BARO_COUNT)] =
+        QString::number(dataAv.baro_count);
 
     jsonObj[QString::number(GUI_FIELD::AV_STATE)] =
         fieldUtil::avStateToName(dataAv.av_state);
@@ -790,9 +822,18 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
 
 #if RF_PROTOCOL_FIREHORN
 TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
+  
   switch (f) {
     /*case GUI_CMD_DISCONNECT:*/
     /*  return {CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY};*/
+  case GUI_FIELD::GUI_CMD_CAM_START:
+    return {AV_CMD_CAMERA_START, CAPSULE_ID::GSC_CMD};
+  case GUI_FIELD::GUI_CMD_CAM_STOP:
+    return {AV_CMD_CAMERA_STOP, CAPSULE_ID::GSC_CMD};
+  case GUI_FIELD::GUI_CMD_CAM_ABORT:
+    return {AV_CMD_CAMERA_ABORT, CAPSULE_ID::GSC_CMD};
+  case GUI_FIELD::GUI_CMD_CAM_RECOVER:
+    return {AV_CMD_CAMERA_RECOVER, CAPSULE_ID::GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_CALIBRATE:
     return {AV_CMD_CALIBRATE, CAPSULE_ID::GSC_CMD};
