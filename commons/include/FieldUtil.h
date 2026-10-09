@@ -146,6 +146,10 @@ enum GUI_FIELD {
   GUI_CMD_VENT_N2O,
   GUI_CMD_GIMBALL_X,
   GUI_CMD_GIMBALL_Y,
+  GUI_CMD_CAM_START,
+  GUI_CMD_CAM_STOP,
+  GUI_CMD_CAM_ABORT,
+  GUI_CMD_CAM_RECOVER,
 
   GUI_CMD_P_LOX,
   GUI_CMD_P_FUEL,
@@ -779,6 +783,19 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GSE_GP5:
     name = "GP5";
     break;
+    
+  case GUI_CMD_CAM_START:
+    name = "CAM START";
+    break ;
+  case GUI_CMD_CAM_STOP:
+    name = "CAM STOP";
+    break ;
+  case GUI_CMD_CAM_ABORT:
+    name = "CAM ABORT";
+    break ;
+  case GUI_CMD_CAM_RECOVER:
+    name = "CAM RECOVER";
+    break ;
 
   default:
     name = "UNKNOWN";
@@ -1143,6 +1160,15 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GSE_GP4;
   else if (fieldName == "GP5")
     return GSE_GP5;
+    
+  else if (fieldName == "CAM START")
+    return GUI_CMD_CAM_START;
+  else if (fieldName == "CAM STOP")
+    return GUI_CMD_CAM_STOP;
+  else if (fieldName == "CAM ABORT")
+    return GUI_CMD_CAM_ABORT;
+  else if (fieldName == "CAM RECOVER")
+    return GUI_CMD_CAM_RECOVER;
   else
     return UNKNOWN;
 }

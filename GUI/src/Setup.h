@@ -223,8 +223,8 @@ namespace ui_elements {
 
 inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {GUI_CMD_CALIBRATE,GUI_CMD_ARM,GUI_CMD_PRESSURIZE},
-    {GUI_CMD_RECOVER, GUI_CMD_ABORT,GUI_CMD_ABORT},
-    {GUI_CMD_ABORT, GUI_CMD_ABORT,GUI_CMD_ABORT},
+    {GUI_CMD_RECOVER, GUI_CMD_CAM_START, GUI_CMD_CAM_STOP},
+    {GUI_CMD_CAM_ABORT, GUI_CMD_CAM_RECOVER, GUI_CMD_ABORT},
 };
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     {"QPushButton", pushButtonMap}};

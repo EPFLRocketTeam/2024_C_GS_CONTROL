@@ -822,9 +822,18 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
 
 #if RF_PROTOCOL_FIREHORN
 TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
+  
   switch (f) {
     /*case GUI_CMD_DISCONNECT:*/
     /*  return {CMD_ID::GSE_CMD_DISCONNECT, CAPSULE_ID::GSE_TELEMETRY};*/
+  case GUI_FIELD::GUI_CMD_CAM_START:
+    return {AV_CMD_CAMERA_START, CAPSULE_ID::GSC_CMD};
+  case GUI_FIELD::GUI_CMD_CAM_STOP:
+    return {AV_CMD_CAMERA_STOP, CAPSULE_ID::GSC_CMD};
+  case GUI_FIELD::GUI_CMD_CAM_ABORT:
+    return {AV_CMD_CAMERA_ABORT, CAPSULE_ID::GSC_CMD};
+  case GUI_FIELD::GUI_CMD_CAM_RECOVER:
+    return {AV_CMD_CAMERA_RECOVER, CAPSULE_ID::GSC_CMD};
 
   case GUI_FIELD::GUI_CMD_CALIBRATE:
     return {AV_CMD_CALIBRATE, CAPSULE_ID::GSC_CMD};
