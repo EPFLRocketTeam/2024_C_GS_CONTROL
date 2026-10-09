@@ -14,11 +14,16 @@
 
 #include "FieldUtil.h"
 
+struct field_section {
+    QString name;
+    QList<GUI_FIELD> fields;
+};
+
 class TelemetryView : public QFrame {
     Q_OBJECT
 
 public:
-    TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidget* parent = nullptr);
+    TelemetryView(QList<field_section> section_map, QWidget* parent = nullptr);
     
     
     virtual ~TelemetryView() override = default;

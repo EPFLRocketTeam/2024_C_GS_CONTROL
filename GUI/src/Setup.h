@@ -40,7 +40,7 @@ using RightView = GSManagerView;
 #define DEBUG_LOG false
 
 // Launch timer configuration
-constexpr double LAUNCH_DELAY = -10.0; // seconds
+constexpr double LAUNCH_DELAY = -45.0; // seconds
 
 // <---------- DO NOT CHANGE ---------->
 #ifdef ICARUS_GUI
@@ -223,15 +223,17 @@ namespace ui_elements {
 
 inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {GUI_CMD_CALIBRATE,GUI_CMD_ARM,GUI_CMD_PRESSURIZE},
-
-    {GUI_CMD_LAUNCH, GUI_CMD_RECOVER, GUI_CMD_ABORT, GUI_CMD_RECOVER},
+    {GUI_CMD_RECOVER, GUI_CMD_ABORT,GUI_CMD_ABORT},
+    {GUI_CMD_ABORT, GUI_CMD_ABORT,GUI_CMD_ABORT},
 };
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     {"QPushButton", pushButtonMap}};
 
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
-    {GUI_CMD_GSE_IDLE, GUI_CMD_GSE_CALIBRATE, GUI_CMD_GSE_ARM,
-     GUI_CMD_GSE_PASSIVATE,GUI_CMD_GSE_TOGGLE_ALL_GQD}};
+    {GUI_CMD_ABORT, GUI_CMD_ABORT,GUI_CMD_ABORT},
+    {GUI_CMD_ABORT, GUI_CMD_ABORT,GUI_CMD_ABORT},
+
+    {GUI_CMD_GSE_TOGGLE_ALL_GQD}};
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> gseControlMap{
     {"QPushButton", gsePushButtonMap}};
 
@@ -262,12 +264,12 @@ inline std::vector<LabelInfo> labels = {
 
 
     {GUI_FIELD::LOX_PRESSURE, 0.685, 0.705},
-    {GUI_FIELD::LOX_FLS_TEMP_6, 0.92, 0.632 + 0.044*0}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_5, 0.92, 0.632 + 0.044*1}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_4, 0.92, 0.632 + 0.044*2}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_3, 0.92, 0.632 + 0.044*3}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_2, 0.92, 0.632 + 0.044*4}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_1, 0.92, 0.632 + 0.044*5}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_6, 0.92, 0.632 + 0.044*5}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_5, 0.92, 0.632 + 0.044*4}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_4, 0.92, 0.632 + 0.044*3}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_3, 0.92, 0.632 + 0.044*2}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_2, 0.92, 0.632 + 0.044*1}, // LOX float level sensor at TBD%
+    {GUI_FIELD::LOX_FLS_TEMP_1, 0.92, 0.632 + 0.044*0}, // LOX float level sensor at TBD%
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.685, 0.85},
     //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865},
@@ -330,29 +332,49 @@ inline QList<GUI_FIELD> gps = {
     DOWNRANGE
 };
 
-inline QList<GUI_FIELD> tbd = {
+inline QList<GUI_FIELD> meta = {
     PACKET_NBR,  
+    AV_PACKET_FREQ,
     AV_STATE,    
+    AV_PYROS,
+    RAIL_CABLE,
+    AV_FC_TEMP,     
+    AMBIENT_TEMP,
+};
+
+inline QList<GUI_FIELD> power = {
     LPB_VOLTAGE,  
     LPB_CURRENT,
     VOUT_5V_VOLTAGE,
     VOUT_5V_CURRENT,
     VOUT_24V_VOLTAGE, 
     VOUT_24V_CURRENT, 
-    AV_FC_TEMP,     
-    AMBIENT_TEMP,
-    CAM_REC,     
-    AV_PYROS,
-    RAIL_CABLE,
-    AV_PACKET_FREQ
 };
-inline QMap<QString, QList<GUI_FIELD>> data_sections = {{"GPS", gps},
-                                                        {"INFOS", tbd}};
+
+inline QList<GUI_FIELD> cameras = {
+    CAM_REC,  
+    CAM_REC,
+    CAM_REC,
+    CAM_REC,
+};
+
+
+inline QList<field_section> data_sections = 
+{
+    {"GPS", gps},
+    {"META", meta},
+    {"POWER", power},
+    {"CAMS", cameras},
+};
+
 
 inline QList<GUI_FIELD> gseDataFields = {
     GSE_GP1, GSE_GP2, GSE_GP3, GSE_GP4, GSE_GP5,
 };
-inline QMap<QString, QList<GUI_FIELD>> gse_sections = {{"GSE", gseDataFields}};
+inline QList<field_section> gse_sections = 
+{
+    {"GSE", gseDataFields}
+};
 
 inline QFrame *middlePlaceholder;
 inline QFrame *leftPlaceholder;

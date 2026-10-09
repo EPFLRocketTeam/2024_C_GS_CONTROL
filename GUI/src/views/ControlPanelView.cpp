@@ -39,7 +39,7 @@ ControlPanelView::ControlPanelView(
   setMaximumWidth(mws::sideWidth / 3 * mws::width);
   setMaximumHeight(mws::height*10.0/100.0);
   setupContainerWidget();
-
+  this->setContentsMargins(0, 0, 0, 0);
 
   QHBoxLayout *containerLayout = new QHBoxLayout(controlContainerWidget);
   QList<std::vector<GUI_FIELD>> pushButtonControls =

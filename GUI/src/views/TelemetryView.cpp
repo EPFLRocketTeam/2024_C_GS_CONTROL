@@ -19,7 +19,7 @@
 #include "../Setup.h"
 #include "TelemetryView.h"
 
-TelemetryView::TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidget* parent) : QFrame(parent) {
+TelemetryView::TelemetryView(QList<field_section> section_map, QWidget* parent) : QFrame(parent) {
     
     // Set up the appearance or behavior as needed
     //setStyleSheet("background-color: lightblue;");
@@ -28,14 +28,14 @@ TelemetryView::TelemetryView(QMap<QString, QList<GUI_FIELD>> section_map, QWidge
     layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignTop);
     layout->setContentsMargins(0, 0, 0, 0);
-    for (auto key: section_map.keys()) {
-        createSection(key, &section_map[key]);
+    for (auto element: section_map) {
+        createSection(element.name, &element.fields);
     }
 }
 
 void TelemetryView::createSection(QString title, QList<GUI_FIELD> *fields) {
     QLabel* l = new QLabel(title);
-    l->setStyleSheet(QString("font-size: 14pt; color: %1;font-weight: 400;background: transparent;").arg(col::primary));
+    l->setStyleSheet(QString("font-size: 12pt; color: %1;font-weight: 400;background: transparent;").arg(col::primary));
     QWidget *wrapper = new QWidget;
     wrapper->setObjectName("wrapper");
     wrapper->setStyleSheet(col::defaultCardStyle("wrapper"));
