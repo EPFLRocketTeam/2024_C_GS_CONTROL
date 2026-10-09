@@ -39,10 +39,14 @@ enum GUI_FIELD {
   LOX_INJ_PRESSURE,
   CHAMBER_PRESSURE,
   CHAMBER_TEMP,
-  LPB_VOLTAGE,
-  LPB_CURRENT,
-  VOUT_5V_VOLTAGE,
-  VOUT_5V_CURRENT,
+  LPB1_VOLTAGE,
+  LPB1_CURRENT,
+  LPB2_VOLTAGE,
+  LPB2_CURRENT,
+  VOUT1_5V_VOLTAGE,
+  VOUT1_5V_CURRENT,
+  VOUT2_5V_VOLTAGE,
+  VOUT2_5V_CURRENT,
   HPB_MAIN_VOLTAGE,
   HPB_MAIN_CURRENT,
   HPB_BACKUP_VOLTAGE,
@@ -57,6 +61,10 @@ enum GUI_FIELD {
   AV_PYROS,
   GSE_FILLING_N2O,
   VENT_GSE,
+  AVERAGE_IMU_RATE,
+  REMAINING_DISK_SIZE,
+  BARO_COUNT,
+  SD_FAIL_COUNT,
   GSE_GQD1_NC,
   GSE_GQD2_NC,
   GSE_GQD3_NC,
@@ -304,17 +312,41 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case CHAMBER_TEMP:
     name = "CHAMBER TEMPERATURE";
     break;
-  case LPB_VOLTAGE:
-    name = "LPB VOLTAGE";
+  case AVERAGE_IMU_RATE:
+    name = "AVERAGE IMU RATE";
+    break ;
+  case REMAINING_DISK_SIZE:
+    name = "REMAINING DISK SIZE FC";
+    break ;
+  case BARO_COUNT:
+    name = "FC HEALTHY BARO COUNT";
+    break ;
+  case SD_FAIL_COUNT:
+    name = "FC SD FAIL COUNT";
+    break ;
+  case LPB1_VOLTAGE:
+    name = "LPB 1 VOLTAGE";
     break;
-  case LPB_CURRENT:
-    name = "LPB CURRENT";
+  case LPB1_CURRENT:
+    name = "LPB 1 CURRENT";
     break;
-  case VOUT_5V_VOLTAGE:
-    name = "5V VOLTAGE";
+  case LPB2_VOLTAGE:
+    name = "LPB 2 VOLTAGE";
     break;
-  case VOUT_5V_CURRENT:
-    name = "5V CURRENT";
+  case LPB2_CURRENT:
+    name = "LPB 2 CURRENT";
+    break;
+  case VOUT1_5V_VOLTAGE:
+    name = "5V 1 VOLTAGE";
+    break;
+  case VOUT1_5V_CURRENT:
+    name = "5V 1 CURRENT";
+    break;
+  case VOUT2_5V_VOLTAGE:
+    name = "5V 2 VOLTAGE";
+    break;
+  case VOUT2_5V_CURRENT:
+    name = "5V 2 CURRENT";
     break;
   case HPB_MAIN_VOLTAGE:
     name = "HPB MAIN VOLTAGE";
@@ -826,14 +858,30 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return CHAMBER_PRESSURE;
   else if (fieldName == "CHAMBER TEPERATURE")
     return CHAMBER_TEMP;
-  else if (fieldName == "LPB VOLTAGE")
-    return LPB_VOLTAGE;
-  else if (fieldName == "LPB CURRENT")
-    return LPB_CURRENT;
-  else if (fieldName == "5V VOLTAGE")
-    return VOUT_5V_VOLTAGE;
-  else if (fieldName == "5V CURRENT")
-    return VOUT_5V_CURRENT;
+  else if (fieldName == "AVERAGE IMU RATE")
+      return AVERAGE_IMU_RATE;
+  else if (fieldName == "REMAINING DISK SIZE FC")
+    return REMAINING_DISK_SIZE;
+  else if (fieldName == "FC HEALTHY BARO COUNT")
+    return BARO_COUNT;
+  else if (fieldName == "FC SD FAIL COUNT")
+    return SD_FAIL_COUNT;
+  else if (fieldName == "LPB 1 VOLTAGE")
+    return LPB1_VOLTAGE;
+  else if (fieldName == "LPB 1 CURRENT")
+    return LPB1_CURRENT;
+  else if (fieldName == "LPB 2 VOLTAGE")
+    return LPB2_VOLTAGE;
+  else if (fieldName == "LPB 2 CURRENT")
+    return LPB2_CURRENT;
+  else if (fieldName == "5V 1 VOLTAGE")
+    return VOUT1_5V_VOLTAGE;
+  else if (fieldName == "5V 1 CURRENT")
+    return VOUT1_5V_CURRENT;
+  else if (fieldName == "5V 2 VOLTAGE")
+    return VOUT2_5V_VOLTAGE;
+  else if (fieldName == "5V 2 CURRENT")
+    return VOUT2_5V_CURRENT;
   else if (fieldName == "HPB MAIN VOLTAGE")
     return HPB_MAIN_VOLTAGE;
   else if (fieldName == "HPB MAIN CURRENT")
