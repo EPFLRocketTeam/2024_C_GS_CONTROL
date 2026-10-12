@@ -278,14 +278,12 @@ SqliteDB::~SqliteDB() {
 }
 
 int SqliteDB::write_pkt(const Packet pkt) {
-  printf("write_pkt called\n");
   switch (pkt.type) {
   case PacketType::AV_UPLINK: {
     AV_uplink_pkt *avUpPkt = pkt.av_up_pkt;
     if (avUpPkt == NULL) {
       return 2;
     }
-    printf("    place av up pkt in buffer\n");
     buffer_av_up.emplace_back(avUpPkt);
     if (buffer_av_up.size() >= BATCH_SIZE) {
       printf("    av up buffer is full\n");
@@ -299,7 +297,6 @@ int SqliteDB::write_pkt(const Packet pkt) {
     if (avDownPkt == NULL) {
       return 2;
     }
-    printf("    place av down pkt in buffer\n");
     buffer_av_down.emplace_back(avDownPkt);
     last_valid_avdw_pkt = *avDownPkt;
     if (buffer_av_down.size() >= BATCH_SIZE) {
@@ -314,7 +311,6 @@ int SqliteDB::write_pkt(const Packet pkt) {
     if (gseDownPkt == NULL) {
       return 2;
     }
-    printf("    place gse down pkt in buffer\n");
     buffer_gse_down.emplace_back(gseDownPkt);
     if (buffer_gse_down.size() >= BATCH_SIZE) {
       printf("    gse down buffer is full\n");
@@ -522,7 +518,6 @@ Packet SqliteDB::process_pkt(av_uplink_t *avup,
                              av_downlink_t *avdw,
 #endif
                              gse_downlink_t *gsdw) {
-  printf("process_pkt called\n");
   if (avup == NULL && avdw == NULL && gsdw == NULL) {
     return {.type = INVALID,
             .av_up_pkt = NULL,
@@ -733,7 +728,6 @@ void SqliteDB::unprocess_pkt(Packet pkt, av_uplink_t *avup,
                              av_downlink_t *avdw,
 #endif
                              gse_downlink_t *gsdw) {
-  printf("unprocess_pkt called\n");
   switch (pkt.type) {
   case PacketType::AV_UPLINK: {
     *avup = (av_uplink_t){.order_id = pkt.av_up_pkt->order_id,

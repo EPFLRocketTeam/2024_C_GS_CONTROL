@@ -40,7 +40,7 @@ using RightView = GSManagerView;
 #define DEBUG_LOG false
 
 // Launch timer configuration
-constexpr double LAUNCH_DELAY = -45.0; // seconds
+constexpr double LAUNCH_DELAY = -30.0; // seconds
 
 // <---------- DO NOT CHANGE ---------->
 #ifdef ICARUS_GUI
@@ -223,17 +223,15 @@ namespace ui_elements {
 
 inline QList<std::vector<GUI_FIELD>> pushButtonMap{
     {GUI_CMD_CALIBRATE,GUI_CMD_ARM,GUI_CMD_PRESSURIZE},
-    {GUI_CMD_RECOVER, GUI_CMD_CAM_START, GUI_CMD_CAM_STOP},
-    {GUI_CMD_CAM_ABORT, GUI_CMD_CAM_RECOVER, GUI_CMD_ABORT},
+    {GUI_CMD_RECOVER,GUI_CMD_ABORT},
 };
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
     {"QPushButton", pushButtonMap}};
 
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
-    {GUI_CMD_ABORT, GUI_CMD_ABORT,GUI_CMD_ABORT},
-    {GUI_CMD_ABORT, GUI_CMD_ABORT,GUI_CMD_ABORT},
-
-    {GUI_CMD_GSE_TOGGLE_ALL_GQD}};
+    {GUI_CMD_CAM_START, GUI_CMD_CAM_STOP,GUI_CMD_CAM_ABORT,GUI_CMD_CAM_RECOVER},
+    { GUI_CMD_GSE_TOGGLE_ALL_GQD}
+};
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> gseControlMap{
     {"QPushButton", gsePushButtonMap}};
 
@@ -305,7 +303,7 @@ inline std::vector<ValveInfo> gseValves = {
     {GUI_FIELD::GSE_GPA_NC, {0.52, 0.15}, ValveButton::Orientation::Horizontal,false},
 
     {GUI_FIELD::GSE_GLP_NC, {0.15, 0.879}, ValveButton::Orientation::Horizontal,false},
-    {GUI_FIELD::GSE_GDD_NC, {0.45, 0.7}, ValveButton::Orientation::Horizontal,false},
+    {GUI_FIELD::GSE_GDD_NC, {0.3, 0.966}, ValveButton::Orientation::Horizontal,false},
 
     // Air valves for Quick Disconnect Actuation
     {GUI_FIELD::GSE_GQD1_NC, {0.59, 0.578},         ValveButton::Orientation::Horizontal,false},
@@ -317,8 +315,8 @@ inline std::vector<ValveInfo> gseValves = {
 };
 inline std::vector<BallValveInfo> gseDpr_valves = {};
 inline std::vector<LabelInfo> gseLabels = {
-    {GUI_FIELD::GSE_GP1, 0.985, 0.6},
-    {GUI_FIELD::GSE_GP2, 0.985, 0.6 + 0.06*1},
+    {GUI_FIELD::GSE_GP1, 0.55, 0.06},
+    {GUI_FIELD::GSE_GP2,0.12, 0.612},
     {GUI_FIELD::GSE_GP3, 0.985, 0.6 + 0.06*2},
     {GUI_FIELD::GSE_GP4, 0.985, 0.6 + 0.06*3},
     {GUI_FIELD::GSE_GP5, 0.985, 0.6 + 0.06*4},
@@ -365,9 +363,6 @@ inline QList<GUI_FIELD> power = {
 
 inline QList<GUI_FIELD> cameras = {
     CAM_REC,  
-    CAM_REC,
-    CAM_REC,
-    CAM_REC,
 };
 
 

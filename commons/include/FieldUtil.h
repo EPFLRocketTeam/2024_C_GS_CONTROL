@@ -320,13 +320,13 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "AVERAGE IMU RATE";
     break ;
   case REMAINING_DISK_SIZE:
-    name = "REMAINING DISK SIZE FC";
+    name = "REMAINING DISK SIZE";
     break ;
   case BARO_COUNT:
-    name = "FC HEALTHY BARO COUNT";
+    name = "HEALTHY BARO COUNT";
     break ;
   case SD_FAIL_COUNT:
-    name = "FC SD FAIL COUNT";
+    name = "SD FAIL COUNT";
     break ;
   case LPB1_VOLTAGE:
     name = "LPB 1 VOLTAGE";
@@ -392,7 +392,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "DOWNRANGE";
     break;
   case AV_PACKET_FREQ:
-    name = "AV PACKET FREQ [Hz]";
+    name = "AV PACKET FREQ";
     break;
   case SERIAL_STATUS:
     name = "SERIAL STATUS";
@@ -657,7 +657,7 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "ARM";
     break;
   case GUI_CMD_PRESSURIZE:
-    name = "PRESSURIZE";
+    name = "LAUNCH SEQUENCE";
     break;
   case GUI_CMD_LAUNCH:
     name = "LAUNCH";
@@ -765,11 +765,11 @@ inline QString enumToFieldName(GUI_FIELD field) {
     break;
 
   case GSE_GP1:
-    name = "GP1";
+    name = "LN2 IN";
     break;
 
   case GSE_GP2:
-    name = "P. Pneumatique";
+    name = "LOX";
     break;
 
   case GSE_GP3:
@@ -1080,7 +1080,7 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
   else if (fieldName == "SPARE F2")
     return GUI_CMD_HOPPER_SPARE_F2;
   else if (fieldName == "SPARE F3")
-    return GUI_CMD_HOPPER_SPARE_F3;
+    return GUI_CMD_HOPPER_SPARE_F3;  
   else if (fieldName == "CALIBRATE")
     return GUI_CMD_CALIBRATE;
   else if (fieldName == "RECOVER")
@@ -1091,7 +1091,7 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GIMBALL_Y;
   else if (fieldName == "ARM")
     return GUI_CMD_ARM;
-  else if (fieldName == "PRESSURIZE")
+  else if (fieldName == "LAUNCH SEQUENCE")
     return GUI_CMD_PRESSURIZE;
   else if (fieldName == "LAUNCH")
     return GUI_CMD_LAUNCH;
@@ -1194,24 +1194,27 @@ inline QString avStateToName(const uint8_t state){
       name = "PRESSURIZATION";
       break;
     case 5:
-      name = "IGNITION";
+      name = "TRY_IGNITION";
       break;
     case 6:
-      name = "BURN";
+      name = "IGNITION";
       break;
     case 7:
-      name = "ASCENT";
+      name = "BURN";
       break;
     case 8:
-      name = "DESCENT";
+      name = "ASCENT";
       break;
     case 9:
-      name = "LANDED";
+      name = "DESCENT";
       break;
     case 10:
-      name = "ABORT GROUND";
+      name = "LANDED";
       break;
     case 11:
+      name = "ABORT GROUND";
+      break;
+    case 12:
       name = "ABORT FLIGHT";
       break;         
     default:

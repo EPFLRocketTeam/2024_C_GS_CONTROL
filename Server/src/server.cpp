@@ -444,7 +444,6 @@ void Server::handleSerialPacket(uint8_t packetId, uint8_t *dataIn,
   } else if (result) {
     QJsonDocument doc(result.value());
     QByteArray jsonData = doc.toJson(QJsonDocument::Indented);
-    _packetLogger.info("Received a packet", "");
     _packetLogger.debug("Packet transformed to json", jsonData.toStdString());
     updateSubscriptions(result.value());
   } else {

@@ -41,7 +41,7 @@ DataLabel::DataLabel(const GUI_FIELD field, QWidget *parent) : QLabel(parent), f
                 if (deltaMs > 0 && deltaPackets > 0) {
                     const double frequencyHz = static_cast<double>(deltaPackets) * 1000.0 /
                                                static_cast<double>(deltaMs);
-                    setText(QString::number(frequencyHz, 'f', 2));
+                    setText(QString::number(frequencyHz, 'f', 2) + "[Hz]");
                 }
             }
 

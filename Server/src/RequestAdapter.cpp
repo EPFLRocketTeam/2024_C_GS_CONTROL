@@ -35,7 +35,15 @@ constexpr double kEarthRadiusMeters = 6'371'000.0;
 constexpr double kPi = 3.14159265358979323846;
 
 double degToRad(double deg) { return deg * kPi / 180.0; }
-
+uint binToBoolRep(uint8_t bin) {
+  uint temp     = 0;
+  uint position = 1;
+  for (int i(0); i < 8; i++) {
+    temp += ((bin>>i)&0b00000001)*(position);
+    position *= 10;
+  }
+  return temp;
+} 
 double computeDownrangeMeters(double vehicleLatDeg, double vehicleLonDeg) {
   if (!std::isfinite(vehicleLatDeg) || !std::isfinite(vehicleLonDeg)) {
     return std::numeric_limits<double>::quiet_NaN();
@@ -316,18 +324,18 @@ std::optional<QJsonObject> process_packet(uint8_t packetId, uint8_t *data,
     jsonObj[QString::number(GUI_FIELD::SD_FAIL_COUNT)] =
         QString::number(dataAv.sd_fail_count);
     jsonObj[QString::number(GUI_FIELD::REMAINING_DISK_SIZE)] =
-        QString::number(dataAv.remaining_disk_size);
+        QString::number((dataAv.remaining_disk_size)/(1024*1024)) + "[MB]";
     jsonObj[QString::number(GUI_FIELD::BARO_COUNT)] =
         QString::number(dataAv.baro_count);
 
     jsonObj[QString::number(GUI_FIELD::AV_STATE)] =
         fieldUtil::avStateToName(dataAv.av_state);
     jsonObj[QString::number(GUI_FIELD::CAM_REC)] =
-        QString::number(static_cast<int>(dataAv.cam_rec));
+        QString::number(static_cast<int>(binToBoolRep(dataAv.cam_rec)));
     jsonObj[QString::number(GUI_FIELD::RAIL_CABLE)] =
         QString::number(static_cast<int>(dataAv.rail_cable_status));
     jsonObj[QString::number(GUI_FIELD::AV_PYROS)] =
-        QString::number(static_cast<int>(dataAv.pyro_status));
+        QString::number(static_cast<int>(binToBoolRep(dataAv.pyro_status)));
 
   const double downrangeMeters =
       computeDownrangeMeters(static_cast<double>(dataAv.gnss_lat),
@@ -777,8 +785,8 @@ void populatePFSJson(QJsonObject &jsonObj, const gse_downlink_t *dataGse) {
       QString::number(static_cast<unsigned int>(dataGse->PUMP));
 
   // float fields - no cast needed, QString::number handles float directly
-  jsonObj[QString::number(GUI_FIELD::GSE_GP1)] = QString::number(dataGse->GP1);
-  jsonObj[QString::number(GUI_FIELD::GSE_GP2)] = QString::number((dataGse->GP2)*4);
+  jsonObj[QString::number(GUI_FIELD::GSE_GP1)] = QString::number((dataGse->GP1*4));
+  jsonObj[QString::number(GUI_FIELD::GSE_GP2)] = QString::number(dataGse->GP2);
   jsonObj[QString::number(GUI_FIELD::GSE_GP3)] = QString::number(dataGse->GP3);
   jsonObj[QString::number(GUI_FIELD::GSE_GP4)] = QString::number(dataGse->GP4);
   jsonObj[QString::number(GUI_FIELD::GSE_GP5)] = QString::number(dataGse->GP5);
@@ -939,8 +947,9 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
     return {GSE_CMD_TOGGLE_PUMP, GSE_TELEMETRY};
 
   default:
-    throw std::invalid_argument("Invalid GUI_FIELD, no command matching");
+    throw std::invalid_argument("Invalid GUI_FIELD, no command matching" + fieldUtil::enumToFieldName(f).toStdString());
     break;
   }
 }
 #endif
+

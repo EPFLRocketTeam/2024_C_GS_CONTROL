@@ -36,7 +36,7 @@ ControlPanelView::ControlPanelView(
   displayText->setAlignment(Qt::AlignCenter);
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
   setMinimumWidth(mws::sideWidth / 100.0 * mws::width);
-  setMaximumWidth(mws::sideWidth / 3 * mws::width);
+  setMaximumWidth(mws::sideWidth / 2.5 * mws::width);
   setMaximumHeight(mws::height*10.0/100.0);
   setupContainerWidget();
   this->setContentsMargins(0, 0, 0, 0);
@@ -147,7 +147,7 @@ void ControlPanelView::createPushButtonLayouts(
                           .arg(QString::fromStdString(trimmedName));
       button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
       button->setMinimumWidth(100);
-      button->setMaximumWidth(400);
+      button->setMaximumWidth(450);
       button->setFixedHeight(40);
       button->setStyleSheet(style);
       gridLayout->addWidget(button, i / maxColumns, i % maxColumns);
@@ -189,7 +189,7 @@ void ControlPanelView::createPushButtonLayouts(
         QString("Are you sure you want to execute '%1'?").arg(button->text())) 
         == QMessageBox::Yes) {
           // Check if this is the LAUNCH command and start the timer
-          if (button->text() == "PRESSURIZE") {
+          if (button->text() == "LAUNCH SEQUENCE") {
             // Get the main window and start the launch timer
             QWidget *mainWindow = this;
             while (mainWindow->parentWidget()) {
