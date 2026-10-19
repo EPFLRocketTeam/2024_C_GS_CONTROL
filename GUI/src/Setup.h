@@ -266,8 +266,6 @@ inline std::vector<LabelInfo> labels = {
     {GUI_FIELD::LOX_FLS_TEMP_5, 0.92, 0.632 + 0.044*4}, // LOX float level sensor at TBD%
     {GUI_FIELD::LOX_FLS_TEMP_4, 0.92, 0.632 + 0.044*3}, // LOX float level sensor at TBD%
     {GUI_FIELD::LOX_FLS_TEMP_3, 0.92, 0.632 + 0.044*2}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_2, 0.92, 0.632 + 0.044*1}, // LOX float level sensor at TBD%
-    {GUI_FIELD::LOX_FLS_TEMP_1, 0.92, 0.632 + 0.044*0}, // LOX float level sensor at TBD%
 
     {GUI_FIELD::LOX_INJ_PRESSURE, 0.685, 0.85},
     //{GUI_FIELD::LOX_INJ_TEMP, 0.67, 0.865},
@@ -347,18 +345,14 @@ inline QList<GUI_FIELD> meta = {
 inline QList<GUI_FIELD> power = {
     LPB1_VOLTAGE,  
     LPB1_CURRENT,
-    LPB2_VOLTAGE,  
-    LPB2_CURRENT,
     VOUT1_5V_VOLTAGE,
     VOUT1_5V_CURRENT,
-    VOUT2_5V_VOLTAGE,
-    VOUT2_5V_CURRENT,
-    HPB_MAIN_VOLTAGE,
-    HPB_MAIN_CURRENT,
     HPB_BACKUP_VOLTAGE,
     HPB_BACKUP_CURRENT,
     VOUT_24V_VOLTAGE, 
     VOUT_24V_CURRENT, 
+    LOX_FLS_TEMP_1,
+    LOX_FLS_TEMP_2, 
 };
 
 inline QList<GUI_FIELD> cameras = {

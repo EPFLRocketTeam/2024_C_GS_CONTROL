@@ -281,10 +281,10 @@ inline QString enumToFieldName(GUI_FIELD field) {
     name = "LOX TEMPERATURE";
     break;
   case LOX_FLS_TEMP_1:
-    name = "LOX FLS TEMP 1";
+    name = "BATTERIE LOX 24V";
     break;
   case LOX_FLS_TEMP_2:
-    name = "LOX FLS TEMP 2";
+    name = "BATTERIE ETH 24V";
     break;
   case LOX_FLS_TEMP_3:
     name = "LOX FLS TEMP 3";
@@ -855,9 +855,9 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return HPE_temp;
   else if (fieldName == "N2 TEMPERATURE 2")
     return HPO_temp;
-  else if (fieldName == "LOX FLS TEMP 1")
+  else if (fieldName == "BATTERIE LOX 24V")
     return LOX_FLS_TEMP_1;
-  else if (fieldName == "LOX FLS TEMP 2")
+  else if (fieldName == "BATTERIE ETH 24V")
     return LOX_FLS_TEMP_2;
   else if (fieldName == "LOX FLS TEMP 3")
     return LOX_FLS_TEMP_3;
