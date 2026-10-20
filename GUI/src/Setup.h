@@ -230,7 +230,7 @@ inline QMap<std::string, QList<std::vector<GUI_FIELD>>> controlMap{
 
 inline QList<std::vector<GUI_FIELD>> gsePushButtonMap{
     {GUI_CMD_CAM_START, GUI_CMD_CAM_STOP,GUI_CMD_CAM_ABORT,GUI_CMD_CAM_RECOVER},
-    { GUI_CMD_GSE_TOGGLE_ALL_GQD}
+    {GUI_CMD_TOGGLE_RELAY}
 };
 inline QMap<std::string, QList<std::vector<GUI_FIELD>>> gseControlMap{
     {"QPushButton", gsePushButtonMap}};

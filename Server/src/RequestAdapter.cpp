@@ -900,6 +900,10 @@ TranmissionsIDs getOrderIdFromGui(GUI_FIELD f) {
   case GUI_FIELD::GUI_CMD_GSE_TOGGLE_ALL_GQD:
     return {GSE_CMD_TOGGLE_ALL_GQD, GSE_TELEMETRY};
 
+  case GUI_FIELD::GUI_CMD_TOGGLE_RELAY:
+    return {100, GSC_CMD};
+
+
   case GUI_FIELD::GSE_GQD1_NC:
     return {GSE_CMD_TOGGLE_GQD1, GSE_TELEMETRY};
 

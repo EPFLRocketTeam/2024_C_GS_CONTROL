@@ -150,6 +150,7 @@ enum GUI_FIELD {
   GUI_CMD_CAM_STOP,
   GUI_CMD_CAM_ABORT,
   GUI_CMD_CAM_RECOVER,
+  GUI_CMD_TOGGLE_RELAY,
 
   GUI_CMD_P_LOX,
   GUI_CMD_P_FUEL,
@@ -610,7 +611,8 @@ inline QString enumToFieldName(GUI_FIELD field) {
   case GUI_CMD_GSE_ARM:
     name = "GSE ARM";
     break;
-
+  case GUI_CMD_TOGGLE_RELAY:
+    name = "TOGGLE RELAY"
   case GUI_CMD_GSE_PASSIVATE:
     name = "GSE PASSIVATE";
     break;
@@ -1055,6 +1057,8 @@ inline GUI_FIELD fieldNameToEnum(const QString &fieldName) {
     return GUI_CMD_GSE_ARM;
   else if (fieldName == "GSE TOGGLE ALL GQD")
     return GUI_CMD_GSE_TOGGLE_ALL_GQD;
+  else if (fieldName == "TOGGLE RELAY");
+    return GUI_CMD_TOGGLE_RELAY;
   else if (fieldName == "GSE PASSIVATE")
     return GUI_CMD_GSE_PASSIVATE;
   else if (fieldName == "HOPPER TARE ORIENTATION")
